@@ -1,30 +1,58 @@
 import styled from 'styled-components';
-import imgLogo from '../assets/logo.png';
-import searchUnion from '../assets/searchUnion.png'
+import imgLogo from '../assets/searchBox/logo.png';
+import hamburgerBars from '../assets/searchBox/hamburgerBars.png';
+import ticket from '../assets/searchBox/ticket.png';
+import icNotice from '../assets/searchBox/icon-notice.svg';
+import icSetting from '../assets/searchBox/icon-setting.svg';
+import icSearch from '../assets/searchBox/icon-search.svg';
+import icHeart from '../assets/searchBox/icon-heart.svg';
+import icUpload from '../assets/searchBox/icon-upload.svg';
 
 const SearchBox = () => {
     return (
         <Wrapper>
             <Container>
                 <TopContainer>
-                    <button>로그인</button>
-                    <div>알림</div>
-                    <div>설정</div>
+                    <LoginBtn>로그인</LoginBtn>
+                    <LineDiv height={'47px'} margin={'0 17px 0 21px'} />
+                    <SmallIconDiv>
+                        <img src={icNotice} />
+                        <IconTextDiv fontSize={'16px'}>알림</IconTextDiv>
+                    </SmallIconDiv>
+                    <LineDiv height={'47px'} margin={'0 17px 0 21px'} />
+                    <SmallIconDiv>
+                        <img src={icSetting} />
+                        <IconTextDiv fontSize={'16px'}>설정</IconTextDiv>
+                    </SmallIconDiv>
                 </TopContainer>
                 <SearchBoxContainer>
                     <div>
                         <LogoImg src={imgLogo} />
                     </div>
-                    <div>카테고리</div>
+                    <IconDiv>
+                        <img src={hamburgerBars} width={32} />
+                        <IconTextDiv fontSize={'18px'}>카테고리</IconTextDiv>
+                    </IconDiv>
                     <SearchBoxDiv>
+                        <TicketImg src={ticket} />
                         <SearchInput type="text" />
-                        <SearchSvg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.9782 11.4423C19.9782 16.2748 16.268 20.1923 11.6913 20.1923C7.11451 20.1923 3.40432 16.2748 3.40432 11.4423C3.40432 6.60982 7.11451 2.69231 11.6913 2.69231C16.268 2.69231 19.9782 6.60982 19.9782 11.4423ZM18.4 20.429C16.5547 21.9668 14.2245 22.8846 11.6913 22.8846C5.70628 22.8846 0.854492 17.7617 0.854492 11.4423C0.854492 5.1229 5.70628 0 11.6913 0C17.6762 0 22.528 5.1229 22.528 11.4423C22.528 14.1168 21.659 16.5769 20.2029 18.5252L29.8045 28.6633L28.0015 30.5671L18.4 20.429Z" fill="#C908FF" fill-opacity="0.52"/>
-                        </SearchSvg>
+                        <SearchIcon src={icSearch} />
                     </SearchBoxDiv>
-                    <div>관심</div>
-                    <div>마이페이지</div>
-                    <div>래플 업로드</div>
+                    <IconDiv>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 33 32" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.32846 17.7173L2.89898 17.241C2.88447 17.2249 2.87002 17.2088 2.85563 17.1927C2.85563 17.1927 2.85564 17.1927 2.85563 17.1927C2.8428 17.1783 2.83001 17.1639 2.81728 17.1494C-0.662726 13.1985 -0.635497 6.87181 2.89897 2.95809C6.46089 -0.98603 12.2359 -0.986029 15.7978 2.95809L16.2276 3.43403L16.6573 2.95831C20.2192 -0.985812 25.9942 -0.985819 29.5561 2.9583C33.118 6.90241 33.118 13.2971 29.5561 17.2412L29.1265 17.7169L16.2278 32L3.32846 17.7173ZM16.2273 27.6411L7.26711 17.7195L4.86732 15.0615C2.39248 12.3211 2.39247 7.87802 4.86731 5.13763C7.34214 2.39724 11.3546 2.39724 13.8295 5.13763L16.2276 7.79311L18.6256 5.13785C21.1004 2.39745 25.1129 2.39745 27.5878 5.13784C30.0626 7.87823 30.0626 12.3213 27.5878 15.0617L25.199 17.7067L16.2273 27.6411Z" fill="black"/>
+                        </svg>
+                        <IconTextDiv fontSize={'18px'}>관심</IconTextDiv>
+                    </IconDiv>
+                    <LineDiv height={'78px'} margin={'0 3px 0 7px'} />
+                    <IconDiv>
+                        <img src={icHeart} />
+                        <IconTextDiv fontSize={'18px'}>마이페이지</IconTextDiv>
+                    </IconDiv>
+                    <UploadBtn>
+                        <img src={icUpload} />
+                        <IconTextDiv fontSize={'14px'} fontWeight={'light'} color={'white'}>래플 업로드</IconTextDiv>
+                    </UploadBtn>
                 </SearchBoxContainer>
             </Container>
         </Wrapper>
@@ -44,13 +72,43 @@ const Container = styled.div`
     // background-color: red;
     display: flex;
     flex-direction: column;
-    width: 1568.42px;
+    // align-items: center;
+    width: 1568.42px; // 1920-(상단바 양옆 공백 너비)
     height: 295px;
 `
 
 const TopContainer = styled.div`
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    margin: 0 34px 53px 0;
+`
+
+const LoginBtn = styled.button`
+    width: 111.883px;
+    height: 30px;
+    border-radius: 40px;
+    border: 1px solid #8F8E94;
+    background-color: transparent;
+    color: #8F8E94;
+    font-family: Pretendard;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 18px;
+    letter-spacing: -0.165px;
+    margin-right: 25px;
+    cursor: pointer;
+`
+
+const IconTextDiv = styled.div`
+    font-size: ${props => props.fontSize};
+    color: ${props => props.color || '#8F8E94'};
+    text-align: center;
+    font-family: Pretendard;
+    font-style: normal;
+    font-weight: ${props => props.fontWeight || '600'};
+    line-height: 18px;
+    letter-spacing: -0.165px;
 `
 
 const SearchBoxContainer = styled.div`
@@ -62,19 +120,85 @@ const SearchBoxContainer = styled.div`
 const LogoImg = styled.img`
     width: 243.746px;
     height: 117px;
+    margin-right: 25px;
 `
 
 const SearchBoxDiv = styled.div`
     position: relative;
-`
-const SearchInput = styled.input`
     width: 741.228px;
     height: 63px;
     border-radius: 51px;
     border: 2px solid #8F8E94;
+    box-sizing: border-box;
+    padding: 3px 70px 3px 30px;
 `
-const SearchSvg = styled.svg`
+
+const TicketImg = styled.img`
     position: absolute;
-    right: 15.43px;
-    top: 17px;
+    bottom: 105%;
+    left: 50%;
+    transform: translateX(-50%);
+`
+
+const SearchInput = styled.input`
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 23px;
+    font-family: Pretendard;
+    font-style: normal;
+    line-height: 18px;
+    letter-spacing: -0.165px;
+`
+
+const SearchIcon = styled.img`
+    position: absolute;
+    right: 27px;
+    top: 15px;
+    cursor: pointer;
+`
+
+const SmallIconDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 65px;
+    margin: 0 21px 0 25px;
+    cursor: pointer;
+`
+
+const IconDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 85px;
+    min-width: 80px;
+    margin: 0 21px 0 25px;
+    cursor: pointer;
+`
+
+const UploadBtn = styled.button`
+    color: white;
+    background-color: #C908FF;
+    border-radius: 15px;
+    border: none;
+    width: 98.897px;
+    height: 99px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 10px 10px 8px 11px;
+    cursor: pointer;
+    margin-left: 13px;
+`
+
+const LineDiv = styled.div`
+    width: 1px;
+    height: ${props => props.height};
+    background: #8F8E94;
+    margin: ${props => props.margin};
 `
