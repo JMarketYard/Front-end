@@ -100,7 +100,7 @@ const LoginBtn = styled.button`
     cursor: pointer;
 `
 
-const IconTextDiv = styled.div`
+const IconTextDiv = styled.div<{fontSize:string, color?:string, fontWeight?:string}>`
     font-size: ${props => props.fontSize};
     color: ${props => props.color || '#8F8E94'};
     text-align: center;
@@ -196,7 +196,7 @@ const UploadBtn = styled.button`
     margin-left: 13px;
 `
 
-const LineDiv = styled.div`
+const LineDiv = styled.div<{height:string, margin:string}>`
     width: 1px;
     height: ${props => props.height};
     background: #8F8E94;
