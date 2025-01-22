@@ -1,12 +1,11 @@
 import Router from './routes/router';
-import SearchBox from './components/SearchBox';
+import Header from './components/Header';
 // import SearchBox from './components/SearchBox';
 
 function App() {
   return (
     <>
       <Router />
-      <SearchBox />
     </>
   );
 }
