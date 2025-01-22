@@ -3,7 +3,7 @@ import styled from "styled-components";
 const CategoryMenu = ({clicked}:{clicked:boolean}) => {
     return (
         <CategoryUl show={String(clicked)}>
-            <CategoryLi>전체 카테고리</CategoryLi>
+            <CategoryName>전체 카테고리</CategoryName>
             <CategoryLi>여성의류</CategoryLi>
             <CategoryLi>남성의류</CategoryLi>
             <CategoryLi>신발</CategoryLi>
@@ -32,10 +32,10 @@ const CategoryMenu = ({clicked}:{clicked:boolean}) => {
 export default CategoryMenu;
 
 const CategoryUl = styled.ul<{show:string}>`
-    width: 414px;
+    width: 200px;
     position: absolute;
     top: 45px;
-    left: -55px;
+    left: -65px;
     ${props => props.show === 'true' ?
         'display: block'
         :
@@ -43,6 +43,41 @@ const CategoryUl = styled.ul<{show:string}>`
     }
 `
 
+const CategoryName = styled.li`
+    list-style: none;
+    height: 36px;
+    border: 1px solid #8F8E94;
+    background: #FFF;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #000;
+    font-family: Pretendard;
+    font-style: normal;
+    line-height: 45px; /* 204.545% */
+    letter-spacing: -0.165px;
+    &:hover {
+        cursor: default;
+    }
+`
+
 const CategoryLi = styled.li`
     list-style: none;
+    height: 36px;
+    background: #FFF;
+    display: flex;
+    align-items: center;
+    padding: 4px 0 0 15px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    font-family: Pretendard;
+    font-style: normal;
+    line-height: 45px; /* 204.545% */
+    letter-spacing: -0.165px;
+    &:hover {
+        cursor: pointer;
+    }
 `
