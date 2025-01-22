@@ -18,7 +18,7 @@ const Header = () => {
         <Wrapper>
             <Container>
                 <TopContainer>
-                    <LoginBtn state={isLoggedIn}>
+                    <LoginBtn state={String(isLoggedIn)}>
                         {isLoggedIn ? '로그아웃' : '로그인'}
                     </LoginBtn>
                     <LineDiv height={'27px'} margin={'0 32px'} />
@@ -83,11 +83,11 @@ const TopContainer = styled.div`
     margin: 0 34px 26px 0;
 `
 
-const LoginBtn = styled.button<{state:boolean}>`
+const LoginBtn = styled.button<{state:string}>`
     width: 99.355px;
     height: 26.644px;
     border-radius: 40px;
-    ${props => props.state ?
+    ${props => props.state==='true' ?
         `border: 1px solid #8F8E94;
         background-color: transparent;
         color: #8F8E94;`
