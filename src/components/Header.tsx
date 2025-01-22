@@ -10,10 +10,13 @@ import icMyPage from '../assets/searchBox/icon-mypage.svg';
 import chargeTicket from '../assets/searchBox/img-charge-ticket.png';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CategoryMenu from './CategoryMenu';
 
 const Header = () => {
     const navigate = useNavigate();
-    let [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
+
     return (
         <Wrapper>
             <Container>
@@ -34,10 +37,13 @@ const Header = () => {
                 </TopContainer>
                 <SearchBoxContainer>
                     <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
-                    <IconDiv>
-                        <img src={icHamburger} width={24} />
-                        <IconTextDiv fontSize={'14px'}>카테고리</IconTextDiv>
-                    </IconDiv>
+                    <CategoryContainer>
+                        <IconHamburgerDiv onClick={()=>setIsCatClicked(!isCatClicked)}>
+                            <img src={icHamburger} width={24} />
+                            <IconTextDiv fontSize={'14px'}>카테고리</IconTextDiv>
+                        </IconHamburgerDiv>
+                        <CategoryMenu clicked={isCatClicked} />
+                    </CategoryContainer>
                     <SearchBoxDiv>
                         <TicketImg src={ticket} width={88} />
                         <SearchInput type="text" />
@@ -130,6 +136,10 @@ const LogoImg = styled.img`
     }
 `
 
+const CategoryContainer = styled.div`
+    position: relative;
+`
+
 const SearchBoxDiv = styled.div`
     position: relative;
     width: 560px;
@@ -181,6 +191,18 @@ const IconDiv = styled.div`
     row-gap: 6px;
     align-items: center;
     justify-content: space-evenly;
+    height: 56px;
+    min-width: 61px;
+    margin: 0 25px 0 0;
+    cursor: pointer;
+`
+
+const IconHamburgerDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    row-gap: 6px;
+    align-items: center;
+    justify-content: space-between;
     height: 56px;
     min-width: 61px;
     margin: 0 25px 0 0;
