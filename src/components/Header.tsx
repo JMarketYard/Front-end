@@ -9,8 +9,10 @@ import icHeart from '../assets/searchBox/icon-heart.svg';
 import icMyPage from '../assets/searchBox/icon-mypage.svg';
 import chargeTicket from '../assets/searchBox/img-charge-ticket.png';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+    const navigate = useNavigate();
     let [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     return (
         <Wrapper>
@@ -31,7 +33,7 @@ const Header = () => {
                     </SmallIconDiv>
                 </TopContainer>
                 <SearchBoxContainer>
-                    <LogoImg src={imgLogo} />
+                    <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
                     <IconDiv>
                         <img src={icHamburger} width={24} />
                         <IconTextDiv fontSize={'14px'}>카테고리</IconTextDiv>
@@ -123,6 +125,9 @@ const LogoImg = styled.img`
     width: 133px;
     height: 64px;
     margin-right: 39px;
+    &:hover {
+        cursor: pointer;
+    }
 `
 
 const SearchBoxDiv = styled.div`
