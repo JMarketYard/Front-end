@@ -1,10 +1,11 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import RaffleUploadPage from '../pages/RaffleUploadPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <h1>홈 페이지</h1>,
+    element: <RaffleUploadPage />,
     children: [],
   },
 ]);
