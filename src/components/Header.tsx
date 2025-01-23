@@ -18,7 +18,6 @@ const Header = () => {
     const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
 
     return (
-        <Wrapper>
             <Container>
                 <TopContainer>
                     <LoginBtn state={String(isLoggedIn)}>
@@ -63,23 +62,18 @@ const Header = () => {
                     </IconDiv>
                 </SearchBoxContainer>
             </Container>
-        </Wrapper>
     );
 }
 
 export default Header;
 
-const Wrapper = styled.div`
-    min-width: 1440px;
-    display: flex;
-    justify-content: center;
-`
-
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 295px;
+    height: 188px;
+    border-bottom: 1px solid #E4E4E4;
+    // background-color: green;
 `
 
 const TopContainer = styled.div`
