@@ -1,11 +1,11 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import RaffleUploadPage from '../pages/RaffleUploadPage';
+import RootLayout from '../layout/RootLayout';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <RaffleUploadPage />,
+    element: <RootLayout />,
     children: [],
   },
 ]);
