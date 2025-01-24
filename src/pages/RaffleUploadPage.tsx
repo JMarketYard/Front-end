@@ -13,6 +13,7 @@ const RaffleUploadPage = () => {
 export default RaffleUploadPage;
 
 const UploadContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
 `
