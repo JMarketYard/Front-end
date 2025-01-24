@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import NavBar from './components/navBar';
 import AdBanner from './components/adBanner';
 import ImminentDeadline from './components/imminentDeadline';
+import MyLike from './components/myLike';
+import MyFollow from './components/myFollow';
 import ProductCard from '../../components/productCard';
 import InfiniteScroll from './components/InfiniteScroll';
 
@@ -13,6 +15,8 @@ const HomePage = () => {
 
       <Wrapper>
         <ImminentDeadline />
+        <MyLike />
+        <MyFollow />
         <LookAroundBox>래플 둘러보기</LookAroundBox>
         <Horizon />
 
@@ -30,17 +34,19 @@ const HomePage = () => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 1443px;
-  width: 100%;
+  width: 1080px;
   margin: 0 auto;
   align-items: center;
 `;
 
 const LookAroundBox = styled.p`
-  margin-top: 138px;
-  font-size: 40px;
-  font-weight: 600;
+  color: #000;
   text-align: center;
+  font-family: Pretendard;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 `;
 
 const Horizon = styled.hr`
