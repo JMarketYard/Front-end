@@ -1,13 +1,14 @@
 import React from 'react';
 import Login from '../pages/login/login';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import ModalProvider from '../components/Modal/context/ModalProvider';
+
+import RootLayout from '../layout/RootLayout';
 
 const router = createBrowserRouter([
   {
     path: '/',
 
-    element: <></>,
+    element: <RootLayout />,
     children: [],
   },
 ]);
