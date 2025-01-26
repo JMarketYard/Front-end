@@ -11,115 +11,58 @@ import chargeTicket from '../assets/searchBox/img-charge-ticket.png';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CategoryMenu from './CategoryMenu';
+import media from '../styles/media';
+import ContainerLarge from './ContainerLarge';
 
 const Header = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
+    // const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
 
     return (
-            <Container>
-                <TopContainer>
-                    <LoginBtn state={String(isLoggedIn)}>
-                        {isLoggedIn ? '로그아웃' : '로그인'}
-                    </LoginBtn>
-                    <LineDiv height={'27px'} margin={'0 32px'} />
-                    <SmallIconDiv>
-                        <img src={icNotice} />
-                        <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
-                    </SmallIconDiv>
-                    <LineDiv height={'27px'} margin={'0 32px'} />
-                    <SmallIconDiv>
-                        <img src={icSetting} />
-                        <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
-                    </SmallIconDiv>
-                </TopContainer>
-                <SearchBoxContainer>
+        <>
+            <ContainerLarge isLoggedIn={isLoggedIn} />
+            <ContainerSmall>
+                <TopLeft>
+                    <img src={icHamburger} width={14} />
+                </TopLeft>
+                <TopCenter>
                     <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
-                    <CategoryContainer>
-                        <IconHamburgerDiv onClick={()=>setIsCatClicked(!isCatClicked)}>
-                            <img src={icHamburger} width={24} />
-                            <IconTextDiv fontSize={'14px'}>카테고리</IconTextDiv>
-                        </IconHamburgerDiv>
-                        <CategoryMenu clicked={isCatClicked} />
-                    </CategoryContainer>
-                    <SearchBoxDiv>
-                        <TicketImg src={ticket} width={88} />
-                        <SearchInput type="text" />
-                        <SearchIcon src={icSearch} />
-                    </SearchBoxDiv>
-                    <IconDiv>
-                        <img src={icHeart} width={24} />
-                        <IconTextDiv fontSize={'13px'}>관심</IconTextDiv>
-                    </IconDiv>
-                    <IconDiv>
-                        <img src={icMyPage} width={24} />
-                        <IconTextDiv fontSize={'13px'}>마이페이지</IconTextDiv>
-                    </IconDiv>
-                    <IconDiv>
-                        <img src={chargeTicket} width={28.952} />
-                        <IconTextDiv fontSize={'13px'}>충전/환전</IconTextDiv>
-                    </IconDiv>
-                </SearchBoxContainer>
-            </Container>
+                </TopCenter>
+                <TopRight>
+                    <img src={icNotice} width={16} />
+                    <img src={icHeart} width={16} />
+                </TopRight>
+            </ContainerSmall>
+        </>
     );
 }
 
 export default Header;
 
-const Container = styled.div`
+const ContainerSmall = styled.div`
     display: flex;
-    flex-direction: column;
     width: 100%;
-    height: 188px;
     border-bottom: 1px solid #E4E4E4;
-    // background-color: green;
+    padding-top: 37px;
+    box-sizing: border-box;
+    ${media.large`
+        display: none;
+    `}
+    ${media.medium`
+        height: 101px;
+    `}
+    ${media.small`
+        height:81px;
+    `}
 `
 
-const TopContainer = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin: 0 34px 26px 0;
-`
-
-const LoginBtn = styled.button<{state:string}>`
-    width: 99.355px;
-    height: 26.644px;
-    border-radius: 40px;
-    ${props => props.state==='true' ?
-        `border: 1px solid #8F8E94;
-        background-color: transparent;
-        color: #8F8E94;`
-        :
-        `border: 1px solid #C908FF;
-        background: rgba(201, 8, 255, 0.20);
-        color: #C908FF;`
-    }
-    font-family: Pretendard;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 18px;
-    letter-spacing: -0.165px;
-    cursor: pointer;
-`
-
-const IconTextDiv = styled.div<{fontSize:string, color?:string, fontWeight?:string}>`
-    font-size: ${props => props.fontSize};
-    color: ${props => props.color || '#8F8E94'};
+const TopLeft = styled.div``
+const TopCenter = styled.div`
+    flex: 1;
     text-align: center;
-    font-family: Pretendard;
-    font-style: normal;
-    font-weight: ${props => props.fontWeight || '600'};
-    line-height: 18px;
-    letter-spacing: -0.165px;
-`
-
-const SearchBoxContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`
+`;
+const TopRight = styled.div``
 
 const LogoImg = styled.img`
     width: 133px;
@@ -128,6 +71,14 @@ const LogoImg = styled.img`
     &:hover {
         cursor: pointer;
     }
+    ${media.medium`
+        width: 98px;
+        height: 46.518px;
+    `}
+    ${media.small`
+        width: 71.62px;
+        height: 33.995px;
+    `}
 `
 
 const CategoryContainer = styled.div`
@@ -218,10 +169,3 @@ const IconHamburgerDiv = styled.div`
 //     cursor: pointer;
 //     margin-left: 13px;
 // `
-
-const LineDiv = styled.div<{height:string, margin:string}>`
-    width: 1px;
-    height: ${props => props.height};
-    background: #8F8E94;
-    margin: ${props => props.margin};
-`
