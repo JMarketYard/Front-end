@@ -1,5 +1,4 @@
 import React from 'react';
-import Login from '../pages/login/login';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import RootLayout from '../layout/RootLayout';
