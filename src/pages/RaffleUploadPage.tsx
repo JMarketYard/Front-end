@@ -1,13 +1,11 @@
 import styled from "styled-components";
+import BigTitle from "../components/BigTitle";
 
 const RaffleUploadPage = () => {
     return (
         <UploadForm>
             <div>
-                <BigTitle>
-                    <TitleIcon />
-                    상품 정보
-                </BigTitle>
+                <BigTitle>상품 정보</BigTitle>
                 <ItemInfoContainer>
                     <ImgContainer>
                         <ImgSpan>상품 이미지</ImgSpan>
@@ -43,7 +41,6 @@ const RaffleUploadPage = () => {
             </div>
             <div>
                 <BigTitle>
-                    <TitleIcon/>
                     거래 설정
                 </BigTitle>
                 <SetConditionContainer>
@@ -88,28 +85,6 @@ const UploadForm = styled.form`
     align-items: center;
     flex-direction: column;
     padding-top: 63px;
-`
-
-const BigTitle = styled.div`
-    width: 1080px;
-    height: 53px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid black;
-    color: #000;
-    font-family: Pretendard;
-    font-size: 22px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-`
-const TitleIcon = styled.span`
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background-color: #C908FF;
-    border-radius: 50%;
-    margin-right: 52px;
 `
 
 const ItemInfoContainer = styled.div`
