@@ -1,7 +1,7 @@
 import './App.css';
 import { ModalContextProvider } from './components/Modal/context/ModalContext';
-import ModalProvider from './components/Modal/context/ModalProvider';
 import Router from './routes/router';
+// import SearchBox from './components/SearchBox';
 
 function App() {
   return (
