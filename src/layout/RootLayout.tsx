@@ -14,7 +14,7 @@ const RootLayout = () => {
 export default RootLayout;
 
 const Wrapper = styled.div`
-    min-width: 1440px;
+    // min-width: 1440px;
     display: flex;
     justify-content: center;
 `
