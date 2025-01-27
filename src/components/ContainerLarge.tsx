@@ -8,6 +8,7 @@ import icSetting from '../assets/searchBox/icon-setting.svg';
 import icSearch from '../assets/searchBox/icon-search.svg';
 import icHeart from '../assets/searchBox/icon-heart.svg';
 import icMyPage from '../assets/searchBox/icon-mypage.svg';
+import icUpload from '../assets/searchBox/icon-upload.svg';
 import chargeTicket from '../assets/searchBox/img-charge-ticket.png';
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -59,6 +60,10 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                     <img src={chargeTicket} width={28.952} />
                     <IconTextDiv fontSize={'13px'}>충전/환전</IconTextDiv>
                 </IconDiv>
+                <UploadBtn>
+                    <img src={icUpload} width={17} />
+                    래플 업로드
+                </UploadBtn>
             </SearchBoxContainer>
         </Wrapper>
     );
@@ -72,7 +77,8 @@ const Wrapper = styled.div`
     width: 100%;
     height: 188px;
     border-bottom: 1px solid #E4E4E4;
-    // background-color: green;
+    padding: 0 25px;
+    box-sizing: border-box;
     ${media.medium`
         display: none;
     `}
@@ -213,21 +219,31 @@ const IconHamburgerDiv = styled.div`
     cursor: pointer;
 `
 
-// const UploadBtn = styled.button`
-//     color: white;
-//     background-color: #C908FF;
-//     border-radius: 15px;
-//     border: none;
-//     width: 98.897px;
-//     height: 99px;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     justify-content: space-evenly;
-//     padding: 10px 10px 8px 11px;
-//     cursor: pointer;
-//     margin-left: 13px;
-// `
+const UploadBtn = styled.button`
+    color: white;
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px; /* 225% */
+    letter-spacing: -0.165px;
+    box-sizing: border-box;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    background-color: #C908FF;
+    border-radius: 9px;
+    border: 1px solid #C908FF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding-top: 9px;
+    padding-bottom: 3px;
+    margin-bottom: 8px;
+    cursor: pointer;
+`
 
 const LineDiv = styled.div<{height:string, margin:string}>`
     width: 1px;
