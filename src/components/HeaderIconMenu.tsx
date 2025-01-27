@@ -24,6 +24,7 @@ const Wrapper = styled.div`
 const IconMenu = styled.div`
     background-color: #F4F4F4;
     border-radius: 100%;
+    box-sizing: border-box;
     ${media.medium`
         width: 84.302px;
         height: 86px;
