@@ -25,6 +25,10 @@ const Header = () => {
             <ContainerSmall>
                 <TopLeft>
                     <img src={icHamburger} width={14} />
+                    <SearchBox>
+                        <SearchInput />
+                        <SearchIcon src={icSearch} />
+                    </SearchBox>
                 </TopLeft>
                 <TopCenter>
                     <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
@@ -42,27 +46,56 @@ export default Header;
 
 const ContainerSmall = styled.div`
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     border-bottom: 1px solid #E4E4E4;
-    padding-top: 37px;
     box-sizing: border-box;
+    position: relative;
     ${media.large`
         display: none;
     `}
     ${media.medium`
         height: 101px;
+        padding: 36.91px 12px 17.57px 12px;
     `}
     ${media.small`
         height:81px;
+        padding: 37px 33px 10px 35px;
     `}
 `
 
-const TopLeft = styled.div``
+const TopLeft = styled.div`
+    display: flex;
+`
 const TopCenter = styled.div`
-    flex: 1;
+    // flex: 1;
     text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 `;
-const TopRight = styled.div``
+const TopRight = styled.div`
+    display: flex;
+    column-gap: 20px;
+    ${media.small`
+        column-gap: 19px
+    `}
+`
+
+const SearchBox = styled.div`
+    width: 123px;
+    height: 33px;
+    border-radius: 49px;
+    border: 1.3px solid #C908FF;
+    padding: 9px 15px 9px 15px;
+    margin-left: 21px;
+    box-sizing: border-box;
+    display: flex;
+    ${media.small`
+        display: none;
+    `}
+`
 
 const LogoImg = styled.img`
     width: 133px;
@@ -118,7 +151,7 @@ const SearchInput = styled.input`
 
 const SearchIcon = styled.img`
     cursor: pointer;
-    width: 20.975px;
+    width: 14.205px;
 `
 
 const SmallIconDiv = styled.div`
