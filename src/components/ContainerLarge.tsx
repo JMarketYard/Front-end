@@ -239,8 +239,7 @@ const UploadBtn = styled.button`
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    padding-top: 9px;
-    padding-bottom: 3px;
+    padding-top: 9px 0 3px 0;
     margin-bottom: 8px;
     cursor: pointer;
 `
