@@ -69,11 +69,17 @@ const TopLeft = styled.div`
     display: flex;
 `
 const TopCenter = styled.div`
-    // flex: 1;
     text-align: center;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    @media (max-width: 553px) {
+        left: 268px;
+    };
+    ${media.small`
+        left: 50%;
+        transform: translateX(-50%)
+    `}
 `;
 const TopRight = styled.div`
     display: flex;
