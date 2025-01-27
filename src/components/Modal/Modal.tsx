@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Icon } from '@iconify/react';

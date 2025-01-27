@@ -7,7 +7,7 @@ function Login() {
   const { openModal } = useModalContext();
 
   const handleOpenFirstModal = () => {
-    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+    openModal(({ onClose }) => <ConsentModal onClose={onClose} />);
   };
 
   return (
