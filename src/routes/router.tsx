@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
+import RaffleUploadPage from '../pages/RaffleUploadPage';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
           </div>
         ),
       },
+        {
+        path: 'raffle-upload',
+        element: <RaffleUploadPage />
+      }
     ],
   },
 ]);
