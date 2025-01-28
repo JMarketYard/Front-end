@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import BigTitle from "../components/BigTitle";
 import imgUpload from "../assets/imgUpload.svg";
+import icArrow from "../assets/icSelectArrow.svg";
+import imgArrow from "../assets/imgSelectArrow.png";
 
 const RaffleUploadPage = () => {
     return (
@@ -196,7 +198,15 @@ const ItemCategorySelect = styled.select`
     font-style: normal;
     font-weight: 500;
     line-height: 36.832px; /* 184.159% */
-    padding: 0 5px;
+    padding: 0 10px;
+    background: url(${imgArrow}) no-repeat right 18px center;
+    background-size: 16px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &::-ms-expand {
+        display: none;
+    };
 `
 
 const ConditionBtn = styled.button`
@@ -227,7 +237,7 @@ const Textarea = styled.textarea`
     font-style: normal;
     line-height: 18px;
     letter-spacing: -0.165px;
-    padding: 7px;
+    padding: 10px;
     box-sizing: border-box;
     border-radius: 7px;
 `
@@ -255,7 +265,7 @@ const InputBox = styled.input<{width?:number}>`
     border-radius: 7px;
     border: 1px solid #8F8E94;
     box-sizing: border-box;
-    padding: 0 7px;
+    padding: 0 10px;
     font-size: 18px;
     font-family: Pretendard;
     font-style: normal;
