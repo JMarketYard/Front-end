@@ -16,5 +16,7 @@ export default RootLayout;
 const Wrapper = styled.div`
     min-width: 1440px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    // justify-content: center;
 `
