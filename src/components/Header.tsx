@@ -1,23 +1,17 @@
 import styled from 'styled-components';
 import imgLogo from '../assets/searchBox/logo.png';
 import icHamburger from '../assets/searchBox/icon-hamburger.svg';
-import ticket from '../assets/searchBox/ticket.png';
 import icNotice from '../assets/searchBox/icon-notice.svg';
-import icSetting from '../assets/searchBox/icon-setting.svg';
 import icSearch from '../assets/searchBox/icon-search.svg';
 import icHeart from '../assets/searchBox/icon-heart.svg';
-import icMyPage from '../assets/searchBox/icon-mypage.svg';
-import chargeTicket from '../assets/searchBox/img-charge-ticket.png';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CategoryMenu from './CategoryMenu';
 import media from '../styles/media';
 import ContainerLarge from './ContainerLarge';
 
 const Header = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    // const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
 
     return (
         <>
