@@ -12,9 +12,23 @@ interface ModalProps {
 
 const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
   const { openModal } = useModalContext();
+  const [isError, setIsError] = useState('');
+  const [name, setName] = useState('');
+
+  const regex = /^[가-힣a-zA-Z0-9]{2,10}$/;
+
+  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
 
   const handleOpenNextModal = () => {
-    openModal(({ onClose }) => <EnterModal onClose={onClose} />);
+    if (!regex.test(name)) {
+      setIsError('닉네임은 2~10자의 한글 또는 영어만 사용 가능합니다.');
+      return;
+    } else {
+      setIsError('');
+      openModal(({ onClose }) => <EnterModal onClose={onClose} />);
+    }
   };
 
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(() =>
@@ -41,15 +55,43 @@ const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
       <Container>
         <Line />
         <Info>회원 정보</Info>
-        <Name>닉네임</Name>
-        <Input placeholder="장마당에서 사용할 닉네임을 입력하세요. (한글 및 영어 2~5자)" />
-        <Button onClick={handleOpenNextModal}>회원가입</Button>
+        <Box>
+          <Name>닉네임</Name>
+          <Error>{isError}</Error>
+        </Box>
+        <Input
+          isError={!!isError}
+          value={name}
+          onChange={handleChangeName}
+          placeholder="장마당에서 사용할 닉네임을 입력하세요. (한글 및 영어 2~5자)"
+        />
+        <Button disabled={!name} onClick={handleOpenNextModal}>
+          회원가입
+        </Button>
       </Container>
     </Contents>
   );
 
   return isLargeScreen ? <Modal onClose={onClose}>{Content}</Modal> : Content;
 };
+
+const Box = styled.div`
+  display: flex;
+  column-gap: 28px;
+  margin-bottom: 7px;
+`;
+
+const Error = styled.div`
+  width: 234px;
+  height: 17px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  color: #c908ff;
+  font-family: 'Noto Sans KR';
+  transform: translateX(-18px);
+`;
 
 const Container = styled.div`
   padding-left: 61px;
@@ -88,14 +130,15 @@ const Button = styled.button`
   font-weight: 700;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ isError: boolean }>`
   padding-left: 14px;
   width: 273px;
   height: 30px;
   border-radius: 7px;
-  border: 1px solid rgba(201, 8, 255, 0);
+  border: ${({ isError }) => (isError ? '1px solid #C908FF' : 'none')};
   background-color: #f7f7f7;
   font-size: 11px;
+  outline: none;
   &::placeholder {
     font-size: 11px;
     font-style: normal;
@@ -110,7 +153,6 @@ const Name = styled.div`
   font-size: 15px;
   font-style: normal;
   font-weight: 400;
-  margin-bottom: 7px;
 `;
 
 const Info = styled.div`

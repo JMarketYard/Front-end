@@ -45,7 +45,11 @@ const ConsentModal: React.FC<ModalProps> = ({ onClose }) => {
   };
 
   const handleOpenNextModal = () => {
-    openModal(({ onClose }) => <AgeModal onClose={onClose} />);
+    if (checked[0] && checked[1]) {
+      openModal(({ onClose }) => <AgeModal onClose={onClose} />);
+    } else {
+      return;
+    }
   };
 
   const Content = (
@@ -91,6 +95,7 @@ const ConsentModal: React.FC<ModalProps> = ({ onClose }) => {
             }}
           />
           <Short>(필수) 필드 약관 및 동의사항</Short>
+          <Arrow>&gt;</Arrow>
         </Option>
         <Option>
           <Checkbox
@@ -110,7 +115,8 @@ const ConsentModal: React.FC<ModalProps> = ({ onClose }) => {
               },
             }}
           />
-          <Short>(선택) 마케팅 정보 수신 동의</Short>
+          <Short>(필수) 마케팅 정보 수신 동의</Short>
+          <Arrow>&gt;</Arrow>
         </Option>
         <Button onClick={handleOpenNextModal}>계속하기</Button>
       </Container>
@@ -119,6 +125,14 @@ const ConsentModal: React.FC<ModalProps> = ({ onClose }) => {
 
   return isLargeScreen ? <Modal onClose={onClose}>{Content}</Modal> : Content;
 };
+
+const Arrow = styled.div`
+  width: 8px;
+  height: 17px;
+  stroke-width: 1px;
+  stroke: #8f8e94;
+  color: #8f8e94;
+`;
 
 const Contents = styled.div`
   ${media.notLarge`
