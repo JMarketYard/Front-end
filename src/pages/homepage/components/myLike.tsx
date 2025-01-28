@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import like from '../../../assets/homePage/like.svg';
 import moreList from '../../../assets/homePage/moreList.svg';
-import SmallProductCard from '../../../components/smallProductCard';
+import SmallProductCard from '../../../components/SmallProductCard';
 import { useNavigate } from 'react-router-dom';
 
 const Mylike = () => {

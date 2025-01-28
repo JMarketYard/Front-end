@@ -14,7 +14,7 @@ function AdBanner() {
     speed: 2000,
     autoplaySpeed: 5000,
     centerMode: true,
-    // centerPadding: '23px',
+    centerPadding: '46px',
     cssEase: 'ease',
   };
 
@@ -29,12 +29,6 @@ function AdBanner() {
         </div>
         <div>
           <AdBox>3</AdBox>
-        </div>
-        <div>
-          <AdBox>4</AdBox>
-        </div>
-        <div>
-          <AdBox>4</AdBox>
         </div>
       </Slider>
     </Wrapper>
@@ -52,16 +46,15 @@ const Wrapper = styled.div`
     width: 100%;
   } */
 
-  .slick-track {
+  /* .slick-track {
     display: flex;
     align-items: center;
-  }
+  } */
 
   .slick-slide {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-shrink: 0;
   }
 
   .slick-dots {
