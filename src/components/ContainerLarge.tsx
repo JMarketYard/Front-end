@@ -77,6 +77,7 @@ const Wrapper = styled.div`
     height: 188px;
     padding: 0 25px;
     box-sizing: border-box;
+    z-index: 100;
     ${media.medium`
         display: none;
     `}
