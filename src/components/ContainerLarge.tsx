@@ -1,15 +1,15 @@
 import styled from "styled-components";
 import media from "../styles/media";
-import imgLogo from '../assets/searchBox/logo.png';
+import imgLogo from '../assets/logo.png';
 import icHamburger from '../assets/searchBox/icon-hamburger.svg';
-import ticket from '../assets/searchBox/ticket.png';
+import ticket from '../assets/ticketLogo.png';
 import icNotice from '../assets/searchBox/icon-notice.svg';
 import icSetting from '../assets/searchBox/icon-setting.svg';
 import icSearch from '../assets/searchBox/icon-search.svg';
 import icHeart from '../assets/searchBox/icon-heart.svg';
 import icMyPage from '../assets/searchBox/icon-mypage.svg';
 import icUpload from '../assets/searchBox/icon-upload.svg';
-import chargeTicket from '../assets/searchBox/img-charge-ticket.png';
+import imgTicket from '../assets/ticket.svg';
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import CategoryMenu from './CategoryMenu';
@@ -25,12 +25,12 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} />
                 <SmallIconDiv>
-                    <img src={icNotice} />
+                    <img src={icNotice} width={18.65} />
                     <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
                 </SmallIconDiv>
                 <LineDiv height={'27px'} margin={'0 32px'} />
                 <SmallIconDiv>
-                    <img src={icSetting} />
+                    <img src={icSetting} width={22} />
                     <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
                 </SmallIconDiv>
             </TopContainer>
@@ -38,8 +38,8 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                 <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
                 <CategoryContainer>
                     <IconHamburgerDiv onClick={()=>setIsCatClicked(!isCatClicked)}>
-                        <img src={icHamburger} width={24} />
-                        <IconTextDiv fontSize={'14px'}>카테고리</IconTextDiv>
+                        <img src={icHamburger} width={22} />
+                        <IconTextDiv fontSize={'10px'}>카테고리</IconTextDiv>
                     </IconHamburgerDiv>
                     <CategoryMenu clicked={isCatClicked} />
                 </CategoryContainer>
@@ -49,16 +49,16 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                     <SearchIcon src={icSearch} />
                 </SearchBoxDiv>
                 <IconDiv>
-                    <img src={icHeart} width={24} />
-                    <IconTextDiv fontSize={'13px'}>관심</IconTextDiv>
+                    <img src={icHeart} width={22} />
+                    <IconTextDiv fontSize={'10px'}>관심</IconTextDiv>
                 </IconDiv>
                 <IconDiv>
-                    <img src={icMyPage} width={24} />
-                    <IconTextDiv fontSize={'13px'}>마이페이지</IconTextDiv>
+                    <img src={icMyPage} width={22} />
+                    <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
                 </IconDiv>
                 <IconDiv>
-                    <img src={chargeTicket} width={28.952} />
-                    <IconTextDiv fontSize={'13px'}>충전/환전</IconTextDiv>
+                    <Img src={imgTicket} height={18} />
+                    <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
                 </IconDiv>
                 <UploadBtn onClick={()=>navigate('/raffle-upload')}>
                     <img src={icUpload} width={17} />
@@ -132,6 +132,7 @@ const LogoImg = styled.img`
     width: 133px;
     height: 64px;
     margin-right: 39px;
+    margin-bottom: 5px;
     &:hover {
         cursor: pointer;
     }
@@ -159,6 +160,10 @@ const SearchBoxDiv = styled.div`
     padding: 3px 20px;
     display: flex;
     margin: 0 26px 0 0;
+`
+
+const Img = styled.img`
+    margin: 3px 0;
 `
 
 const TicketImg = styled.img`
@@ -200,7 +205,7 @@ const IconDiv = styled.div`
     row-gap: 6px;
     align-items: center;
     justify-content: space-evenly;
-    height: 56px;
+    height: 45px;
     min-width: 61px;
     margin: 0 25px 0 0;
     cursor: pointer;
@@ -212,7 +217,7 @@ const IconHamburgerDiv = styled.div`
     row-gap: 6px;
     align-items: center;
     justify-content: space-between;
-    height: 56px;
+    height: 46px;
     min-width: 61px;
     margin: 0 25px 0 0;
     cursor: pointer;

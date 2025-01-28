@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import imgLogo from '../assets/searchBox/logo.png';
+import imgLogo from '../assets/logo.png';
 import icHamburger from '../assets/searchBox/icon-hamburger.svg';
 import icNotice from '../assets/searchBox/icon-notice.svg';
 import icSearch from '../assets/searchBox/icon-search.svg';
