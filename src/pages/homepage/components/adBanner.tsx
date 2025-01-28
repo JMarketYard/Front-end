@@ -1,6 +1,6 @@
 import React from 'react';
-import Slider from 'react-slick';
 import styled from 'styled-components';
+import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -13,11 +13,13 @@ function AdBanner() {
     autoplay: true,
     speed: 2000,
     autoplaySpeed: 5000,
-    cssEase: 'linear',
+    centerMode: true,
+    // centerPadding: '23px',
+    cssEase: 'ease',
   };
 
   return (
-    <SliderWrapper>
+    <Wrapper>
       <Slider {...settings}>
         <div>
           <AdBox>1</AdBox>
@@ -28,27 +30,66 @@ function AdBanner() {
         <div>
           <AdBox>3</AdBox>
         </div>
+        <div>
+          <AdBox>4</AdBox>
+        </div>
+        <div>
+          <AdBox>4</AdBox>
+        </div>
       </Slider>
-    </SliderWrapper>
+    </Wrapper>
   );
 }
 
-const SliderWrapper = styled.div`
-  max-width: 1920px; /* 원하는 슬라이더 크기 설정 */
-  margin: 0 auto; /* 중앙 정렬 */
-  padding: 50px 0; /* 슬라이더 상하 간격 */
-  display: flex;
+const Wrapper = styled.div`
+  width: 100%;
+  height: 396px;
+  margin: 39px auto 61px auto;
+  box-sizing: content-box;
+  overflow: hidden;
+
+  /* .slick-initialized {
+    width: 100%;
+  } */
+
+  .slick-track {
+    display: flex;
+    align-items: center;
+  }
 
   .slick-slide {
-    padding: 0 40px; /* 슬라이드 간격 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .slick-dots {
+    bottom: -27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 8px;
+
+    .slick-active button::before {
+      color: #c908ff; /* 선택된 점의 색상 */
+      font-size: 8px;
+    }
+
+    button::before {
+      color: rgba(201, 8, 255, 0.2); /* 선택되지 않은 점의 색상 */
+      font-size: 8px;
+    }
   }
 `;
 
-const AdBox = styled.div`
-  width: 780px;
-  height: 454px;
-  background-color: #e7e7e7;
-  border-radius: 12px;
+const AdBox = styled.a`
+  width: 825px;
+  height: 369px;
+  flex-shrink: 0;
+  margin: 0 23px;
+  border-radius: 31px;
+  background: #e7e7e7;
   display: flex;
   justify-content: center;
   align-items: center;

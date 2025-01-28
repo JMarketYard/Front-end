@@ -1,21 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
-import clock from '../../../assets/homePage/clock.svg';
+import follow from '../../../assets/homePage/follow.svg';
 import moreList from '../../../assets/homePage/moreList.svg';
 import SmallProductCard from '../../../components/smallProductCard';
+import { useNavigate } from 'react-router-dom';
 
 const MyFollow = () => {
+  const navigate = useNavigate();
   return (
     <Wrapper>
-      <DeadlineContainer>
+      <HeaderContainer>
         <TextBox>
-          <img src={clock} alt="clock" /> 마감임박
+          <img src={follow} alt="follow" /> 팔로우한 상점의 래플
         </TextBox>
-        <MoreListBox>
-          마감임박 상품 더보기
+        <MoreListBox onClick={() => navigate('/')}>
+          팔로우한 상점 래플 더보기
           <img src={moreList} alt="moreList" />
         </MoreListBox>
-      </DeadlineContainer>
+      </HeaderContainer>
 
       <ProductContainer>
         <SmallProductCard />
@@ -28,24 +30,25 @@ const MyFollow = () => {
   );
 };
 
-export default MyFollow;
-
 const Wrapper = styled.div`
   width: 100%;
   height: 306px;
   margin-bottom: 65px;
 `;
 
-const DeadlineContainer = styled.div`
-  height: 52px;
+const HeaderContainer = styled.div`
   display: flex;
+  height: 38px;
+  margin-bottom: 11px;
   flex-direction: row;
   justify-content: space-between;
-  margin-botton: 11px;
+  flex-shrink: 0;
+
   align-items: center;
 `;
 
-const TextBox = styled.p`
+const TextBox = styled.div`
+  display: flex;
   gap: 23px;
 
   color: #000;
@@ -56,12 +59,13 @@ const TextBox = styled.p`
   line-height: normal;
 `;
 
-const MoreListBox = styled.div`
-  width: 178px;
-  height: 37px;
-  justify-content: space-between;
-
-  gap: 35px;
+const MoreListBox = styled.a`
+  width: 250px;
+  height: 34px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  display: flex;
   color: #8f8e94;
   text-align: center;
   font-family: Pretendard;
@@ -75,6 +79,14 @@ const MoreListBox = styled.div`
   text-decoration-thickness: auto;
   text-underline-offset: auto;
   text-underline-position: from-font;
+
+  img {
+    width: 10px;
+    height: 17px;
+    margin-left: 35px;
+  }
+
+  cursor: pointer;
 `;
 
 const ProductContainer = styled.div`
@@ -82,3 +94,4 @@ const ProductContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
 `;
+export default MyFollow;

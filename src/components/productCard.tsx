@@ -2,14 +2,24 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
 import like from '../assets/ProductCard/like.svg';
+import unlike from '../assets/productCard/unlike.svg';
 
 const ProductCard = () => {
+  const [isLiked, setIsLiked] = useState(false);
+  const toggleLike = () => {
+    setIsLiked((prevState) => !prevState);
+  };
+
   return (
     <Wrapper>
       <ImageContainer>
-        {/* <TextBox>마감임박</TextBox> //추후 마감임박 표시 추가되는지 확인*/}
-        <LikeBox>
-          <img src={like} alt="like" />
+        <RaffleClosingBox>응모 마감</RaffleClosingBox>
+        <TextBox>마감임박</TextBox>
+        <LikeBox onClick={toggleLike}>
+          <img
+            src={isLiked ? like : unlike}
+            alt={isLiked ? 'Liked' : 'Unliked'}
+          />
         </LikeBox>
       </ImageContainer>
       <InfoContainer>
@@ -49,16 +59,42 @@ const ImageContainer = styled.div`
   margin-top: 6px;
 `;
 
+const RaffleClosingBox = styled.div`
+  width: 143.316px;
+  height: 47.272px;
+  transform: rotate(0.421deg);
+
+  flex-shrink: 0;
+  border-radius: 4px;
+  border: 2px solid #c908ff;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+`;
+
 const TextBox = styled.div`
-  width: 71px;
-  height: 23px;
+  width: 78.929px;
+  height: 26px;
   flex-shrink: 0;
   border-radius: 42px;
   background: rgba(201, 8, 255, 0.2);
 
   position: absolute;
-  top: 162px;
-  right: 114px;
+  top: 188px;
+  right: 135.07px;
   display: flex;
   justify-content: center;
   align-items: center;

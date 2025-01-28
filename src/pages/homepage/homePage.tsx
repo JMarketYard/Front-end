@@ -1,25 +1,44 @@
 import React from 'react';
 import styled from 'styled-components';
-import NavBar from './components/navBar';
-import AdBanner from './components/adBanner';
-import ImminentDeadline from './components/imminentDeadline';
-import MyLike from './components/myLike';
-import MyFollow from './components/myFollow';
+import AdBanner from './components/AdBanner';
+import ImminentDeadline from './components/ImminentDeadline';
+import MyLike from './components/MyLike';
+import MyFollow from './components/MyFollow';
+import moreList from '../../assets/homePage/moreList.svg';
 import ProductCard from '../../components/productCard';
-import InfiniteScroll from './components/InfiniteScroll';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <>
-      <NavBar />
-
+      <AdBanner />
       <Wrapper>
         <ImminentDeadline />
         <MyLike />
         <MyFollow />
-        <LookAroundBox>래플 둘러보기</LookAroundBox>
+        <LookAroundContainer>
+          <LookAroundBox>래플 둘러보기</LookAroundBox>
+          <MoreListBox onClick={() => navigate('/')}>
+            마감임박 상품 더보기
+            <img src={moreList} alt="moreList" />
+          </MoreListBox>
+        </LookAroundContainer>
+
         <Horizon />
 
+        <ProductRow>
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+        </ProductRow>
+        <ProductRow>
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+        </ProductRow>
         <ProductRow>
           <ProductCard />
           <ProductCard />
@@ -39,7 +58,17 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
+const LookAroundContainer = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+`;
+
 const LookAroundBox = styled.p`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   color: #000;
   text-align: center;
   font-family: Pretendard;
@@ -49,15 +78,46 @@ const LookAroundBox = styled.p`
   line-height: normal;
 `;
 
+const MoreListBox = styled.a`
+  width: 250px;
+  height: 34px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  display: flex;
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36.832px; /* 230.199% */
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+
+  img {
+    width: 10px;
+    height: 17px;
+    margin-left: 35px;
+  }
+
+  cursor: pointer;
+`;
+
 const Horizon = styled.hr`
   width: 100%;
-  border-top: 1px solid #000000;
-  margin-top: 88px;
-  margin-bottom: 108px;
+  border-top: 1px solid #8f8e94;
+  margin-top: 42px;
+  margin-bottom: 46px;
 `;
 
 const ProductRow = styled.div`
   width: 100%;
+  margin-bottom: 44px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
