@@ -170,6 +170,7 @@ const ConditionBtn = styled.button`
 const Textarea = styled.textarea`
     width: 635px;
     height: 197px;
+    resize: none;
 `
 
 const TextareaDiv = styled.div`
