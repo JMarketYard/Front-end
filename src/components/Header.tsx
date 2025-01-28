@@ -115,29 +115,6 @@ const LogoImg = styled.img`
     `}
 `
 
-const CategoryContainer = styled.div`
-    position: relative;
-`
-
-const SearchBoxDiv = styled.div`
-    position: relative;
-    width: 560px;
-    height: 42px;
-    border-radius: 51px;
-    border: 2px solid #8F8E94;
-    box-sizing: border-box;
-    padding: 3px 20px;
-    display: flex;
-    margin: 0 26px 0 0;
-`
-
-const TicketImg = styled.img`
-    position: absolute;
-    bottom: 105%;
-    left: 50%;
-    transform: translateX(-50%);
-`
-
 const SearchInput = styled.input`
     width: 100%;
     height: 100%;
@@ -154,55 +131,6 @@ const SearchIcon = styled.img`
     cursor: pointer;
     width: 14.205px;
 `
-
-const SmallIconDiv = styled.div`
-    display: flex;
-    column-gap: 11px;
-    align-items: center;
-    justify-content: space-evenly;
-    height: 65px;
-    cursor: pointer;
-`
-
-const IconDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    row-gap: 6px;
-    align-items: center;
-    justify-content: space-evenly;
-    height: 56px;
-    min-width: 61px;
-    margin: 0 25px 0 0;
-    cursor: pointer;
-`
-
-const IconHamburgerDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    row-gap: 6px;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-    min-width: 61px;
-    margin: 0 25px 0 0;
-    cursor: pointer;
-`
-
-// const UploadBtn = styled.button`
-//     color: white;
-//     background-color: #C908FF;
-//     border-radius: 15px;
-//     border: none;
-//     width: 98.897px;
-//     height: 99px;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     justify-content: space-evenly;
-//     padding: 10px 10px 8px 11px;
-//     cursor: pointer;
-//     margin-left: 13px;
-// `
 
 const Line = styled.div`
     width: 100%;
