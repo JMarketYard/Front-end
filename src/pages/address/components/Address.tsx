@@ -12,6 +12,7 @@ const Address = ({isSelect}:{isSelect:boolean}) => {
     <List>
       {isSelect ?
       <Checkbox
+      width={27.2}
       height={27.1}
       onClick={()=>setIsClicked(!isClicked)}
       fill={isClicked ? "#C908FF" : "none"}
