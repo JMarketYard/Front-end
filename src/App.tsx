@@ -1,10 +1,13 @@
+import { ModalContextProvider } from './components/Modal/context/ModalContext';
 import Router from './routes/router';
 // import SearchBox from './components/SearchBox';
 
 function App() {
   return (
     <>
-      <Router />
+      <ModalContextProvider>
+        <Router />
+      </ModalContextProvider>
     </>
   );
 }
