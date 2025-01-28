@@ -13,14 +13,23 @@ import imgTicket from '../assets/ticket.svg';
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import CategoryMenu from './CategoryMenu';
+import { useModalContext } from './Modal/context/ModalContext';
+import SplashModal from '../pages/login/components/SplashModal';
+
 
 const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
     const navigate = useNavigate();
     const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
+    const { openModal } = useModalContext();
+
+    const handleOpenModal = () => {
+        openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+    };
+    
     return (
         <Wrapper>
             <TopContainer>
-                <LoginBtn state={String(isLoggedIn)}>
+                <LoginBtn onClick={handleOpenModal} state={String(isLoggedIn)}>
                     {isLoggedIn ? '로그아웃' : '로그인'}
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} />

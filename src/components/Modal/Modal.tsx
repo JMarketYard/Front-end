@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Icon } from '@iconify/react';
@@ -9,6 +9,14 @@ export default function Modal({
   onClose,
 }: PropsWithChildren<{ onClose: () => void }>) {
   const { clearModals } = useModalContext();
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
 
   return ReactDOM.createPortal(
     <ModalOverlay onClick={clearModals}>
