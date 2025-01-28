@@ -5,7 +5,7 @@ import ImminentDeadline from './components/ImminentDeadline';
 import MyLike from './components/MyLike';
 import MyFollow from './components/MyFollow';
 import moreList from '../../assets/homePage/moreList.svg';
-import ProductCard from '../../components/productCard';
+import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
