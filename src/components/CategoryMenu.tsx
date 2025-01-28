@@ -79,5 +79,6 @@ const CategoryLi = styled.li`
     letter-spacing: -0.165px;
     &:hover {
         cursor: pointer;
+        border: 1px solid #C908FF;
     }
 `
