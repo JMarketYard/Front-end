@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import BigTitle from "../components/BigTitle";
+import imgUpload from "../assets/imgUpload.svg";
+import icArrow from "../assets/icSelectArrow.svg";
+import imgArrow from "../assets/imgSelectArrow.png";
 
 const RaffleUploadPage = () => {
     return (
@@ -9,7 +12,15 @@ const RaffleUploadPage = () => {
                 <ItemInfoContainer>
                     <ImgContainer>
                         <ImgSpan>상품 이미지</ImgSpan>
-                        <div style={{backgroundColor:"grey", width:261, height:261}}>이미지</div>
+                        <ImgFileLabel htmlFor="img-file">
+                            <ImgFileIcon src={imgUpload} />
+                        </ImgFileLabel>
+                        <InputImgFile
+                        type="file"
+                        id="img-file"
+                        accept="image/*"
+                        multiple
+                        />
                     </ImgContainer>
                     <ItemInfoRightContainer>
                         <div>
@@ -17,6 +28,26 @@ const RaffleUploadPage = () => {
                             <ItemCategorySelect>
                                 <option value="">- - 선택하세요 - -</option>
                                 <option value="women">여성의류</option>
+                                <option value="men">남성의류</option>
+                                <option value="shoes">신발</option>
+                                <option value="accessories">악세사리</option>
+                                <option value="digital">디지털</option>
+                                <option value="appliances">가전제품</option>
+                                <option value="sports">스포츠/레저</option>
+                                <option value="vehicle">차량/오토바이</option>
+                                <option value="md">굿즈</option>
+                                <option value="art">예술/희귀/수집품</option>
+                                <option value="music">음반/악기</option>
+                                <option value="stationery">도서/티켓/문구</option>
+                                <option value="beauty">뷰티</option>
+                                <option value="interior">인테리어</option>
+                                <option value="household">생활용품</option>
+                                <option value="tools">공구/산업용품</option>
+                                <option value="grocery">식품</option>
+                                <option value="infant">유아</option>
+                                <option value="pet">반려동물</option>
+                                <option value="others">기타</option>
+                                <option value="talent">재능</option>
                             </ItemCategorySelect>
                         </div>
                         <div>
@@ -106,6 +137,28 @@ const ImgSpan = styled.span`
     line-height: 36.832px; /* 184.159% */
 `
 
+const ImgFileLabel = styled.label`
+    display: inline-block;
+    position: relative;
+    width: 261px;
+    height: 261px;
+    border-radius: 5px;
+    border: 1px solid #8F8E94;
+    background: #F5F5F5;
+    &:hover {
+        cursor: pointer;
+    }
+`
+const ImgFileIcon = styled.img`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`
+const InputImgFile = styled.input`
+    display: none;
+`
+
 const ItemInfoRightContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -145,7 +198,15 @@ const ItemCategorySelect = styled.select`
     font-style: normal;
     font-weight: 500;
     line-height: 36.832px; /* 184.159% */
-    padding: 0 5px;
+    padding: 0 10px;
+    background: url(${imgArrow}) no-repeat right 18px center;
+    background-size: 16px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &::-ms-expand {
+        display: none;
+    };
 `
 
 const ConditionBtn = styled.button`
@@ -170,11 +231,19 @@ const ConditionBtn = styled.button`
 const Textarea = styled.textarea`
     width: 635px;
     height: 197px;
+    resize: none;
+    font-size: 18px;
+    font-family: Pretendard;
+    font-style: normal;
+    line-height: 18px;
+    letter-spacing: -0.165px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 7px;
 `
 
 const TextareaDiv = styled.div`
     display: flex;
-
 `
 
 const SetConditionContainer = styled.div`
@@ -195,6 +264,13 @@ const InputBox = styled.input<{width?:number}>`
     height: 45px;
     border-radius: 7px;
     border: 1px solid #8F8E94;
+    box-sizing: border-box;
+    padding: 0 10px;
+    font-size: 18px;
+    font-family: Pretendard;
+    font-style: normal;
+    line-height: 18px;
+    letter-spacing: -0.165px;
 `
 
 const SubmitBtn = styled.input`
