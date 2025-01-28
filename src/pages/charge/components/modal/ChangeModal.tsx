@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Modal from '../../../components/Modal/Modal';
+import Modal from '../../../../components/Modal/Modal';
 import Checkbox from '@mui/material/Checkbox';
 import { Icon } from '@iconify/react';
 import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
-import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import ChangeOkModal from './ChangeOkModal';
 
 interface ModalProps {
