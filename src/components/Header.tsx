@@ -116,16 +116,16 @@ const LogoImg = styled.img`
 `
 
 const SearchInput = styled.input`
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    font-size: 18px;
-    font-family: Pretendard;
-    font-style: normal;
-    line-height: 18px;
-    letter-spacing: -0.165px;
-`
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  font-family: Pretendard;
+  font-style: normal;
+  line-height: 18px;
+  letter-spacing: -0.165px;
+`;
 
 const SearchIcon = styled.img`
     cursor: pointer;
