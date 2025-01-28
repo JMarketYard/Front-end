@@ -7,14 +7,14 @@ import SignupModal from './SignupModal';
 import Modal from '../../../components/Modal/Modal';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import media from '../../../styles/media';
+import UnderAgeModal from './UnderAgeModal';
 
 interface ModalProps {
   onClose: () => void;
 }
 
 const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
-  const [firstChecked, setFirstChecked] = useState(false);
-  const [secondChecked, setSecondChecked] = useState(false);
+  const [checked, setChecked] = React.useState([false, false]);
   const { openModal } = useModalContext();
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth >= 745 : false,
@@ -33,15 +33,25 @@ const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
   }, []);
 
   const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFirstChecked(event.target.checked);
+    setChecked([event.target.checked, false]);
   };
 
   const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSecondChecked(event.target.checked);
+    setChecked([false, event.target.checked]);
   };
 
+  useEffect(() => {
+    console.log('Checked State:', checked);
+  }, [checked]);
+
   const handleOpenNextModal = () => {
-    openModal(({ onClose }) => <SignupModal onClose={onClose} />);
+    if (checked[0]) {
+      openModal(({ onClose }) => <SignupModal onClose={onClose} />);
+    } else if (checked[1]) {
+      openModal(({ onClose }) => <UnderAgeModal onClose={onClose} />);
+    } else {
+      return;
+    }
   };
 
   const Content = (
@@ -55,7 +65,7 @@ const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
         <Line />
         <Option style={{ marginBottom: '26px' }}>
           <Checkbox
-            checked={firstChecked}
+            checked={checked[0]}
             onChange={handleChange1}
             icon={<CircleUnchecked />}
             checkedIcon={<CircleChecked />}
@@ -70,7 +80,7 @@ const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
         </Option>
         <Option>
           <Checkbox
-            checked={secondChecked}
+            checked={checked[1]}
             onChange={handleChange2}
             icon={<CircleUnchecked />}
             checkedIcon={<CircleChecked />}
