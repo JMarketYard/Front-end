@@ -60,7 +60,7 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                     <img src={chargeTicket} width={28.952} />
                     <IconTextDiv fontSize={'13px'}>충전/환전</IconTextDiv>
                 </IconDiv>
-                <UploadBtn>
+                <UploadBtn onClick={()=>navigate('/raffle-upload')}>
                     <img src={icUpload} width={17} />
                     래플 업로드
                 </UploadBtn>
