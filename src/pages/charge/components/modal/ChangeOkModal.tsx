@@ -1,9 +1,9 @@
 import React from 'react';
-import Modal from '../../../components/Modal/Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import vector from '../../../assets/Vector.png';
-import ticket from '../../../assets/ticket.svg';
-import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import vector from '../../../../assets/Vector.png';
+import ticket from '../../../../assets/ticket.svg';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 
 interface ModalProps {
   onClose: () => void;
