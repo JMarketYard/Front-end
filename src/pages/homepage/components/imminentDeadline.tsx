@@ -3,15 +3,17 @@ import styled from 'styled-components';
 import clock from '../../../assets/homePage/clock.svg';
 import moreList from '../../../assets/homePage/moreList.svg';
 import SmallProductCard from '../../../components/smallProductCard';
+import { useNavigate } from 'react-router-dom';
 
 const ImminentDeadline = () => {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <HeaderContainer>
         <TextBox>
           <img src={clock} alt="clock" /> 마감임박
         </TextBox>
-        <MoreListBox>
+        <MoreListBox onClick={() => navigate('/')}>
           마감임박 상품 더보기
           <img src={moreList} alt="moreList" />
         </MoreListBox>
@@ -37,6 +39,7 @@ const Wrapper = styled.div`
 const HeaderContainer = styled.div`
   display: flex;
   height: 38px;
+  margin-bottom: 11px;
   flex-direction: row;
   justify-content: space-between;
   flex-shrink: 0;
@@ -56,12 +59,13 @@ const TextBox = styled.div`
   line-height: normal;
 `;
 
-const MoreListBox = styled.div`
-  width: 178px;
-  height: 37px;
-  justify-content: space-between;
+const MoreListBox = styled.a`
+  width: 220px;
+  height: 34px;
   display: flex;
-  gap: 35px;
+  justify-content: flex-end;
+  align-items: center;
+  display: flex;
   color: #8f8e94;
   text-align: center;
   font-family: Pretendard;
@@ -75,6 +79,14 @@ const MoreListBox = styled.div`
   text-decoration-thickness: auto;
   text-underline-offset: auto;
   text-underline-position: from-font;
+
+  img {
+    width: 10px;
+    height: 17px;
+    margin-left: 35px;
+  }
+
+  cursor: pointer;
 `;
 
 const ProductContainer = styled.div`

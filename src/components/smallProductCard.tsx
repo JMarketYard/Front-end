@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import smallTicket from '../assets/smallProductCard/smallTicket.svg';
 import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
+import smallLike from '../assets/smallProductCard/smallLike.svg';
 
 const SmallProductCard = () => {
+  const [isLiked, setIsLiked] = useState(false);
+  const toggleLike = () => {
+    setIsLiked((prevState) => !prevState);
+  };
   return (
     <Wrapper>
       <ImageContainer>
         <TextBox>마감임박</TextBox>
-        <LikeBox>
-          <img src={smallUnlike} alt="smallUnlike" />
+        <LikeBox onClick={toggleLike}>
+          <img
+            src={isLiked ? smallLike : smallUnlike}
+            alt={isLiked ? 'Liked' : 'Unliked'}
+          />
         </LikeBox>
       </ImageContainer>
       <Layout>
@@ -75,8 +83,7 @@ const LikeBox = styled.div`
   top: 163px;
   right: 9px;
 
-  /* cursor: pointer;
-  user-select: none; */
+  cursor: pointer;
 `;
 
 const Layout = styled.div`
@@ -96,7 +103,7 @@ const TitleContainer = styled.div`
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  line-height: 18px; /* 112.5% */
+  line-height: 18px;
 `;
 
 const InfoContainer = styled.div`
