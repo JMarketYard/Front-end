@@ -11,20 +11,21 @@ const AddressSetPage = () => {
       <BigTitle>
         배송지 설정
         {isSelect
-        ? <SelectBtn onClick={()=>setIsSelect(false)}>선택</SelectBtn>
-        : <>
+        ? <>
         <SelectBtn
         $right={'128px'}
         >배송지 삭제</SelectBtn>
         <SelectBtn
         $background={'rgba(201, 8, 255, 0.20)'}
         color={'#C908FF'}
-        onClick={()=>setIsSelect(true)}
+        onClick={()=>setIsSelect(false)}
         >선택 취소</SelectBtn>
-        </>}
+        </>
+        : <SelectBtn onClick={()=>setIsSelect(true)}>선택</SelectBtn>
+        }
       </BigTitle>
       <AddressList>
-        <Address />
+        <Address isSelect={isSelect} />
       </AddressList>
       <Button>새 배송지 추가하기</Button>
     </Wrapper>

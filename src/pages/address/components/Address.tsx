@@ -1,13 +1,22 @@
+/// <reference types="vite-plugin-svgr/client" />
 import { useState } from "react";
 import styled from "styled-components";
+import { ReactComponent as checkbox } from "../../../assets/imgCheckbox.svg";
 
-const Address = () => {
+const Address = ({isSelect}:{isSelect:boolean}) => {
   // 임의의 default state: 후에 데이터 연결하면 삭제할 state
   const [isDefault, setIsDefault] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   return (
     <>
     <List>
-      <ListIcon />
+      {isSelect ?
+      <Checkbox
+      height={27.1}
+      onClick={()=>setIsClicked(!isClicked)}
+      fill={isClicked ? "#C908FF" : "none"}
+      />
+    : <ListIcon />}
       <TitleSpan>우리집</TitleSpan>
       <AddressSpan>서울특별시 마포구 와우산로 94 홍익대학교 제2기숙사</AddressSpan>
       <SetBtn
@@ -27,16 +36,23 @@ export default Address;
 
 const List = styled.li`
   display: flex;
-  align-items: baseline;
-  column-gap: 70px;
+  align-items: center;
+  column-gap: 66px;
   width: 1000px;
   box-sizing: border-box;
+`
+
+const Checkbox = styled(checkbox)`
+  &:hover {
+    cursor: pointer;
+  };
 `
 
 const ListIcon = styled.span`
     display: inline-block;
     width: 14px;
     height: 14px;
+    margin: 6.5px;
     background-color: rgba(201, 8, 255, 0.20);
     border-radius: 100%;
     // margin-right: 78px;
