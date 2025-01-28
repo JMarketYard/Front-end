@@ -32,6 +32,7 @@ const Header = () => {
                     <img src={icHeart} width={16} />
                 </TopRight>
             </ContainerSmall>
+            <Line />
         </>
     );
 }
@@ -202,3 +203,9 @@ const IconHamburgerDiv = styled.div`
 //     cursor: pointer;
 //     margin-left: 13px;
 // `
+
+const Line = styled.div`
+    width: 100%;
+    height: 1px;
+    background: #E4E4E4;
+`
