@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import AdBanner from './components/AdBanner';
-import ImminentDeadline from './components/ImminentDeadline';
-import MyLike from './components/MyLike';
-import MyFollow from './components/MyFollow';
+import AdBanner from './components/adBanner';
+import ImminentDeadline from './components/imminentDeadline';
+import MyLike from './components/myLike';
+import MyFollow from './components/myFollow';
 import moreList from '../../assets/homePage/moreList.svg';
-import ProductCard from '../../components/ProductCard';
+import ProductCard from '../../components/productCard';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
