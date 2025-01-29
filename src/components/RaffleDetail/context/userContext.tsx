@@ -1,4 +1,4 @@
-// context/UserContext.tsx
+// raffleDetail/userContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type UserRole = 'PARTICIPANT' | 'NON_PARTICIPANT' | 'HOST';
@@ -14,11 +14,11 @@ type UserContextType = {
   setUser: (user: User | null) => void;
 };
 
-// 🌟 가짜 유저 데이터 (API 없을 때 사용)
+//mock 데이터 (API 없을 때 사용)
 const mockUser: User = {
   id: '123',
-  name: '테스트 유저',
-  role: 'PARTICIPANT', // 'NON_PARTICIPANT' | 'HOST' 로 변경하며 테스트 가능
+  name: '미참가자',
+  role: 'NON_PARTICIPANT', // 'PARTICIPANT' | 'HOST' 로 변경하며 테스트 가능
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
