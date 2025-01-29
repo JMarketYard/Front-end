@@ -8,18 +8,18 @@ function AdBanner() {
   const settings = {
     dots: true,
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 5000,
+    speed: 1500,
+    autoplaySpeed: 4000,
     centerMode: true,
-    centerPadding: '46px',
+    centerPadding: '20%',
     cssEase: 'ease',
   };
 
   return (
-    <Wrapper>
+    <Wrapper className="slider-container">
       <Slider {...settings}>
         <div>
           <AdBox>1</AdBox>
@@ -41,9 +41,10 @@ const Wrapper = styled.div`
   margin: 39px auto 61px auto;
   box-sizing: content-box;
   overflow: hidden;
+  background-color: white;
 
   /* .slick-initialized {
-    width: 100%;
+    width: 100%;.
   } */
 
   /* .slick-track {
@@ -55,6 +56,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: white;
   }
 
   .slick-dots {
