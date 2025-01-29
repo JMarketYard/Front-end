@@ -65,4 +65,7 @@ const Button = styled.button`
   line-height: 18px; /* 81.818% */
   letter-spacing: -0.165px;
   margin-bottom: 167px;
+  &:hover {
+    cursor: pointer;
+  }
 `
