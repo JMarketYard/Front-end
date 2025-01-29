@@ -5,6 +5,7 @@ import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
 import RaffleUploadPage from '../pages/RaffleUploadPage';
 import HomePage from '../pages/homepage/homePage';
+import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
         element: <RaffleUploadPage />,
       },
       { path: 'homepage', element: <HomePage /> },
+      { path: 'raffle-detail', element: <RaffleDetailPage /> },
     ],
   },
 ]);
