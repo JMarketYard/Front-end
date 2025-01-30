@@ -31,7 +31,15 @@ const router = createBrowserRouter([
         element: <RaffleUploadPage />,
       },
       { path: 'homepage', element: <HomePage /> },
-      { path: 'raffle-detail', element: <RaffleDetailPage /> },
+      {
+        path: 'raffle-detail',
+        element: (
+          <div>
+            <RaffleDetailPage />
+            <ModalProvider />
+          </div>
+        ),
+      },
     ],
   },
 ]);
