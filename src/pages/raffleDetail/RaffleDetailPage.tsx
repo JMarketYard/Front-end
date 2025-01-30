@@ -17,10 +17,12 @@ const RaffleDetailPage = () => {
 export default RaffleDetailPage;
 
 const Wrapper = styled.div`
+  width: 1080px;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding-top: 63px;
+  margin: 0 auto;
 `;
 
 // <MoreInfoLayout>
