@@ -1,18 +1,16 @@
-import React from "react";
-import StarRating from './components/StarRating'
+import { ModalContextProvider } from './components/Modal/context/ModalContext';
+import Router from './routes/router';
+// import SearchBox from './components/SearchBox';
 
-const App: React.FC = () => {
-  const handleRatingChange = (rating: number) => {
-    console.log("Rating changed:", rating);
-  };
-
+function App() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Star Rating Demo</h1>
-      <StarRating totalStars={5} initialRating={3} onRatingChange={handleRatingChange} />
-    </div>
+    <>
+      <ModalContextProvider>
+        <Router />
+      </ModalContextProvider>
+    </>
   );
-};
+}
 
 export default App;
 
