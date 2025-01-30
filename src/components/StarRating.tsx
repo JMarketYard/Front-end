@@ -19,7 +19,7 @@ const BackgroundContainer = styled.div`
 
 const StarContainer = styled.div`
   display: flex;
-  gap: 4px; /* Reduced gap to make stars closer */
+  gap: 4px; 
 `;
 
 const StyledStar = styled.div<{ filled: boolean }>`
@@ -28,7 +28,7 @@ const StyledStar = styled.div<{ filled: boolean }>`
   align-items: center;
   justify-content: center;
   svg {
-    width: 94.96px; /* Explicitly setting the size of the SVG icon */
+    width: 94.96px; 
     height: 99.25px;
     color: ${(props) => (props.filled ? "#facc15" : "#d1d5db")};
   }
@@ -44,11 +44,11 @@ const StarRating: React.FC<StarRatingProps> = ({
   const handleRating = (index: number) => {
     let newRating = rating;
     if (index + 1 === rating) {
-      newRating = index; // Remove the last selected star
+      newRating = index;
     } else if (index < rating) {
-      newRating = index; // Remove the clicked star
+      newRating = index;
     } else {
-      newRating = index + 1; // Add a star
+      newRating = index + 1;
     }
 
     setRating(newRating);
