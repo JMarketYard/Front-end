@@ -6,6 +6,7 @@ import ModalProvider from '../components/Modal/context/ModalProvider';
 import RaffleUploadPage from '../pages/RaffleUploadPage';
 import HomePage from '../pages/homepage/homePage';
 import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
+import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,11 @@ const router = createBrowserRouter([
             <ModalProvider />
           </div>
         ),
+      },
+
+      {
+        path: 'set-open',
+        element: <SetOpenInfoPage />,
       },
     ],
   },

@@ -28,26 +28,25 @@ const Item = ({
   return (
     <Wrapper>
       <BigTitle>{name}</BigTitle>
-
       <TopLayout>
         <ImageContainer src={image} alt={name} />
         <DetailLayout>
           <ItemTitleBox>{name}</ItemTitleBox>
-          <ItemLookingBox>조회, 찜</ItemLookingBox>
+          <ItemLookingBox>조회 16 · 찜 7</ItemLookingBox>
           <TicketBox>
             <img src={icTicket} alt="ticket" />
             {ticket}
           </TicketBox>
           <DetailContainer>
-            <DetailBox>카테고리</DetailBox>
+            <TitleSpan>카테고리</TitleSpan>
             <DescriptionBox>{category}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
-            <DetailBox>응모오픈</DetailBox>
+            <TitleSpan>응모오픈</TitleSpan>
             <DescriptionBox>{openTime}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
-            <DetailBox>응모마감</DetailBox>
+            <TitleSpan>응모마감</TitleSpan>
             <DescriptionBox>{closeTime}</DescriptionBox>
           </DetailContainer>
           <ButtonContainer>
@@ -69,12 +68,9 @@ const Item = ({
 export default Item;
 
 const Wrapper = styled.div`
-  width: 1080px;
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
-  margin: 0 auto;
 `;
 
 const TopLayout = styled.div`
@@ -82,7 +78,8 @@ const TopLayout = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  padding: 50px 294px 30px 247px; //최상위 wrapper 기준으으로 다시 설정해야 하나?
+  padding: 50px 109px 30px 67px; //최상위 wrapper 기준으으로 다시 설정해야 하나?
+  box-sizing: border-box;
   gap: 99.42px;
 `;
 
@@ -98,6 +95,7 @@ const ImageContainer = styled.img.attrs((props) => ({
 const DetailLayout = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 `;
 
 const ItemTitleBox = styled.p`
@@ -154,13 +152,9 @@ const DetailContainer = styled.div`
   gap: 50px;
   padding-bottom: 26px;
 `;
-const DetailBox = styled.div`
-  display: flex;
-  width: 64px;
-  height: 19px;
-  flex-direction: column;
-  justify-content: center;
-  flex-shrink: 0;
+const TitleSpan = styled.div`
+  display: inline-block;
+  min-width: 64px;
 
   color: #8f8e94;
   font-family: Pretendard;
@@ -193,7 +187,6 @@ const ButtonContainer = styled.div`
 `;
 
 const DoButton = styled.button`
-width: 100%
   width: 344px;
   height: 48px;
   flex-shrink: 0;
@@ -208,6 +201,8 @@ width: 100%
   font-weight: 700;
   line-height: 18px; /* 90% */
   letter-spacing: -0.165px;
+
+  cursor: pointer;
 `;
 
 const LikeBox = styled.div`
@@ -216,6 +211,8 @@ const LikeBox = styled.div`
   justify-content: center;
   align-items: center;
   gap: 5px;
+  width: 45px;
+
   color: #8f8e94;
   text-align: center;
   font-family: Pretendard;
@@ -228,13 +225,15 @@ const LikeBox = styled.div`
     width: 28px;
     height: 29px;
   }
+
+  cursor: pointer;
 `;
 
 const WarningBox = styled.p`
   width: 343px;
   height: 54px;
   flex-shrink: 0;
-  padding-top: 19px;
+  margin: 0;
 
   color: #8f8e94;
   font-family: Pretendard;
