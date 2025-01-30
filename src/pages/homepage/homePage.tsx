@@ -62,6 +62,7 @@ const LookAroundContainer = styled.div`
   position: relative;
   width: 100%;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
 `;
 

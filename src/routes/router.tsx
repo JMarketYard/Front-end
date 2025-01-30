@@ -25,10 +25,6 @@ const router = createBrowserRouter([
           </div>
         ),
       },
-      {
-        path: 'raffle-upload',
-        element: <RaffleUploadPage />,
-      },
       { path: 'homepage', element: <HomePage /> },
     ],
   },
