@@ -29,7 +29,7 @@ const Container = styled.div`
 `
 
 const TitleBox = styled.div`
-  width: 85px;
+  width: 84px;
   padding-left: 12px;
   color: #8F8E94;
   font-family: Pretendard;
@@ -38,6 +38,7 @@ const TitleBox = styled.div`
   font-weight: 400;
   line-height: 18px; /* 150% */
   letter-spacing: -0.165px;
+  box-sizing: border-box;
 `
 
 const Input = styled.input`
@@ -54,4 +55,5 @@ const Input = styled.input`
   font-weight: 400;
   line-height: 18px; /* 150% */
   letter-spacing: -0.165px;
+  box-sizing: border-box;
 `
