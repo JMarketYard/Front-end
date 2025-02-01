@@ -18,7 +18,7 @@ export const raffleData = [
     atLeastParticipant: 5,
     view: 25,
     like: 4,
-    raffleStatus: 'ended', // ✅ 상태 자동 설정
+    raffleStatus: 'ended',
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ export const raffleData = [
     atLeastParticipant: 6,
     view: 47,
     like: 10,
-    raffleStatus: getRaffleStatus('2025-02-07T23:59:59Z'),
+    raffleStatus: 'ongoing',
   },
   {
     id: 3,
@@ -51,7 +51,7 @@ export const raffleData = [
     atLeastParticipant: 4,
     view: 53,
     like: 2,
-    raffleStatus: getRaffleStatus('2025-02-06T20:00:00Z'),
+    raffleStatus: 'unopen',
   },
   {
     id: 4,

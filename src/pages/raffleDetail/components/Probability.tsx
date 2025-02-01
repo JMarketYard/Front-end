@@ -3,6 +3,7 @@ import React from 'react';
 import DonutChart from './DonutChart';
 import NpDonutChart from './NpDonutChart';
 import DonutText from './DonutText';
+import icMark from '../../../assets/raffleDetail/icon-mark.svg';
 
 interface ItemProps {
   participant: number;
@@ -23,6 +24,13 @@ const Probability = ({
 }: ItemProps) => {
   return (
     <Wrapper>
+      {raffleStatus === 'unopen' && (
+        <UnOpenContainer>
+          <img src={icMark} alt={'icMark'} />
+          <UnOpenBox>해당 래플은 가직 개최되지 않았습니다.</UnOpenBox>
+        </UnOpenContainer>
+      )}
+
       {raffleStatus === 'ongoing' && (
         <>
           {(role === 'np' || role === 'h') && (
@@ -77,7 +85,7 @@ const Probability = ({
                   </InfoContainer>
                 </CenteredContainer>
               )}
-              {role === 'p' && (winner === 'y' || 'n') && (
+              {role === 'p' && (winner === 'y' || winner === 'n') && (
                 <CenteredContainer>
                   <TitleBox>해당 래플은 종료되었습니다</TitleBox>
                   <DonutText text="래플 종료" />
@@ -94,6 +102,15 @@ const Probability = ({
               </FailedBox>
             </FailedContainer>
           )}
+          {result === 'less' && (
+            <LessContainer>
+              <img src={icMark} alt={'icMark'} />
+              <LessBox>
+                해당 래플은 판매자가 설정한 최소 참여자 수에 미치지 못해, 현재
+                판매자가 당첨자 선정 여부를 결정해야 하는 대기 상태에 있습니다.
+              </LessBox>
+            </LessContainer>
+          )}
         </>
       )}
     </Wrapper>
@@ -109,6 +126,67 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+`;
+
+const UnOpenContainer = styled.div`
+  width: 285px;
+  height: 195px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 18px;
+  box-sizing: border-box;
+
+  border: 1px solid #8f8e94;
+`;
+
+const UnOpenBox = styled.div`
+  display: flex;
+  width: 234px;
+  height: 83px;
+  flex-direction: column;
+  justify-content: center;
+  margin: 12px auto 26px auto;
+  box-sizing: border-box;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 27px */
+`;
+
+const LessContainer = styled.div`
+  width: 285px;
+  height: 233px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 18px;
+  box-sizing: border-box;
+  border: 1px solid #8f8e94;
+`;
+
+const LessBox = styled.div`
+  display: flex;
+  width: 234px;
+  height: 120.908px;
+  flex-direction: column;
+  justify-content: center;
+  margin: 12px auto 26px auto;
+  box-sizing: border-box;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 27px */
 `;
 
 // 중앙 정렬을 위한 컨테이너
