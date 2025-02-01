@@ -4,15 +4,19 @@ import styled from "styled-components";
 import { useModalContext } from "../../../../components/Modal/context/ModalContext";
 import InputAddress from "../InputAddress";
 import { ReactComponent as IcList } from "../../../../assets/icList.svg";
+import { ReactComponent as closeModal } from  "../../../../assets/icCloseAddressModal.svg";
 
 const AddAddress = ({ onClose }:PropsWithChildren<{ onClose: () => void }>) => {
   const { clearModals } = useModalContext();
+
+  const onCloseModal = () => {
+    onClose();
+    clearModals();
+  }
   return ReactDOM.createPortal(
-    <ModalOverlay onClick={clearModals}>
-      <ModalContent
-      onClick={(e:React.MouseEvent<HTMLDivElement>)=>
-        e.stopPropagation}
-      >
+    <ModalOverlay>
+      <ModalContent>
+        <CloseModal onClick={onCloseModal} />
         <TopContainer>
           <TitleBox>배송지 추가</TitleBox>
           <LineDiv />
@@ -65,6 +69,15 @@ const ModalContent = styled.div`
   border-radius: 6px;
   padding: 58px 65px;
   box-sizing: border-box;
+`
+
+const CloseModal = styled(closeModal)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  &:hover {
+    cursor: pointer;
+  }
 `
 
 const TopContainer = styled.div`
@@ -166,4 +179,7 @@ const AddBtn = styled.button`
   font-weight: 700;
   line-height: 18px; /* 128.571% */
   letter-spacing: -0.165px;
+  &:hover {
+    cursor: pointer;
+  }
 `
