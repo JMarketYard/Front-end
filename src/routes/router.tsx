@@ -33,7 +33,12 @@ const router = createBrowserRouter([
       },
       {
         path: 'address',
-        element: <AddressSetPage />
+        element: (
+          <>
+          <AddressSetPage />
+          <ModalProvider />
+          </>
+        )
       },
       {
         path: 'set-open',
