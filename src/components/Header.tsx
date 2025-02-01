@@ -28,6 +28,7 @@ const Header = () => {
                     <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
                 </TopCenter>
                 <TopRight>
+                    {/* <IcNotice /> */}
                     <img src={icNotice} width={16} />
                     <img src={icHeart} width={16} />
                 </TopRight>
@@ -82,6 +83,12 @@ const TopRight = styled.div`
     ${media.small`
         column-gap: 19px
     `}
+`
+
+const IcNotice = styled(icNotice)`
+    width: 15px;
+    height: 16px;
+    fill: #000000;
 `
 
 const SearchBox = styled.div`
