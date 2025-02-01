@@ -2,9 +2,16 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import Address from "./components/Address";
 import { useState } from "react";
+import { useModalContext } from "../../components/Modal/context/ModalContext";
+import AddAddress from "./components/modal/AddAddress";
 
 const AddressSetPage = () => {
   const [isSelect, setIsSelect] = useState(false);
+  const { openModal } = useModalContext();
+
+  const handleModal = () => {
+    openModal(({ onClose }) => <AddAddress onClose={onClose} />);
+  }
 
   return (
     <Wrapper>
@@ -27,7 +34,7 @@ const AddressSetPage = () => {
       <AddressList>
         <Address isSelect={isSelect} />
       </AddressList>
-      <Button>새 배송지 추가하기</Button>
+      <Button onClick={handleModal}>새 배송지 추가하기</Button>
     </Wrapper>
   );
 }
