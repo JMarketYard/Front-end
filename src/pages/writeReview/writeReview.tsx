@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
+import StarRating from "../../components/StarRating";
 
 const WriteReview = () => {
   return (
@@ -7,7 +8,8 @@ const WriteReview = () => {
     <Wrapper>
       <BigTitle>후기 남기기</BigTitle>
       <ScoreBox>
-        평점 매기기
+        <TextBox>평점 매기기:</TextBox>
+        <StarRating />
       </ScoreBox>
       <Textarea placeholder="후기는 1~100자로 입력해주세요." />
       <Button>작성 완료</Button>
@@ -26,6 +28,12 @@ const Wrapper = styled.form`
 `
 
 const ScoreBox = styled.div`
+  display: flex;
+  align-items: center;
+  padding-top: 73px;
+  margin-bottom: 65px;
+`
+const TextBox = styled.div`
   color: #8F8E94;
   text-align: center;
   font-family: Pretendard;
@@ -33,8 +41,7 @@ const ScoreBox = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-  padding-top: 73px;
-  margin-bottom: 65px;
+  margin-right: 28px;
 `
 
 const Textarea = styled.textarea`
