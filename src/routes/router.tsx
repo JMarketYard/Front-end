@@ -41,7 +41,6 @@ const router = createBrowserRouter([
           </div>
         ),
       },
-
       {
         path: 'set-open',
         element: <SetOpenInfoPage />,

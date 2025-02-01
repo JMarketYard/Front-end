@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-//import { useParams } from 'react-router-dom';
-//import { useUser } from '../../components/RaffleDetail/context/userContext';
+
 import styled from 'styled-components';
 import Item from './components/Item';
 import Market from './components/Market';
@@ -12,10 +11,10 @@ type Winner = 'y' | 'n' | 'idk';
 type Result = 'success' | 'less' | 'failed';
 
 const RaffleDetailPage = () => {
-  const [role, setRole] = useState<Role>('np'); // 기본값: 미참여자
-  const [winner, setWinner] = useState<Winner>('idk');
+  const [role, setRole] = useState<Role>('h'); // 기본값: 미참여자
+  const [winner, setWinner] = useState<Winner>('n');
   const [result, setResult] = useState<Result>('success');
-  const raffle = raffleData[1]; // 예제 데이터 사용
+  const raffle = raffleData[0]; // 0(ended) 1(ongoing) 2(unopen)
   const [participant, setParticipant] = useState(raffle.participant);
   const countParticipant = () => {
     setParticipant((prev) => prev + 1);

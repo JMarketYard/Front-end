@@ -60,11 +60,11 @@ const Item = ({
   };
 
   const openModal = () => {
-    setIsModalOpen(true); // 모달을 열기
+    setIsModalOpen(true); // 모달 열기
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // 모달을 닫기
+    setIsModalOpen(false); // 모달 닫기
   };
 
   const handleRoleChange = () => {
@@ -116,9 +116,12 @@ const Item = ({
           </DetailContainer>
 
           <ButtonContainer>
+            {/*래플 오픈 전*/}
+            {raffleStatus === 'unopen' && <GrayButton>응모 오픈 전</GrayButton>}
+
             {/*래플 응모 중*/}
             {raffleStatus === 'ongoing' && (
-              <ButtonContainer>
+              <>
                 {role === 'h' && <GrayButton>래플 결과</GrayButton>}
                 {role === 'np' && (
                   <PurpleButton onClick={openModal}>응모하기</PurpleButton>
@@ -126,22 +129,22 @@ const Item = ({
                 {role === 'p' && (
                   <LightPurpleButton>응모 완료</LightPurpleButton>
                 )}
-              </ButtonContainer>
+              </>
             )}
 
             {/*래플 응모 마감*/}
             {raffleStatus === 'ended' && (
-              <ButtonContainer>
+              <>
                 {role === 'h' && (
                   <PinkButton onClick={() => navigate('/result')}>
-                    래플 종료
+                    래플 결과
                   </PinkButton>
                 )}
                 {result == 'success' && (
-                  <ButtonContainer>
+                  <>
                     {role === 'np' && <GrayButton>래플 종료</GrayButton>}
                     {role === 'p' && (
-                      <ButtonContainer>
+                      <>
                         {winner === 'y' && (
                           <PurpleButton onClick={() => navigate('/review')}>
                             후기남기기
@@ -149,31 +152,26 @@ const Item = ({
                         )}
                         {winner === 'n' && <GrayButton>래플 종료</GrayButton>}
                         {winner === 'idk' && <PurpleButton>DRAW</PurpleButton>}
-                      </ButtonContainer>
+                      </>
                     )}
-                  </ButtonContainer>
+                  </>
                 )}
                 {result == 'less' && (
-                  <ButtonContainer>
-                    {role === 'np' && <GrayButton>래플 종료</GrayButton>}
-                    {role === 'p' && (
-                      <LightPurpleButton>응모 완료</LightPurpleButton>
+                  <>
+                    {(role === 'np' || role === 'p') && (
+                      <GrayButton>래플 종료</GrayButton>
                     )}
-                  </ButtonContainer>
+                  </>
                 )}
-                {result == 'failed' && (
-                  <ButtonContainer>
-                    <GrayButton>래플 종료</GrayButton>
-                  </ButtonContainer>
-                )}
-              </ButtonContainer>
+                {result == 'failed' && <GrayButton>래플 종료</GrayButton>}
+              </>
             )}
 
             <LikeBox onClick={toggleLike}>
               <img
                 src={isLiked ? icLike : icUnlike}
                 alt={isLiked ? 'Liked' : 'Unliked'}
-              />{' '}
+              />
               찜하기
             </LikeBox>
           </ButtonContainer>
