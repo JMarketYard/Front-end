@@ -1,58 +1,151 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import BigTitle from '../../../components/BigTitle';
-import { raffleData } from '../../../mocks/RaffleData';
 import icTicket from '../../../assets/raffleDetail/icon-ticket.svg';
 import icLike from '../../../assets/raffleDetail/icon-like.svg';
+import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
+import ImgSlider from './ImgSlider';
 
 interface ItemProps {
   id: number;
-  image: string;
+  marketId: string;
+  images: string[];
   name: string;
   ticket: number;
   category: string;
   openTime: string;
   closeTime: string;
   description: string;
+  participant: number;
+  atLeastParticipant: number;
+  view: number;
+  like: number;
+  role: 'p' | 'np' | 'h';
+  raffleStatus: string;
+  setRole: (role: 'p' | 'np' | 'h') => void;
+  winner: 'y' | 'n' | 'idk';
+  result: 'success' | 'less' | 'failed';
 }
 
 const Item = ({
-  image,
+  images,
   name,
   ticket,
   category,
   openTime,
   closeTime,
   description,
+  view,
+  like: initialLike, // 초기 like 값
+  role,
+  raffleStatus,
+  setRole,
+  winner,
+  result,
 }: ItemProps) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(initialLike);
+
+  const navigate = useNavigate();
+  const toggleLike = () => {
+    setIsLiked((prevState) => !prevState);
+    setLikeCount((prevLike) => (isLiked ? prevLike - 1 : prevLike + 1));
+  };
   return (
     <Wrapper>
       <BigTitle>{name}</BigTitle>
       <TopLayout>
-        <ImageContainer src={image} alt={name} />
+        <ImgSlider images={images} name={name}>
+          {raffleStatus === 'ended' && (
+            <RaffleClosingBox>응모 마감</RaffleClosingBox>
+          )}
+        </ImgSlider>
         <DetailLayout>
           <ItemTitleBox>{name}</ItemTitleBox>
-          <ItemLookingBox>조회 16 · 찜 7</ItemLookingBox>
+          <ViewBox>
+            조회 {view} · 찜 {likeCount}
+          </ViewBox>
           <TicketBox>
             <img src={icTicket} alt="ticket" />
             {ticket}
           </TicketBox>
           <DetailContainer>
-            <TitleSpan>카테고리</TitleSpan>
+            <TitleBox>카테고리</TitleBox>
             <DescriptionBox>{category}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
-            <TitleSpan>응모오픈</TitleSpan>
+            <TitleBox>응모오픈</TitleBox>
             <DescriptionBox>{openTime}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
-            <TitleSpan>응모마감</TitleSpan>
+            <TitleBox>응모마감</TitleBox>
             <DescriptionBox>{closeTime}</DescriptionBox>
+            {raffleStatus === 'ended' && <TextBox>응모마감</TextBox>}
           </DetailContainer>
+
           <ButtonContainer>
-            <DoButton>응모하기</DoButton>
-            <LikeBox>
-              <img src={icLike} alt="like" /> 찜하기
+            {/*래플 응모 중*/}
+            {raffleStatus === 'ongoing' && (
+              <ButtonContainer>
+                {role === 'h' && <GrayButton>래플 결과</GrayButton>}
+                {role === 'np' && (
+                  <PurpleButton onClick={() => setRole('p')}>
+                    응모하기
+                  </PurpleButton>
+                )}
+                {role === 'p' && (
+                  <LightPurpleButton>응모 완료</LightPurpleButton>
+                )}
+              </ButtonContainer>
+            )}
+
+            {/*래플 응모 마감*/}
+            {raffleStatus === 'ended' && (
+              <ButtonContainer>
+                {role === 'h' && (
+                  <PinkButton onClick={() => navigate('/result')}>
+                    래플 종료
+                  </PinkButton>
+                )}
+                {result == 'success' && (
+                  <ButtonContainer>
+                    {role === 'np' && <GrayButton>래플 종료</GrayButton>}
+                    {role === 'p' && (
+                      <ButtonContainer>
+                        {winner === 'y' && (
+                          <PurpleButton onClick={() => navigate('/review')}>
+                            후기남기기
+                          </PurpleButton>
+                        )}
+                        {winner === 'n' && <GrayButton>래플 종료</GrayButton>}
+                        {winner === 'idk' && <PurpleButton>DRAW</PurpleButton>}
+                      </ButtonContainer>
+                    )}
+                  </ButtonContainer>
+                )}
+                {result == 'less' && (
+                  <ButtonContainer>
+                    {role === 'np' && <GrayButton>래플 종료</GrayButton>}
+                    {role === 'p' && (
+                      <LightPurpleButton>응모 완료</LightPurpleButton>
+                    )}
+                  </ButtonContainer>
+                )}
+                {result == 'failed' && (
+                  <ButtonContainer>
+                    <GrayButton>래플 종료</GrayButton>
+                  </ButtonContainer>
+                )}
+              </ButtonContainer>
+            )}
+
+            <LikeBox onClick={toggleLike}>
+              <img
+                src={isLiked ? icLike : icUnlike}
+                alt={isLiked ? 'Liked' : 'Unliked'}
+              />{' '}
+              찜하기
             </LikeBox>
           </ButtonContainer>
           <WarningBox>
@@ -61,6 +154,10 @@ const Item = ({
           </WarningBox>
         </DetailLayout>
       </TopLayout>
+      <BottomLayout>
+        <TitleBox2>상품 설명</TitleBox2>
+        <DescriptionBox2>{description}</DescriptionBox2>
+      </BottomLayout>
     </Wrapper>
   );
 };
@@ -78,18 +175,35 @@ const TopLayout = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  padding: 50px 109px 30px 67px; //최상위 wrapper 기준으으로 다시 설정해야 하나?
+  padding: 50px 109px 51px 67px;
   box-sizing: border-box;
   gap: 99.42px;
 `;
 
-const ImageContainer = styled.img.attrs((props) => ({
-  src: props.src || '', // 기본 이미지가 없으면 빈 값
-}))`
-  width: 390.582px;
-  height: 390.582px;
-  border-radius: 5px;
-  background: #f5f5f5;
+const RaffleClosingBox = styled.div`
+  width: 143.316px;
+  height: 47.272px;
+  transform: rotate(0.421deg);
+
+  flex-shrink: 0;
+  border-radius: 4px;
+  border: 2px solid #c908ff;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
 `;
 
 const DetailLayout = styled.div`
@@ -113,9 +227,9 @@ const ItemTitleBox = styled.p`
   font-weight: 700;
   line-height: 150%; /* 33px */
 `;
-const ItemLookingBox = styled.div`
+const ViewBox = styled.div`
   display: flex;
-  width: 103px;
+  width: 110px;
   height: 18px;
   flex-direction: column;
   justify-content: center;
@@ -148,13 +262,16 @@ const TicketBox = styled.div`
 `;
 const DetailContainer = styled.div`
   display: flex;
+  position: relative;
   flex-direction: row;
+  align-items: center;
+
   gap: 50px;
   padding-bottom: 26px;
 `;
-const TitleSpan = styled.div`
+const TitleBox = styled.div`
   display: inline-block;
-  min-width: 64px;
+  min-width: 59px;
 
   color: #8f8e94;
   font-family: Pretendard;
@@ -179,6 +296,28 @@ const DescriptionBox = styled.div`
   line-height: 150%; /* 30px */
 `;
 
+const TextBox = styled.div`
+  width: 78.929px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 42px;
+  background: rgba(201, 8, 255, 0.2);
+
+  position: absolute;
+  left: 362px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px; /* 150% */
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -186,7 +325,7 @@ const ButtonContainer = styled.div`
   padding-bottom: 19px;
 `;
 
-const DoButton = styled.button`
+const PurpleButton = styled.button`
   width: 344px;
   height: 48px;
   flex-shrink: 0;
@@ -205,12 +344,68 @@ const DoButton = styled.button`
   cursor: pointer;
 `;
 
+const LightPurpleButton = styled.button`
+  width: 344px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  border: 1px solid #c908ff;
+  background: rgba(201, 8, 255, 0.2);
+
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 90% */
+  letter-spacing: -0.165px;
+`;
+
+const GrayButton = styled.button`
+  width: 344px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  border: 1px solid #8f8e94;
+  background: #e4e4e4;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 90% */
+  letter-spacing: -0.165px;
+`;
+
+const PinkButton = styled.button`
+  width: 344px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  border: 1px solid #ff008c;
+  background: #ff008c;
+
+  color: #fff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 90% */
+  letter-spacing: -0.165px;
+
+  cursor: pointer;
+`;
+
 const LikeBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
   width: 45px;
 
   color: #8f8e94;
@@ -229,7 +424,7 @@ const LikeBox = styled.div`
   cursor: pointer;
 `;
 
-const WarningBox = styled.p`
+const WarningBox = styled.div`
   width: 343px;
   height: 54px;
   flex-shrink: 0;
@@ -241,4 +436,37 @@ const WarningBox = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: 150%; /* 18px */
+`;
+
+const BottomLayout = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 0 109px 30px 67px; //최상위 wrapper 기준으으로 다시 설정해야 하나?
+  box-sizing: border-box;
+  gap: 45px;
+`;
+
+const TitleBox2 = styled.div`
+  display: inline-block;
+  min-width: 94px;
+  color: #8f8e94;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 27px */
+`;
+
+const DescriptionBox2 = styled.div`
+  width: 749px;
+  height: 132px;
+
+  color: #000;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 30px */
 `;
