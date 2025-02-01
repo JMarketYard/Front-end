@@ -6,6 +6,7 @@ import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
 import RaffleUploadPage from '../pages/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
+import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: 'review',
         element: <WriteReview />
+      },
+      {
+        path: 'set-open',
+        element: <SetOpenInfoPage />
       }
     ],
   },
