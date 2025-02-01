@@ -6,6 +6,7 @@ import icTicket from '../../../assets/raffleDetail/icon-ticket.svg';
 import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
+import DrawModal from '../../../components/Modal/modals/DrawModal';
 
 interface ItemProps {
   id: number;
@@ -26,6 +27,7 @@ interface ItemProps {
   setRole: (role: 'p' | 'np' | 'h') => void;
   winner: 'y' | 'n' | 'idk';
   result: 'success' | 'less' | 'failed';
+  countParticipant: () => void;
 }
 
 const Item = ({
@@ -36,6 +38,7 @@ const Item = ({
   openTime,
   closeTime,
   description,
+  participant,
   view,
   like: initialLike, // 초기 like 값
   role,
@@ -43,17 +46,45 @@ const Item = ({
   setRole,
   winner,
   result,
+  countParticipant,
 }: ItemProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(initialLike);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
   const toggleLike = () => {
     setIsLiked((prevState) => !prevState);
     setLikeCount((prevLike) => (isLiked ? prevLike - 1 : prevLike + 1));
   };
+
+  const openModal = () => {
+    setIsModalOpen(true); // 모달을 열기
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // 모달을 닫기
+  };
+
+  const handleRoleChange = () => {
+    setRole('p'); // role을 'p'로 변경
+    setIsModalOpen(false); // 모달을 닫기
+  };
+
   return (
     <Wrapper>
+      {isModalOpen && (
+        <DrawModal
+          onClose={closeModal}
+          handleRoleChange={handleRoleChange}
+          countParticipant={countParticipant}
+          name={name}
+          ticket={ticket}
+          images={images}
+        />
+      )}
+
       <BigTitle>{name}</BigTitle>
       <TopLayout>
         <ImgSlider images={images} name={name}>
@@ -90,9 +121,7 @@ const Item = ({
               <ButtonContainer>
                 {role === 'h' && <GrayButton>래플 결과</GrayButton>}
                 {role === 'np' && (
-                  <PurpleButton onClick={() => setRole('p')}>
-                    응모하기
-                  </PurpleButton>
+                  <PurpleButton onClick={openModal}>응모하기</PurpleButton>
                 )}
                 {role === 'p' && (
                   <LightPurpleButton>응모 완료</LightPurpleButton>

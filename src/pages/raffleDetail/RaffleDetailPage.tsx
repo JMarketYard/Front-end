@@ -12,10 +12,14 @@ type Winner = 'y' | 'n' | 'idk';
 type Result = 'success' | 'less' | 'failed';
 
 const RaffleDetailPage = () => {
-  const [role, setRole] = useState<Role>('p'); // 기본값: 미참여자
-  const [winner, setWinner] = useState<Winner>('y');
-  const [result, setResult] = useState<Result>('failed');
-  const raffle = raffleData[0]; // 예제 데이터 사용
+  const [role, setRole] = useState<Role>('np'); // 기본값: 미참여자
+  const [winner, setWinner] = useState<Winner>('idk');
+  const [result, setResult] = useState<Result>('success');
+  const raffle = raffleData[1]; // 예제 데이터 사용
+  const [participant, setParticipant] = useState(raffle.participant);
+  const countParticipant = () => {
+    setParticipant((prev) => prev + 1);
+  };
 
   return (
     <Wrapper>
@@ -25,10 +29,18 @@ const RaffleDetailPage = () => {
         setRole={setRole}
         winner={winner}
         result={result}
+        participant={participant}
+        countParticipant={countParticipant}
       />
       <MoreInfoLayout>
         <Market {...raffle} />
-        <Probability {...raffle} role={role} result={result} winner={winner} />
+        <Probability
+          {...raffle}
+          participant={participant}
+          role={role}
+          result={result}
+          winner={winner}
+        />
       </MoreInfoLayout>
     </Wrapper>
   );
