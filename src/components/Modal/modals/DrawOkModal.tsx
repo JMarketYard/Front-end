@@ -17,7 +17,7 @@ const DrawOkModal: React.FC<ModalProps> = ({ onClose }) => {
         </TicketBox>
         <Short>0월 0일 00시 메일로 결과가 전송됩니다.</Short>
         <Box />
-        <Button onClick={onClose}>응모하기</Button>
+        <Button onClick={onClose}>내가 응모한 게시물 보러가기기</Button>
       </Container>
     </Modal>
   );
