@@ -10,15 +10,13 @@ import UploadModal from "./components/UploadModal";
 const RaffleUploadPage = () => {
     const { openModal } = useModalContext();
 
-    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
-        // 제출 일단 막아두기
+    const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
-        // 모달 연결
         openModal(({ onClose }) => <UploadModal onClose={onClose} />);
     };
 
     return (
-        <UploadForm onSubmit={handleSubmit}>
+        <UploadForm>
             <div>
                 <BigTitle>상품 정보</BigTitle>
                 <ItemInfoContainer>
@@ -68,12 +66,12 @@ const RaffleUploadPage = () => {
                         </div>
                         <div>
                             <TitleSpan>상태</TitleSpan>
-                            <ConditionBtn>미개봉</ConditionBtn>
-                            <ConditionBtn>새상품</ConditionBtn>
-                            <ConditionBtn>상태</ConditionBtn>
-                            <ConditionBtn>상</ConditionBtn>
-                            <ConditionBtn>중</ConditionBtn>
-                            <ConditionBtn>하</ConditionBtn>
+                            <ConditionBtn type="button">미개봉</ConditionBtn>
+                            <ConditionBtn type="button">새상품</ConditionBtn>
+                            <ConditionBtn type="button">상태</ConditionBtn>
+                            <ConditionBtn type="button">상</ConditionBtn>
+                            <ConditionBtn type="button">중</ConditionBtn>
+                            <ConditionBtn type="button">하</ConditionBtn>
                         </div>
                         <TextareaDiv>
                             <TitleSpan>설명</TitleSpan>
@@ -89,10 +87,10 @@ const RaffleUploadPage = () => {
                 <SetConditionContainer>
                     <SetConditionBox>
                         <TitleSpan2>응모 티켓 개수</TitleSpan2>
-                            <ConditionBtn>1개</ConditionBtn>
-                            <ConditionBtn>2개</ConditionBtn>
-                            <ConditionBtn>3개</ConditionBtn>
-                            <ConditionBtn>직접입력</ConditionBtn>
+                            <ConditionBtn type="button">1개</ConditionBtn>
+                            <ConditionBtn type="button">2개</ConditionBtn>
+                            <ConditionBtn type="button">3개</ConditionBtn>
+                            <ConditionBtn type="button">직접입력</ConditionBtn>
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
@@ -113,7 +111,7 @@ const RaffleUploadPage = () => {
                     </SetConditionBox>
                 </SetConditionContainer>
             </div>
-            <SubmitBtn type="submit" value={"업로드"} />
+            <SubmitBtn type="submit" value={"업로드"} onClick={handleSubmit} />
         </UploadForm>
     );
 };
