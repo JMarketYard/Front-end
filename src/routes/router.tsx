@@ -34,7 +34,15 @@ const router = createBrowserRouter([
         path: 'set-open',
         element: <SetOpenInfoPage />,
       },
-      { path: 'result', element: <ResultPage /> },
+      {
+        path: 'result',
+        element: (
+          <div>
+            <ResultPage />
+            <ModalProvider />
+          </div>
+        ),
+      },
     ],
   },
 ]);
