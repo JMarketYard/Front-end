@@ -4,6 +4,8 @@ import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
 import RaffleUploadPage from '../pages/RaffleUploadPage';
+import WriteReview from '../pages/writeReview/writeReview';
+import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
 
@@ -30,6 +32,32 @@ const router = createBrowserRouter([
       {
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
+      },
+      {
+        path: 'review',
+        element: <WriteReview />,
+      },
+      {
+        path: 'address',
+        element: (
+          <>
+            <AddressSetPage />
+            <ModalProvider />
+          </>
+        ),
+      },
+      {
+        path: 'review',
+        element: <WriteReview />,
+      },
+      {
+        path: 'address',
+        element: (
+          <>
+            <AddressSetPage />
+            <ModalProvider />
+          </>
+        ),
       },
       {
         path: 'set-open',
