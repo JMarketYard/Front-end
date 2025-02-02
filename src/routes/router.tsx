@@ -3,12 +3,16 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
+import HomePage from '../pages/homepage/homePage';
+import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
+
 import KakaoRedirect from '../pages/redirect/KakaoRedirect';
 import RaffleUploadPage from '../pages/raffleUpload/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
+import ResultPage from '../pages/hostResult/ResultPage';
 
 const router = createBrowserRouter([
   {
@@ -33,6 +37,17 @@ const router = createBrowserRouter([
       {
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
+
+      },
+      { path: 'homepage', element: <HomePage /> },
+      {
+        path: 'raffle-detail',
+        element: (
+          <div>
+            <RaffleDetailPage />
+            <ModalProvider />
+          </div>
+        ),
       },
       {
         path: 'kakao',
@@ -70,6 +85,16 @@ const router = createBrowserRouter([
         path: 'set-open',
         element: <SetOpenInfoPage />,
       },
+      {
+        path: 'result',
+        element: (
+          <div>
+            <ResultPage />
+            <ModalProvider />
+          </div>
+        ),
+      },
+
     ],
   },
 ]);
