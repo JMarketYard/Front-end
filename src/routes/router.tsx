@@ -4,6 +4,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
+
+import KakaoRedirect from '../pages/redirect/KakaoRedirect';
 import RaffleUploadPage from '../pages/raffleUpload/raffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
@@ -30,7 +32,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'raffle-upload',
-        element: <RaffleUploadPage />
+        element: <RaffleUploadPage />,
+      },
+      {
+        path: 'kakao',
+        element: <KakaoRedirect />,
       },
       {
         path: 'review',
