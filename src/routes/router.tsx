@@ -3,9 +3,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
-
 import KakaoRedirect from '../pages/redirect/KakaoRedirect';
-import RaffleUploadPage from '../pages/raffleUpload/raffleUploadPage';
+import RaffleUploadPage from '../pages/raffleUpload/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
@@ -51,6 +50,7 @@ const router = createBrowserRouter([
             <ModalProvider />
           </>
         ),
+
       },
       {
         path: 'review',
@@ -64,6 +64,7 @@ const router = createBrowserRouter([
             <ModalProvider />
           </>
         ),
+
       },
       {
         path: 'set-open',
