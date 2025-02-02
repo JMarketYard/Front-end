@@ -6,6 +6,8 @@ import ModalProvider from '../components/Modal/context/ModalProvider';
 import RaffleUploadPage from '../pages/RaffleUploadPage';
 import HomePage from '../pages/homepage/homePage';
 import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
+import WriteReview from '../pages/writeReview/writeReview';
+import AddressSetPage from '../pages/address/addressSetPage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
 
 const router = createBrowserRouter([
@@ -39,6 +41,19 @@ const router = createBrowserRouter([
             <RaffleDetailPage />
             <ModalProvider />
           </div>
+        ),
+      },
+      {
+        path: 'review',
+        element: <WriteReview />,
+      },
+      {
+        path: 'address',
+        element: (
+          <>
+            <AddressSetPage />
+            <ModalProvider />
+          </>
         ),
       },
       {

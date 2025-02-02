@@ -7,7 +7,7 @@ const RootLayout = () => {
   return (
     <Wrapper>
       <Header />
-      <HeaderIconMenu />
+      {/* <HeaderIconMenu /> */}
       <Outlet />
     </Wrapper>
   );
