@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import imgLogo from '../assets/logo.png';
 import icHamburger from '../assets/searchBox/icon-hamburger.svg';
-import icNotice from '../assets/searchBox/icon-notice.svg';
+import { ReactComponent as IcNotice } from '../assets/searchBox/icon-notice.svg';
 import icSearch from '../assets/searchBox/icon-search.svg';
 import icHeart from '../assets/searchBox/icon-heart.svg';
 import { useState } from 'react';
@@ -29,7 +29,7 @@ const Header = () => {
                 </TopCenter>
                 <TopRight>
                     {/* <IcNotice /> */}
-                    <img src={icNotice} width={16} />
+                    <IcNotice width={16} height={16} fill={"#000000"} />
                     <img src={icHeart} width={16} />
                 </TopRight>
             </ContainerSmall>
@@ -83,12 +83,6 @@ const TopRight = styled.div`
     ${media.small`
         column-gap: 19px
     `}
-`
-
-const IcNotice = styled(icNotice)`
-    width: 15px;
-    height: 16px;
-    fill: #000000;
 `
 
 const SearchBox = styled.div`
