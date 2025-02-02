@@ -6,9 +6,14 @@ import imgArrow from "../../assets/imgSelectArrow.png";
 import React, { ReactElement } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
+import TicketModal from "./components/TicketModal";
 
 const RaffleUploadPage = () => {
     const { openModal } = useModalContext();
+
+    const handleTicketModal = () => {
+        openModal(({ onClose }) => <TicketModal onClose={onClose} />);
+    };
 
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -90,7 +95,10 @@ const RaffleUploadPage = () => {
                             <ConditionBtn type="button">1개</ConditionBtn>
                             <ConditionBtn type="button">2개</ConditionBtn>
                             <ConditionBtn type="button">3개</ConditionBtn>
-                            <ConditionBtn type="button">직접입력</ConditionBtn>
+                            <ConditionBtn
+                            type="button"
+                            onClick={handleTicketModal}
+                            >직접입력</ConditionBtn>
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
