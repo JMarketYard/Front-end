@@ -1,11 +1,11 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
 import RaffleUploadPage from '../pages/RaffleUploadPage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
+import ResultPage from '../pages/hostResult/ResultPage';
 
 const router = createBrowserRouter([
   {
@@ -26,14 +26,15 @@ const router = createBrowserRouter([
           </div>
         ),
       },
-        {
+      {
         path: 'raffle-upload',
-        element: <RaffleUploadPage />
+        element: <RaffleUploadPage />,
       },
       {
         path: 'set-open',
-        element: <SetOpenInfoPage />
-      }
+        element: <SetOpenInfoPage />,
+      },
+      { path: 'result', element: <ResultPage /> },
     ],
   },
 ]);
