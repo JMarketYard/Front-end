@@ -1,30 +1,46 @@
 import React from 'react';
 import Modal from '../Modal';
 import styled from 'styled-components';
-import ticket from '../../../assets/ticket.svg';
+import icTicket from '../../../assets/ticket.svg';
 import { useModalContext } from '../context/ModalContext';
 import DrawOkModal from './DrawOkModal';
 
 interface ModalProps {
   onClose: () => void;
+  handleRoleChange: () => void;
+  countParticipant: () => void;
+  images: string[];
+  name: string;
+  ticket: number;
 }
 
-const DrawModal: React.FC<ModalProps> = ({ onClose }) => {
+const DrawModal: React.FC<ModalProps> = ({
+  onClose,
+  handleRoleChange,
+  countParticipant,
+  images,
+  name,
+  ticket,
+}) => {
+  const itemImg = images[0];
+
   const { openModal } = useModalContext();
 
   const handleSubmit = () => {
     openModal(({ onClose }) => <DrawOkModal onClose={onClose} />);
+    handleRoleChange();
+    countParticipant();
   };
 
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Box />
-        <Title>로지텍 무소음 마우스</Title>
+        <Box src={itemImg} alt="상품 이미지" />
+        <Title>{name}</Title>
         <Short>해당 상품에 응모하시겠습니까?</Short>
         <TicketBox>
-          <Img src={ticket} />
-          <Ticket>3</Ticket>
+          <Img src={icTicket} />
+          <Ticket>{ticket}</Ticket>
         </TicketBox>
         <Button onClick={handleSubmit}>응모하기</Button>
         <Info>응모 후 취소할 수 없습니다.</Info>
@@ -90,7 +106,7 @@ const Title = styled.div`
   font-weight: 700;
 `;
 
-const Box = styled.div`
+const Box = styled.img`
   width: 190px;
   height: 190px;
   flex-shrink: 0;
