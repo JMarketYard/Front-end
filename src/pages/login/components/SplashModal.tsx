@@ -26,13 +26,17 @@ const SplashModal: React.FC<ModalProps> = ({ onClose }) => {
     };
   }, []);
 
+  const handleLogin = () => {
+    window.location.href = 'http://43.201.106.194:8080/login/oauth2/code/kakao';
+  };
+
   const Content = (
     <Contents>
       <Container>
         <Img src={ticket} />
         <Title>응모로 성사되는 즐거운 중고거래 장마당</Title>
         <Short>간편하게 가입하고 응모하러 가볼까요?</Short>
-        <LoginButtons>
+        <LoginButtons onClick={handleLogin}>
           <Icon
             icon="raphael:bubble"
             style={{
@@ -154,6 +158,16 @@ const LoginButtons = styled.button`
   background-color: #fbe44e;
   color: black;
   margin-bottom: 17px;
+  ${media.medium`
+    width: 344px;
+    height: 45px;
+    margin-bottom: 22px;
+  `}
+  ${media.small`
+    width: 325px;
+    height: 45px;
+    margin-bottom: 22px;
+  `}
 `;
 
 const Short = styled.div`
@@ -165,6 +179,14 @@ const Short = styled.div`
   font-weight: 600;
   line-height: 18px;
   margin-bottom: 95px;
+  ${media.medium`
+    margin-bottom: 316px;
+    font-size: 17px;
+  `}
+  ${media.small`
+    margin-bottom: 219px;
+    font-size: 15px;
+  `}
 `;
 
 const Title = styled.div`
@@ -176,8 +198,8 @@ const Title = styled.div`
   line-height: 18px;
   margin-bottom: 13px;
 
-  ${media.medium`
-    margin-top: 109.02px;
+  ${media.notLarge`
+    margin-top: 31px;
     font-size: 20px;
   `}
 `;

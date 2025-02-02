@@ -54,8 +54,8 @@ const ConsentModal: React.FC<ModalProps> = ({ onClose }) => {
 
   const Content = (
     <Contents>
-      {' '}
       <Container>
+        {/* <img src={logo}/> */}
         <Option>
           <Checkbox
             style={{
@@ -143,6 +143,9 @@ const Contents = styled.div`
     position: fixed; 
     top: 0;
     left: 0;
+    display: flex;
+  align-items: center;
+  justify-content: center;
   `}
 `;
 
