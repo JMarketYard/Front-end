@@ -9,9 +9,9 @@ interface StarRatingProps {
 }
 
 const BackgroundContainer = styled.div`
-  background-color: #f7f7f7;
-  width: 807.73px;
-  height: 251.63px;
+  background-color: transparent;
+  width: 206px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,14 +22,14 @@ const StarContainer = styled.div`
   gap: 4px; 
 `;
 
-const StyledStar = styled.div<{ filled: boolean }>`
+const StyledStar = styled.div<{ filled: string }>`
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   svg {
-    width: 94.96px; 
-    height: 99.25px;
+    width: 38px;
+    height: 40px;
     color: ${(props) => (props.filled ? "#facc15" : "#d1d5db")};
   }
 `;
@@ -63,7 +63,7 @@ const StarRating: React.FC<StarRatingProps> = ({
         {Array.from({ length: totalStars }, (_, index) => (
           <StyledStar
             key={index}
-            filled={index < rating}
+            filled={String(index < rating)}
             onClick={() => handleRating(index)}
           >
             <StarIcon fill={index < rating ? "#facc15" : "none"} stroke="#facc15" />
