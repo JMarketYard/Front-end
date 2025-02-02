@@ -208,6 +208,12 @@ const SmallIconDiv = styled.div`
     cursor: pointer;
 `
 
+const IcNotice = styled(icNotice)`
+    width: 18.65px;
+    height:
+    fill: #8F8E94;
+`
+
 const IconDiv = styled.div`
     display: flex;
     flex-direction: column;
