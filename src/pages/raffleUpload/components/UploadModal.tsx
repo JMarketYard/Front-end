@@ -1,19 +1,21 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
 }
 
 const UploadModal: React.FC<ModalProps> = ({ onClose }) => {
+  const navigate = useNavigate();
   return (
     <Modal onClose={onClose}>
       <Container>
         <Box />
         <Title>로지텍 무소음 마우스</Title>
         <Short>해당 래플을 업로드하시겠습니까?</Short>
-        <Button>업로드</Button>
+        <Button onClick={()=>navigate('/')}>업로드</Button>
       </Container>
     </Modal>
   );
