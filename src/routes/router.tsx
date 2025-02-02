@@ -6,7 +6,7 @@ import ModalProvider from '../components/Modal/context/ModalProvider';
 import HomePage from '../pages/homepage/homePage';
 import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
 import KakaoRedirect from '../pages/redirect/KakaoRedirect';
-import RaffleUploadPage from '../pages/raffleUpload/raffleUploadPage';
+import RaffleUploadPage from '../pages/raffleUpload/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
