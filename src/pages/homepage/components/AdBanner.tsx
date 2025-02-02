@@ -15,11 +15,18 @@ function AdBanner() {
     autoplaySpeed: 4000,
     centerMode: true,
     centerPadding: '20%',
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    speed: 2000,
+    autoplaySpeed: 5000,
+    centerMode: true,
+    centerPadding: '46px',
     cssEase: 'ease',
   };
 
   return (
-    <Wrapper className="slider-container">
+    <Wrapper>
       <Slider {...settings}>
         <div>
           <AdBox>1</AdBox>
