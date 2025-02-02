@@ -65,7 +65,7 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                     <img src={icMyPage} width={22} />
                     <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
                 </IconDiv>
-                <IconDiv>
+                <IconDiv onClick={()=>navigate('/change')}>
                     <Img src={imgTicket} height={18} />
                     <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
                 </IconDiv>
