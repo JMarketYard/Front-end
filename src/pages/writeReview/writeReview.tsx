@@ -55,6 +55,7 @@ const Textarea = styled.textarea`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  resize: none;
 `
 
 const Button = styled.button`
