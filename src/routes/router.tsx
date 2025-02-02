@@ -3,9 +3,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
-import RaffleUploadPage from '../pages/RaffleUploadPage';
 import HomePage from '../pages/homepage/homePage';
 import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
+import KakaoRedirect from '../pages/redirect/KakaoRedirect';
+import RaffleUploadPage from '../pages/raffleUpload/raffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             <ModalProvider />
           </div>
         ),
+      },
+      {
+        path: 'kakao',
+        element: <KakaoRedirect />,
       },
       {
         path: 'review',
