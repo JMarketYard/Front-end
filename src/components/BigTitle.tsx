@@ -1,6 +1,7 @@
+import { ReactNode } from "react";
 import styled from "styled-components";
 
-const BigTitle = ({children}:{children:string}) => {
+const BigTitle = ({children}:{children:ReactNode}) => {
     return (
         <BigTitleBox>
             <TitleIcon />
@@ -23,6 +24,9 @@ const BigTitleBox = styled.div`
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+    padding-bottom: 24px;
+    box-sizing: border-box;
+    position: relative;
 `
 
 const TitleIcon = styled.span`
