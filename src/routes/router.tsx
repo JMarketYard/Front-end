@@ -11,6 +11,7 @@ import RaffleUploadPage from '../pages/raffleUpload/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
+import ResultPage from '../pages/hostResult/ResultPage';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
       {
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
+
       },
       { path: 'homepage', element: <HomePage /> },
       {
@@ -66,6 +68,16 @@ const router = createBrowserRouter([
         path: 'set-open',
         element: <SetOpenInfoPage />,
       },
+      {
+        path: 'result',
+        element: (
+          <div>
+            <ResultPage />
+            <ModalProvider />
+          </div>
+        ),
+      },
+
     ],
   },
 ]);
