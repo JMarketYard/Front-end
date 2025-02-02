@@ -1,13 +1,17 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
-import RaffleUploadPage from '../pages/RaffleUploadPage';
+import HomePage from '../pages/homepage/homePage';
+import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
+
+import KakaoRedirect from '../pages/redirect/KakaoRedirect';
+import RaffleUploadPage from '../pages/raffleUpload/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
+import ResultPage from '../pages/hostResult/ResultPage';
 
 const router = createBrowserRouter([
   {
@@ -30,25 +34,50 @@ const router = createBrowserRouter([
       },
       {
         path: 'raffle-upload',
-        element: <RaffleUploadPage />
+        element: <RaffleUploadPage />,
+
+      },
+      { path: 'homepage', element: <HomePage /> },
+      {
+        path: 'raffle-detail',
+        element: (
+          <div>
+            <RaffleDetailPage />
+            <ModalProvider />
+          </div>
+        ),
+      },
+      {
+        path: 'kakao',
+        element: <KakaoRedirect />,
       },
       {
         path: 'review',
-        element: <WriteReview />
+        element: <WriteReview />,
       },
       {
         path: 'address',
         element: (
           <>
-          <AddressSetPage />
-          <ModalProvider />
+            <AddressSetPage />
+            <ModalProvider />
           </>
-        )
+        ),
       },
       {
         path: 'set-open',
-        element: <SetOpenInfoPage />
-      }
+        element: <SetOpenInfoPage />,
+      },
+      {
+        path: 'result',
+        element: (
+          <div>
+            <ResultPage />
+            <ModalProvider />
+          </div>
+        ),
+      },
+
     ],
   },
 ]);
