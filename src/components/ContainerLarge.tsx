@@ -26,56 +26,60 @@ const ContainerLarge = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     openModal(({ onClose }) => <SplashModal onClose={onClose} />);
   };
 
-  return (
-    <Wrapper>
-      <TopContainer>
-        <LoginBtn onClick={handleOpenModal} state={String(isLoggedIn)}>
-          {isLoggedIn ? '로그아웃' : '로그인'}
-        </LoginBtn>
-        <LineDiv height={'27px'} margin={'0 32px'} />
-        <SmallIconDiv>
-          <img src={icNotice} width={18.65} />
-          <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
-        </SmallIconDiv>
-        <LineDiv height={'27px'} margin={'0 32px'} />
-        <SmallIconDiv>
-          <img src={icSetting} width={22} />
-          <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
-        </SmallIconDiv>
-      </TopContainer>
-      <SearchBoxContainer>
-        <LogoImg src={imgLogo} onClick={() => navigate('/')} />
-        <CategoryContainer>
-          <IconHamburgerDiv onClick={() => setIsCatClicked(!isCatClicked)}>
-            <img src={icHamburger} width={22} />
-            <IconTextDiv fontSize={'10px'}>카테고리</IconTextDiv>
-          </IconHamburgerDiv>
-          <CategoryMenu clicked={isCatClicked} />
-        </CategoryContainer>
-        <SearchBoxDiv>
-          <TicketImg src={ticket} width={88} />
-          <SearchInput type="text" />
-          <SearchIcon src={icSearch} />
-        </SearchBoxDiv>
-        <IconDiv>
-          <img src={icHeart} width={22} />
-          <IconTextDiv fontSize={'10px'}>관심</IconTextDiv>
-        </IconDiv>
-        <IconDiv>
-          <img src={icMyPage} width={22} />
-          <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
-        </IconDiv>
-        <IconDiv>
-          <Img src={imgTicket} height={18} />
-          <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
-        </IconDiv>
-        <UploadBtn onClick={() => navigate('/raffle-upload')}>
-          <img src={icUpload} width={17} />
-          래플 업로드
-        </UploadBtn>
-      </SearchBoxContainer>
-    </Wrapper>
-  );
+    const handleOpenModal = () => {
+        openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+    };
+    
+    return (
+        <Wrapper>
+            <TopContainer>
+                <LoginBtn onClick={handleOpenModal} state={String(isLoggedIn)}>
+                    {isLoggedIn ? '로그아웃' : '로그인'}
+                </LoginBtn>
+                <LineDiv height={'27px'} margin={'0 32px'} />
+                <SmallIconDiv>
+                    <img src={icNotice} width={18.65} />
+                    <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
+                </SmallIconDiv>
+                <LineDiv height={'27px'} margin={'0 32px'} />
+                <SmallIconDiv>
+                    <img src={icSetting} width={22} />
+                    <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
+                </SmallIconDiv>
+            </TopContainer>
+            <SearchBoxContainer>
+                <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
+                <CategoryContainer>
+                    <IconHamburgerDiv onClick={()=>setIsCatClicked(!isCatClicked)}>
+                        <img src={icHamburger} width={22} />
+                        <IconTextDiv fontSize={'10px'}>카테고리</IconTextDiv>
+                    </IconHamburgerDiv>
+                    <CategoryMenu clicked={isCatClicked} />
+                </CategoryContainer>
+                <SearchBoxDiv>
+                    <TicketImg src={ticket} width={88} />
+                    <SearchInput type="text" />
+                    <SearchIcon src={icSearch} />
+                </SearchBoxDiv>
+                <IconDiv>
+                    <img src={icHeart} width={22} />
+                    <IconTextDiv fontSize={'10px'}>관심</IconTextDiv>
+                </IconDiv>
+                <IconDiv>
+                    <img src={icMyPage} width={22} />
+                    <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
+                </IconDiv>
+                <IconDiv onClick={()=>navigate('/change')}>
+                    <Img src={imgTicket} height={18} />
+                    <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
+                </IconDiv>
+                <UploadBtn onClick={()=>navigate('/raffle-upload')}>
+                    <img src={icUpload} width={17} />
+                    래플 업로드
+                </UploadBtn>
+            </SearchBoxContainer>
+        </Wrapper>
+    );
 };
 
 export default ContainerLarge;
@@ -210,6 +214,12 @@ const SmallIconDiv = styled.div`
   height: 65px;
   cursor: pointer;
 `;
+
+const IcNotice = styled(icNotice)`
+    width: 18.65px;
+    height:
+    fill: #8F8E94;
+`
 
 const IconDiv = styled.div`
   display: flex;

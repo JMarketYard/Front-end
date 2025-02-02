@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import vector from '../../../assets/Vector.png';
 
@@ -14,7 +14,7 @@ const TicketModal: React.FC<ModalProps> = ({ onClose }) => {
         <Img src={vector} />
         <Title>티켓 개수 직접 입력하기</Title>
         <Input placeholder="개" />
-        <Button>설정하기</Button>
+        <Button onClick={onClose}>설정하기</Button>
       </Container>
     </Modal>
   );
