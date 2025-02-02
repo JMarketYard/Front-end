@@ -3,7 +3,8 @@ import media from "../styles/media";
 import imgLogo from '../assets/logo.png';
 import icHamburger from '../assets/searchBox/icon-hamburger.svg';
 import ticket from '../assets/ticketLogo.png';
-import icNotice from '../assets/searchBox/icon-notice.svg';
+import { ReactComponent as IcNotice } from '../assets/searchBox/icon-notice.svg';
+// import icNotice from '../assets/searchBox/icon-notice.svg';
 import icSetting from '../assets/searchBox/icon-setting.svg';
 import icSearch from '../assets/searchBox/icon-search.svg';
 import icHeart from '../assets/searchBox/icon-heart.svg';
@@ -34,7 +35,7 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} />
                 <SmallIconDiv>
-                    <img src={icNotice} width={18.65} />
+                    <IcNotice width={18.65} height={21.32} fill={"#8F8E94"} />
                     <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
                 </SmallIconDiv>
                 <LineDiv height={'27px'} margin={'0 32px'} />
@@ -206,12 +207,6 @@ const SmallIconDiv = styled.div`
     justify-content: space-evenly;
     height: 65px;
     cursor: pointer;
-`
-
-const IcNotice = styled(icNotice)`
-    width: 18.65px;
-    height:
-    fill: #8F8E94;
 `
 
 const IconDiv = styled.div`
