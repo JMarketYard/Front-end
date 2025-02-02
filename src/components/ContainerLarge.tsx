@@ -11,7 +11,7 @@ import icMyPage from '../assets/searchBox/icon-mypage.svg';
 import icUpload from '../assets/searchBox/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import CategoryMenu from './CategoryMenu';
 import { useModalContext } from './Modal/context/ModalContext';
 import SplashModal from '../pages/login/components/SplashModal';
@@ -29,13 +29,18 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
     const { openModal } = useModalContext();
     const [isSearchClicked, setIsSearchClicked] = useState<boolean>(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const [searchText, setSearchText] = useState<string>('');
 
     const handleClickOutside = (e:MouseEvent) => {
         const currentSearchRef = searchRef.current;
         if (currentSearchRef && !currentSearchRef.contains(e.target as Node)) {
             setIsSearchClicked(false);
         }
-    }
+    };
+
+    const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
 
     const handleOpenModal = () => {
         openModal(({ onClose }) => <SplashModal onClose={onClose} />);
@@ -79,7 +84,10 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                     <TicketImg src={ticket} width={88} />
                     <SearchInput
                     type="text"
-                    onClick={()=>setIsSearchClicked(true)} />
+                    onClick={()=>setIsSearchClicked(true)}
+                    value={searchText}
+                    onChange={handleSearchInput}
+                    />
                     <SearchIcon src={icSearch} />
                     <KeywordContainer
                     ref={searchRef}
