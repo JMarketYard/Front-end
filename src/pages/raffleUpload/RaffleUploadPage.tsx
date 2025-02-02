@@ -1,12 +1,24 @@
 import styled from "styled-components";
-import BigTitle from "../components/BigTitle";
-import imgUpload from "../assets/imgUpload.svg";
-import icArrow from "../assets/icSelectArrow.svg";
-import imgArrow from "../assets/imgSelectArrow.png";
+import BigTitle from "../../components/BigTitle";
+import imgUpload from "../../assets/imgUpload.svg";
+import icArrow from "../../assets/icSelectArrow.svg";
+import imgArrow from "../../assets/imgSelectArrow.png";
+import React, { ReactElement } from "react";
+import { useModalContext } from "../../components/Modal/context/ModalContext";
+import UploadModal from "./components/UploadModal";
 
 const RaffleUploadPage = () => {
+    const { openModal } = useModalContext();
+
+    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+        // 제출 일단 막아두기
+        e.preventDefault();
+        // 모달 연결
+        openModal(({ onClose }) => <UploadModal onClose={onClose} />);
+    };
+
     return (
-        <UploadForm>
+        <UploadForm onSubmit={handleSubmit}>
             <div>
                 <BigTitle>상품 정보</BigTitle>
                 <ItemInfoContainer>
