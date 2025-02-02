@@ -20,7 +20,7 @@ const HomePage = () => {
         <LookAroundContainer>
           <LookAroundBox>래플 둘러보기</LookAroundBox>
           <MoreListBox onClick={() => navigate('/')}>
-            마감임박 상품 더보기
+            래플 전체보기
             <img src={moreList} alt="moreList" />
           </MoreListBox>
         </LookAroundContainer>
