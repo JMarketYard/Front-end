@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import imgUpload from "../../assets/imgUpload.svg";
-import icArrow from "../../assets/icSelectArrow.svg";
 import imgArrow from "../../assets/imgSelectArrow.png";
 import React, { ReactElement } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
@@ -101,17 +100,22 @@ const RaffleUploadPage = () => {
                             >직접입력</ConditionBtn>
                     </SetConditionBox>
                     <SetConditionBox>
+                        <TitleSpan2>장마당 케어</TitleSpan2>
+                        <ConditionBtn type="button">사용</ConditionBtn>
+                        <ConditionBtn type="button">미사용</ConditionBtn>
+                    </SetConditionBox>
+                    <SetConditionBox>
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
                         <InputBox type="text" />
                         
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>시작 일시</TitleSpan2>
-                        <InputBox type="text" />
+                        <InputBox type="text" readOnly />
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>종료 일시</TitleSpan2>
-                        <InputBox type="text" />
+                        <InputBox type="text" readOnly />
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>배송비</TitleSpan2>
