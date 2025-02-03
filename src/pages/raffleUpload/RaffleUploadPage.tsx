@@ -2,12 +2,18 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import imgUpload from "../../assets/imgUpload.svg";
 import imgArrow from "../../assets/imgSelectArrow.png";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css';
 
 const RaffleUploadPage = () => {
+    const [openStartCal, setOpenStartCal] = useState<boolean>(false);
+    const [startDate, setStartDate] = useState<Date>(new Date());
+    const [openEndCal, setOpenEndCal] = useState<boolean>(false);
+    const [endDate, setEndDate] = useState<Date>(new Date());
     const { openModal } = useModalContext();
 
     const handleTicketModal = () => {
@@ -107,11 +113,20 @@ const RaffleUploadPage = () => {
                     <SetConditionBox>
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
                         <InputBox type="text" />
-                        
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>시작 일시</TitleSpan2>
-                        <InputBox type="text" readOnly />
+                        <InputBox type="text"
+                        onClick={()=>setOpenStartCal(!openStartCal)}
+                        readOnly />
+                        {openStartCal && (
+                            <DatePicker
+                            dateFormat="yyyy년 MM월 dd일"
+                            dateFormatCalendar="yyyy년 MM월"
+                            selected={startDate}
+                            onChange={(date) => date && setStartDate(date)}
+                            />
+                        )}
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>종료 일시</TitleSpan2>
