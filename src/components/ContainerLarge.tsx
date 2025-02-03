@@ -30,6 +30,15 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
     const [isSearchClicked, setIsSearchClicked] = useState<boolean>(false);
     const searchRef = useRef<HTMLDivElement>(null);
     const [searchText, setSearchText] = useState<string>('');
+    const categoryRef = useRef<HTMLDivElement>(null);
+    
+    const handleCategoryOut = (e:MouseEvent) => {
+        const currentCategoryRef = categoryRef.current;
+        if (currentCategoryRef && !currentCategoryRef.contains(e.target as Node)) {
+            setIsCatClicked(false);
+            console.log("handleCategoryOut!");
+        }
+    };
 
     const handleClickOutside = (e:MouseEvent) => {
         const currentSearchRef = searchRef.current;
@@ -45,18 +54,23 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
     const handleOpenModal = () => {
         openModal(({ onClose }) => <SplashModal onClose={onClose} />);
     };
+    const onClickLoginBtn = () => {
+        if (!isLoggedIn) handleOpenModal();
+    }
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('mousedown', handleCategoryOut);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", handleCategoryOut);
         }
-    }, [searchRef.current]);
+    }, [searchRef.current, categoryRef.current]);
     
     return (
         <Wrapper>
             <TopContainer>
-                <LoginBtn onClick={handleOpenModal} state={String(isLoggedIn)}>
+                <LoginBtn onClick={onClickLoginBtn} state={String(isLoggedIn)}>
                     {isLoggedIn ? '로그아웃' : '로그인'}
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} />
@@ -72,16 +86,16 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
             </TopContainer>
             <SearchBoxContainer>
                 <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
-                <CategoryContainer>
-                    <IconHamburgerDiv onClick={()=>setIsCatClicked(!isCatClicked)}>
+                <CategoryContainer ref={categoryRef}>
+                    <IconHamburgerDiv onMouseDown={()=>{
+                        isCatClicked
+                        ? setIsCatClicked(false)
+                        : setIsCatClicked(true)}}>
                         <img src={icHamburger} width={22} />
                         <IconTextDiv fontSize={'10px'}>카테고리</IconTextDiv>
                     </IconHamburgerDiv>
-                    <CategoryMenu
-                    isClicked={isCatClicked}
-                    setIsClicked={setIsCatClicked}
-                    clicked={isCatClicked}
-                    />
+                    {isCatClicked &&
+                    <CategoryMenu />}
                 </CategoryContainer>
                 <SearchBoxDiv>
                     <TicketImg src={ticket} width={88} />
