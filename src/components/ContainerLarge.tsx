@@ -1,14 +1,15 @@
 import styled from 'styled-components';
 import media from '../styles/media';
-import imgLogo from '../assets/logo.png';
-import icHamburger from '../assets/searchBox/icon-hamburger.svg';
+import icLogo from '../assets/header/icon-logo.svg';
+// import imgLogo from '../assets/logo.png';
+import icHamburger from '../assets/header/icon-hamburger.svg';
 import ticket from '../assets/ticketLogo.png';
-import { ReactComponent as IcNotice } from '../assets/searchBox/icon-notice.svg';
-import icSetting from '../assets/searchBox/icon-setting.svg';
-import icSearch from '../assets/searchBox/icon-search.svg';
-import icHeart from '../assets/searchBox/icon-heart.svg';
-import icMyPage from '../assets/searchBox/icon-mypage.svg';
-import icUpload from '../assets/searchBox/icon-upload.svg';
+import { ReactComponent as IcNotice } from '../assets/header/icon-notice.svg';
+import icSetting from '../assets/header/icon-setting.svg';
+import icSearch from '../assets/header/icon-search.svg';
+import icHeart from '../assets/header/icon-heart.svg';
+import icMyPage from '../assets/header/icon-mypage.svg';
+import icUpload from '../assets/header/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
 import { useNavigate } from "react-router-dom";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -85,7 +86,7 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                 </SmallIconDiv>
             </TopContainer>
             <SearchBoxContainer>
-                <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
+                <LogoImg src={icLogo} onClick={()=>navigate('/')} />
                 <CategoryContainer ref={categoryRef}>
                     <IconHamburgerDiv onMouseDown={()=>{
                         isCatClicked
@@ -165,6 +166,7 @@ export default ContainerLarge;
 
 const Wrapper = styled.div`
   display: flex;
+//   flex-basis: 1080px;
   flex-direction: column;
   height: 188px;
   padding: 0 25px;
@@ -228,18 +230,13 @@ const LogoImg = styled.img`
   height: 64px;
   margin-right: 39px;
   margin-bottom: 5px;
+  flex-shrink: 0;
+  max-width: 100%;
+  object-fit: contain; 
   &:hover {
     cursor: pointer;
-  }
-  ${media.medium`
-        width: 98px;
-        height: 46.518px;
-    `}
-  ${media.small`
-        width: 71.62px;
-        height: 33.995px;
-    `}
-`;
+  };
+`
 
 const CategoryContainer = styled.div`
   position: relative;
