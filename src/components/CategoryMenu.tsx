@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 const CategoryMenu = () => {
     return (
+        <DropDownPosition>
         <CategoryUl>
             <CategoryName>전체 카테고리</CategoryName>
             <CategoryLi>여성의류</CategoryLi>
@@ -27,16 +28,30 @@ const CategoryMenu = () => {
             <CategoryLi>기타</CategoryLi>
             <CategoryLi>재능</CategoryLi>
         </CategoryUl>
+        </DropDownPosition>
     )
 }
 
 export default CategoryMenu;
 
-const CategoryUl = styled.ul`
-    width: 200px;
+const DropDownPosition = styled.div`
     position: absolute;
     top: 45px;
     left: -65px;
+    overflow: hidden;
+`
+
+const CategoryUl = styled.ul`
+    width: 200px;
+    @keyframes dropdown {
+        0% {
+            transform: translateY(-10%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    };
+    animation: dropdown 0.5s ease;
 `
 
 const CategoryName = styled.li`
