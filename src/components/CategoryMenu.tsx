@@ -1,31 +1,9 @@
 import React, { LegacyRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-type TCategoryMenu = {
-    clicked: boolean,
-    isClicked: boolean,
-    setIsClicked: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const CategoryMenu = ({clicked, isClicked, setIsClicked}:TCategoryMenu) => {
-    const categoryRef = useRef<HTMLUListElement>(null);
-
-    const handleCategoryOut = (e:MouseEvent) => {
-        const currentCategoryRef = categoryRef.current;
-        if (currentCategoryRef && !currentCategoryRef.contains(e.target as Node)) {
-            setIsClicked(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener('mousedown', handleCategoryOut);
-        return () => {
-            document.removeEventListener("mousedown", handleCategoryOut);
-        }
-    }, [categoryRef.current])
-
+const CategoryMenu = () => {
     return (
-        <CategoryUl show={String(clicked)} ref={categoryRef}>
+        <CategoryUl>
             <CategoryName>전체 카테고리</CategoryName>
             <CategoryLi>여성의류</CategoryLi>
             <CategoryLi>남성의류</CategoryLi>
@@ -54,16 +32,11 @@ const CategoryMenu = ({clicked, isClicked, setIsClicked}:TCategoryMenu) => {
 
 export default CategoryMenu;
 
-const CategoryUl = styled.ul<{show:string}>`
+const CategoryUl = styled.ul`
     width: 200px;
     position: absolute;
     top: 45px;
     left: -65px;
-    ${props => props.show === 'true' ?
-        'display: block'
-        :
-        'display: none'
-    }
 `
 
 const CategoryName = styled.li`
