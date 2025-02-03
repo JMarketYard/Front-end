@@ -48,7 +48,6 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
-        console.log('start');
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         }
@@ -78,7 +77,11 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                         <img src={icHamburger} width={22} />
                         <IconTextDiv fontSize={'10px'}>카테고리</IconTextDiv>
                     </IconHamburgerDiv>
-                    <CategoryMenu clicked={isCatClicked} />
+                    <CategoryMenu
+                    isClicked={isCatClicked}
+                    setIsClicked={setIsCatClicked}
+                    clicked={isCatClicked}
+                    />
                 </CategoryContainer>
                 <SearchBoxDiv>
                     <TicketImg src={ticket} width={88} />

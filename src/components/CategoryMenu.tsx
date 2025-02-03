@@ -1,8 +1,31 @@
+import React, { LegacyRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-const CategoryMenu = ({clicked}:{clicked:boolean}) => {
+type TCategoryMenu = {
+    clicked: boolean,
+    isClicked: boolean,
+    setIsClicked: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const CategoryMenu = ({clicked, isClicked, setIsClicked}:TCategoryMenu) => {
+    const categoryRef = useRef<HTMLUListElement>(null);
+
+    const handleCategoryOut = (e:MouseEvent) => {
+        const currentCategoryRef = categoryRef.current;
+        if (currentCategoryRef && !currentCategoryRef.contains(e.target as Node)) {
+            setIsClicked(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleCategoryOut);
+        return () => {
+            document.removeEventListener("mousedown", handleCategoryOut);
+        }
+    }, [categoryRef.current])
+
     return (
-        <CategoryUl show={String(clicked)}>
+        <CategoryUl show={String(clicked)} ref={categoryRef}>
             <CategoryName>전체 카테고리</CategoryName>
             <CategoryLi>여성의류</CategoryLi>
             <CategoryLi>남성의류</CategoryLi>
