@@ -35,7 +35,6 @@ const router = createBrowserRouter([
       {
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
-
       },
       { path: 'homepage', element: <HomePage /> },
       {
@@ -49,7 +48,12 @@ const router = createBrowserRouter([
       },
       {
         path: 'kakao',
-        element: <KakaoRedirect />,
+        element: (
+          <div>
+            <KakaoRedirect />
+            <ModalProvider />
+          </div>
+        ),
       },
       {
         path: 'review',
@@ -77,7 +81,6 @@ const router = createBrowserRouter([
           </div>
         ),
       },
-
     ],
   },
 ]);
