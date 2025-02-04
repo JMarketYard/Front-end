@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Mylike = () => {
   const navigate = useNavigate();
+  const products: null[] = Array(5).fill(null);
+
   return (
     <Wrapper>
       <HeaderContainer>
@@ -19,16 +21,16 @@ const Mylike = () => {
         </MoreListBox>
       </HeaderContainer>
 
-      <ProductContainer>
-        <SmallProductCard />
-        <SmallProductCard />
-        <SmallProductCard />
-        <SmallProductCard />
-        <SmallProductCard />
-      </ProductContainer>
+      <ProductGrid>
+        {products.map((_, index) => (
+          <SmallProductCard key={index} />
+        ))}
+      </ProductGrid>
     </Wrapper>
   );
 };
+
+export default Mylike;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -89,9 +91,10 @@ const MoreListBox = styled.a`
   cursor: pointer;
 `;
 
-const ProductContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+const ProductGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  place-items: center;
+  width: 100%;
+  max-width: 1080px;
 `;
-export default Mylike;
