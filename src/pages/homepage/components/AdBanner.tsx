@@ -15,13 +15,6 @@ function AdBanner() {
     autoplaySpeed: 4000,
     centerMode: true,
     centerPadding: '20%',
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 5000,
-    centerMode: true,
-    centerPadding: '46px',
     cssEase: 'ease',
   };
 
@@ -49,15 +42,6 @@ const Wrapper = styled.div`
   box-sizing: content-box;
   overflow: hidden;
   background-color: white;
-
-  /* .slick-initialized {
-    width: 100%;.
-  } */
-
-  /* .slick-track {
-    display: flex;
-    align-items: center;
-  } */
 
   .slick-slide {
     display: flex;

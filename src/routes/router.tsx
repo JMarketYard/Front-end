@@ -18,11 +18,19 @@ const router = createBrowserRouter([
     element: (
       <div>
         <RootLayout />
-        <HomePage />
         <ModalProvider />
       </div>
     ),
     children: [
+      {
+        path: '',
+        element: (
+          <div>
+            <HomePage />
+            <ModalProvider />
+          </div>
+        ),
+      },
       {
         path: 'change',
         element: (
