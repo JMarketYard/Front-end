@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import vector from '../../../assets/Vector.png';
 import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
+import { Icon } from '@iconify/react';
 
 interface ModalProps {
   onClose: () => void;
@@ -27,6 +28,19 @@ const EnterModal: React.FC<ModalProps> = ({ onClose }) => {
 
   const Content = (
     <Contents>
+      {!isLargeScreen && (
+        <IconBox style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Icon
+            icon={'ei:close-o'}
+            style={{
+              width: '30px',
+              height: '30px',
+              color: '#7D7D7D',
+            }}
+            onClick={onClose}
+          />
+        </IconBox>
+      )}
       <Container>
         <Img src={vector} />
         <Title>장마당에 오신 것을 환영합니다.</Title>
@@ -43,6 +57,19 @@ const EnterModal: React.FC<ModalProps> = ({ onClose }) => {
   return isLargeScreen ? <Modal onClose={onClose}>{Content}</Modal> : Content;
 };
 
+const IconBox = styled.div`
+  display: block;
+  justify-content: flex-end;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 const Contents = styled.div`
   ${media.notLarge`
     background-color: white;
@@ -52,6 +79,11 @@ const Contents = styled.div`
     position: fixed; 
     top: 0;
     left: 0;
+    display: flex;
+  align-items: center;
+  flex-direction:column;
+  overflow-y: auto; 
+  overflow-x: hidden;
   `}
 `;
 
@@ -60,7 +92,16 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 39px;
+  padding-top: 45px;
+
+  ${media.medium`
+    padding-left: 0px;
+    padding-top: 289px;
+    `}
+  ${media.small`
+    padding-left: 0px;
+    padding-top: 195px;
+    `}
 `;
 
 const Img = styled.img`
@@ -81,6 +122,18 @@ const Button = styled.button`
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
+  ${media.medium`
+    margin-top: 361px;
+    width: 344px;
+    height: 45px;
+    margin-bottom: 181px;
+    `}
+  ${media.small`
+     margin-top: 271px;
+     width: 325px;
+     height: 45px;
+     margin-bottom: 47px;
+    `}
 `;
 
 const Describe = styled.div`
@@ -93,6 +146,12 @@ const Describe = styled.div`
   line-height: 150%;
   white-space: pre-line;
   margin-bottom: 105px;
+  ${media.medium`
+    margin-bottom: 0px;
+    `}
+  ${media.small`
+    margin-bottom: 0px;
+    `}
 `;
 
 const Line = styled.div`
@@ -100,6 +159,14 @@ const Line = styled.div`
   height: 1px;
   background: #d9d9d9;
   margin-bottom: 32px;
+  ${media.medium`
+    width: 344px;
+    margin-bottom: 24px;
+    `}
+  ${media.small`
+    width: 204px;
+    margin-bottom: 24px;
+    `}
 `;
 
 const Title = styled.div`
