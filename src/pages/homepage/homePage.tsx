@@ -8,8 +8,10 @@ import moreList from '../../assets/homePage/moreList.svg';
 import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
   const navigate = useNavigate();
+
+  const products: null[] = Array(12).fill(null);
   return (
     <>
       <AdBanner />
@@ -27,24 +29,11 @@ const HomePage = () => {
 
         <Horizon />
 
-        <ProductRow>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </ProductRow>
-        <ProductRow>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </ProductRow>
-        <ProductRow>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </ProductRow>
+        <ProductGrid>
+          {products.map((_, index) => (
+            <ProductCard key={index} />
+          ))}
+        </ProductGrid>
       </Wrapper>
     </>
   );
@@ -116,12 +105,13 @@ const Horizon = styled.hr`
   margin-bottom: 46px;
 `;
 
-const ProductRow = styled.div`
+const ProductGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  place-items: center;
+  gap: 44px;
   width: 100%;
-  margin-bottom: 44px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  max-width: 1080px;
 `;
 
 export default HomePage;

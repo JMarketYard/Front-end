@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
 import like from '../assets/ProductCard/like.svg';
-import unlike from '../assets/productCard/unlike.svg';
+import unlike from '../assets/ProductCard/unlike.svg';
 
 const ProductCard = () => {
   const [isLiked, setIsLiked] = useState(false);
