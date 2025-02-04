@@ -18,6 +18,7 @@ const router = createBrowserRouter([
     element: (
       <div>
         <RootLayout />
+        <HomePage />
         <ModalProvider />
       </div>
     ),
@@ -31,7 +32,6 @@ const router = createBrowserRouter([
           </div>
         ),
       },
-      { path: 'homepage', element: <HomePage /> },
       {
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
