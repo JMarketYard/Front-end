@@ -56,7 +56,12 @@ const router = createBrowserRouter([
       },
       {
         path: 'kakao',
-        element: <KakaoRedirect />,
+        element: (
+          <div>
+            <KakaoRedirect />
+            <ModalProvider />
+          </div>
+        ),
       },
       {
         path: 'review',

@@ -8,6 +8,8 @@ import Modal from '../../../components/Modal/Modal';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import media from '../../../styles/media';
 import UnderAgeModal from './UnderAgeModal';
+import logo from '../../../assets/logo.png';
+import { Icon } from '@iconify/react';
 
 interface ModalProps {
   onClose: () => void;
@@ -56,7 +58,24 @@ const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
 
   const Content = (
     <Contents>
-      {' '}
+      {!isLargeScreen && (
+        <>
+          <IconBox style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Icon
+              icon={'ei:close-o'}
+              style={{
+                width: '30px',
+                height: '30px',
+                color: '#7D7D7D',
+              }}
+              onClick={onClose}
+            />
+          </IconBox>
+          <Flex>
+            <Img src={logo} />
+          </Flex>
+        </>
+      )}
       <Container>
         <NewOption>
           <Circle />
@@ -70,7 +89,7 @@ const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
             icon={<CircleUnchecked />}
             checkedIcon={<CircleChecked />}
             sx={{
-              '& .MuiSvgIcon-root': { fontSize: 14 },
+              '& .MuiSvgIcon-root': { fontSize: 17 },
               '&.Mui-checked': {
                 color: '#C908FF',
               },
@@ -86,7 +105,7 @@ const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
             checkedIcon={<CircleChecked />}
             sx={{
               '& .MuiSvgIcon-root': {
-                fontSize: 14,
+                fontSize: 17,
               },
               '&.Mui-checked': {
                 color: '#C908FF',
@@ -101,6 +120,33 @@ const AgeModal: React.FC<ModalProps> = ({ onClose }) => {
   );
   return isLargeScreen ? <Modal onClose={onClose}>{Content}</Modal> : Content;
 };
+
+const IconBox = styled.div`
+  display: block;
+  justify-content: flex-end;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const Img = styled.img`
+  width: 172px;
+  height: 80px;
+  ${media.medium`
+    margin-bottom:301px;
+    margin-top: 231px;
+  `}
+  ${media.small`
+    margin-bottom:220px;
+    margin-top: 178px;
+  `}
+`;
+
 const Contents = styled.div`
   ${media.notLarge`
     background-color: white;
@@ -110,16 +156,25 @@ const Contents = styled.div`
     position: fixed; 
     top: 0;
     left: 0;
+    display: flex;
+  align-items: center;
+  flex-direction:column;
+  overflow-y: auto;
+  overflow-x: hidden;
   `}
 `;
 
 const Container = styled.div`
   padding-left: 61px;
+  ${media.notLarge`
+    padding-left: 0px;
+    padding-top: 0px;
+  `}
 `;
 
 const Circle = styled.div`
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
   background-color: #c908ff;
   border: 0;
   border-radius: 100%;
@@ -139,6 +194,18 @@ const Button = styled.button`
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
+  ${media.medium`
+    margin-top: 86px;
+    width: 344px;
+    height: 45px;
+    margin-bottom: 181px;
+    `}
+  ${media.small`
+     margin-top: 49px;
+     width: 325px;
+     height: 45px;
+     margin-bottom: 47px;
+    `}
 `;
 
 const Line = styled.div`
@@ -147,6 +214,14 @@ const Line = styled.div`
   background: #8f8e94;
   margin-top: 35px;
   margin-bottom: 34px;
+  ${media.medium`
+    width: 344px;
+    margin-bottom: 24px;
+    `}
+  ${media.small`
+    width: 302px;
+    margin-bottom: 24px;
+    `}
 `;
 
 const Short = styled.div`
@@ -162,6 +237,10 @@ const NewOption = styled.div`
   column-gap: 39px;
   align-items: center;
   margin-top: 127px;
+  transform: translateX(8px);
+  ${media.notLarge`
+    margin-top: 0px;
+  `}
 `;
 
 const Option = styled.div`
@@ -174,6 +253,9 @@ const Title = styled.div`
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
+  ${media.medium`
+    font-size: 18px;
+    `}
 `;
 
 export default AgeModal;

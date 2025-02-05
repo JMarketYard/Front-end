@@ -5,6 +5,7 @@ import EnterModal from './EnterModal';
 import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import { Icon } from '@iconify/react';
 
 interface ModalProps {
   onClose: () => void;
@@ -49,12 +50,38 @@ const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
 
   const Content = (
     <Contents>
+      {!isLargeScreen && (
+        <>
+          <IconBox style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Icon
+              icon={'ei:close-o'}
+              style={{
+                width: '30px',
+                height: '30px',
+                color: '#7D7D7D',
+              }}
+              onClick={onClose}
+            />
+          </IconBox>
+        </>
+      )}
       <Logo>
         <Img src={logo} />
       </Logo>
       <Container>
-        <Line />
-        <Info>회원 정보</Info>
+        {isLargeScreen ? (
+          <>
+            <Line />
+            <Info>회원 정보</Info>
+          </>
+        ) : (
+          <Border>
+            <ShortLine />
+            <And>회원가입</And>
+            <ShortLine />
+          </Border>
+        )}
+
         <Box>
           <Name>닉네임</Name>
           <Error>{isError}</Error>
@@ -63,7 +90,7 @@ const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
           isError={!!isError}
           value={name}
           onChange={handleChangeName}
-          placeholder="장마당에서 사용할 닉네임을 입력하세요. (한글 및 영어 2~5자)"
+          placeholder="닉네임을 입력하세요. (한글 및 영어 2~5자)"
         />
         <Button disabled={!name} onClick={handleOpenNextModal}>
           회원가입
@@ -75,10 +102,64 @@ const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
   return isLargeScreen ? <Modal onClose={onClose}>{Content}</Modal> : Content;
 };
 
+const Border = styled.div`
+  display: flex;
+  column-gap: 10.7px;
+  align-items: center;
+  ${media.medium`
+    margin-bottom: 67px;
+    `}
+  ${media.small`
+    margin-bottom: 48px;
+    `}
+`;
+
+const And = styled.div`
+  color: #c1c1c1;
+  text-align: center;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  ${media.small`
+    font-size: 12px;
+    font-weight: 600;  
+   `}
+`;
+
+const ShortLine = styled.div`
+  width: 177px;
+  height: 1px;
+  background-color: #c1c1c1;
+  ${media.small`
+    width: 119px;   
+  `}
+`;
+
+const IconBox = styled.div`
+  display: block;
+  justify-content: flex-end;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 const Box = styled.div`
   display: flex;
   column-gap: 28px;
   margin-bottom: 7px;
+  ${media.medium`
+    column-gap: 40px;
+    `}
+  ${media.small`
+    column-gap: 28px;
+    transform: translateX(40px);
+    `}
 `;
 
 const Error = styled.div`
@@ -90,11 +171,26 @@ const Error = styled.div`
   line-height: 150%;
   color: #c908ff;
   font-family: 'Noto Sans KR';
-  transform: translateX(-18px);
+  transform: translateX(-20px);
+  ${media.medium`
+    font-size: 15px;
+    width: 320.583px;
+    height: 20.197px;
+    `}
+  ${media.small`
+      font-size: 11px;
+      `}
 `;
 
 const Container = styled.div`
   padding-left: 61px;
+  ${media.notLarge`
+    padding-left: 0px;
+    padding-top: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+    `}
 `;
 
 const Contents = styled.div`
@@ -106,12 +202,21 @@ const Contents = styled.div`
     position: fixed; 
     top: 0;
     left: 0;
+    display: flex;
+  align-items: center;
+  flex-direction:column;
+  overflow-y: auto;
+  overflow-x: hidden;
   `}
 `;
 
 const Img = styled.img`
   width: 134px;
   height: 63px;
+  ${media.notLarge`
+    width: 172px;
+    height: 80px;
+  `}
 `;
 
 const Button = styled.button`
@@ -128,6 +233,18 @@ const Button = styled.button`
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
+  ${media.medium`
+    margin-top: 361px;
+    width: 344px;
+    height: 45px;
+    margin-bottom: 181px;
+    `}
+  ${media.small`
+     margin-top: 330px;
+     width: 325px;
+     height: 45px;
+     margin-bottom: 47px;
+    `}
 `;
 
 const Input = styled.input<{ isError: boolean }>`
@@ -147,12 +264,39 @@ const Input = styled.input<{ isError: boolean }>`
     font-family: Pretendard;
     transform: translateY(1px);
   }
+  ${media.medium`
+    width: 420px;
+    height: 44px;
+    font-size: 16px;
+    &::placeholder {
+    font-size: 16px;
+    transform: translateY(2px);
+  }
+  `}
+  ${media.small`
+    width: 302px;
+    height: 36px;
+    font-size: 13px;
+    &::placeholder {
+    font-size: 13px;
+    transform: translateY(2px);
+  }
+      `}
 `;
 
 const Name = styled.div`
   font-size: 15px;
   font-style: normal;
   font-weight: 400;
+  ${media.medium`
+    font-size: 18px;
+    font-weight: 500;
+  `}
+  ${media.small`
+    font-size: 15px;
+    font-weight: 500;
+    width: 50px;
+  `}
 `;
 
 const Info = styled.div`
@@ -168,7 +312,15 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 23px;
+  margin-top: 30px;
+  ${media.medium`
+    margin-top: 175px;
+    margin-bottom: 64px;
+  `}
+  ${media.small`
+    margin-top: 167px;
+    margin-bottom: 34px;
+  `}
 `;
 
 const Line = styled.div`

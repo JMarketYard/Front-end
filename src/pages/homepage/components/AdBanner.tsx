@@ -35,8 +35,10 @@ function AdBanner() {
   );
 }
 
+export default AdBanner;
+
 const Wrapper = styled.div`
-  width: 100%;
+  width: 1440px;
   height: 396px;
   margin: 39px auto 61px auto;
   box-sizing: content-box;
@@ -47,7 +49,6 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
   }
 
   .slick-dots {
@@ -80,5 +81,3 @@ const AdBox = styled.a`
   justify-content: center;
   align-items: center;
 `;
-
-export default AdBanner;
