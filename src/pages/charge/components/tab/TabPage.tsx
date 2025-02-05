@@ -4,6 +4,11 @@ import ticketIcon from '../../../../assets/ticket.svg';
 import { Icon } from '@iconify/react';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import ChangeModal from '../modal/ChangeModal';
+import useScreenSize from '../../../../styles/useScreenSize';
+import media from '../../../../styles/media';
+import CircleChecked from '@mui/icons-material/CheckCircleOutline';
+import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
+import Checkbox from '@mui/material/Checkbox';
 
 interface TabTypeProps {
   type: number;
@@ -11,18 +16,35 @@ interface TabTypeProps {
 
 function TabPage({ type }: TabTypeProps) {
   const [ticket, setTicket] = useState<string>('');
+  const [checked, setChecked] = useState(false);
   const { openModal } = useModalContext();
+  const { isSmallScreen, isMediumScreen, isLargeScreen } = useScreenSize();
 
   useEffect(() => {
     console.log(ticket);
   }, [ticket]);
 
-  const handleNextModal = () => {
-    openModal(({ onClose }) => <ChangeModal onClose={onClose} />);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+
+  const handleNext = () => {
+    if (isLargeScreen) {
+      openModal(({ onClose }) => <ChangeModal onClose={onClose} />);
+    } else {
+      return;
+    }
   };
 
   return (
     <Container>
+      {!isLargeScreen && (
+        <HistoryContaienr>
+          <History>충전/환전 내역 조회하기</History>
+          <Arrow>&gt;</Arrow>
+        </HistoryContaienr>
+      )}
+
       <Short>{type === 0 ? '충전할 응모 티켓' : '환전할 응모 티켓'}</Short>
       <TicketContainer>
         <InputContainer>
@@ -72,37 +94,173 @@ function TabPage({ type }: TabTypeProps) {
       </TicketContainer>
       {type === 0 ? (
         <KakaoButtons>
-          <Icon
-            icon="raphael:bubble"
-            style={{
-              width: '15px',
-              height: '13px',
-              color: 'black',
-            }}
-          />
+          <ResponsiveIcon icon="raphael:bubble" />
           <Kakao>카카오페이로 결제하기</Kakao>
         </KakaoButtons>
       ) : (
-        <ChangeButton onClick={handleNextModal}>환전하기</ChangeButton>
+        <ChangeButton onClick={handleNext}>
+          {isLargeScreen ? '환전하기' : '환전 신청하기'}
+        </ChangeButton>
       )}
-      <Option>
-        <div>{type === 0 ? '충전 후 티켓' : '환전 후 티켓'}</div>
-        <div>500개</div>
-      </Option>
-      <Line />
-      <Option>
-        <div>{type === 0 ? '티켓 금액' : '입금 받을 금액'}</div>
-        <div>30,000원</div>
-      </Option>
-      <Line />
-      <div
-        style={{ width: '400px', display: 'flex', justifyContent: 'flex-end' }}
-      >
-        <Info>환전 시 등록된 계좌로 정산됩니다.</Info>
-      </div>
+      <Options>
+        <Option>
+          <div>{type === 0 ? '충전 후 티켓' : '환전 후 티켓'}</div>
+          <div>500개</div>
+        </Option>
+        <Line />
+        <Option>
+          <div>{type === 0 ? '티켓 금액' : '입금 받을 금액'}</div>
+          <div>30,000원</div>
+        </Option>
+        <Line />
+        <div
+          style={{
+            width: '400px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          {!isSmallScreen && type === 1 && (
+            <Info>환전 시 등록된 계좌로 정산됩니다.</Info>
+          )}
+        </div>
+      </Options>
+      {!isLargeScreen && (
+        <>
+          <Box>
+            <Checkbox
+              style={{
+                transform: 'translateY(0px)',
+              }}
+              sx={{
+                '& .MuiSvgIcon-root': { fontSize: 17 },
+                '&.Mui-checked': {
+                  color: '#C908FF',
+                },
+              }}
+              checked={checked}
+              onChange={(event) => {
+                event.stopPropagation();
+                handleChange(event);
+              }}
+              icon={<CircleUnchecked />}
+              checkedIcon={<CircleChecked />}
+            />
+            <Consent>
+              <span style={{ color: '#C908FF' }}>[필수]</span> 전체동의
+            </Consent>
+          </Box>
+          <CheckBox>
+            <NewShort>
+              {type === 0
+                ? '상품, 가격, 결제 전 주의사항 확인'
+                : '환전 시 주의사항'}
+            </NewShort>
+            <Icon
+              icon="weui:arrow-outlined"
+              style={{
+                width: '18px',
+                height: '20px',
+                cursor: 'pointer',
+                color: '#8F8E94',
+              }}
+            />
+          </CheckBox>
+        </>
+      )}
     </Container>
   );
 }
+
+const ResponsiveIcon = styled(Icon)`
+  width: 15px;
+  height: 13px;
+  color: black;
+
+  ${media.notLarge`
+    width: 19px; 
+    height: 15px;
+  `}
+`;
+
+const Consent = styled.div`
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  transform: translateY(1px);
+`;
+
+const CheckBox = styled.div`
+  display: flex;
+  column-gap: 78px;
+  align-items: center;
+  transform: translateX(13px);
+`;
+
+const Box = styled.div`
+  width: 299px;
+  height: 38px;
+  border: 1px solid #c908ff;
+  margin-bottom: 12px;
+  display: flex;
+  column-gap: 19px;
+  align-items: center;
+  padding-left: 18px;
+
+  ${media.medium`
+      margin-top: 150px
+    `}
+  ${media.small`
+    margin-top: 200px
+
+    `}
+`;
+
+const Options = styled.div`
+  ${media.large`
+      margin-top: 125px;
+  `}
+  ${media.medium`
+      margin-top: 0px;
+  `}
+   ${media.small`
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `}
+`;
+
+const HistoryContaienr = styled.div`
+  display: flex;
+  column-gap: 18px;
+  align-items: center;
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  ${media.small`
+      top: -4px;
+      right: -5px;
+    `}
+`;
+
+const Arrow = styled.div`
+  font-size: 13px;
+  stroke-width: 1px;
+  stroke: #8f8e94;
+  color: #8f8e94;
+`;
+
+const History = styled.div`
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  text-decoration-line: underline;
+`;
 
 const Info = styled.div`
   color: #c908ff;
@@ -123,20 +281,37 @@ const ChangeButton = styled.button`
   border: 0;
   background-color: #c908ff;
   color: white;
-  margin-bottom: 125px;
   margin-top: 72px;
   font-size: 13px;
   font-style: normal;
   font-weight: 600;
   transform: translateX(-20px);
+  ${media.medium`
+        transform: translateY(400px);
+        margin-top: 0px;
+        width: 299px;
+        height: 45px;
+        column-gap: 30px;
+    `}
+  ${media.small`
+    transform: translateY(427px);
+    `}
 `;
 
 const Line = styled.div`
-  border-top: 2px dashed gray;
+  border-top: 2px dashed #8f8e94;
   width: 402px;
   height: 2px;
   margin-top: 11px;
   margin-bottom: 15px;
+  ${media.notLarge`
+        border-top: 1px dashed #8F8E94;
+        margin-top: 7px;
+    `}
+  ${media.small`
+      width: 346px;
+      height: 1px;
+    `}
 `;
 
 const Option = styled.div`
@@ -150,6 +325,12 @@ const Option = styled.div`
   line-height: 17.308px;
   width: 375px;
   height: 20px;
+  ${media.notLarge`
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 500;
+      width: 345px;
+    `}
 `;
 
 const KakaoButtons = styled.button`
@@ -162,10 +343,19 @@ const KakaoButtons = styled.button`
   border: 0;
   background-color: #fbe44e;
   color: black;
-  margin-bottom: 125px;
   margin-top: 72px;
   column-gap: 10px;
   transform: translateX(-20px);
+  ${media.medium`
+        transform: translateY(400px);
+        margin-top: 0px;
+        width: 299px;
+        height: 45px;
+        column-gap: 30px;
+    `}
+  ${media.small`
+    transform: translateY(427px);
+    `}
 `;
 
 const Kakao = styled.div`
@@ -178,6 +368,9 @@ const Kakao = styled.div`
   font-size: 13px;
   font-style: normal;
   font-weight: 600;
+  ${media.notLarge`
+      font-size: 15px;
+    `}
 `;
 
 const Button = styled.button`
@@ -198,6 +391,19 @@ const Button = styled.button`
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
+  ${media.notLarge`
+      border: 1px solid #C1C1C1;
+      background: #F5F5F5;
+      font-weight: 500;
+    `}
+  ${media.medium`
+      font-size: 17px;
+    `}
+    ${media.small`
+      font-size: 15px;
+      height: 32px;
+      padding: 0px 20px;
+    `}
 `;
 
 const Input = styled.input`
@@ -217,28 +423,51 @@ const Img = styled.img`
   width: 29.81px;
   height: 19.562px;
   margin-right: 19px;
+  ${media.small`
+      width: 26.163px;
+      height: 17.37px;
+      margin-right: 15px;
+    `}
 `;
 
 const InputContainer = styled.div`
-  width: 319px;
+  width: 304px;
   height: 49px;
   border-radius: 8px;
   border: 1px solid #000;
   display: flex;
   padding-left: 16px;
   align-items: center;
+  ${media.notLarge`
+      border: 0.5px solid #000;
+    `}
+  ${media.small`
+        height: 46px
+      `}
 `;
 
 const Short = styled.div`
+  color: #000;
   font-family: Pretendard;
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: 17.308px;
-  margin-bottom: 8px;
-  width: 349px;
   display: flex;
   justify-content: flex-start;
+  width: 340px;
+  margin-bottom: 5px;
+`;
+
+const NewShort = styled.div`
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17.308px;
+  display: flex;
+  justify-content: center;
+  color: #8f8e94;
 `;
 
 const TicketContainer = styled.div`
@@ -249,15 +478,28 @@ const TicketContainer = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
+  ${media.notLarge`
+    font-size: 17px;
+font-style: normal;
+font-weight: 500;
+line-height: 18px;
+  `}
 `;
 
 const Container = styled.div`
-  width: 858px;
+  width: auto;
   height: auto;
   display: flex;
   align-items: center;
   padding-top: 86px;
   flex-direction: column;
+  position: relative;
+  ${media.medium`
+        padding-top: 70px;
+    `}
+  ${media.small`
+        padding: 30px 20px 0px 20px;
+    `}
 `;
 
 export default TabPage;
