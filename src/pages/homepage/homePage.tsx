@@ -1,50 +1,104 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import AdBanner from './components/AdBanner';
-import ImminentDeadline from './components/ImminentDeadline';
-import MyLike from './components/MyLike';
-import MyFollow from './components/MyFollow';
+import HomeSection from './components/HomeSection';
+import clockIcon from '../../assets/homePage/clock.svg';
+import likeIcon from '../../assets/homePage/like.svg';
+import followIcon from '../../assets/homePage/follow.svg';
 import moreList from '../../assets/homePage/moreList.svg';
 import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import exampleData from '../../mocks/HomeData';
 
-const HomePage = () => {
+interface Product {
+  raffleId: number;
+  imageUrl: string;
+  name: string;
+  ticketNum: number;
+  timeUntilEnd: number;
+  finish: boolean;
+  participantNum: number;
+  like: boolean;
+}
+
+interface HomeData {
+  approaching: Product[];
+  myLikeRaffles: Product[] | null; // ✅ 로그인 안 했을 경우 null 가능
+  myFollowRaffles: Product[] | null; // ✅ 로그인 안 했을 경우 null 가능
+  raffles: Product[] | null;
+}
+
+const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const [homeData, setHomeData] = useState<HomeData>(exampleData);
+  const products: null[] = Array(12).fill(null);
+  // const [homeData, setHomeData] = useState<HomeData | null>(null);
+
+  // useEffect(() => {
+  //   const fetchHomeData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/permit/home');
+  //       setHomeData(response.data.result);
+  //     } catch (error) {
+  //       console.error('Error fetching home data:', error);
+  //     }
+  //   };
+
+  //   fetchHomeData();
+  // }, []);
+
+  // if (!homeData) return <div>Loading...</div>;
+
   return (
     <>
       <AdBanner />
       <Wrapper>
-        <ImminentDeadline />
-        <MyLike />
-        <MyFollow />
+        {homeData.approaching && homeData.approaching.length > 0 ? (
+          <HomeSection
+            title="마감임박"
+            icon={clockIcon}
+            moreText="마감임박 상품 더보기"
+            apiKey="approaching"
+            moreLink="/approaching"
+            products={homeData.approaching}
+          />
+        ) : null}
+        {homeData.myLikeRaffles && homeData.myLikeRaffles.length > 0 ? (
+          <HomeSection
+            title="내가 찜한 래플"
+            icon={likeIcon}
+            moreText="내가 찜한 래플 더보기"
+            apiKey="myLikeRaffles"
+            moreLink="/my-likes"
+            products={homeData.myLikeRaffles || []}
+          />
+        ) : null}
+        {homeData.myFollowRaffles && homeData.myFollowRaffles.length > 0 ? (
+          <HomeSection
+            title="내가 팔로우한 상점"
+            icon={followIcon}
+            moreText="팔로우한 상점 래플 더보기"
+            apiKey="myFollowRaffles"
+            moreLink="/followed-stores"
+            products={homeData.myFollowRaffles || []}
+          />
+        ) : null}
         <LookAroundContainer>
           <LookAroundBox>래플 둘러보기</LookAroundBox>
-          <MoreListBox onClick={() => navigate('/')}>
-            마감임박 상품 더보기
+          <MoreListBox onClick={() => navigate('raffle-list')}>
+            래플 전체보기
             <img src={moreList} alt="moreList" />
           </MoreListBox>
         </LookAroundContainer>
 
         <Horizon />
 
-        <ProductRow>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </ProductRow>
-        <ProductRow>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </ProductRow>
-        <ProductRow>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </ProductRow>
+        <ProductGrid>
+          {(homeData.raffles ?? []).map((product) => (
+            <ProductCard key={product.raffleId} {...product} />
+          ))}
+        </ProductGrid>
       </Wrapper>
     </>
   );
@@ -62,6 +116,7 @@ const LookAroundContainer = styled.div`
   position: relative;
   width: 100%;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
 `;
 
@@ -115,12 +170,13 @@ const Horizon = styled.hr`
   margin-bottom: 46px;
 `;
 
-const ProductRow = styled.div`
+const ProductGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  place-items: center;
+  gap: 44px;
   width: 100%;
-  margin-bottom: 44px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  max-width: 1080px;
 `;
 
 export default HomePage;
