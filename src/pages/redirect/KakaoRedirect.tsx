@@ -7,7 +7,10 @@ function KakaoRedirect() {
   const { openModal } = useModalContext();
 
   useEffect(() => {
-    openModal(({ onClose }) => <ConsentModal onClose={onClose} />);
+    console.log('KakaoRedirect useEffect 실행됨!');
+    setTimeout(() => {
+      openModal(({ onClose }) => <ConsentModal onClose={onClose} />);
+    }, 100);
   }, []);
 
   return <Container></Container>;

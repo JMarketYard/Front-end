@@ -8,13 +8,13 @@ function AdBanner() {
   const settings = {
     dots: true,
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 5000,
+    speed: 1500,
+    autoplaySpeed: 4000,
     centerMode: true,
-    centerPadding: '46px',
+    centerPadding: '20%',
     cssEase: 'ease',
   };
 
@@ -35,21 +35,15 @@ function AdBanner() {
   );
 }
 
+export default AdBanner;
+
 const Wrapper = styled.div`
-  width: 100%;
+  width: 1440px;
   height: 396px;
   margin: 39px auto 61px auto;
   box-sizing: content-box;
   overflow: hidden;
-
-  /* .slick-initialized {
-    width: 100%;
-  } */
-
-  /* .slick-track {
-    display: flex;
-    align-items: center;
-  } */
+  background-color: white;
 
   .slick-slide {
     display: flex;
@@ -87,5 +81,3 @@ const AdBox = styled.a`
   justify-content: center;
   align-items: center;
 `;
-
-export default AdBanner;

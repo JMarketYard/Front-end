@@ -7,6 +7,8 @@ import AgeModal from './AgeModal';
 import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import logo from '../../../assets/logo.png';
+import { Icon } from '@iconify/react';
 
 interface ModalProps {
   onClose: () => void;
@@ -54,8 +56,25 @@ const ConsentModal: React.FC<ModalProps> = ({ onClose }) => {
 
   const Content = (
     <Contents>
+      {!isLargeScreen && (
+        <>
+          <IconBox style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Icon
+              icon={'ei:close-o'}
+              style={{
+                width: '30px',
+                height: '30px',
+                color: '#7D7D7D',
+              }}
+              onClick={onClose}
+            />
+          </IconBox>
+          <Flex>
+            <Img src={logo} />
+          </Flex>
+        </>
+      )}
       <Container>
-        {/* <img src={logo}/> */}
         <Option>
           <Checkbox
             style={{
@@ -126,6 +145,32 @@ const ConsentModal: React.FC<ModalProps> = ({ onClose }) => {
   return isLargeScreen ? <Modal onClose={onClose}>{Content}</Modal> : Content;
 };
 
+const IconBox = styled.div`
+  display: block;
+  justify-content: flex-end;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  justify-content: center;
+  ${media.medium`
+    margin-top: 221px;
+    margin-bottom: 301px
+  `}
+  ${media.small`
+    margin-top: 178px;
+    margin-bottom: 220px
+  `}
+`;
+
+const Img = styled.img`
+  width: 172px;
+  height: 80px;
+`;
+
 const Arrow = styled.div`
   width: 8px;
   height: 17px;
@@ -145,13 +190,19 @@ const Contents = styled.div`
     left: 0;
     display: flex;
   align-items: center;
-  justify-content: center;
+  flex-direction:column;
+  overflow-y: auto;
+  overflow-x: hidden;
   `}
 `;
 
 const Container = styled.div`
   padding-top: 112px;
   padding-left: 61px;
+  ${media.notLarge`
+    padding-left: 0px;
+    padding-top: 0px;
+  `}
 `;
 
 const Button = styled.button`
@@ -168,6 +219,18 @@ const Button = styled.button`
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
+  ${media.medium`
+    margin-top: 77px;
+    width: 344px;
+    height: 45px;
+    margin-bottom: 181px;
+    `}
+  ${media.small`
+     margin-top: 49px;
+     width: 325px;
+     height: 45px;
+     margin-bottom: 47px;
+    `}
 `;
 
 const Line = styled.div`
@@ -176,6 +239,14 @@ const Line = styled.div`
   background: #8f8e94;
   margin-top: 25px;
   margin-bottom: 32px;
+  ${media.medium`
+    width: 344px;
+    margin-bottom: 24px;
+    `}
+  ${media.small`
+    width: 302px;
+    margin-bottom: 24px;
+    `}
 `;
 
 const Short = styled.div`
@@ -196,6 +267,9 @@ const Title = styled.div`
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
+  ${media.medium`
+    font-size: 18px;
+    `}
 `;
 
 export default ConsentModal;
