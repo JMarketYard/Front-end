@@ -10,9 +10,27 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 
 const RaffleUploadPage = () => {
-    const [openStartCal, setOpenStartCal] = useState<boolean>(false);
+    const itemStates = [
+        { key: "state-1", text: "새상품" },
+        { key: "state-2", text: "상태" },
+        { key: "state-3", text: "상" },
+        { key: "state-4", text: "중" },
+        { key: "state-5", text: "하" },
+    ];
+    const tickets = [
+        { key: "one", text: "1개" },
+        { key: "two", text: "2개" },
+        { key: "three", text: "3개" },
+        { key: "more", text: "직접 입력" },
+    ];
+    const care = [
+        { key: "care", text: "사용" },
+        { key: "no", text: "미사용" }
+    ];
+    const [itemState, setItemState] = useState<string>("");
+    const [ticketNum, setTicketNum] = useState<string>("");
+    const [jcare, setJcare] = useState<string>("");
     const [startDate, setStartDate] = useState<Date>(new Date());
-    const [openEndCal, setOpenEndCal] = useState<boolean>(false);
     const [endDate, setEndDate] = useState<Date>(new Date());
     const { openModal } = useModalContext();
 
@@ -23,6 +41,17 @@ const RaffleUploadPage = () => {
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
         openModal(({ onClose }) => <UploadModal onClose={onClose} />);
+    };
+
+    const handleItemState = (key:string) => {
+        setItemState(key);
+    };
+    const handleTicketNum = (key:string) => {
+        setTicketNum(key);
+        if (key==="more") handleTicketModal();
+    };
+    const handleJcare = (key:string) => {
+        setJcare(key);
     };
 
     return (
@@ -76,12 +105,16 @@ const RaffleUploadPage = () => {
                         </div>
                         <div>
                             <TitleSpan>상태</TitleSpan>
-                            <ConditionBtn type="button">미개봉</ConditionBtn>
-                            <ConditionBtn type="button">새상품</ConditionBtn>
-                            <ConditionBtn type="button">상태</ConditionBtn>
-                            <ConditionBtn type="button">상</ConditionBtn>
-                            <ConditionBtn type="button">중</ConditionBtn>
-                            <ConditionBtn type="button">하</ConditionBtn>
+                            {itemStates.map(item => (
+                                <ConditionBtn
+                                type="button"
+                                key={item.key}
+                                onClick={()=>handleItemState(item.key)}
+                                $clicked={String(item.key===itemState)}
+                                >
+                                    {item.text}
+                                </ConditionBtn>
+                            ))}
                         </div>
                         <TextareaDiv>
                             <TitleSpan>설명</TitleSpan>
@@ -97,18 +130,31 @@ const RaffleUploadPage = () => {
                 <SetConditionContainer>
                     <SetConditionBox>
                         <TitleSpan2>응모 티켓 개수</TitleSpan2>
-                            <ConditionBtn type="button">1개</ConditionBtn>
-                            <ConditionBtn type="button">2개</ConditionBtn>
-                            <ConditionBtn type="button">3개</ConditionBtn>
+                        {tickets.map(t => (
                             <ConditionBtn
                             type="button"
-                            onClick={handleTicketModal}
-                            >직접입력</ConditionBtn>
+                            key={t.key}
+                            onClick={()=>handleTicketNum(t.key)}
+                            $clicked={String(t.key===ticketNum)}
+                            >
+                                {t.text}
+                            </ConditionBtn>
+                        ))}
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>장마당 케어</TitleSpan2>
-                        <ConditionBtn type="button">사용</ConditionBtn>
-                        <ConditionBtn type="button">미사용</ConditionBtn>
+                        {care.map(v => (
+                            <ConditionBtn
+                            type="button"
+                            key={v.key}
+                            onClick={()=>handleJcare(v.key)}
+                            $clicked={String(v.key===jcare)}
+                            >
+                                {v.text}
+                            </ConditionBtn>
+                        ))}
+                        {/* <ConditionBtn type="button">사용</ConditionBtn>
+                        <ConditionBtn type="button">미사용</ConditionBtn> */}
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
@@ -116,21 +162,27 @@ const RaffleUploadPage = () => {
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>시작 일시</TitleSpan2>
-                        <InputBox type="text"
-                        onClick={()=>setOpenStartCal(!openStartCal)}
-                        readOnly />
-                        {openStartCal && (
+                        <DatePickerBox>
                             <DatePicker
-                            dateFormat="yyyy년 MM월 dd일"
-                            dateFormatCalendar="yyyy년 MM월"
-                            selected={startDate}
-                            onChange={(date) => date && setStartDate(date)}
+                                onKeyDown={(e)=>{e.preventDefault()}}
+                                dateFormat="yyyy년 MM월 dd일"
+                                dateFormatCalendar="yyyy년 MM월"
+                                selected={startDate}
+                                onChange={(date) => date && setStartDate(date)}
                             />
-                        )}
+                        </DatePickerBox>
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>종료 일시</TitleSpan2>
-                        <InputBox type="text" readOnly />
+                        <DatePickerBox>
+                            <DatePicker
+                                onKeyDown={(e)=>{e.preventDefault()}}
+                                dateFormat="yyyy년 MM월 dd일"
+                                dateFormatCalendar="yyyy년 MM월"
+                                selected={endDate}
+                                onChange={(date) => date && setEndDate(date)}
+                            />
+                        </DatePickerBox>
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>배송비</TitleSpan2>
@@ -246,13 +298,10 @@ const ItemCategorySelect = styled.select`
     };
 `
 
-const ConditionBtn = styled.button`
+const ConditionBtn = styled.button<{$clicked:string}>`
     padding: 0 14px;
     height: 37px;
     border-radius: 11px;
-    border: 1px solid #8F8E94;
-    background: transparent;
-    color: #000;
     text-align: center;
     font-family: Pretendard;
     font-size: 20px;
@@ -262,7 +311,19 @@ const ConditionBtn = styled.button`
     margin-right: 13px;
     &:hover {
         cursor: pointer;
-    }
+    };
+    ${props => props.$clicked==="true" ?
+        `
+        border: 1px solid #C908FF;
+        background: rgba(201, 8, 255, 0.20);
+        color: #C908FF;
+        ` :
+        `
+        border: 1px solid #8F8E94;
+        background: transparent;
+        color: #000;
+        `
+    };
 `
 
 const Textarea = styled.textarea`
@@ -308,6 +369,31 @@ const InputBox = styled.input<{width?:number}>`
     font-style: normal;
     line-height: 18px;
     letter-spacing: -0.165px;
+`
+
+const DatePickerBox = styled.div`
+    .react-datepicker__input-container {
+        width: 636px;
+        height: 45px;
+        border-radius: 7px;
+        border: 1px solid #8F8E94;
+        box-sizing: border-box;
+        padding: 0 10px;
+        display: flex;
+    };
+
+    input {
+        width: 100%;
+        font-size: 18px;
+        font-family: Pretendard;
+        font-style: normal;
+        line-height: 18px;
+        letter-spacing: -0.165px;
+        border: none;
+        outline: none;
+        readOnly: true;
+        caret-color: transparent;
+    };
 `
 
 const SubmitBtn = styled.input`
