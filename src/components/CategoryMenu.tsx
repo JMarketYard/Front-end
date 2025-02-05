@@ -1,8 +1,10 @@
+import React, { LegacyRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-const CategoryMenu = ({clicked}:{clicked:boolean}) => {
+const CategoryMenu = () => {
     return (
-        <CategoryUl show={String(clicked)}>
+        <DropDownPosition>
+        <CategoryUl>
             <CategoryName>전체 카테고리</CategoryName>
             <CategoryLi>여성의류</CategoryLi>
             <CategoryLi>남성의류</CategoryLi>
@@ -26,21 +28,30 @@ const CategoryMenu = ({clicked}:{clicked:boolean}) => {
             <CategoryLi>기타</CategoryLi>
             <CategoryLi>재능</CategoryLi>
         </CategoryUl>
+        </DropDownPosition>
     )
 }
 
 export default CategoryMenu;
 
-const CategoryUl = styled.ul<{show:string}>`
-    width: 200px;
+const DropDownPosition = styled.div`
     position: absolute;
     top: 45px;
     left: -65px;
-    ${props => props.show === 'true' ?
-        'display: block'
-        :
-        'display: none'
-    }
+    overflow: hidden;
+`
+
+const CategoryUl = styled.ul`
+    width: 200px;
+    @keyframes dropdown {
+        0% {
+            transform: translateY(-10%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    };
+    animation: dropdown 0.5s ease;
 `
 
 const CategoryName = styled.li`
