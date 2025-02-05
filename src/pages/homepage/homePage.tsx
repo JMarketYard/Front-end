@@ -9,6 +9,7 @@ import moreList from '../../assets/homePage/moreList.svg';
 import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import media from '../../styles/media';
 import exampleData from '../../mocks/HomeData';
 
 interface Product {
@@ -31,24 +32,27 @@ interface HomeData {
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [homeData, setHomeData] = useState<HomeData>(exampleData);
-  const products: null[] = Array(12).fill(null);
-  // const [homeData, setHomeData] = useState<HomeData | null>(null);
+  const [homeData, setHomeData] = useState<HomeData | null>(null);
+  useEffect(() => {
+    console.log('useEffect');
+    const fetchHomeData = async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/permit/home`,
+        {
+          // headers: {
+          //   Accept: 'application/json',
+          // },
+        },
+      );
 
-  // useEffect(() => {
-  //   const fetchHomeData = async () => {
-  //     try {
-  //       const response = await axios.get('/api/permit/home');
-  //       setHomeData(response.data.result);
-  //     } catch (error) {
-  //       console.error('Error fetching home data:', error);
-  //     }
-  //   };
+      console.log('API Response:', response.data);
+      setHomeData(response.data.result);
+    };
 
-  //   fetchHomeData();
-  // }, []);
+    fetchHomeData();
+  }, []);
 
-  // if (!homeData) return <div>Loading...</div>;
+  if (!homeData) return <div>Loading...</div>;
 
   return (
     <>
