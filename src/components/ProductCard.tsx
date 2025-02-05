@@ -1,10 +1,44 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
-import like from '../assets/ProductCard/like.svg';
-import unlike from '../assets/ProductCard/unlike.svg';
+import icLike from '../assets/ProductCard/like.svg';
+import icUnlike from '../assets/ProductCard/unlike.svg';
 
-const ProductCard = () => {
+const getFormatTime = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}시간 ${minutes}분 ${remainingSeconds}초`;
+  }
+  if (minutes > 0) {
+    return `${minutes}분 ${remainingSeconds}초`;
+  }
+  return `${remainingSeconds}초`;
+};
+
+interface ProductProps {
+  raffleId: number;
+  imageUrl: string;
+  name: string;
+  ticketNum: number;
+  timeUntilEnd: number;
+  finish: boolean;
+  participantNum: number;
+  like: boolean;
+}
+
+const ProductCard: React.FC<ProductProps> = ({
+  raffleId,
+  imageUrl,
+  name,
+  ticketNum,
+  timeUntilEnd,
+  finish,
+  participantNum,
+  like,
+}) => {
   const [isLiked, setIsLiked] = useState(false);
   const toggleLike = () => {
     setIsLiked((prevState) => !prevState);
@@ -13,26 +47,28 @@ const ProductCard = () => {
   return (
     <Wrapper>
       <ImageContainer>
-        <RaffleClosingBox>응모 마감</RaffleClosingBox>
-        <TextBox>마감임박</TextBox>
+        {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
+        {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
+          <TextBox>마감임박</TextBox>
+        )}
         <LikeBox onClick={toggleLike}>
           <img
-            src={isLiked ? like : unlike}
+            src={isLiked ? icLike : icUnlike}
             alt={isLiked ? 'Liked' : 'Unliked'}
           />
         </LikeBox>
       </ImageContainer>
       <InfoContainer>
         <TitleContainer>
-          <TitleBox>다영언니의 텀블러</TitleBox>
-          <ParticipantsBox>5명 응모중</ParticipantsBox>
+          <TitleBox>{name}</TitleBox>
+          <ParticipantsBox>{participantNum}명 응모중</ParticipantsBox>
         </TitleContainer>
 
         <ContentContainer>
           <TicketBox>
-            <img src={ticket} alt="ticket" /> 3
+            <img src={ticket} alt="ticket" /> {ticketNum}
           </TicketBox>
-          <TimeBox>7시간 35분 27초뒤 마감</TimeBox>
+          {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
         </ContentContainer>
       </InfoContainer>
     </Wrapper>

@@ -4,15 +4,52 @@ import smallTicket from '../assets/smallProductCard/smallTicket.svg';
 import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
 import smallLike from '../assets/smallProductCard/smallLike.svg';
 
-const SmallProductCard = () => {
+const getFormatTime = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}시간 ${minutes}분 ${remainingSeconds}초`;
+  }
+  if (minutes > 0) {
+    return `${minutes}분 ${remainingSeconds}초`;
+  }
+  return `${remainingSeconds}초`;
+};
+
+interface ProductProps {
+  raffleId: number;
+  imageUrl: string;
+  name: string;
+  ticketNum: number;
+  timeUntilEnd: number;
+  finish: boolean;
+  participantNum: number;
+  like: boolean;
+}
+
+const SmallProductCard: React.FC<ProductProps> = ({
+  raffleId,
+  imageUrl,
+  name,
+  ticketNum,
+  timeUntilEnd,
+  finish,
+  participantNum,
+  like,
+}) => {
   const [isLiked, setIsLiked] = useState(false);
   const toggleLike = () => {
     setIsLiked((prevState) => !prevState);
   };
   return (
     <Wrapper>
-      <ImageContainer>
-        <TextBox>마감임박</TextBox>
+      <ImageContainer imageUrl={imageUrl}>
+        {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
+        {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
+          <TextBox>마감임박</TextBox>
+        )}
         <LikeBox onClick={toggleLike}>
           <img
             src={isLiked ? smallLike : smallUnlike}
@@ -21,12 +58,12 @@ const SmallProductCard = () => {
         </LikeBox>
       </ImageContainer>
       <Layout>
-        <TitleContainer>다영언니의 텀블러</TitleContainer>
+        <TitleContainer>{name}</TitleContainer>
         <InfoContainer>
           <TicketBox>
-            <img src={smallTicket} alt="smallTicket" /> 3
+            <img src={smallTicket} alt="smallTicket" /> {ticketNum}
           </TicketBox>
-          <TimeBox>7시간 35분 27초뒤 마감</TimeBox>
+          {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
         </InfoContainer>
       </Layout>
     </Wrapper>
@@ -41,7 +78,11 @@ const Wrapper = styled.div`
   background-color: #ffffff;
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.div.attrs<Pick<ProductProps, 'imageUrl'>>(
+  ({ imageUrl }) => ({
+    style: { backgroundImage: `url(${imageUrl})` },
+  }),
+)<Pick<ProductProps, 'imageUrl'>>`
   width: 192px;
   height: 192px;
   flex-shrink: 0;
@@ -49,6 +90,35 @@ const ImageContainer = styled.div`
   background-color: #eaeaea;
   position: relative;
   margin-top: 14px;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+`;
+
+const RaffleClosingBox = styled.div`
+  width: 111px;
+  height: 37px;
+  transform: rotate(0.421deg);
+
+  border-radius: 4px;
+  border: 2px solid #c908ff;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
 `;
 
 const TextBox = styled.div`
