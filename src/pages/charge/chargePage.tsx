@@ -5,6 +5,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import TabPage from './components/tab/TabPage';
+import useScreenSize from '../../styles/useScreenSize';
+import media from '../../styles/media';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,6 +39,7 @@ function a11yProps(index: number) {
 
 function ChargePage() {
   const [value, setValue] = React.useState(0);
+  const { isSmallScreen, isMediumScreen, isLargeScreen } = useScreenSize();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -44,25 +47,30 @@ function ChargePage() {
 
   return (
     <Container>
-      <TitleBox>
-        <Titles>
-          <Dot />
-          <Title>티켓 충전/환전</Title>
-        </Titles>
-        <CheckBox>
-          <Short>충전/ 환전 내역 조회하기</Short>
-          <Icon
-            icon="weui:arrow-outlined"
-            style={{
-              width: '23px',
-              height: '25px',
-              cursor: 'pointer',
-              color: '#8F8E94',
-            }}
-          />
-        </CheckBox>
-      </TitleBox>
-      <Line />
+      {isLargeScreen && (
+        <>
+          <TitleBox>
+            <Titles>
+              <Dot />
+              <Title>티켓 충전/환전</Title>
+            </Titles>
+            <CheckBox>
+              <Short>충전/ 환전 내역 조회하기</Short>
+              <Icon
+                icon="weui:arrow-outlined"
+                style={{
+                  width: '23px',
+                  height: '25px',
+                  cursor: 'pointer',
+                  color: '#8F8E94',
+                }}
+              />
+            </CheckBox>
+          </TitleBox>
+          <Line />
+        </>
+      )}
+
       <Boxs>
         <Box sx={{ width: '100%' }}>
           <Box
@@ -75,8 +83,10 @@ function ChargePage() {
             <Tabs
               sx={{
                 width: '100%',
+                display: 'flex',
+                flexWrap: 'nowrap',
                 '& .MuiTabs-flexContainer': {
-                  justifyContent: 'center',
+                  justifyContent: 'space-between',
                 },
               }}
               value={value}
@@ -87,10 +97,10 @@ function ChargePage() {
             >
               <Tab
                 sx={{
-                  width: '100%',
+                  width: '50%',
                   fontFamily: 'Pretendard',
-                  fontSize: '20px',
-                  fontSeight: '600',
+                  fontSize: isSmallScreen ? '15px' : '20px',
+                  fontWeight: '600',
                   lineHeight: '17.308px',
                 }}
                 label="티켓 충전"
@@ -98,10 +108,10 @@ function ChargePage() {
               />
               <Tab
                 sx={{
-                  width: '100%',
+                  width: '50%',
                   fontFamily: 'Pretendard',
-                  fontSize: '20px',
-                  fontSeight: '600',
+                  fontSize: isSmallScreen ? '15px' : '20px',
+                  fontWeight: '600',
                   lineHeight: '17.308px',
                 }}
                 label="티켓 환전"
@@ -128,11 +138,30 @@ const Boxs = styled.div`
   border: 1px solid #c1c1c1;
   margin-bottom: 250px;
   padding-top: 15px;
+  margin-top: 53px;
+  ${media.medium`
+    margin-top: 21px;
+    width: 696px;
+    height: 758px;
+    margin-bottom: 166px;
+    border: 0.7px solid #c1c1c1;
+    `}
+  ${media.small`
+    width: 100%;
+    max-width: 390px; 
+    height: 100vh;
+    border-radius: 0px;
+    border: none;
+    margin-bottom: 0px;
+    padding: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+      `}
 `;
 
 const Line = styled.div`
   margin-top: 20px;
-  margin-bottom: 53px;
   width: 1080px;
   height: 1px;
   background-color: black;
@@ -186,5 +215,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 export default ChargePage;

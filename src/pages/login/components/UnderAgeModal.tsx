@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import sadVector from '../../../assets/sadVector.png';
 import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import SplashModal from './SplashModal';
 
 interface ModalProps {
   onClose: () => void;
@@ -23,6 +25,15 @@ const UnderAgeModal: React.FC<ModalProps> = ({ onClose }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+  }, []);
+
+  const { openModal } = useModalContext();
+
+  useEffect(() => {
+    console.log('KakaoRedirect useEffect 실행됨!');
+    setTimeout(() => {
+      openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+    }, 5000);
   }, []);
 
   const Content = (
@@ -46,6 +57,9 @@ const Contents = styled.div`
     position: fixed; 
     top: 0;
     left: 0;
+    display: flex;
+  align-items: center; 
+  justify-content: center;
   `}
 `;
 
@@ -60,7 +74,7 @@ const Title = styled.div`
 const Img = styled.img`
   width: 67px;
   height: 65px;
-  margin-top: 130px;
+  margin-top: 134px;
   margin-bottom: 42.5px;
 `;
 
