@@ -54,34 +54,39 @@ const HomePage: React.FC = () => {
     <>
       <AdBanner />
       <Wrapper>
-        <HomeSection
-          title="마감임박"
-          icon={clockIcon}
-          moreText="마감임박 상품 더보기"
-          apiKey="approaching"
-          moreLink="/approaching"
-          products={homeData.approaching || []}
-        />
-        <HomeSection
-          title="내가 찜한 래플"
-          icon={likeIcon}
-          moreText="내가 찜한 래플 더보기"
-          apiKey="myLikeRaffles"
-          moreLink="/my-likes"
-          products={homeData.myLikeRaffles || []}
-        />
-        <HomeSection
-          title="내가 팔로우한 상점"
-          icon={followIcon}
-          moreText="팔로우한 상점 래플 더보기"
-          apiKey="myFollowRaffles"
-          moreLink="/followed-stores"
-          products={homeData.myFollowRaffles || []}
-        />
-
+        {homeData.approaching && homeData.approaching.length > 0 ? (
+          <HomeSection
+            title="마감임박"
+            icon={clockIcon}
+            moreText="마감임박 상품 더보기"
+            apiKey="approaching"
+            moreLink="/approaching"
+            products={homeData.approaching}
+          />
+        ) : null}
+        {homeData.myLikeRaffles && homeData.myLikeRaffles.length > 0 ? (
+          <HomeSection
+            title="내가 찜한 래플"
+            icon={likeIcon}
+            moreText="내가 찜한 래플 더보기"
+            apiKey="myLikeRaffles"
+            moreLink="/my-likes"
+            products={homeData.myLikeRaffles || []}
+          />
+        ) : null}
+        {homeData.myFollowRaffles && homeData.myFollowRaffles.length > 0 ? (
+          <HomeSection
+            title="내가 팔로우한 상점"
+            icon={followIcon}
+            moreText="팔로우한 상점 래플 더보기"
+            apiKey="myFollowRaffles"
+            moreLink="/followed-stores"
+            products={homeData.myFollowRaffles || []}
+          />
+        ) : null}
         <LookAroundContainer>
           <LookAroundBox>래플 둘러보기</LookAroundBox>
-          <MoreListBox onClick={() => navigate('/')}>
+          <MoreListBox onClick={() => navigate('raffle-list')}>
             래플 전체보기
             <img src={moreList} alt="moreList" />
           </MoreListBox>
@@ -90,8 +95,8 @@ const HomePage: React.FC = () => {
         <Horizon />
 
         <ProductGrid>
-          {products.map((_, index) => (
-            <ProductCard key={index} />
+          {(homeData.raffles ?? []).map((product) => (
+            <ProductCard key={product.raffleId} {...product} />
           ))}
         </ProductGrid>
       </Wrapper>

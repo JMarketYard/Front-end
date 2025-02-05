@@ -100,7 +100,10 @@ const MoreListBox = styled.a`
 `;
 
 const ProductContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  place-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 1080px;
 `;
