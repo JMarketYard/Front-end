@@ -17,11 +17,12 @@ const RaffleUploadPage = () => {
         { key: "state-4", text: "중" },
         { key: "state-5", text: "하" },
     ];
+    const [moreTicketText, setMoreTicketText] = useState<string>("직접 입력");
     const tickets = [
         { key: "one", text: "1개" },
         { key: "two", text: "2개" },
         { key: "three", text: "3개" },
-        { key: "more", text: "직접 입력" },
+        { key: "more", text: moreTicketText },
     ];
     const care = [
         { key: "care", text: "사용" },
@@ -35,7 +36,8 @@ const RaffleUploadPage = () => {
     const { openModal } = useModalContext();
 
     const handleTicketModal = () => {
-        openModal(({ onClose }) => <TicketModal onClose={onClose} />);
+        openModal(({ onClose }) => <TicketModal onClose={onClose}
+        setMoreTicketText={setMoreTicketText} />);
     };
 
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
