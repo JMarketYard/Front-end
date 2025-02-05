@@ -3,13 +3,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from '../layout/RootLayout';
 import ChargePage from '../pages/charge/chargePage';
 import ModalProvider from '../components/Modal/context/ModalProvider';
-import HomePage from '../pages/homepage/homePage';
 import RaffleDetailPage from '../pages/raffleDetail/RaffleDetailPage';
-
 import KakaoRedirect from '../pages/redirect/KakaoRedirect';
 import RaffleUploadPage from '../pages/raffleUpload/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
+import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
 import ResultPage from '../pages/hostResult/ResultPage';
 
@@ -24,6 +23,15 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        path: '',
+        element: (
+          <div>
+            <HomePage />
+            <ModalProvider />
+          </div>
+        ),
+      },
+      {
         path: 'change',
         element: (
           <div>
@@ -35,7 +43,6 @@ const router = createBrowserRouter([
       {
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
-
       },
       { path: 'homepage', element: <HomePage /> },
       {
@@ -49,7 +56,25 @@ const router = createBrowserRouter([
       },
       {
         path: 'kakao',
-        element: <KakaoRedirect />,
+        element: (
+          <div>
+            <KakaoRedirect />
+            <ModalProvider />
+          </div>
+        ),
+      },
+      {
+        path: 'review',
+        element: <WriteReview />,
+      },
+      {
+        path: 'address',
+        element: (
+          <>
+            <AddressSetPage />
+            <ModalProvider />
+          </>
+        ),
       },
       {
         path: 'review',
@@ -77,7 +102,6 @@ const router = createBrowserRouter([
           </div>
         ),
       },
-
     ],
   },
 ]);
