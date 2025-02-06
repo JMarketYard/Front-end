@@ -2,7 +2,7 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import imgUpload from "../../assets/imgUpload.svg";
 import imgArrow from "../../assets/imgSelectArrow.png";
-import React, { ReactElement, useState } from "react";
+import React, { FormEvent, ReactElement, useState } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
@@ -11,8 +11,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 const RaffleUploadPage = () => {
     const itemStates = [
-        { key: "state-1", text: "새상품" },
-        { key: "state-2", text: "상태" },
+        { key: "state-1", text: "미개봉" },
+        { key: "state-2", text: "새상품" },
         { key: "state-3", text: "상" },
         { key: "state-4", text: "중" },
         { key: "state-5", text: "하" },
@@ -34,6 +34,8 @@ const RaffleUploadPage = () => {
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
     const { openModal } = useModalContext();
+    const [leastTicketNum, setLeastTicketNum] = useState<string>("");
+    const [name, setName] = useState<string>("");
 
     const handleTicketModal = () => {
         openModal(({ onClose }) => <TicketModal onClose={onClose}
@@ -42,7 +44,7 @@ const RaffleUploadPage = () => {
 
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
-        openModal(({ onClose }) => <UploadModal onClose={onClose} />);
+        openModal(({ onClose }) => <UploadModal onClose={onClose} name={name} />);
     };
 
     const handleItemState = (key:string) => {
@@ -55,6 +57,10 @@ const RaffleUploadPage = () => {
     const handleJcare = (key:string) => {
         setJcare(key);
     };
+    
+    const handleLeastTicketNum = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setLeastTicketNum(e.target.value);
+    }
 
     return (
         <UploadForm>
@@ -103,7 +109,12 @@ const RaffleUploadPage = () => {
                         </div>
                         <div>
                             <TitleSpan>상품명</TitleSpan>
-                            <InputBox width={635} type="text" />
+                            <InputContainer width={635} >
+                                <InputBox type="text"
+                                value={name}
+                                onChange={(e)=>setName(e.target.value)}
+                                />
+                            </InputContainer>
                         </div>
                         <div>
                             <TitleSpan>상태</TitleSpan>
@@ -160,7 +171,12 @@ const RaffleUploadPage = () => {
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
-                        <InputBox type="text" />
+                        <InputContainer>
+                            <InputBox type="text"
+                            value={leastTicketNum}
+                            onChange={handleLeastTicketNum} />
+                            <StyleP>예상 정산 금액: {Number(leastTicketNum)*100 || 0}원</StyleP>
+                        </InputContainer>
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>시작 일시</TitleSpan2>
@@ -188,7 +204,10 @@ const RaffleUploadPage = () => {
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>배송비</TitleSpan2>
-                        <InputBox type="text" />
+                        <InputContainer>
+                            <InputBox type="text" />
+                            <StyleP>최대 1만원까지 입력가능</StyleP>
+                        </InputContainer>
                     </SetConditionBox>
                 </SetConditionContainer>
             </div>
@@ -278,6 +297,21 @@ const TitleSpan2 = styled.div`
     line-height: 36.832px; /* 184.159% */
 `
 
+const StyleP = styled.p`
+    display: inline-block;
+    color: #C908FF;
+    text-align: right;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 36.832px; /* 263.085% */
+    letter-spacing: -0.338px;
+    &:hover {
+        cursor: default;
+    };
+`
+
 const ItemCategorySelect = styled.select`
     width: 635px;
     height: 45px;
@@ -359,13 +393,22 @@ const SetConditionBox = styled.div`
     display: flex;
 `
 
-const InputBox = styled.input<{width?:number}>`
+const InputContainer = styled.div<{width?:number}>`
     width: ${ props => props.width ? `${props.width}px` : '636px'};
     height: 45px;
     border-radius: 7px;
     border: 1px solid #8F8E94;
     box-sizing: border-box;
-    padding: 0 10px;
+    padding: 2px 10px;
+    // display: inline-block;
+    display: inline-flex;
+    align-items: center;
+`
+const InputBox = styled.input`
+    flex: 1;
+    height: 100%;
+    border: none;
+    outline: none;
     font-size: 18px;
     font-family: Pretendard;
     font-style: normal;

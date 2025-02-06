@@ -5,15 +5,16 @@ import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
+  name: string;
 }
 
-const UploadModal: React.FC<ModalProps> = ({ onClose }) => {
+const UploadModal: React.FC<ModalProps> = ({ onClose, name }) => {
   const navigate = useNavigate();
   return (
     <Modal onClose={onClose}>
       <Container>
         <Box />
-        <Title>로지텍 무소음 마우스</Title>
+        <Title>{name}</Title>
         <Short>해당 래플을 업로드하시겠습니까?</Short>
         <Button onClick={()=>navigate('/')}>업로드</Button>
       </Container>
