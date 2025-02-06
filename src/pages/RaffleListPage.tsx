@@ -1,34 +1,43 @@
 import { useState, useEffect, useRef } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import moreList from '../assets/homePage/moreList.svg';
+import axios from 'axios';
+import RaffleProps from '../components/RaffleProps';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  imageUrl: string;
+interface HomeSectionProps {
+  title: string;
+  icon: string;
+  apiKey: string;
+  moreLink: string;
+  products: RaffleProps[];
 }
 
-const RaffleListPage: React.FC = () => {
+const RaffleListPage: React.FC<HomeSectionProps> = () => {
   const navigate = useNavigate();
+  const { type } = useParams<{ type?: string }>();
+  const [title, setTitle] = useState<string>('래플 리스트');
   const observerRef = useRef<HTMLDivElement | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [raffles, setRaffles] = useState<RaffleProps[]>([]);
   const [page, setPage] = useState(1);
 
-  // ✅ 가짜 데이터 생성
   const fetchMoreProducts = () => {
     const newProducts = Array(16)
       .fill(null)
       .map((_, index) => ({
-        id: products.length + index + 1,
-        name: `상품 ${products.length + index + 1}`,
-        price: Math.floor(Math.random() * 10000) + 1000,
-        imageUrl: 'https://via.placeholder.com/150',
+        raffleId: raffles.length + index + 1, // ✅ raffleId 적용
+        imageUrls: ['https://via.placeholder.com/150'],
+        name: `상품 ${raffles.length + index + 1}`,
+        ticketNum: Math.floor(Math.random() * 100) + 1, // ✅ 랜덤 티켓 수
+        timeUntilEnd: Math.floor(Math.random() * 5000) + 100, // ✅ 랜덤 시간 (초 단위)
+        finish: false, // ✅ 기본값으로 false 설정
+        participantNum: Math.floor(Math.random() * 10) + 1, // ✅ 랜덤 참가자 수
+        like: Math.random() > 0.5, // ✅ 50% 확률로 좋아요 설정
       }));
 
-    setProducts((prev) => [...prev, ...newProducts]);
+    setRaffles((prevProducts) => [...prevProducts, ...newProducts]); // ✅ 기존 데이터에 추가
   };
 
   // 스크롤 감지 및 페이지 증가
@@ -54,24 +63,58 @@ const RaffleListPage: React.FC = () => {
     fetchMoreProducts();
   }, [page]);
 
+  useEffect(() => {
+    // 페이지 제목 설정
+    switch (type) {
+      // case `${apiKey}` :
+      //   setTitle(`${title}`);
+
+      case 'approaching':
+        setTitle('마감임박 래플');
+        break;
+      case 'likes':
+        setTitle('내가 찜한 래플');
+        break;
+      case 'following':
+        setTitle('팔로우한 상점의 래플');
+        break;
+      case 'more':
+        setTitle('래플 둘러보기');
+        break;
+      case 'category':
+        setTitle('카테고리별 상품');
+        break;
+      default:
+        setTitle('래플 둘러보기');
+    }
+    const fetchRaffleData = async () => {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/permit/home/${type}`,
+      );
+      console.log('API Response:', data.result.raffles);
+      setRaffles(data.result.raffles);
+    };
+
+    fetchRaffleData();
+  }, [type]); // `type` 또는 `search`가 변경될 때마다 실행
+
   return (
     <Wrapper>
       <LookAroundContainer>
-        <LookAroundBox>래플 둘러보기</LookAroundBox>
-        <MoreListBox onClick={() => navigate('/')}>
-          팔로우하는 상점 목록
-          <img src={moreList} alt="moreList" />
-        </MoreListBox>
+        <LookAroundBox>{title}</LookAroundBox>
+        {title === 'following' && (
+          <MoreListBox onClick={() => navigate('/')}>
+            팔로우하는 상점 목록
+            <img src={moreList} alt="moreList" />
+          </MoreListBox>
+        )}
       </LookAroundContainer>
 
       <Horizon />
 
       <ProductGrid>
-        {products.map((product) => (
-          <ProductCard
-            id={product.id}
-            onClick={() => navigate('/raffle-detail')}
-          />
+        {(raffles ?? []).map((product) => (
+          <ProductCard key={product.raffleId} {...product} />
         ))}
       </ProductGrid>
 

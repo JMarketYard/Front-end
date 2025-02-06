@@ -78,7 +78,14 @@ const ResultPage = () => {
               </GrayAddressBox>
             )}
             {ifSuccess == 'done' && (
-              <GrayAddressBox>배송지 입력됨(수정하기)</GrayAddressBox>
+              <WhiteAddressBox>
+                <NameBox>송유림</NameBox>
+                <VerticalBox />{' '}
+                <AddressBox>
+                  (04066)서울특별시 마포구 와우산로 94 홍익대학교 제2기숙사, 1호
+                  (010-7689-6108)
+                </AddressBox>{' '}
+              </WhiteAddressBox>
             )}
           </>
         )}
@@ -283,6 +290,45 @@ const DeliveryTimeoverBox = styled.div`
     width: 15px;
     height: 15px;
   }
+`;
+
+const WhiteAddressBox = styled.div`
+  width: 636px;
+  height: 59px;
+  border-radius: 10px;
+  border: 1px solid #8f8e94;
+  margin-top: 45px;
+  padding: 0 22px 0 27.5px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const NameBox = styled.div`
+  display: flex;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+`;
+
+const VerticalBox = styled.div`
+  width: 1px;
+  height: 47px;
+  background: #8f8e94;
+`;
+const AddressBox = styled.div`
+  display: flex;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 15.763px; /* 112.59% */
 `;
 
 const GrayAddressBox = styled.div`

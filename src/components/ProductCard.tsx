@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
 import icLike from '../assets/ProductCard/like.svg';
 import icUnlike from '../assets/ProductCard/unlike.svg';
+import { Link } from 'react-router-dom';
+import RaffleProps from './RaffleProps';
 
 const getFormatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -18,20 +21,9 @@ const getFormatTime = (seconds: number): string => {
   return `${remainingSeconds}초`;
 };
 
-interface ProductProps {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-}
-
-const ProductCard: React.FC<ProductProps> = ({
+const ProductCard: React.FC<RaffleProps> = ({
   raffleId,
-  imageUrl,
+  imageUrls,
   name,
   ticketNum,
   timeUntilEnd,
@@ -40,37 +32,42 @@ const ProductCard: React.FC<ProductProps> = ({
   like,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
-  const toggleLike = () => {
+  const navigate = useNavigate();
+  const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation(); //Wrapper로 이벤트 전달 방지
+    event.preventDefault(); // 기본 동작 (Link 이동) 방지
     setIsLiked((prevState) => !prevState);
   };
 
   return (
     <Wrapper>
-      <ImageContainer>
-        {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
-        {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
-          <TextBox>마감임박</TextBox>
-        )}
-        <LikeBox onClick={toggleLike}>
-          <img
-            src={isLiked ? icLike : icUnlike}
-            alt={isLiked ? 'Liked' : 'Unliked'}
-          />
-        </LikeBox>
-      </ImageContainer>
-      <InfoContainer>
-        <TitleContainer>
-          <TitleBox>{name}</TitleBox>
-          <ParticipantsBox>{participantNum}명 응모중</ParticipantsBox>
-        </TitleContainer>
+      <StyledLink to={`raffles/${raffleId}`}>
+        <ImageContainer imageUrls={imageUrls}>
+          {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
+          {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
+            <TextBox>마감임박</TextBox>
+          )}
+          <LikeBox onClick={toggleLike}>
+            <img
+              src={isLiked ? icLike : icUnlike}
+              alt={isLiked ? 'Liked' : 'Unliked'}
+            />
+          </LikeBox>
+        </ImageContainer>
+        <InfoContainer>
+          <TitleContainer>
+            <TitleBox>{name}</TitleBox>
+            <ParticipantsBox>{participantNum}명 응모중</ParticipantsBox>
+          </TitleContainer>
 
-        <ContentContainer>
-          <TicketBox>
-            <img src={ticket} alt="ticket" /> {ticketNum}
-          </TicketBox>
-          {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
-        </ContentContainer>
-      </InfoContainer>
+          <ContentContainer>
+            <TicketBox>
+              <img src={ticket} alt="ticket" /> {ticketNum}
+            </TicketBox>
+            {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
+          </ContentContainer>
+        </InfoContainer>
+      </StyledLink>
     </Wrapper>
   );
 };
@@ -85,14 +82,26 @@ const Wrapper = styled.div`
   background: #fff;
 `;
 
-const ImageContainer = styled.div`
+const StyledLink = styled(Link)`
+  text-decoration: none; /* 밑줄 제거 */
+  color: inherit; /* 기본 색상 유지 */
+`;
+
+const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
+  ({ imageUrls }) => ({
+    style: { backgroundImage: `url(${imageUrls[0]})` },
+  }),
+)<Pick<RaffleProps, 'imageUrls'>>`
   width: 228px;
   height: 227px;
-  flex-shrink: 0;
   border-radius: 5px;
   background: #e4e4e4;
   position: relative;
   margin-top: 6px;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `;
 
 const RaffleClosingBox = styled.div`
@@ -152,9 +161,7 @@ const LikeBox = styled.div`
   position: absolute;
   top: 188px;
   right: 16px;
-
-  /* cursor: pointer;
-  user-select: none; */
+  cursor: pointer;
 `;
 
 const InfoContainer = styled.div`
