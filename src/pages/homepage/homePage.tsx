@@ -36,17 +36,11 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     console.log('useEffect');
     const fetchHomeData = async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/permit/home`,
-        {
-          // headers: {
-          //   Accept: 'application/json',
-          // },
-        },
-      );
+      const {data} = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/permit/home`);
 
-      console.log('API Response:', response.data);
-      setHomeData(response.data.result);
+      console.log('API Response:', data.result.raffles);
+      setHomeData(data.result);
     };
 
     fetchHomeData();
