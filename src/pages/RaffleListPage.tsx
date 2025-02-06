@@ -5,7 +5,7 @@ import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import moreList from '../assets/homePage/moreList.svg';
 import axios from 'axios';
-import exampleData from '../mocks/HomeData';
+import { Link } from 'react-router-dom';
 
 interface Raffle {
   raffleId: number;

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import smallTicket from '../assets/smallProductCard/smallTicket.svg';
 import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
 import smallLike from '../assets/smallProductCard/smallLike.svg';
+import { Link } from 'react-router-dom';
 
 const getFormatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -43,32 +44,35 @@ const SmallProductCard: React.FC<ProductProps> = ({
   const [isLiked, setIsLiked] = useState(false);
   const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation(); //Wrapper로 이벤트 전달 방지
+    event.preventDefault(); // 기본 동작 (Link 이동) 방지
     setIsLiked((prevState) => !prevState);
   };
 
   return (
     <Wrapper>
-      <ImageContainer imageUrl={imageUrl}>
-        {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
-        {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
-          <TextBox>마감임박</TextBox>
-        )}
-        <LikeBox onClick={toggleLike}>
-          <img
-            src={isLiked ? smallLike : smallUnlike}
-            alt={isLiked ? 'Liked' : 'Unliked'}
-          />
-        </LikeBox>
-      </ImageContainer>
-      <Layout>
-        <TitleContainer>{name}</TitleContainer>
-        <InfoContainer>
-          <TicketBox>
-            <img src={smallTicket} alt="smallTicket" /> {ticketNum}
-          </TicketBox>
-          {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
-        </InfoContainer>
-      </Layout>
+      <Link to={`raffles/${raffleId}`}>
+        <ImageContainer imageUrl={imageUrl}>
+          {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
+          {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
+            <TextBox>마감임박</TextBox>
+          )}
+          <LikeBox onClick={toggleLike}>
+            <img
+              src={isLiked ? smallLike : smallUnlike}
+              alt={isLiked ? 'Liked' : 'Unliked'}
+            />
+          </LikeBox>
+        </ImageContainer>
+        <Layout>
+          <TitleContainer>{name}</TitleContainer>
+          <InfoContainer>
+            <TicketBox>
+              <img src={smallTicket} alt="smallTicket" /> {ticketNum}
+            </TicketBox>
+            {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
+          </InfoContainer>
+        </Layout>
+      </Link>
     </Wrapper>
   );
 };
