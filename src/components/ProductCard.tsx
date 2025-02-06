@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
 import icLike from '../assets/ProductCard/like.svg';
@@ -18,7 +19,7 @@ const getFormatTime = (seconds: number): string => {
   return `${remainingSeconds}초`;
 };
 
-interface ProductProps {
+interface RaffleProps {
   raffleId: number;
   imageUrl: string;
   name: string;
@@ -27,9 +28,10 @@ interface ProductProps {
   finish: boolean;
   participantNum: number;
   like: boolean;
+  children?: React.ReactNode;
 }
 
-const ProductCard: React.FC<ProductProps> = ({
+const ProductCard: React.FC<RaffleProps> = ({
   raffleId,
   imageUrl,
   name,
@@ -40,13 +42,15 @@ const ProductCard: React.FC<ProductProps> = ({
   like,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
-  const toggleLike = () => {
+  const navigate = useNavigate();
+  const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation(); //Wrapper로 이벤트 전달 방지
     setIsLiked((prevState) => !prevState);
   };
 
   return (
     <Wrapper>
-      <ImageContainer>
+      <ImageContainer imageUrl={imageUrl}>
         {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
         {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
           <TextBox>마감임박</TextBox>
@@ -85,14 +89,28 @@ const Wrapper = styled.div`
   background: #fff;
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.div<{ imageUrl: string }>`
   width: 228px;
   height: 227px;
-  flex-shrink: 0;
   border-radius: 5px;
   background: #e4e4e4;
   position: relative;
   margin-top: 6px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: ${(props) =>
+      props.imageUrl ? `url(${props.imageUrl})` : 'none'};
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px;
+    z-index: -1; // 배경을 children 뒤로 보냄
+  }
 `;
 
 const RaffleClosingBox = styled.div`
@@ -152,9 +170,7 @@ const LikeBox = styled.div`
   position: absolute;
   top: 188px;
   right: 16px;
-
-  /* cursor: pointer;
-  user-select: none; */
+  cursor: pointer;
 `;
 
 const InfoContainer = styled.div`
