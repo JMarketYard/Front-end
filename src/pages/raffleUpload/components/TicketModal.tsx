@@ -1,20 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import vector from '../../../assets/Vector.png';
 
 interface ModalProps {
   onClose: () => void;
+  setMoreTicketText: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TicketModal: React.FC<ModalProps> = ({ onClose }) => {
+const TicketModal: React.FC<ModalProps> = ({ onClose, setMoreTicketText }) => {
+  const [myTicket, setMyTicket] = useState<string>("");
+  const [value, setValue] = useState<string>("");
+
+  const onCloseBtn = (value:string) => {
+    if (value==="" || parseInt(value)===0) alert("티켓 개수를 1개 이상 입력해주세요");
+    else {
+      setMoreTicketText(`${value}개`);
+      onClose();
+    };
+  }
+
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={vector} />
         <Title>티켓 개수 직접 입력하기</Title>
-        <Input placeholder="개" />
-        <Button onClick={onClose}>설정하기</Button>
+        <Input placeholder="개"
+        value={value}
+        onChange={e=>setValue(e.target.value)}
+        />
+        <Button onClick={()=>onCloseBtn(value)}>설정하기</Button>
       </Container>
     </Modal>
   );
