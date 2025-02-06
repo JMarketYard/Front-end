@@ -2,7 +2,7 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import imgUpload from "../../assets/imgUpload.svg";
 import imgArrow from "../../assets/imgSelectArrow.png";
-import React, { FormEvent, ReactElement, useState } from "react";
+import React, { FormEvent, ReactElement, useRef, useState } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
@@ -36,15 +36,24 @@ const RaffleUploadPage = () => {
     const { openModal } = useModalContext();
     const [leastTicketNum, setLeastTicketNum] = useState<string>("");
     const [name, setName] = useState<string>("");
+    const fileRef = useRef<HTMLInputElement>(null);
+    const [images, setImages] = useState<string[]>([]);
 
-    const handleTicketModal = () => {
-        openModal(({ onClose }) => <TicketModal onClose={onClose}
-        setMoreTicketText={setMoreTicketText} />);
+    const handleImg = () => {
+        fileRef?.current?.click();
+    };
+    const handleChangeImgInput = (e:React.ChangeEvent) => {
+        const targetFiles = (e.target as HTMLInputElement).files as FileList;
+        const targetFilesArr = Array.from(targetFiles);
+        const selectedFiles:string[] = targetFilesArr.map((file) => {
+            return URL.createObjectURL(file);
+        });
+        setImages(selectedFiles);
     };
 
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
-        openModal(({ onClose }) => <UploadModal onClose={onClose} name={name} />);
+        openModal(({ onClose }) => <UploadModal onClose={onClose} name={name} images={images} />);
     };
 
     const handleItemState = (key:string) => {
@@ -60,7 +69,13 @@ const RaffleUploadPage = () => {
     
     const handleLeastTicketNum = (e:React.ChangeEvent<HTMLInputElement>) => {
         setLeastTicketNum(e.target.value);
-    }
+    };
+
+    // 응모 티켓 개수 직접 입력 모달 open
+    const handleTicketModal = () => {
+        openModal(({ onClose }) => <TicketModal onClose={onClose}
+        setMoreTicketText={setMoreTicketText} />);
+    };
 
     return (
         <UploadForm>
@@ -69,14 +84,21 @@ const RaffleUploadPage = () => {
                 <ItemInfoContainer>
                     <ImgContainer>
                         <ImgSpan>상품 이미지</ImgSpan>
-                        <ImgFileLabel htmlFor="img-file">
-                            <ImgFileIcon src={imgUpload} />
-                        </ImgFileLabel>
+                        <div onClick={handleImg}>
+                            {images.length===0 ?
+                            <ImgFileLabel htmlFor="img-file">
+                                <ImgFileIcon src={imgUpload} />
+                            </ImgFileLabel> :
+                            <SelectedImg src={images[0]} />
+                            }
+                        </div>
                         <InputImgFile
+                        ref={fileRef}
                         type="file"
                         id="img-file"
                         accept="image/*"
                         multiple
+                        onChange={handleChangeImgInput}
                         />
                     </ImgContainer>
                     <ItemInfoRightContainer>
@@ -166,8 +188,6 @@ const RaffleUploadPage = () => {
                                 {v.text}
                             </ConditionBtn>
                         ))}
-                        {/* <ConditionBtn type="button">사용</ConditionBtn>
-                        <ConditionBtn type="button">미사용</ConditionBtn> */}
                     </SetConditionBox>
                     <SetConditionBox>
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
@@ -264,6 +284,13 @@ const ImgFileIcon = styled.img`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+`
+const SelectedImg = styled.img`
+    display: inline-block;
+    position: relative;
+    width: 261px;
+    height: 261px;
+    border-radius: 5px;
 `
 const InputImgFile = styled.input`
     display: none;
