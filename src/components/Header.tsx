@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import imgLogo from '../assets/logo.png';
-import icHamburger from '../assets/searchBox/icon-hamburger.svg';
-import icNotice from '../assets/searchBox/icon-notice.svg';
-import icSearch from '../assets/searchBox/icon-search.svg';
-import icHeart from '../assets/searchBox/icon-heart.svg';
+import icHamburger from '../assets/header/icon-hamburger.svg';
+import { ReactComponent as IcNotice } from '../assets/header/icon-notice.svg';
+import icSearch from '../assets/header/icon-search.svg';
+import icHeart from '../assets/header/icon-heart.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import media from '../styles/media';
@@ -28,7 +28,8 @@ const Header = () => {
                     <LogoImg src={imgLogo} onClick={()=>navigate('/')} />
                 </TopCenter>
                 <TopRight>
-                    <img src={icNotice} width={16} />
+                    {/* <IcNotice /> */}
+                    <IcNotice width={16} height={16} fill={"#000000"} />
                     <img src={icHeart} width={16} />
                 </TopRight>
             </ContainerSmall>
