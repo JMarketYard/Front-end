@@ -46,6 +46,7 @@ const Wrapper = styled.div`
   background-color: white;
 
   .slick-slide {
+    width: 1440px;
     display: flex;
     justify-content: center;
     align-items: center;

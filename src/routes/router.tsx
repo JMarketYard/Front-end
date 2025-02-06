@@ -10,6 +10,7 @@ import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
+import RaffleListPage from '../pages/RaffleListPage';
 import ResultPage from '../pages/hostResult/ResultPage';
 
 const router = createBrowserRouter([
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
       {
         path: 'set-open',
         element: <SetOpenInfoPage />,
+      },
+      {
+        path: '/raffles/:type',
+        element: <RaffleListPage />,
       },
       {
         path: 'result',
