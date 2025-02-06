@@ -5,6 +5,7 @@ import smallTicket from '../assets/smallProductCard/smallTicket.svg';
 import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
 import smallLike from '../assets/smallProductCard/smallLike.svg';
 import { Link } from 'react-router-dom';
+import RaffleProps from './RaffleProps';
 
 const getFormatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -20,20 +21,9 @@ const getFormatTime = (seconds: number): string => {
   return `${remainingSeconds}초`;
 };
 
-interface ProductProps {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-}
-
-const SmallProductCard: React.FC<ProductProps> = ({
+const SmallProductCard: React.FC<RaffleProps> = ({
   raffleId,
-  imageUrl,
+  imageUrls,
   name,
   ticketNum,
   timeUntilEnd,
@@ -50,8 +40,8 @@ const SmallProductCard: React.FC<ProductProps> = ({
 
   return (
     <Wrapper>
-      <Link to={`raffles/${raffleId}`}>
-        <ImageContainer imageUrl={imageUrl}>
+      <StyledLink to={`raffles/${raffleId}`}>
+        <ImageContainer imageUrls={imageUrls}>
           {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
             <TextBox>마감임박</TextBox>
@@ -72,7 +62,7 @@ const SmallProductCard: React.FC<ProductProps> = ({
             {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
           </InfoContainer>
         </Layout>
-      </Link>
+      </StyledLink>
     </Wrapper>
   );
 };
@@ -85,11 +75,16 @@ const Wrapper = styled.div`
   background-color: #ffffff;
 `;
 
-const ImageContainer = styled.div.attrs<Pick<ProductProps, 'imageUrl'>>(
-  ({ imageUrl }) => ({
-    style: { backgroundImage: `url(${imageUrl})` },
+const StyledLink = styled(Link)`
+  text-decoration: none; /* 밑줄 제거 */
+  color: inherit; /* 기본 색상 유지 */
+`;
+
+const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
+  ({ imageUrls }) => ({
+    style: { backgroundImage: `url(${imageUrls[0]})` },
   }),
-)<Pick<ProductProps, 'imageUrl'>>`
+)<Pick<RaffleProps, 'imageUrls'>>`
   width: 192px;
   height: 192px;
   flex-shrink: 0;

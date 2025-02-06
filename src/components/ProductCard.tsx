@@ -5,6 +5,7 @@ import ticket from '../assets/ProductCard/ticket.svg';
 import icLike from '../assets/ProductCard/like.svg';
 import icUnlike from '../assets/ProductCard/unlike.svg';
 import { Link } from 'react-router-dom';
+import RaffleProps from './RaffleProps';
 
 const getFormatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -20,21 +21,9 @@ const getFormatTime = (seconds: number): string => {
   return `${remainingSeconds}초`;
 };
 
-interface RaffleProps {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-  children?: React.ReactNode;
-}
-
 const ProductCard: React.FC<RaffleProps> = ({
   raffleId,
-  imageUrl,
+  imageUrls,
   name,
   ticketNum,
   timeUntilEnd,
@@ -52,8 +41,8 @@ const ProductCard: React.FC<RaffleProps> = ({
 
   return (
     <Wrapper>
-      <Link to={`raffles/${raffleId}`}>
-        <ImageContainer imageUrl={imageUrl}>
+      <StyledLink to={`raffles/${raffleId}`}>
+        <ImageContainer imageUrls={imageUrls}>
           {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
             <TextBox>마감임박</TextBox>
@@ -78,7 +67,7 @@ const ProductCard: React.FC<RaffleProps> = ({
             {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
           </ContentContainer>
         </InfoContainer>
-      </Link>
+      </StyledLink>
     </Wrapper>
   );
 };
@@ -93,7 +82,16 @@ const Wrapper = styled.div`
   background: #fff;
 `;
 
-const ImageContainer = styled.div<{ imageUrl: string }>`
+const StyledLink = styled(Link)`
+  text-decoration: none; /* 밑줄 제거 */
+  color: inherit; /* 기본 색상 유지 */
+`;
+
+const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
+  ({ imageUrls }) => ({
+    style: { backgroundImage: `url(${imageUrls[0]})` },
+  }),
+)<Pick<RaffleProps, 'imageUrls'>>`
   width: 228px;
   height: 227px;
   border-radius: 5px;
@@ -101,20 +99,9 @@ const ImageContainer = styled.div<{ imageUrl: string }>`
   position: relative;
   margin-top: 6px;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: ${(props) =>
-      props.imageUrl ? `url(${props.imageUrl})` : 'none'};
-    background-size: cover;
-    background-position: center;
-    border-radius: 5px;
-    z-index: -1; // 배경을 children 뒤로 보냄
-  }
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `;
 
 const RaffleClosingBox = styled.div`

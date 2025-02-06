@@ -5,24 +5,14 @@ import SmallProductCard from '../../../components/SmallProductCard';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-interface Raffle {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-}
+import RaffleProps from '../../../components/RaffleProps';
 
 interface HomeSectionProps {
   title: string;
   icon: string;
   apiKey: string;
   moreLink: string;
-  products: Raffle[];
+  products: RaffleProps[];
 }
 
 const HomeSection: React.FC<HomeSectionProps> = ({
@@ -49,8 +39,8 @@ const HomeSection: React.FC<HomeSectionProps> = ({
       </HeaderContainer>
 
       <ProductContainer>
-        {products.map((product) => (
-          <SmallProductCard key={product.raffleId} {...product} />
+        {products.map((products) => (
+          <SmallProductCard key={products.raffleId} {...products} />
         ))}
       </ProductContainer>
     </Wrapper>

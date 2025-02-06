@@ -12,23 +12,13 @@ import axios from 'axios';
 import media from '../../styles/media';
 import { Link } from 'react-router-dom';
 import exampleData from '../../mocks/HomeData';
-
-interface Raffle {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-}
+import RaffleProps from '../../components/RaffleProps';
 
 interface HomeData {
-  approaching: Raffle[];
-  myLikeRaffles: Raffle[] | null; // ✅ 로그인 안 했을 경우 null 가능
-  myFollowRaffles: Raffle[] | null; // ✅ 로그인 안 했을 경우 null 가능
-  raffles: Raffle[] | null;
+  approaching: RaffleProps[];
+  myLikeRaffles: RaffleProps[] | null; // ✅ 로그인 안 했을 경우 null 가능
+  myFollowRaffles: RaffleProps[] | null; // ✅ 로그인 안 했을 경우 null 가능
+  raffles: RaffleProps[] | null;
 }
 
 const HomePage: React.FC = () => {

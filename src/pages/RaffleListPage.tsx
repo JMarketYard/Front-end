@@ -5,25 +5,14 @@ import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import moreList from '../assets/homePage/moreList.svg';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-
-interface Raffle {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-}
+import RaffleProps from '../components/RaffleProps';
 
 interface HomeSectionProps {
   title: string;
   icon: string;
   apiKey: string;
   moreLink: string;
-  products: Raffle[];
+  products: RaffleProps[];
 }
 
 const RaffleListPage: React.FC<HomeSectionProps> = () => {
@@ -31,7 +20,7 @@ const RaffleListPage: React.FC<HomeSectionProps> = () => {
   const { type } = useParams<{ type?: string }>();
   const [title, setTitle] = useState<string>('래플 리스트');
   const observerRef = useRef<HTMLDivElement | null>(null);
-  const [raffles, setRaffles] = useState<Raffle[]>([]);
+  const [raffles, setRaffles] = useState<RaffleProps[]>([]);
   const [page, setPage] = useState(1);
 
   const fetchMoreProducts = () => {
@@ -39,7 +28,7 @@ const RaffleListPage: React.FC<HomeSectionProps> = () => {
       .fill(null)
       .map((_, index) => ({
         raffleId: raffles.length + index + 1, // ✅ raffleId 적용
-        imageUrl: 'https://via.placeholder.com/150',
+        imageUrls: ['https://via.placeholder.com/150'],
         name: `상품 ${raffles.length + index + 1}`,
         ticketNum: Math.floor(Math.random() * 100) + 1, // ✅ 랜덤 티켓 수
         timeUntilEnd: Math.floor(Math.random() * 5000) + 100, // ✅ 랜덤 시간 (초 단위)
