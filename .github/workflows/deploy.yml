@@ -22,7 +22,7 @@ jobs:
           echo "🔧 Running build script..."
           sh -x ./build.sh
 
-      - name: Debug: Check available directories after build
+      - name: Check available directories after build
         run: |
           echo "🔍 Checking directories after build..."
           ls -al
