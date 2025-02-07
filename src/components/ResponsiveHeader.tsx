@@ -70,12 +70,13 @@ const ResponsiveHeader = () => {
     }, [searchRef.current, categoryRef.current]);
     
     return (
+      <>
         <Wrapper>
             <TopContainer>
                 <LoginBtn onClick={onClickLoginBtn} state={String(isLoggedIn)}>
                     {isLoggedIn ? '로그아웃' : '로그인'}
                 </LoginBtn>
-                <LineDiv height={'27px'} margin={'0 32px'} />
+                <LineDiv height={'27px'} margin={'0 32px'} className='line-1' />
                 <SmallIconDiv>
                     <IcNotice width={18.65} height={21.32} fill={"#8F8E94"} />
                     <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
@@ -100,7 +101,7 @@ const ResponsiveHeader = () => {
                     <CategoryMenu />}
                 </CategoryContainer>
                 <SearchBoxDiv>
-                    <TicketImg src={ticket} width={88} />
+                    <TicketImg src={ticket} />
                     <SearchInput
                     type="text"
                     onClick={()=>setIsSearchClicked(true)}
@@ -160,6 +161,8 @@ const ResponsiveHeader = () => {
                 </IconDiv>
             </SearchBoxContainer>
         </Wrapper>
+        <Line />
+      </>
     );
 };
 
@@ -168,13 +171,14 @@ export default ResponsiveHeader;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 1084px;
+  max-width: 1084px;
   height: 188px;
   box-sizing: border-box;
   z-index: 100;
   ${media.medium`
-        // display: none;
-    `}
+        width: 650px;
+        // padding: 0 40px;
+  `}
 `;
 
 const TopContainer = styled.div`
@@ -182,6 +186,9 @@ const TopContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin: 0 34px 26px 0;
+  ${media.medium`
+      margin-right: 10px;
+    `}
 `;
 
 const LoginBtn = styled.button<{ state: string }>`
@@ -202,6 +209,9 @@ const LoginBtn = styled.button<{ state: string }>`
   line-height: 18px;
   letter-spacing: -0.165px;
   cursor: pointer;
+  ${media.medium`
+      display: none;
+    `}
 `;
 
 const IconTextDiv = styled.div<{
@@ -238,6 +248,10 @@ const LogoImg = styled.img`
   &:hover {
     cursor: pointer;
   };
+  ${media.medium`
+    width: 119px;
+    height: 56px;
+    `}
 `
 
 const CategoryContainer = styled.div`
@@ -263,10 +277,14 @@ const Img = styled.img`
 `;
 
 const TicketImg = styled.img`
+  width: 88px;
   position: absolute;
   bottom: 105%;
   left: 50%;
   transform: translateX(-50%);
+  ${media.medium`
+      width: 79px;
+    `}
 `;
 
 const SearchInput = styled.input`
@@ -442,4 +460,16 @@ const LineDiv = styled.div<{ height: string; margin: string }>`
   height: ${(props) => props.height};
   background: #8f8e94;
   margin: ${(props) => props.margin};
+
+  &.line-1 {
+    ${media.medium`
+        display: none;
+      `}
+  }
 `;
+
+const Line = styled.div`
+    width: 100%;
+    height: 1px;
+    background: #E4E4E4;
+`
