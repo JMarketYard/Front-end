@@ -13,10 +13,38 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install mustache (to update the date)
-        run: apk add ruby && gem install mustache
+        run: |
+          apk add ruby
+          gem install mustache
 
-      - name: creates output
-        run: sh ./build.sh
+      - name: Run build script
+        run: |
+          echo "🔧 Running build script..."
+          sh -x ./build.sh
+
+      - name: Debug: Check available directories after build
+        run: |
+          echo "🔍 Checking directories after build..."
+          ls -al
+          echo "🔍 Checking possible build output folders..."
+          ls -al output || echo "⚠️ output directory not found!"
+          ls -al dist || echo "⚠️ dist directory not found!"
+          ls -al build || echo "⚠️ build directory not found!"
+
+      - name: Detect correct build folder
+        id: detect-folder
+        run: |
+          if [ -d "output" ]; then
+            echo "BUILD_DIR=output" >> $GITHUB_ENV
+          elif [ -d "dist" ]; then
+            echo "BUILD_DIR=dist" >> $GITHUB_ENV
+          elif [ -d "build" ]; then
+            echo "BUILD_DIR=build" >> $GITHUB_ENV
+          else
+            echo "🚨 ERROR: No known build directory (output, dist, build) found!"
+            exit 1
+          fi
+          echo "✅ Build directory detected: $BUILD_DIR"
 
       - name: Pushes to another repository
         id: push_directory
@@ -24,7 +52,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
         with:
-          source-directory: 'output'
+          source-directory: ${{ env.BUILD_DIR }}
           destination-github-username: yelynnn
           destination-repository-name: JMarketYard
           user-email: ${{ secrets.EMAIL }}
@@ -32,4 +60,4 @@ jobs:
           target-branch: develop
 
       - name: Test get variable exported by push-to-another-repository
-        run: echo $DESTINATION_CLONED_DIRECTORY
+        run: echo "DESTINATION_CLONED_DIRECTORY = $DESTINATION_CLONED_DIRECTORY"
