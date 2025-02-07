@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import media from '../styles/media';
 import icLogo from '../assets/header/icon-logo.svg';
-// import imgLogo from '../assets/logo.png';
 import icHamburger from '../assets/header/icon-hamburger.svg';
 import ticket from '../assets/ticketLogo.png';
 import { ReactComponent as IcNotice } from '../assets/header/icon-notice.svg';
@@ -58,7 +57,7 @@ const ResponsiveHeader = () => {
     };
     const onClickLoginBtn = () => {
         if (!isLoggedIn) handleOpenModal();
-    }
+    };
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -279,7 +278,7 @@ const Img = styled.img`
 const TicketImg = styled.img`
   width: 88px;
   position: absolute;
-  bottom: 105%;
+  bottom: 102%;
   left: 50%;
   transform: translateX(-50%);
   ${media.medium`
