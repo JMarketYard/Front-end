@@ -10,7 +10,7 @@ import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
-import RaffleListPage from '../pages/RaffleListPage';
+import RaffleListPage from '../pages/raffleList/RaffleListPage';
 import ResultPage from '../pages/hostResult/ResultPage';
 
 const router = createBrowserRouter([
@@ -45,7 +45,6 @@ const router = createBrowserRouter([
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
       },
-      { path: 'homepage', element: <HomePage /> },
       {
         path: 'raffle-detail',
         element: (

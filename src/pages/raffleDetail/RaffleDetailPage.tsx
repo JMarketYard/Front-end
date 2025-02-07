@@ -32,7 +32,7 @@ const RaffleDetailPage = () => {
         countParticipant={countParticipant}
       />
       <MoreInfoLayout>
-        <Market {...raffle} />
+        <Market />
         <Probability
           {...raffle}
           participant={participant}
