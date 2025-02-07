@@ -4,7 +4,8 @@ import icLogo from '../assets/header/icon-logo.svg';
 import icHamburger from '../assets/header/icon-hamburger.svg';
 import ticket from '../assets/ticketLogo.png';
 import { ReactComponent as IcNotice } from '../assets/header/icon-notice.svg';
-import icSetting from '../assets/header/icon-setting.svg';
+import { ReactComponent as IcSetting } from '../assets/header/icon-setting.svg';
+// import icSetting from '../assets/header/icon-setting.svg';
 import icSearch from '../assets/header/icon-search.svg';
 import icHeart from '../assets/header/icon-heart.svg';
 import icMyPage from '../assets/header/icon-mypage.svg';
@@ -77,12 +78,12 @@ const ResponsiveHeader = () => {
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} className='line-1' />
                 <SmallIconDiv>
-                    <IcNotice width={18.65} height={21.32} fill={"#8F8E94"} />
+                    <IcNotice className='svg' width={18.65} height={21.32} fill={"#8F8E94"} />
                     <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
                 </SmallIconDiv>
                 <LineDiv height={'27px'} margin={'0 32px'} />
                 <SmallIconDiv>
-                    <img src={icSetting} width={22} />
+                    <IcSetting className='svg' width={22} height={24} fill={"#8F8E94"} />
                     <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
                 </SmallIconDiv>
             </TopContainer>
@@ -198,10 +199,21 @@ const LoginBtn = styled.button<{ state: string }>`
     props.state === 'true'
       ? `border: 1px solid #8F8E94;
         background-color: transparent;
-        color: #8F8E94;`
+        color: #8F8E94;
+        &:hover {
+            border: 1px solid #000;
+            color: #000;
+        }
+        `
       : `border: 1px solid #C908FF;
         background: rgba(201, 8, 255, 0.20);
-        color: #C908FF;`}
+        color: #C908FF;
+        &:hover {
+            border: 1px solid #C908FF;
+            background: #C908FF;
+            color: #FFF;
+        };
+        `}
   font-family: Pretendard;
   font-size: 15px;
   font-weight: 500;
@@ -395,6 +407,10 @@ const HotKeyword = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    
+    &:hover {
+        cursor: pointer;
+    };
 `
 
 const SmallIconDiv = styled.div`
@@ -404,6 +420,12 @@ const SmallIconDiv = styled.div`
   justify-content: space-evenly;
   height: 65px;
   cursor: pointer;
+  &:hover > ${IconTextDiv} {
+    color: #040404;
+  };
+  &:hover .svg {
+    fill: #040404;
+  }
 `;
 
 const IconDiv = styled.div`
@@ -416,6 +438,9 @@ const IconDiv = styled.div`
   min-width: 61px;
   // margin: 0 25px 0 0;
   cursor: pointer;
+  &:hover > ${IconTextDiv} {
+    color: #C908FF;
+  }
 `;
 
 const IconHamburgerDiv = styled.div`
@@ -427,6 +452,9 @@ const IconHamburgerDiv = styled.div`
   height: 46px;
   min-width: 61px;
   cursor: pointer;
+  &:hover > ${IconTextDiv} {
+    color: #C908FF;
+  }
 `;
 
 const UploadBtn = styled.button`
