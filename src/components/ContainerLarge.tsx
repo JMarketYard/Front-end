@@ -143,7 +143,7 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                 </SearchBoxDiv>
                 <IconDiv>
                     <img src={icHeart} width={22} />
-                    <IconTextDiv fontSize={'10px'}>관심</IconTextDiv>
+                    <IconTextDiv fontSize={'10px'}>찜한래플</IconTextDiv>
                 </IconDiv>
                 <IconDiv>
                     <img src={icMyPage} width={22} />
@@ -153,10 +153,10 @@ const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
                     <Img src={imgTicket} height={18} />
                     <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
                 </IconDiv>
-                <UploadBtn onClick={()=>navigate('/raffle-upload')}>
-                    <img src={icUpload} width={17} />
-                    래플 업로드
-                </UploadBtn>
+                <IconDiv onClick={()=>navigate('/raffle-upload')}>
+                    <img src={icUpload} width={22} />
+                    <IconTextDiv fontSize={'10px'}>래플 업로드</IconTextDiv>
+                </IconDiv>
             </SearchBoxContainer>
         </Wrapper>
     );
