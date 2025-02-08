@@ -5,15 +5,17 @@ import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
+  name: string;
+  images: string[];
 }
 
-const UploadModal: React.FC<ModalProps> = ({ onClose }) => {
+const UploadModal: React.FC<ModalProps> = ({ onClose, name, images }) => {
   const navigate = useNavigate();
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Box />
-        <Title>로지텍 무소음 마우스</Title>
+        <Img src={images[0]} />
+        <Title>{name}</Title>
         <Short>해당 래플을 업로드하시겠습니까?</Short>
         <Button onClick={()=>navigate('/')}>업로드</Button>
       </Container>
@@ -51,14 +53,13 @@ const Title = styled.div`
   font-weight: 700;
 `;
 
-const Box = styled.div`
+const Img = styled.img`
   width: 190px;
   height: 190px;
   flex-shrink: 0;
-  background: #d9d9d9;
   margin-top: 20px;
   margin-bottom: 20px;
-`;
+`
 
 const Container = styled.div`
   display: flex;

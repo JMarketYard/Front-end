@@ -3,32 +3,21 @@ import styled from 'styled-components';
 import moreList from '../../../assets/homePage/moreList.svg';
 import SmallProductCard from '../../../components/SmallProductCard';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-interface Product {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-}
+import RaffleProps from '../../../components/RaffleProps';
 
 interface HomeSectionProps {
   title: string;
   icon: string;
-  moreText: string;
-  apiKey: 'approaching' | 'myLikeRaffles' | 'myFollowRaffles';
+  apiKey: string;
   moreLink: string;
-  products: Product[];
+  products: RaffleProps[];
 }
 
 const HomeSection: React.FC<HomeSectionProps> = ({
   title,
   icon,
-  moreText,
   apiKey,
   moreLink,
   products,
@@ -41,15 +30,17 @@ const HomeSection: React.FC<HomeSectionProps> = ({
         <TextBox>
           <img src={icon} alt="icon" /> {title}
         </TextBox>
-        <MoreListBox onClick={() => navigate(moreLink)}>
-          {moreText}
-          <img src={moreList} alt="moreList" />
-        </MoreListBox>
+        <Link to={moreLink}>
+          <MoreListBox>
+            더보기
+            <img src={moreList} alt="moreList" />
+          </MoreListBox>
+        </Link>
       </HeaderContainer>
 
       <ProductContainer>
-        {products.map((product) => (
-          <SmallProductCard key={product.raffleId} {...product} />
+        {products.map((products) => (
+          <SmallProductCard key={products.raffleId} {...products} />
         ))}
       </ProductContainer>
     </Wrapper>

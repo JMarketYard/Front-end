@@ -10,7 +10,10 @@ import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
+import RaffleListPage from '../pages/raffleList/RaffleListPage';
 import ResultPage from '../pages/hostResult/ResultPage';
+import SearchResultPage from '../pages/raffleList/SearchResultPage';
+import CategoryResultPage from '../pages/raffleList/CategoryResultPage';
 
 const router = createBrowserRouter([
   {
@@ -44,9 +47,8 @@ const router = createBrowserRouter([
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
       },
-      { path: 'homepage', element: <HomePage /> },
       {
-        path: 'raffle-detail',
+        path: 'raffles/detail', //래플 상세보기
         element: (
           <div>
             <RaffleDetailPage />
@@ -93,6 +95,18 @@ const router = createBrowserRouter([
         path: 'set-open',
         element: <SetOpenInfoPage />,
       },
+      {
+        path: '/raffles/:type', //더보기
+        element: <RaffleListPage />,
+      },
+      // {
+      //   path: '/search/:type', //검색결과 조회
+      //   element: <SearchResultPage />,
+      // },
+      // {
+      //   path: '/categories/:type',
+      //   element: <CategoryResultPage />,
+      // },
       {
         path: 'result',
         element: (

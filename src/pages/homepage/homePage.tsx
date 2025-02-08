@@ -9,46 +9,50 @@ import moreList from '../../assets/homePage/moreList.svg';
 import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import exampleData from '../../mocks/HomeData';
-
-interface Product {
-  raffleId: number;
-  imageUrl: string;
-  name: string;
-  ticketNum: number;
-  timeUntilEnd: number;
-  finish: boolean;
-  participantNum: number;
-  like: boolean;
-}
+import media from '../../styles/media';
+import { Link } from 'react-router-dom';
+import RaffleProps from '../../components/RaffleProps';
+import { useAuth } from '../../context/AuthContext';
+import axiosInstance from '../../apis/axiosInstance';
 
 interface HomeData {
-  approaching: Product[];
-  myLikeRaffles: Product[] | null; // ✅ 로그인 안 했을 경우 null 가능
-  myFollowRaffles: Product[] | null; // ✅ 로그인 안 했을 경우 null 가능
-  raffles: Product[] | null;
+  approaching: RaffleProps[];
+  myLikeRaffles: RaffleProps[] | null; // ✅ 로그인 안 했을 경우 null 가능
+  myFollowRaffles: RaffleProps[] | null; // ✅ 로그인 안 했을 경우 null 가능
+  raffles: RaffleProps[] | null;
 }
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [homeData, setHomeData] = useState<HomeData>(exampleData);
-  const products: null[] = Array(12).fill(null);
-  // const [homeData, setHomeData] = useState<HomeData | null>(null);
+  const [homeData, setHomeData] = useState<HomeData | null>(null);
+  const { isAuthenticated, logout } = useAuth();
 
-  // useEffect(() => {
-  //   const fetchHomeData = async () => {
-  //     try {
-  //       const response = await axios.get('/api/permit/home');
-  //       setHomeData(response.data.result);
-  //     } catch (error) {
-  //       console.error('Error fetching home data:', error);
-  //     }
-  //   };
+  useEffect(() => {
+    console.log('홈페이지 useEffect');
+    const fetchHomeData = async () => {
+      // try {
+      //   const { data } = await axiosInstance.get(
+      //     isAuthenticated ? '/api/member/home' : '/api/permit/home',
+      //   );
 
-  //   fetchHomeData();
-  // }, []);
+      //   console.log('API Response:', data.result.raffles);
+      //   setHomeData(data.result);
+      // } catch (error) {
+      //   console.error('데이터 가져오기 실패', error);
+      // }
 
-  // if (!homeData) return <div>Loading...</div>;
+      const { data } = await axiosInstance.get('/api/member/home', {
+        withCredentials: true,
+      });
+
+      console.log('API Response:', data.result);
+      setHomeData(data.result);
+    };
+
+    fetchHomeData();
+  }, []);
+
+  if (!homeData) return <div>Loading...</div>;
 
   return (
     <>
@@ -58,9 +62,8 @@ const HomePage: React.FC = () => {
           <HomeSection
             title="마감임박"
             icon={clockIcon}
-            moreText="마감임박 상품 더보기"
             apiKey="approaching"
-            moreLink="/approaching"
+            moreLink="raffles/approaching"
             products={homeData.approaching}
           />
         ) : null}
@@ -68,9 +71,8 @@ const HomePage: React.FC = () => {
           <HomeSection
             title="내가 찜한 래플"
             icon={likeIcon}
-            moreText="내가 찜한 래플 더보기"
             apiKey="myLikeRaffles"
-            moreLink="/my-likes"
+            moreLink="raffles/myLikes"
             products={homeData.myLikeRaffles || []}
           />
         ) : null}
@@ -78,18 +80,19 @@ const HomePage: React.FC = () => {
           <HomeSection
             title="내가 팔로우한 상점"
             icon={followIcon}
-            moreText="팔로우한 상점 래플 더보기"
             apiKey="myFollowRaffles"
-            moreLink="/followed-stores"
+            moreLink="raffles/myFollow"
             products={homeData.myFollowRaffles || []}
           />
         ) : null}
         <LookAroundContainer>
           <LookAroundBox>래플 둘러보기</LookAroundBox>
-          <MoreListBox onClick={() => navigate('raffle-list')}>
-            래플 전체보기
-            <img src={moreList} alt="moreList" />
-          </MoreListBox>
+          <Link to={'raffles/more'}>
+            <MoreListBox>
+              더보기
+              <img src={moreList} alt="moreList" />
+            </MoreListBox>
+          </Link>
         </LookAroundContainer>
 
         <Horizon />

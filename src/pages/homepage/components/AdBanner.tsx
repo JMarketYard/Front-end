@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import media from '../../../styles/media';
 
 function AdBanner() {
   const settings = {
@@ -46,6 +47,7 @@ const Wrapper = styled.div`
   background-color: white;
 
   .slick-slide {
+    width: 1440px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,7 +69,10 @@ const Wrapper = styled.div`
       color: rgba(201, 8, 255, 0.2); /* 선택되지 않은 점의 색상 */
       font-size: 8px;
     }
-  }
+  };
+  ${media.medium`
+      margin-top: 26px;
+    `}
 `;
 
 const AdBox = styled.a`
