@@ -43,7 +43,7 @@ const List = styled.li`
   box-sizing: border-box;
   ${media.medium`
     width: 631px;
-    column-gap: 50px;
+    column-gap: 49px;
     // justify-content: space-between;
   `}
 `
