@@ -99,10 +99,10 @@ const router = createBrowserRouter([
         path: '/raffles/:type', //더보기
         element: <RaffleListPage />,
       },
-      // {
-      //   path: '/search/:type', //검색결과 조회
-      //   element: <SearchResultPage />,
-      // },
+      {
+        path: '/search/:type', //검색결과 조회
+        element: <SearchResultPage />,
+      },
       // {
       //   path: '/categories/:type',
       //   element: <CategoryResultPage />,
