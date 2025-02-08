@@ -8,6 +8,7 @@ import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
+import media from "../../styles/media";
 
 const RaffleUploadPage = () => {
     const itemStates = [
@@ -159,9 +160,7 @@ const RaffleUploadPage = () => {
                 </ItemInfoContainer>
             </div>
             <div>
-                <BigTitle>
-                    거래 설정
-                </BigTitle>
+                <BigTitle>거래 설정</BigTitle>
                 <SetConditionContainer>
                     <SetConditionBox>
                         <TitleSpan2>응모 티켓 개수</TitleSpan2>
@@ -240,8 +239,7 @@ export default RaffleUploadPage;
 
 
 const UploadForm = styled.form`
-    max-width: 100%;
-    width: 1080px;
+    max-width: 1080px;
     min-height: 1498px;
     display: flex;
     align-items: safe center;
@@ -252,6 +250,10 @@ const UploadForm = styled.form`
 const ItemInfoContainer = styled.div`
     display: flex;
     column-gap: 73px;
+    ${media.medium`
+        flex-direction: column;
+        align-items: center;
+    `}
 `
 
 const ImgContainer = styled.div`
@@ -302,6 +304,9 @@ const ItemInfoRightContainer = styled.div`
     flex-direction: column;
     row-gap: 23px;
     padding-top: 77px;
+    ${media.medium`
+        padding-top: 50px;
+    `}
 `
 
 const TitleSpan = styled.div`
@@ -323,6 +328,10 @@ const TitleSpan2 = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 36.832px; /* 184.159% */
+
+    ${media.medium`
+        min-width: 190px;
+    `}
 `
 
 const StyleP = styled.p`
@@ -360,6 +369,10 @@ const ItemCategorySelect = styled.select`
     &::-ms-expand {
         display: none;
     };
+
+    ${media.medium`
+        width: 530px;
+    `}
 `
 
 const ConditionBtn = styled.button<{$clicked:string}>`
@@ -402,10 +415,18 @@ const Textarea = styled.textarea`
     padding: 10px;
     box-sizing: border-box;
     border-radius: 7px;
+
+    ${media.medium`
+        width: 530px;
+    `}
 `
 
 const TextareaDiv = styled.div`
     display: flex;
+
+    ${media.medium`
+        margin-bottom: 57px;
+    `}
 `
 
 const SetConditionContainer = styled.div`
@@ -418,7 +439,12 @@ const SetConditionContainer = styled.div`
 
 const SetConditionBox = styled.div`
     width: 857px;
+    // width: 100%;
     display: flex;
+    ${media.medium`
+        width: 100%;
+        padding-left: 13px;
+    `}
 `
 
 const InputContainer = styled.div<{width?:number}>`
@@ -431,6 +457,11 @@ const InputContainer = styled.div<{width?:number}>`
     // display: inline-block;
     display: inline-flex;
     align-items: center;
+
+    ${media.medium`
+        width: ${ (props: { width?:number }) => (
+        props.width ? '530px' : `464px`)};
+    `}
 `
 const InputBox = styled.input`
     flex: 1;
@@ -453,6 +484,10 @@ const DatePickerBox = styled.div`
         box-sizing: border-box;
         padding: 0 10px;
         display: flex;
+
+        ${media.medium`
+            width: 464px;
+        `}
     };
 
     input {
@@ -484,6 +519,7 @@ const SubmitBtn = styled.input`
     line-height: 18px;
     letter-spacing: -0.165px;
     margin-top: 154px;
+    margin-bottom: 100px;
     &:hover {
         cursor: pointer;
     }
