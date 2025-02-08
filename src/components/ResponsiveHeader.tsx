@@ -19,10 +19,8 @@ import SplashModal from '../pages/login/components/SplashModal';
 import imgVector from '../assets/Vector.png';
 import { ReactComponent as IcList } from '../assets/icList.svg';
 import icDel from '../assets/icDel.svg';
-
-const recentKeywords = ['애플워치','애플워치','애플워치','애플워치',
-    '애플워치','애플워치','애플워치','애플워치','애플워치','애플워치',
-];
+import axiosInstance from '../apis/axiosInstance';
+import { TSearch } from '../types/searchKeywords';
 
 const ResponsiveHeader = () => {
     const navigate = useNavigate();
@@ -33,6 +31,19 @@ const ResponsiveHeader = () => {
     const searchRef = useRef<HTMLDivElement>(null);
     const [searchText, setSearchText] = useState<string>('');
     const categoryRef = useRef<HTMLDivElement>(null);
+    const [hotKeywords, setHotKeywords] = useState<string[]>([]);
+    const [recentKeywords, setRecentKeywords] = useState<string[]>([]);
+
+    const getSearch = async () => {
+        const { data }:{data:TSearch} = await axiosInstance.get(
+            isLoggedIn ? '/api/member/search/raffles'
+            : '/api/permit/search'
+        );
+
+        console.log('getSearch:', data);
+        setHotKeywords(data.result.popularSearch);
+        setRecentKeywords(data.result.recentSearch);
+    };
     
     const handleCategoryOut = (e:MouseEvent) => {
         const currentCategoryRef = categoryRef.current;
@@ -59,6 +70,15 @@ const ResponsiveHeader = () => {
     const onClickLoginBtn = () => {
         if (!isLoggedIn) handleOpenModal();
     };
+
+    const onClickSearchInput = () => {
+        setIsSearchClicked(true);
+    };
+
+    // 시작하자마자 호출될 API
+    useEffect(() => {
+        getSearch();
+    }, []);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -104,7 +124,7 @@ const ResponsiveHeader = () => {
                     <TicketImg src={ticket} />
                     <SearchInput
                     type="text"
-                    onClick={()=>setIsSearchClicked(true)}
+                    onClick={()=>onClickSearchInput()}
                     value={searchText}
                     onChange={handleSearchInput}
                     />
@@ -113,27 +133,33 @@ const ResponsiveHeader = () => {
                     ref={searchRef}
                     $show={String(isSearchClicked)}
                     >
-                        <KeywordBox>
+                        {isLoggedIn
+                        ? <KeywordBox>
                             <KeywordTitle>
                                 <img src={imgVector} width={15} height={15} />
                                 <Span>최근 검색</Span>
                             </KeywordTitle>
                             <RecentKeywordsBox>
-                            {recentKeywords.map((v,_) => (
+                            {recentKeywords.length!==0 ?
+                            recentKeywords.map((v,_) => (
                                 <RecentKeyword key={_}>
                                     {v}
                                     <DelImg src={icDel} width={9.096} height={8.901} />
                                 </RecentKeyword>
-                            ))}
+                            ))
+                            : <KeywordSpan>최근 검색 내역이 없습니다.</KeywordSpan>
+                            }
                             </RecentKeywordsBox>
                         </KeywordBox>
+                        : <></>
+                        }
                         <KeywordBox>
                             <KeywordTitle>
                                 <img src={imgVector} width={15} height={15} />
                                 <Span>현재 인기있는 검색어</Span>
                             </KeywordTitle>
                             <HotKeywordsBox>
-                                {recentKeywords.map((v,_) => (
+                                {hotKeywords.map((v,_) => (
                                     <HotKeyword key={_}>
                                         <IcList width={9} height={9} fill={"rgba(201, 8, 255, 0.20)"} />
                                         {v}
@@ -171,7 +197,7 @@ export default ResponsiveHeader;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 1084px;
+  width: 1084px;
   height: 188px;
   box-sizing: border-box;
   z-index: 100;
@@ -316,15 +342,16 @@ const SearchIcon = styled.img`
 `;
 
 const KeywordContainer = styled.div<{$show:string}>`
-    // width: 560px;
-    width: 100%;
-    height: 386px;
+    width: 560px;
+    // width: 100%;
+    // height: 386px;
     border-radius: 18px;
     border: 1px solid #E4E4E4;
     background-color: #FFF;
     position: absolute;
-    left: 0;
+    left: 50%;
     top: 120%;
+    transform: translateX(-50%);
     padding: 38px 43px 5px 43px;
     box-sizing: border-box;
     display: ${props => props.$show==='true'
@@ -382,6 +409,14 @@ const RecentKeyword = styled.div`
     &:hover {
         cursor: default;
     }
+`
+const KeywordSpan = styled.span`
+    color: #8F8E94;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 36.832px; /* 306.932% */
 `
 const DelImg = styled.img`
     &:hover {
