@@ -33,6 +33,9 @@ const ResponsiveHeader = () => {
     const categoryRef = useRef<HTMLDivElement>(null);
     const [hotKeywords, setHotKeywords] = useState<string[]>([]);
     const [recentKeywords, setRecentKeywords] = useState<string[]>([]);
+    const [dummy, setDummy] = useState<string[]>([
+        '애플워치', '아이폰', '에어팟', '안경', '코트'
+    ]);
 
     const getSearch = async () => {
         const { data }:{data:TSearch} = await axiosInstance.get(
@@ -44,6 +47,7 @@ const ResponsiveHeader = () => {
         setHotKeywords(data.result.popularSearch);
         setRecentKeywords(data.result.recentSearch);
     };
+    const delSearch = async () => await axiosInstance.delete('/api/member/search');
     
     const handleCategoryOut = (e:MouseEvent) => {
         const currentCategoryRef = categoryRef.current;
@@ -63,6 +67,12 @@ const ResponsiveHeader = () => {
     const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
     };
+
+    const handleDelKeyword = (keyword:string) => {
+        // delSearch(): 해당 키워드 서버에서 삭제
+        setDummy(prev => prev.filter(v => v!==keyword));
+        console.log(dummy);
+    }
 
     const handleOpenModal = () => {
         openModal(({ onClose }) => <SplashModal onClose={onClose} />);
@@ -133,18 +143,20 @@ const ResponsiveHeader = () => {
                     ref={searchRef}
                     $show={String(isSearchClicked)}
                     >
-                        {isLoggedIn
+                        {isLoggedIn===false
                         ? <KeywordBox>
                             <KeywordTitle>
                                 <img src={imgVector} width={15} height={15} />
                                 <Span>최근 검색</Span>
                             </KeywordTitle>
                             <RecentKeywordsBox>
-                            {recentKeywords.length!==0 ?
-                            recentKeywords.map((v,_) => (
+                            {dummy.length!==0 ?
+                            dummy.map((v,_) => (
                                 <RecentKeyword key={_}>
                                     {v}
-                                    <DelImg src={icDel} width={9.096} height={8.901} />
+                                    <DelImg src={icDel} width={9.096} height={8.901}
+                                    onClick={()=>handleDelKeyword(v)}
+                                    />
                                 </RecentKeyword>
                             ))
                             : <KeywordSpan>최근 검색 내역이 없습니다.</KeywordSpan>
