@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import { useState } from "react";
+import media from "../../styles/media";
 
 const SetOpenInfoPage = () => {
   const [toggle, setToggle] = useState(false);
@@ -45,6 +46,10 @@ const Box = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 847px;
+
+  ${media.medium`
+    width: 628px;
+  `}
 `
 
 const RoundDiv = styled.div`
