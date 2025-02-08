@@ -6,10 +6,18 @@ import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { Icon } from '@iconify/react';
+import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
 }
+
+const RequestSignUp = async (nickname: string) => {
+  const response = await axiosInstance.post('/api/permit/nickname', {
+    nickname,
+  });
+  return response.data;
+};
 
 const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
   const { openModal } = useModalContext();
@@ -22,13 +30,23 @@ const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
     setName(event.target.value);
   };
 
-  const handleOpenNextModal = () => {
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
+
+  const handleOpenNextModal = async () => {
     if (!regex.test(name)) {
       setIsError('닉네임은 2~10자의 한글 또는 영어만 사용 가능합니다.');
       return;
     } else {
-      setIsError('');
-      openModal(({ onClose }) => <EnterModal onClose={onClose} />);
+      const { code } = await RequestSignUp(name);
+      if (code === 'COMMON_200') {
+        setIsError('');
+        openModal(({ onClose }) => <EnterModal onClose={onClose} />);
+      } else if (code === 'USER_4008') {
+        setIsError('중복된 닉네임입니다');
+        return;
+      }
     }
   };
 
