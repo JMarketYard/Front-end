@@ -30,16 +30,23 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     console.log('홈페이지 useEffect');
     const fetchHomeData = async () => {
-      try {
-        const { data } = await axiosInstance.get(
-          isAuthenticated ? '/api/member/home' : '/api/permit/home',
-        );
+      // try {
+      //   const { data } = await axiosInstance.get(
+      //     isAuthenticated ? '/api/member/home' : '/api/permit/home',
+      //   );
 
-        console.log('API Response:', data.result.raffles);
-        setHomeData(data.result);
-      } catch (error) {
-        console.error('데이터 가져오기 실패', error);
-      }
+      //   console.log('API Response:', data.result.raffles);
+      //   setHomeData(data.result);
+      // } catch (error) {
+      //   console.error('데이터 가져오기 실패', error);
+      // }
+
+      const { data } = await axiosInstance.get('/api/member/home', {
+        withCredentials: true,
+      });
+
+      console.log('API Response:', data.result);
+      setHomeData(data.result);
     };
 
     fetchHomeData();

@@ -5,21 +5,10 @@ import axiosInstance from '../apis/axiosInstance';
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const getTokenFromUrl = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('token'); // ✅ URL에서 'token' 파라미터 가져오기
-  };
-
   // 로그인 함수
   const login = async () => {
     try {
-      const token = getTokenFromUrl();
-      console.log('토큰:', token);
-      const { data } = await axiosInstance.get('/api/member/user-info', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data } = await axiosInstance.get('/api/member/user-info', {});
       if (data.isSuccess) {
         setIsAuthenticated(true);
       } else {
