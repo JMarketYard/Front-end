@@ -27,7 +27,8 @@ const SplashModal: React.FC<ModalProps> = ({ onClose }) => {
   }, []);
 
   const handleLogin = () => {
-    window.location.href = 'http://43.201.106.194:8080/login/oauth2/code/kakao';
+    window.location.href =
+      'https://api.jangmadang.site/login/oauth2/code/kakao';
   };
 
   const Content = (
