@@ -144,32 +144,60 @@ const ContainerLarge = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                       height={9}
                       fill={'rgba(201, 8, 255, 0.20)'}
                     />
-                    {v}
-                  </HotKeyword>
-                ))}
-              </HotKeywordsBox>
-            </KeywordBox>
-          </KeywordContainer>
-        </SearchBoxDiv>
-        <IconDiv>
-          <img src={icHeart} width={22} />
-          <IconTextDiv fontSize={'10px'}>관심</IconTextDiv>
-        </IconDiv>
-        <IconDiv>
-          <img src={icMyPage} width={22} />
-          <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
-        </IconDiv>
-        <IconDiv onClick={() => navigate('/change')}>
-          <Img src={imgTicket} height={18} />
-          <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
-        </IconDiv>
-        <UploadBtn onClick={() => navigate('/raffle-upload')}>
-          <img src={icUpload} width={17} />
-          래플 업로드
-        </UploadBtn>
-      </SearchBoxContainer>
-    </Wrapper>
-  );
+                    <SearchIcon src={icSearch} />
+                    <KeywordContainer
+                    ref={searchRef}
+                    $show={String(isSearchClicked)}
+                    >
+                        <KeywordBox>
+                            <KeywordTitle>
+                                <img src={imgVector} width={15} height={15} />
+                                <Span>최근 검색</Span>
+                            </KeywordTitle>
+                            <RecentKeywordsBox>
+                            {recentKeywords.map((v,_) => (
+                                <RecentKeyword key={_}>
+                                    {v}
+                                    <DelImg src={icDel} width={9.096} height={8.901} />
+                                </RecentKeyword>
+                            ))}
+                            </RecentKeywordsBox>
+                        </KeywordBox>
+                        <KeywordBox>
+                            <KeywordTitle>
+                                <img src={imgVector} width={15} height={15} />
+                                <Span>현재 인기있는 검색어</Span>
+                            </KeywordTitle>
+                            <HotKeywordsBox>
+                                {recentKeywords.map((v,_) => (
+                                    <HotKeyword key={_}>
+                                        <IcList width={9} height={9} fill={"rgba(201, 8, 255, 0.20)"} />
+                                        {v}
+                                    </HotKeyword>
+                                ))}
+                            </HotKeywordsBox>
+                        </KeywordBox>
+                    </KeywordContainer>
+                </SearchBoxDiv>
+                <IconDiv>
+                    <img src={icHeart} width={22} />
+                    <IconTextDiv fontSize={'10px'}>찜한래플</IconTextDiv>
+                </IconDiv>
+                <IconDiv>
+                    <img src={icMyPage} width={22} />
+                    <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
+                </IconDiv>
+                <IconDiv onClick={()=>navigate('/change')}>
+                    <Img src={imgTicket} height={18} />
+                    <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
+                </IconDiv>
+                <IconDiv onClick={()=>navigate('/raffle-upload')}>
+                    <img src={icUpload} width={22} />
+                    <IconTextDiv fontSize={'10px'}>래플 업로드</IconTextDiv>
+                </IconDiv>
+            </SearchBoxContainer>
+        </Wrapper>
+    );
 };
 
 export default ContainerLarge;
