@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import smallTicket from '../assets/smallProductCard/smallTicket.svg';
 import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';

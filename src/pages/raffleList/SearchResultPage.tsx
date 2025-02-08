@@ -20,13 +20,13 @@ const SearchResultPage: React.FC = () => {
     setIsLoading(true);
     try {
       const { data } = await axiosInstance.get('/api/permit/search/raffles', {
-        params: { page, limit: 16 },
+        params: { keyword: type, page, limit: 16 },
       });
-
-      if (data.length < 16) {
+      const newRaffles = data.result.raffles;
+      if (newRaffles.length < 16) {
         setHasMore(false);
       } else {
-        setRaffles((prev) => [...prev, ...data]);
+        setRaffles((prev) => [...prev, ...newRaffles]);
       }
     } catch (error) {
       console.error('데이터를 불러오기 실패:', error);
@@ -60,9 +60,12 @@ const SearchResultPage: React.FC = () => {
 
   useEffect(() => {
     const fetchRaffleData = async () => {
-      const { data } = await axiosInstance.get(`/api/permit/home/${type}`);
-      console.log('API Response:', data.result.raffles);
-      setRaffles(data.result.raffles);
+      const { data } = await axiosInstance.get('/api/permit/search/raffles', {
+        params: { keyword: type, page, limit: 16 },
+      });
+      const newRaffles = data.result.raffles;
+      console.log('API Response:', newRaffles);
+      setRaffles(newRaffles);
     };
 
     fetchRaffleData();
@@ -70,15 +73,14 @@ const SearchResultPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <LookAroundContainer>
-        <LookAroundBox>{title}</LookAroundBox>
-      </LookAroundContainer>
-
-      <Horizon />
+      <SearchContainer>
+        <KeywordBox>'{type}'</KeywordBox>
+        <SearchBox>검색 결과</SearchBox>
+      </SearchContainer>
 
       <ProductGrid>
-        {(raffles ?? []).map((product) => (
-          <ProductCard key={product.raffleId} {...product} />
+        {(raffles ?? []).map((newRaffles) => (
+          <ProductCard key={newRaffles.raffleId} {...newRaffles} />
         ))}
       </ProductGrid>
 
@@ -95,65 +97,42 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding-top: 63px;
-`;
-
-const LookAroundContainer = styled.div`
+  padding-top: 64px;
   position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
 `;
 
-const LookAroundBox = styled.p`
+const SearchContainer = styled.div`
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #000;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
+  left: 0px;
+
+  display: inline-flex;
+  padding: 0px 14px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 11px;
+  border: 1px solid #8f8e94;
+
+  margin-bottom: 44px;
 `;
 
-const MoreListBox = styled.a`
-  width: 250px;
-  height: 34px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  display: flex;
-  color: #8f8e94;
+const KeywordBox = styled.div`
+  color: #c908ff;
   text-align: center;
   font-family: Pretendard;
-  font-size: 16px;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 36.832px; /* 184.159% */
+`;
+
+const SearchBox = styled.div`
+  color: #8f8e94;
+  font-family: Pretendard;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
-  line-height: 36.832px; /* 230.199% */
-  text-decoration-line: underline;
-  text-decoration-style: solid;
-  text-decoration-skip-ink: auto;
-  text-decoration-thickness: auto;
-  text-underline-offset: auto;
-  text-underline-position: from-font;
-
-  img {
-    width: 10px;
-    height: 17px;
-    margin-left: 35px;
-  }
-
-  cursor: pointer;
-`;
-
-const Horizon = styled.hr`
-  width: 100%;
-  border-top: 1px solid #8f8e94;
-  margin-top: 42px;
-  margin-bottom: 46px;
+  line-height: 36.832px;
 `;
 
 const ProductGrid = styled.div`
