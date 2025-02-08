@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
 import icLike from '../assets/ProductCard/like.svg';
@@ -32,7 +31,6 @@ const ProductCard: React.FC<RaffleProps> = ({
   like,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
-  const navigate = useNavigate();
   const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation(); //Wrapper로 이벤트 전달 방지
     event.preventDefault(); // 기본 동작 (Link 이동) 방지

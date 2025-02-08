@@ -11,8 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import media from '../../styles/media';
 import { Link } from 'react-router-dom';
-import exampleData from '../../mocks/HomeData';
 import RaffleProps from '../../components/RaffleProps';
+import { useAuth } from '../../context/AuthContext';
+import axiosInstance from '../../apis/axiosInstance';
 
 interface HomeData {
   approaching: RaffleProps[];
@@ -24,14 +25,27 @@ interface HomeData {
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [homeData, setHomeData] = useState<HomeData | null>(null);
-  useEffect(() => {
-    console.log('useEffect');
-    const fetchHomeData = async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/permit/home`,
-      );
+  const { isAuthenticated, logout } = useAuth();
 
-      console.log('API Response:', data.result.raffles);
+  useEffect(() => {
+    console.log('홈페이지 useEffect');
+    const fetchHomeData = async () => {
+      // try {
+      //   const { data } = await axiosInstance.get(
+      //     isAuthenticated ? '/api/member/home' : '/api/permit/home',
+      //   );
+
+      //   console.log('API Response:', data.result.raffles);
+      //   setHomeData(data.result);
+      // } catch (error) {
+      //   console.error('데이터 가져오기 실패', error);
+      // }
+
+      const { data } = await axiosInstance.get('/api/member/home', {
+        withCredentials: true,
+      });
+
+      console.log('API Response:', data.result);
       setHomeData(data.result);
     };
 
