@@ -53,11 +53,11 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
         with:
-          source-directory: ${{ env.BUILD_DIR }} # ✅ 전체 프로젝트 유지
+          source-directory: ${{ env.BUILD_DIR }}
           destination-github-username: yelynnn
           destination-repository-name: JMarketYard
           user-email: ${{ secrets.EMAIL }}
-          commit-message: 'Restore full repository - Automated Deployment' # ✅ 커밋 메시지 추가
+          commit-message: "Restore full repository - Automated Deployment"  
           target-branch: develop
 
       - name: Test get variable exported by push-to-another-repository
