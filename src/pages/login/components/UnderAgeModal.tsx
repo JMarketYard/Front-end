@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import sadVector from '../../../assets/sadVector.png';
 import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
-import { useModalContext } from '../../../components/Modal/context/ModalContext';
-import SplashModal from './SplashModal';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
 }
 
 const UnderAgeModal: React.FC<ModalProps> = ({ onClose }) => {
+  const navigate = useNavigate();
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth >= 745 : false,
   );
@@ -27,13 +27,11 @@ const UnderAgeModal: React.FC<ModalProps> = ({ onClose }) => {
     };
   }, []);
 
-  const { openModal } = useModalContext();
-
   useEffect(() => {
     console.log('KakaoRedirect useEffect 실행됨!');
     setTimeout(() => {
-      openModal(({ onClose }) => <SplashModal onClose={onClose} />);
-    }, 5000);
+      navigate('/');
+    }, 3500);
   }, []);
 
   const Content = (

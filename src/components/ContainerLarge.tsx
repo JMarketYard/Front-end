@@ -11,8 +11,8 @@ import icHeart from '../assets/header/icon-heart.svg';
 import icMyPage from '../assets/header/icon-mypage.svg';
 import icUpload from '../assets/header/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
-import { useNavigate } from "react-router-dom";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import CategoryMenu from './CategoryMenu';
 import { useModalContext } from './Modal/context/ModalContext';
 import SplashModal from '../pages/login/components/SplashModal';
@@ -20,91 +20,129 @@ import imgVector from '../assets/Vector.png';
 import { ReactComponent as IcList } from '../assets/icList.svg';
 import icDel from '../assets/icDel.svg';
 
-const recentKeywords = ['애플워치','애플워치','애플워치','애플워치',
-    '애플워치','애플워치','애플워치','애플워치','애플워치','애플워치',
+const recentKeywords = [
+  '애플워치',
+  '애플워치',
+  '애플워치',
+  '애플워치',
+  '애플워치',
+  '애플워치',
+  '애플워치',
+  '애플워치',
+  '애플워치',
+  '애플워치',
 ];
 
-const ContainerLarge = ({isLoggedIn}:{isLoggedIn:boolean}) => {
-    const navigate = useNavigate();
-    const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
-    const { openModal } = useModalContext();
-    const [isSearchClicked, setIsSearchClicked] = useState<boolean>(false);
-    const searchRef = useRef<HTMLDivElement>(null);
-    const [searchText, setSearchText] = useState<string>('');
-    const categoryRef = useRef<HTMLDivElement>(null);
-    
-    const handleCategoryOut = (e:MouseEvent) => {
-        const currentCategoryRef = categoryRef.current;
-        if (currentCategoryRef && !currentCategoryRef.contains(e.target as Node)) {
-            setIsCatClicked(false);
-            console.log("handleCategoryOut!");
-        }
-    };
+const ContainerLarge = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+  const navigate = useNavigate();
+  const [isCatClicked, setIsCatClicked] = useState<boolean>(false);
+  const { openModal } = useModalContext();
+  const [isSearchClicked, setIsSearchClicked] = useState<boolean>(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const [searchText, setSearchText] = useState<string>('');
+  const categoryRef = useRef<HTMLDivElement>(null);
 
-    const handleClickOutside = (e:MouseEvent) => {
-        const currentSearchRef = searchRef.current;
-        if (currentSearchRef && !currentSearchRef.contains(e.target as Node)) {
-            setIsSearchClicked(false);
-        }
-    };
-
-    const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearchText(e.target.value);
-    };
-
-    const handleOpenModal = () => {
-        openModal(({ onClose }) => <SplashModal onClose={onClose} />);
-    };
-    const onClickLoginBtn = () => {
-        if (!isLoggedIn) handleOpenModal();
+  const handleCategoryOut = (e: MouseEvent) => {
+    const currentCategoryRef = categoryRef.current;
+    if (currentCategoryRef && !currentCategoryRef.contains(e.target as Node)) {
+      setIsCatClicked(false);
+      console.log('handleCategoryOut!');
     }
+  };
 
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        document.addEventListener('mousedown', handleCategoryOut);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("mousedown", handleCategoryOut);
-        }
-    }, [searchRef.current, categoryRef.current]);
-    
-    return (
-        <Wrapper>
-            <TopContainer>
-                <LoginBtn onClick={onClickLoginBtn} state={String(isLoggedIn)}>
-                    {isLoggedIn ? '로그아웃' : '로그인'}
-                </LoginBtn>
-                <LineDiv height={'27px'} margin={'0 32px'} />
-                <SmallIconDiv>
-                    <IcNotice width={18.65} height={21.32} fill={"#8F8E94"} />
-                    <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
-                </SmallIconDiv>
-                <LineDiv height={'27px'} margin={'0 32px'} />
-                <SmallIconDiv>
-                    <img src={icSetting} width={22} />
-                    <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
-                </SmallIconDiv>
-            </TopContainer>
-            <SearchBoxContainer>
-                <LogoImg src={icLogo} onClick={()=>navigate('/')} />
-                <CategoryContainer ref={categoryRef}>
-                    <IconHamburgerDiv onMouseDown={()=>{
-                        isCatClicked
-                        ? setIsCatClicked(false)
-                        : setIsCatClicked(true)}}>
-                        <img src={icHamburger} width={22} />
-                        <IconTextDiv fontSize={'10px'}>카테고리</IconTextDiv>
-                    </IconHamburgerDiv>
-                    {isCatClicked &&
-                    <CategoryMenu />}
-                </CategoryContainer>
-                <SearchBoxDiv>
-                    <TicketImg src={ticket} width={88} />
-                    <SearchInput
-                    type="text"
-                    onClick={()=>setIsSearchClicked(true)}
-                    value={searchText}
-                    onChange={handleSearchInput}
+  const handleClickOutside = (e: MouseEvent) => {
+    const currentSearchRef = searchRef.current;
+    if (currentSearchRef && !currentSearchRef.contains(e.target as Node)) {
+      setIsSearchClicked(false);
+    }
+  };
+
+  const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleOpenModal = () => {
+    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+  };
+  const onClickLoginBtn = () => {
+    if (!isLoggedIn) handleOpenModal();
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleCategoryOut);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleCategoryOut);
+    };
+  }, [searchRef.current, categoryRef.current]);
+
+  return (
+    <Wrapper>
+      <TopContainer>
+        <LoginBtn onClick={onClickLoginBtn} state={String(isLoggedIn)}>
+          {isLoggedIn ? '로그아웃' : '로그인'}
+        </LoginBtn>
+        <LineDiv height={'27px'} margin={'0 32px'} />
+        <SmallIconDiv>
+          <IcNotice width={18.65} height={21.32} fill={'#8F8E94'} />
+          <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
+        </SmallIconDiv>
+        <LineDiv height={'27px'} margin={'0 32px'} />
+        <SmallIconDiv>
+          <img src={icSetting} width={22} />
+          <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
+        </SmallIconDiv>
+      </TopContainer>
+      <SearchBoxContainer>
+        <LogoImg src={icLogo} onClick={() => navigate('/')} />
+        <CategoryContainer ref={categoryRef}>
+          <IconHamburgerDiv
+            onMouseDown={() => {
+              isCatClicked ? setIsCatClicked(false) : setIsCatClicked(true);
+            }}
+          >
+            <img src={icHamburger} width={22} />
+            <IconTextDiv fontSize={'10px'}>카테고리</IconTextDiv>
+          </IconHamburgerDiv>
+          {isCatClicked && <CategoryMenu />}
+        </CategoryContainer>
+        <SearchBoxDiv>
+          <TicketImg src={ticket} width={88} />
+          <SearchInput
+            type="text"
+            onClick={() => setIsSearchClicked(true)}
+            value={searchText}
+            onChange={handleSearchInput}
+          />
+          <SearchIcon src={icSearch} />
+          <KeywordContainer ref={searchRef} $show={String(isSearchClicked)}>
+            <KeywordBox>
+              <KeywordTitle>
+                <img src={imgVector} width={15} height={15} />
+                <Span>최근 검색</Span>
+              </KeywordTitle>
+              <RecentKeywordsBox>
+                {recentKeywords.map((v, _) => (
+                  <RecentKeyword key={_}>
+                    {v}
+                    <DelImg src={icDel} width={9.096} height={8.901} />
+                  </RecentKeyword>
+                ))}
+              </RecentKeywordsBox>
+            </KeywordBox>
+            <KeywordBox>
+              <KeywordTitle>
+                <img src={imgVector} width={15} height={15} />
+                <Span>현재 인기있는 검색어</Span>
+              </KeywordTitle>
+              <HotKeywordsBox>
+                {recentKeywords.map((v, _) => (
+                  <HotKeyword key={_}>
+                    <IcList
+                      width={9}
+                      height={9}
+                      fill={'rgba(201, 8, 255, 0.20)'}
                     />
                     <SearchIcon src={icSearch} />
                     <KeywordContainer
@@ -166,7 +204,7 @@ export default ContainerLarge;
 
 const Wrapper = styled.div`
   display: flex;
-//   flex-basis: 1080px;
+  //   flex-basis: 1080px;
   flex-direction: column;
   height: 188px;
   padding: 0 25px;
@@ -232,27 +270,27 @@ const LogoImg = styled.img`
   margin-bottom: 5px;
   flex-shrink: 0;
   max-width: 100%;
-  object-fit: contain; 
+  object-fit: contain;
   &:hover {
     cursor: pointer;
-  };
-`
+  }
+`;
 
 const CategoryContainer = styled.div`
   position: relative;
 `;
 
 const SearchBoxDiv = styled.div`
-    position: relative;
-    width: 560px;
-    height: 42px;
-    border-radius: 51px;
-    border: 1.5px solid #C908FF;
-    box-sizing: border-box;
-    padding: 3px 20px;
-    display: flex;
-    margin: 0 26px 0 0;
-`
+  position: relative;
+  width: 560px;
+  height: 42px;
+  border-radius: 51px;
+  border: 1.5px solid #c908ff;
+  box-sizing: border-box;
+  padding: 3px 20px;
+  display: flex;
+  margin: 0 26px 0 0;
+`;
 
 const Img = styled.img`
   margin: 3px 0;
@@ -282,98 +320,95 @@ const SearchIcon = styled.img`
   width: 20.975px;
 `;
 
-const KeywordContainer = styled.div<{$show:string}>`
-    width: 560px;
-    height: 386px;
-    border-radius: 18px;
-    border: 1px solid #E4E4E4;
-    background-color: #FFF;
-    position: absolute;
-    left: 0;
-    top: 120%;
-    padding: 38px 43px 5px 43px;
-    box-sizing: border-box;
-    display: ${props => props.$show==='true'
-        ? 'box'
-        : 'none'
-    };
-`
+const KeywordContainer = styled.div<{ $show: string }>`
+  width: 560px;
+  height: 386px;
+  border-radius: 18px;
+  border: 1px solid #e4e4e4;
+  background-color: #fff;
+  position: absolute;
+  left: 0;
+  top: 120%;
+  padding: 38px 43px 5px 43px;
+  box-sizing: border-box;
+  display: ${(props) => (props.$show === 'true' ? 'box' : 'none')};
+`;
 const KeywordBox = styled.div`
-    box-sizing: border-box;
-    min-height: 129px;
-    padding-bottom: 37px;
-`
+  box-sizing: border-box;
+  min-height: 129px;
+  padding-bottom: 37px;
+`;
 const KeywordTitle = styled.div`
-    display: flex;
-    align-items: baseline;
-`
+  display: flex;
+  align-items: baseline;
+`;
 const Span = styled.span`
-    padding-left: 18px;
-    padding-bottom: 19px;
-    color: #000;
-    font-family: Pretendard;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 18px; /* 128.571% */
-    letter-spacing: -0.165px;
-`
+  padding-left: 18px;
+  padding-bottom: 19px;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px; /* 128.571% */
+  letter-spacing: -0.165px;
+`;
 const RecentKeywordsBox = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: 17px;
-    column-gap: 16px;
-`
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 17px;
+  column-gap: 16px;
+`;
 const RecentKeyword = styled.div`
-    width: 81px;
-    height: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    gap: 9px;
-    padding: 3px 7px;
-    border-radius: 12px;
-    background: #E4E4E4;
-    box-sizing: border-box;
+  width: 81px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 9px;
+  padding: 3px 7px;
+  border-radius: 12px;
+  background: #e4e4e4;
+  box-sizing: border-box;
 
-    color: #000;
-    text-align: center;
-    font-family: Pretendard;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 36.832px; /* 306.932% */
+  color: #000;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36.832px; /* 306.932% */
 
-    &:hover {
-        cursor: default;
-    }
-`
+  &:hover {
+    cursor: default;
+  }
+`;
 const DelImg = styled.img`
-    &:hover {
-        cursor: pointer;
-    }
-`
+  &:hover {
+    cursor: pointer;
+  }
+`;
 const HotKeywordsBox = styled.div`
-    height: 148px;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    gap: 17px;
-`
+  height: 148px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 17px;
+`;
 const HotKeyword = styled.div`
-    width: 228px;
-    display: flex;
-    align-items: center;
-    gap: 17px;
+  width: 228px;
+  display: flex;
+  align-items: center;
+  gap: 17px;
 
-    color: #000;
-    font-family: Pretendard;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
 
 const SmallIconDiv = styled.div`
   display: flex;

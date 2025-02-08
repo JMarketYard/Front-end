@@ -1,43 +1,45 @@
+// {
+//   categoryoptions.map((v) => <option key={v}>{v}</option>);
+// }
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import ProductCard from '../components/ProductCard';
-import { useNavigate } from 'react-router-dom';
-import moreList from '../assets/homePage/moreList.svg';
-import axios from 'axios';
-import RaffleProps from '../components/RaffleProps';
+import ProductCard from '../../components/ProductCard';
+import RaffleProps from '../../components/RaffleProps';
+import axiosInstance from '../../apis/axiosInstance';
 
-interface HomeSectionProps {
-  title: string;
-  icon: string;
-  apiKey: string;
-  moreLink: string;
-  products: RaffleProps[];
-}
-
-const RaffleListPage: React.FC<HomeSectionProps> = () => {
-  const navigate = useNavigate();
+const SearchResultPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
-  const [title, setTitle] = useState<string>('래플 리스트');
+  const [title, setTitle] = useState<string>('검색');
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [raffles, setRaffles] = useState<RaffleProps[]>([]);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true); // 더 가져올 데이터가 있는지 여부
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMoreProducts = () => {
-    const newProducts = Array(16)
-      .fill(null)
-      .map((_, index) => ({
-        raffleId: raffles.length + index + 1, // ✅ raffleId 적용
-        imageUrls: ['https://via.placeholder.com/150'],
-        name: `상품 ${raffles.length + index + 1}`,
-        ticketNum: Math.floor(Math.random() * 100) + 1, // ✅ 랜덤 티켓 수
-        timeUntilEnd: Math.floor(Math.random() * 5000) + 100, // ✅ 랜덤 시간 (초 단위)
-        finish: false, // ✅ 기본값으로 false 설정
-        participantNum: Math.floor(Math.random() * 10) + 1, // ✅ 랜덤 참가자 수
-        like: Math.random() > 0.5, // ✅ 50% 확률로 좋아요 설정
-      }));
+  const fetchMoreProducts = async () => {
+    if (!hasMore || isLoading) return;
 
-    setRaffles((prevProducts) => [...prevProducts, ...newProducts]); // ✅ 기존 데이터에 추가
+    setIsLoading(true);
+    try {
+      // const { data } = await axiosInstance.get('/api/permit/search/raffles', {
+      //   params: { page, limit: 16 },
+      // });
+
+      const { data } = await axiosInstance.get(`/api/permit/home/${type}`, {
+        params: { page, limit: 16 },
+      });
+
+      if (data.length < 16) {
+        setHasMore(false);
+      } else {
+        setRaffles((prev) => [...prev, ...data]);
+      }
+    } catch (error) {
+      console.error('데이터를 불러오기 실패:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 스크롤 감지 및 페이지 증가
@@ -64,50 +66,19 @@ const RaffleListPage: React.FC<HomeSectionProps> = () => {
   }, [page]);
 
   useEffect(() => {
-    // 페이지 제목 설정
-    switch (type) {
-      // case `${apiKey}` :
-      //   setTitle(`${title}`);
-
-      case 'approaching':
-        setTitle('마감임박 래플');
-        break;
-      case 'likes':
-        setTitle('내가 찜한 래플');
-        break;
-      case 'following':
-        setTitle('팔로우한 상점의 래플');
-        break;
-      case 'more':
-        setTitle('래플 둘러보기');
-        break;
-      case 'category':
-        setTitle('카테고리별 상품');
-        break;
-      default:
-        setTitle('래플 둘러보기');
-    }
     const fetchRaffleData = async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/permit/home/${type}`,
-      );
+      const { data } = await axiosInstance.get(`/api/permit/home/${type}`);
       console.log('API Response:', data.result.raffles);
       setRaffles(data.result.raffles);
     };
 
     fetchRaffleData();
-  }, [type]); // `type` 또는 `search`가 변경될 때마다 실행
+  }, [type]);
 
   return (
     <Wrapper>
       <LookAroundContainer>
         <LookAroundBox>{title}</LookAroundBox>
-        {title === 'following' && (
-          <MoreListBox onClick={() => navigate('/')}>
-            팔로우하는 상점 목록
-            <img src={moreList} alt="moreList" />
-          </MoreListBox>
-        )}
       </LookAroundContainer>
 
       <Horizon />
@@ -123,7 +94,7 @@ const RaffleListPage: React.FC<HomeSectionProps> = () => {
   );
 };
 
-export default RaffleListPage;
+export default SearchResultPage;
 
 const Wrapper = styled.div`
   width: 1080px;
