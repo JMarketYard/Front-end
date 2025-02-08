@@ -6,10 +6,19 @@ import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { Icon } from '@iconify/react';
+import axiosInstance from '../../../apis/axiosInstance';
+import { AxiosError } from 'axios';
 
 interface ModalProps {
   onClose: () => void;
 }
+
+const RequestSignUp = async (nickname: string) => {
+  const response = await axiosInstance.post('/api/permit/nickname', {
+    nickname,
+  });
+  return response.data;
+};
 
 const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
   const { openModal } = useModalContext();
@@ -22,15 +31,57 @@ const SignupModal: React.FC<ModalProps> = ({ onClose }) => {
     setName(event.target.value);
   };
 
-  const handleOpenNextModal = () => {
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
+
+  const handleOpenNextModal = async () => {
     if (!regex.test(name)) {
       setIsError('닉네임은 2~10자의 한글 또는 영어만 사용 가능합니다.');
       return;
-    } else {
-      setIsError('');
-      openModal(({ onClose }) => <EnterModal onClose={onClose} />);
+    }
+
+    try {
+      const response = await RequestSignUp(name);
+
+      if (response.code === 'COMMON_200') {
+        setIsError('');
+        openModal(({ onClose }) => <EnterModal onClose={onClose} />);
+      } else if (response.code === 'USER_4008') {
+        console.log('닉네임 중복');
+        setIsError('중복된 닉네임입니다');
+      } else {
+        setIsError('');
+      }
+    } catch (err) {
+      const error = err as AxiosError<{
+        isSuccess: boolean;
+        code: string;
+        message: string;
+      }>;
+
+      if (error.response) {
+        if (error.response.status === 400) {
+          const errorCode = error.response.data?.code;
+
+          if (errorCode === 'USER_4008') {
+            console.log('닉네임 중복');
+            setIsError('중복된 닉네임입니다');
+          } else {
+            setIsError('');
+          }
+        } else {
+          setIsError('');
+        }
+      } else {
+        setIsError('');
+      }
     }
   };
+
+  useEffect(() => {
+    console.log('현재 isError 상태:', isError);
+  }, [isError]);
 
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth >= 745 : false,
@@ -332,3 +383,4 @@ const Line = styled.div`
 `;
 
 export default SignupModal;
+
