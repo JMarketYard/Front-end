@@ -93,11 +93,10 @@ const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
   width: 228px;
   height: 227px;
   border-radius: 5px;
-  background: #e4e4e4;
   position: relative;
   margin-top: 6px;
 
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 `;

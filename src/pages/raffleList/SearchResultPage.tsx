@@ -12,7 +12,7 @@ const SearchResultPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  //
+
   const fetchMoreProducts = async () => {
     if (!hasMore || isLoading) return;
 
@@ -24,9 +24,12 @@ const SearchResultPage: React.FC = () => {
 
       const startIndex = (page - 1) * 16;
       const endIndex = startIndex + 16;
-      const newRaffles = data.result.raffles.slice(startIndex, endIndex);
+      const newRaffles = data.result.searchedRaffles.slice(
+        startIndex,
+        endIndex,
+      );
 
-      console.log(type);
+      console.log('검색어:', type);
 
       if (newRaffles.length < 16) {
         setRaffles((prev) => [...prev, ...newRaffles]);
@@ -91,16 +94,13 @@ const Wrapper = styled.div`
   width: 1080px;
   min-height: 1498px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
   padding-top: 64px;
-  position: relative;
+  gap: 45px;
 `;
 
 const SearchContainer = styled.div`
-  position: absolute;
-  left: 0px;
-
   display: inline-flex;
   padding: 0px 14px;
   justify-content: center;
@@ -108,8 +108,6 @@ const SearchContainer = styled.div`
   gap: 10px;
   border-radius: 11px;
   border: 1px solid #8f8e94;
-
-  margin-bottom: 44px;
 `;
 
 const KeywordBox = styled.div`
@@ -138,6 +136,7 @@ const ProductGrid = styled.div`
   gap: 44px;
   width: 100%;
   max-width: 1080px;
+  /* margin-top: 145px; */
 `;
 
 const Observer = styled.div`

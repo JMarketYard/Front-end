@@ -14,12 +14,14 @@ import RaffleListPage from '../pages/raffleList/RaffleListPage';
 import ResultPage from '../pages/hostResult/ResultPage';
 import SearchResultPage from '../pages/raffleList/SearchResultPage';
 import CategoryResultPage from '../pages/raffleList/CategoryResultPage';
+import ScrollToTop from '../components/ScrollTop';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <div>
+        <ScrollToTop />
         <RootLayout />
         <ModalProvider />
       </div>
@@ -99,22 +101,18 @@ const router = createBrowserRouter([
         path: '/raffles/:type', //더보기
         element: <RaffleListPage />,
       },
-      // {
-      //   path: '/search/:type', //검색결과 조회
-      //   element: <SearchResultPage />,
-      // },
-      // {
-      //   path: '/categories/:type',
-      //   element: <CategoryResultPage />,
-      // },
       {
         path: '/search/:type', //검색결과 조회
         element: <SearchResultPage />,
       },
-      // {
-      //   path: '/categories/:type',
-      //   element: <CategoryResultPage />,
-      // },
+      {
+        path: '/categories/:type',
+        element: <CategoryResultPage />,
+      },
+      {
+        path: '/search/:type', //검색결과 조회
+        element: <SearchResultPage />,
+      },
       {
         path: 'result',
         element: (
