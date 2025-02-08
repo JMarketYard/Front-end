@@ -240,10 +240,11 @@ export default RaffleUploadPage;
 
 
 const UploadForm = styled.form`
+    max-width: 100%;
     width: 1080px;
     min-height: 1498px;
     display: flex;
-    align-items: center;
+    align-items: safe center;
     flex-direction: column;
     padding-top: 63px;
 `

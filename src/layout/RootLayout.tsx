@@ -19,6 +19,6 @@ const Wrapper = styled.div`
   // min-width: 1440px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: safe center;
   // justify-content: center;
 `;
