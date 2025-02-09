@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import styled from "styled-components";
+import media from "../styles/media";
 
 const BigTitle = ({children}:{children:ReactNode}) => {
     return (
@@ -27,6 +28,11 @@ const BigTitleBox = styled.div`
     padding-bottom: 24px;
     box-sizing: border-box;
     position: relative;
+    
+    ${media.medium`
+        width: 675px;
+        margin: 0 14px;
+    `}
 `
 
 const TitleIcon = styled.span`
