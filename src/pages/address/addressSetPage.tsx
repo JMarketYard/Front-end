@@ -4,6 +4,7 @@ import Address from "./components/Address";
 import { useState } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import AddAddress from "./components/modal/AddAddress";
+import media from "../../styles/media";
 
 const AddressSetPage = () => {
   const [isSelect, setIsSelect] = useState(false);
@@ -79,6 +80,10 @@ const AddressList = styled.ul`
   display: flex;
   flex-direction: column;
   row-gap: 30px;
+
+  ${media.medium`
+    padding-inline-start: 13px;
+  `}
 `
 
 const Button = styled.button`
