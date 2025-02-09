@@ -1,18 +1,48 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import ReactDOM from 'react-dom';
 import styled from "styled-components";
 import { useModalContext } from "../../../../components/Modal/context/ModalContext";
 import InputAddress from "../InputAddress";
 import { ReactComponent as IcList } from "../../../../assets/icList.svg";
 import { ReactComponent as closeModal } from  "../../../../assets/icCloseAddressModal.svg";
+import { Address, useDaumPostcodePopup } from "react-daum-postcode";
 
 const AddAddress = ({ onClose }:PropsWithChildren<{ onClose: () => void }>) => {
+  const open = useDaumPostcodePopup();
   const { clearModals } = useModalContext();
+  const [apiAddress, setApiAddress] = useState<string>('');
+
+  const handleComplete = (data:Address) => {
+    let fullAddress = data.address; // 기본주소
+    let extraAddress = '';
+
+    // 기본 주소 타입: R(도로명)
+    // bname: 법정동/법정리 이름
+    if (data.addressType === 'R') {
+      if (data.bname !== '') {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== '') {
+        extraAddress += extraAddress !== ''
+        ? `, ${data.buildingName}`
+        : data.buildingName;
+      }
+      fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+    }
+
+    console.log(fullAddress);
+    setApiAddress(fullAddress);
+  }
+
+  const handlePostcode = () => {
+    open({ onComplete: handleComplete });
+  }
 
   const onCloseModal = () => {
     onClose();
     clearModals();
-  }
+  };
+
   return ReactDOM.createPortal(
     <ModalOverlay>
       <ModalContent>
@@ -30,9 +60,9 @@ const AddAddress = ({ onClose }:PropsWithChildren<{ onClose: () => void }>) => {
               <AddressTextBox>주소</AddressTextBox>
             </FlexContainer>
             <FindAddressBox>
-              <FindAddressDiv />
-              <FindAddressDiv />
-              <FindAddressDiv />
+              <FindAddress onClick={handlePostcode} readOnly
+              value={apiAddress}/>
+              <FindAddress />
             </FindAddressBox>
           </AddressBox>
           <InputAddress listColor="#C908FF" title="연락처" inputType="tel" />
@@ -148,7 +178,7 @@ const FindAddressBox = styled.div`
   flex-direction: column;
   row-gap: 18px;
 `
-const FindAddressDiv = styled.div`
+const FindAddress = styled.input`
   width: 332px;
   height: 38px;
   border-radius: 3px;
