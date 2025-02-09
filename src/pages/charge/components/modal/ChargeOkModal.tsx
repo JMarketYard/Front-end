@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
 import vector from '../../../../assets/Vector.png';
+import ticket from '../../../../assets/ticket.svg';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 
 interface ModalProps {
@@ -15,22 +16,22 @@ const ChargeOkModal: React.FC<ModalProps> = ({ onClose }) => {
     <Modal onClose={onClose}>
       <Container>
         <Img src={vector} />
-        <Title>티켓 환전 완료!</Title>
+        <Title>티켓 충전 완료!</Title>
+        <TicketBox>
+          <img src={ticket} style={{ width: '21px', height: '12px' }} />
+          <Ticket>300개</Ticket>
+        </TicketBox>
         <Option>
           <Name>거래 날짜</Name>
           <Name>2024.01.20</Name>
         </Option>
         <Line />
         <Option>
-          <Sname>적용 수수료</Sname>
-          <Sname>7%</Sname>
-        </Option>
-        <Option>
-          <Sname>사용한 티켓</Sname>
+          <Sname>구매한 티켓</Sname>
           <Sname>300개</Sname>
         </Option>
         <Option>
-          <Name>입금 받은 금액</Name>
+          <Name>지불한 금액</Name>
           <Price>30,000원</Price>
         </Option>
         <Option>
@@ -96,12 +97,27 @@ const Option = styled.div`
   width: 265px;
 `;
 
+const Ticket = styled.div`
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  transform: translateY(2px);
+`;
+
+const TicketBox = styled.div`
+  display: flex;
+  column-gap: 16px;
+  margin-bottom: 34px;
+  align-items: center;
+`;
+
 const Title = styled.div`
   font-family: Pretendard;
   font-size: 22px;
   font-style: normal;
   font-weight: 600;
-  margin-bottom: 50px;
+  margin-bottom: 23px;
 `;
 
 const Img = styled.img`
