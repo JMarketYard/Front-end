@@ -1,29 +1,51 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as checkbox } from "../../../assets/imgCheckbox.svg";
 import media from "../../../styles/media";
+import { TAddress } from "../addressSetPage";
+import axiosInstance from "../../../apis/axiosInstance";
 
-const Address = ({isSelect}:{isSelect:boolean}) => {
-  // 임의의 default state: 후에 데이터 연결하면 삭제할 state
-  const [isDefault, setIsDefault] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
+type TAddressProps = {
+  isSelect: boolean,
+  address: TAddress,
+  addressId: number|null,
+  setAddressId: React.Dispatch<React.SetStateAction<number|null>>,
+  fetchAddresses: () => Promise<void>,
+}
+
+const Address = ({isSelect, address, addressId,
+  setAddressId, fetchAddresses}:TAddressProps) => {
+  // const [defaultId, setDefaultId] = useState<number|null>(null);
+
+  const defaultAddress = async () => {
+    const { data } = await axiosInstance.post(
+      '/api/member/mypage/setting/addresses',
+      { addressId: address.addressId }
+    );
+    await fetchAddresses();
+    console.log("Success POST: Change Default Address!");
+  };
+
+  const handleCheckbox = () => {
+    setAddressId(address.addressId);
+  }
   return (
     <>
     <List>
       {isSelect ?
       <Checkbox
-      onClick={()=>setIsClicked(!isClicked)}
-      fill={isClicked ? "#C908FF" : "none"}
+      onClick={handleCheckbox}
+      fill={addressId===address.addressId ? "#C908FF" : "none"}
       />
     : <ListIcon />}
-      <TitleSpan>우리집</TitleSpan>
-      <AddressSpan>서울특별시 마포구 와우산로 94 홍익대학교 제2기숙사</AddressSpan>
+      <TitleSpan>{address.addressName}</TitleSpan>
+      <AddressSpan>{address.addressDetail}</AddressSpan>
       <SetBtn
-      $default={isDefault}
-      onClick={()=>setIsDefault(!isDefault)}
+      $default={address.isDefault}
+      onClick={defaultAddress}
       >{
-        isDefault
+        address.isDefault
         ? '기본 배송지로 설정됨'
         : '기본 배송지로 설정하기'
       }</SetBtn>

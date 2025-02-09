@@ -1,18 +1,60 @@
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import Address from "./components/Address";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import AddAddress from "./components/modal/AddAddress";
 import media from "../../styles/media";
+import axiosInstance from "../../apis/axiosInstance";
+
+export type TAddress = {
+  addressId: number,
+  addressName: string,
+  recipientName: string,
+  addressDetail: string,
+  phoneNumber: string,
+  isDefault: boolean
+};
 
 const AddressSetPage = () => {
   const [isSelect, setIsSelect] = useState(false);
   const { openModal } = useModalContext();
+  const [addressList, setAddressList] = useState<TAddress[]|undefined>([]);
+  const [addressId, setAddressId] = useState<number|null>(null);
 
   const handleModal = () => {
-    openModal(({ onClose }) => <AddAddress onClose={onClose} />);
-  }
+    openModal(({ onClose }) => 
+    <AddAddress onClose={onClose}
+    fetchAddresses={fetchAddresses}
+    />);
+  };
+
+  const fetchAddresses = async () => {
+    const {data} = await axiosInstance.get(
+      '/api/member/mypage/setting/addresses'
+    );
+    setAddressList(data.result.addressList);
+    console.log(data.result.addressList);
+  };
+
+  const handleDelete = () => {
+    const deleteAddress = async () => {
+      const { data } = await axiosInstance.delete(
+        '/api/member/mypage/setting/addresses', {
+          data: { addressId }
+        });
+      await fetchAddresses();
+    };
+    if (addressId!==-1) {
+      deleteAddress();
+      setAddressId(null);
+      setIsSelect(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
 
   return (
     <Wrapper>
@@ -22,6 +64,7 @@ const AddressSetPage = () => {
         ? <>
         <SelectBtn
         $right={'128px'}
+        onClick={handleDelete}
         >배송지 삭제</SelectBtn>
         <SelectBtn
         $background={'rgba(201, 8, 255, 0.20)'}
@@ -33,7 +76,14 @@ const AddressSetPage = () => {
         }
       </BigTitle>
       <AddressList>
-        <Address isSelect={isSelect} />
+        {addressList?.map(v =>
+          <Address key={v.addressId}
+          isSelect={isSelect} address={v}
+          addressId={addressId}
+          setAddressId={setAddressId}
+          fetchAddresses={fetchAddresses}
+          />
+        )}
       </AddressList>
       <Button onClick={handleModal}>새 배송지 추가하기</Button>
     </Wrapper>
