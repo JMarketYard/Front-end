@@ -39,13 +39,6 @@ const HomePage: React.FC = () => {
       } catch (error) {
         console.error('데이터 가져오기 실패', error);
       }
-
-      const { data } = await axiosInstance.get('/api/permit/home', {
-        withCredentials: true,
-      });
-
-      console.log('API Response:', data.result);
-      setHomeData(data.result);
     };
 
     fetchHomeData();

@@ -10,6 +10,7 @@ import DrawModal from '../../../components/Modal/modals/DrawModal';
 import RaffleDetailProps from '../../../components/RaffleDetailProps';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
+import RandomModal from '../../../components/Modal/modals/RandomModal';
 
 const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -39,6 +40,16 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
     postApply();
     setIsModalOpen(false); // 모달을 닫기
   };
+  const handleWinner = () => {
+    const getWinner = async () => {
+      const { data } = await axiosInstance.get(
+        `/api/member/raffles/${typeNumber}/draw`,
+      );
+    };
+    getWinner();
+    // const winnerData = data.result;
+    setIsModalOpen(false); // 모달을 닫기
+  };
 
   const formatDate = (isoString: string) =>
     new Date(isoString).toLocaleString('ko-KR', {
@@ -53,17 +64,28 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
 
   return (
     <Wrapper>
-      {isModalOpen && (
-        <DrawModal
-          onClose={closeModal}
-          handleRoleChange={handleRoleChange}
-          // countParticipant={countParticipant}
-          name={raffle.name}
-          ticket={raffle.ticketNum}
-          image={raffle.imageUrls[0]}
-          resultTime={raffle.endAt}
-        />
-      )}
+      {isModalOpen &&
+        raffle.userStatus === 'nonParticipant' &&
+        raffle.raffleStatus === 'ACTIVE' && (
+          <DrawModal
+            onClose={closeModal}
+            handleRoleChange={handleRoleChange}
+            // countParticipant={countParticipant}
+            name={raffle.name}
+            ticket={raffle.ticketNum}
+            image={raffle.imageUrls[0]}
+            resultTime={raffle.endAt}
+          />
+        )}
+      {/* {isModalOpen &&
+        raffle.userStatus === 'nonParticipant' &&
+        raffle.raffleStatus === 'ACTIVE' && (
+          <RandomModal
+            onClose={closeModal}
+            handleWinner={handleWinner}
+            {...winnerData}
+          />
+        )} */}
 
       <BigTitle>{raffle.name}</BigTitle>
       <TopLayout>

@@ -8,6 +8,7 @@ import Slider from 'react-slick';
 interface Item {
   id: number;
   name: string;
+  handleWinner: () => void;
 }
 
 export default function RandomModal({
@@ -53,7 +54,7 @@ export default function RandomModal({
   ];
 
   useEffect(() => {
-    setItems(data);
+    // setItems(data);
     setWinner('강도윤');
   }, []);
 
@@ -70,7 +71,6 @@ export default function RandomModal({
         }
         setIsRolling(false);
       }, 500);
-
     }
   };
 
