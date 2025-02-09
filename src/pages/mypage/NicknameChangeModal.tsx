@@ -12,7 +12,7 @@ const NicknameChangeModal: React.FC<ModalProps> = ({ onClose }) => {
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Title>닉네임 변경</Title>
+        <Title>닉네임 변경</Title> 
         <Input
           type="text"
           placeholder="새 닉네임을 입력하세요"
@@ -30,7 +30,6 @@ const NicknameChangeModal: React.FC<ModalProps> = ({ onClose }) => {
 
 export default NicknameChangeModal;
 
-/* ✅ 스타일 */
 const Container = styled.div`
   display: flex;
   flex-direction: column;
