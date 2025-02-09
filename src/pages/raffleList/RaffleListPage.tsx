@@ -18,7 +18,7 @@ const RaffleListPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchMoreProducts = async () => {
-    if (!hasMore || isLoading) return; // 중복 요청 방지
+    if (!hasMore || isLoading) return;
 
     setIsLoading(true);
     try {
@@ -33,7 +33,7 @@ const RaffleListPage: React.FC = () => {
 
       if (newRaffles.length < 16) {
         setRaffles((prev) => [...prev, ...newRaffles]);
-        setHasMore(false); // 마지막 페이지면 더 이상 요청하지 않음
+        setHasMore(false);
       } else {
         setRaffles((prev) => [...prev, ...newRaffles]);
       }

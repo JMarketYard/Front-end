@@ -56,8 +56,9 @@ const ResponsiveHeader = () => {
     const handleOpenModal = () => {
         openModal(({ onClose }) => <SplashModal onClose={onClose} />);
     };
+
     const onClickLoginBtn = () => {
-        if (!isLoggedIn) handleOpenModal();
+        setIsLoggedIn((prev) => !prev); // 클릭할 때마다 로그인/로그아웃 상태 변경
     };
 
     useEffect(() => {
@@ -82,7 +83,7 @@ const ResponsiveHeader = () => {
                     <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
                 </SmallIconDiv>
                 <LineDiv height={'27px'} margin={'0 32px'} />
-                <SmallIconDiv>
+                <SmallIconDiv onClick={()=>navigate('mypage/setting')}>
                     <IcSetting className='svg' width={22} height={24} fill={"#8F8E94"} />
                     <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
                 </SmallIconDiv>
@@ -143,7 +144,7 @@ const ResponsiveHeader = () => {
                         </KeywordBox>
                     </KeywordContainer>
                 </SearchBoxDiv>
-                <IconDiv>
+                <IconDiv onClick={() => navigate('/raffles/list/likes')}>
                     <img src={icHeart} width={22} />
                     <IconTextDiv fontSize={'10px'}>찜한래플</IconTextDiv>
                 </IconDiv>
