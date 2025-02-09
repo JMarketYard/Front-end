@@ -15,21 +15,48 @@ const SearchResultPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  //
+
+  const categoryMap: { [key: string]: string } = {
+    women: '여성의류',
+    men: '남성의류',
+    shoes: '신발',
+    accessories: '악세사리',
+    digital: '디지털',
+    appliances: '가전제품',
+    sports: '스포츠/레저',
+    vehicle: '차량/오토바이',
+    md: '굿즈',
+    art: '예술/희귀/수집품',
+    music: '음반/악기',
+    stationery: '도서/티켓/문구',
+    beauty: '뷰티',
+    interior: '인테리어',
+    household: '생활용품',
+    tools: '공구/산업용품',
+    grocery: '식품',
+    infant: '유아',
+    pet: '반려동물',
+    others: '기타',
+    talent: '재능',
+  };
+
+  const categoryName = type
+    ? categoryMap[type] || '알 수 없는 카테고리'
+    : '전체 카테고리';
   const fetchMoreProducts = async () => {
     if (!hasMore || isLoading) return;
 
     setIsLoading(true);
     try {
       const { data } = await axiosInstance.get('/api/permit/home/categories', {
-        params: { categoryName: type },
+        params: { categoryName: categoryName },
       });
 
       const startIndex = (page - 1) * 16;
       const endIndex = startIndex + 16;
       const newRaffles = data.result.raffles.slice(startIndex, endIndex);
 
-      console.log('카테고리 :', type);
+      console.log('카테고리 :', categoryName);
 
       if (newRaffles.length < 16) {
         setRaffles((prev) => [...prev, ...newRaffles]);
@@ -72,7 +99,7 @@ const SearchResultPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <LookAroundBox>{type}</LookAroundBox>
+      <LookAroundBox>{categoryName}</LookAroundBox>
 
       <Horizon />
 
