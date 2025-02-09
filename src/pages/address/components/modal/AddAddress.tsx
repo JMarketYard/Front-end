@@ -6,11 +6,21 @@ import InputAddress from "../InputAddress";
 import { ReactComponent as IcList } from "../../../../assets/icList.svg";
 import { ReactComponent as closeModal } from  "../../../../assets/icCloseAddressModal.svg";
 import { Address, useDaumPostcodePopup } from "react-daum-postcode";
+import axiosInstance from "../../../../apis/axiosInstance";
 
-const AddAddress = ({ onClose }:PropsWithChildren<{ onClose: () => void }>) => {
+const AddAddress = ({ onClose, fetchAddresses }:PropsWithChildren<{ 
+  onClose: () => void,
+  fetchAddresses: () => Promise<void>
+}>) => {
   const open = useDaumPostcodePopup();
   const { clearModals } = useModalContext();
   const [apiAddress, setApiAddress] = useState<string>('');
+  const [addressName, setAddressName] = useState<string>('');
+  const [recipientName, setRecipientName] = useState<string>('');
+  const [addressDetail, setAddressDetail] = useState<string>('');
+  const [telephone, setTelephone] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
 
   const handleComplete = (data:Address) => {
     let fullAddress = data.address; // 기본주소
@@ -43,6 +53,26 @@ const AddAddress = ({ onClose }:PropsWithChildren<{ onClose: () => void }>) => {
     clearModals();
   };
 
+  const handleAddAddress = () => {
+    const postAddress = async () => {
+      const { data } = await axiosInstance.post(
+        '/api/member/mypage/setting/addresses/add',
+        {
+          addressName,
+          recipientName,
+          addressDetail: apiAddress+' '+addressDetail,
+          phoneNumber,
+          message,
+          isDefault: false,
+        }
+      );
+      await fetchAddresses();
+      console.log('Success POST');
+    };
+    postAddress();
+    onCloseModal();
+  }
+
   return ReactDOM.createPortal(
     <ModalOverlay>
       <ModalContent>
@@ -52,8 +82,10 @@ const AddAddress = ({ onClose }:PropsWithChildren<{ onClose: () => void }>) => {
           <LineDiv />
         </TopContainer>
         <ContentsContainer>
-          <InputAddress listColor="#C908FF" title="배송지명" />
-          <InputAddress listColor="#C908FF" title="받는 사람" />
+          <InputAddress listColor="#C908FF" title="배송지명"
+          value={addressName} setValue={setAddressName} />
+          <InputAddress listColor="#C908FF" title="받는 사람"
+          value={recipientName} setValue={setRecipientName} />
           <AddressBox>
             <FlexContainer>
               <IcList fill="#C908FF" width={7} height={7} />
@@ -62,14 +94,19 @@ const AddAddress = ({ onClose }:PropsWithChildren<{ onClose: () => void }>) => {
             <FindAddressBox>
               <FindAddress onClick={handlePostcode} readOnly
               value={apiAddress}/>
-              <FindAddress />
+              <FindAddress value={addressDetail}
+              onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
+              setAddressDetail(e.target.value)}/>
             </FindAddressBox>
           </AddressBox>
-          <InputAddress listColor="#C908FF" title="연락처" inputType="tel" />
-          <InputAddress listColor="#E4E4E4" title="휴대폰" inputType="tel" />
-          <InputAddress listColor="#E4E4E4" title="주문 메시지" />
+          <InputAddress listColor="#C908FF" title="연락처" inputType="tel"
+          value={telephone} setValue={setTelephone} />
+          <InputAddress listColor="#E4E4E4" title="휴대폰" inputType="tel"
+          value={phoneNumber} setValue={setPhoneNumber}/>
+          <InputAddress listColor="#E4E4E4" title="주문 메시지"
+          value={message} setValue={setMessage} />
         </ContentsContainer>
-        <AddBtn>추가하기</AddBtn>
+        <AddBtn onClick={handleAddAddress}>추가하기</AddBtn>
       </ModalContent>
     </ModalOverlay>,
     document.getElementById('modal-root') as HTMLElement,
