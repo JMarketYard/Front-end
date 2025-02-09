@@ -115,10 +115,6 @@ const router = createBrowserRouter([
         element: <CategoryResultPage />,
       },
       {
-        path: '/search/:type', //검색결과 조회
-        element: <SearchResultPage />,
-      },
-      {
         path: 'result',
         element: (
           <div>
