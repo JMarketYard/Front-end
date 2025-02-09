@@ -8,7 +8,7 @@ import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RaffleDetailProps from '../../components/RaffleDetailProps';
 
-const RaffleDetailPage = () => {
+const RaffleDetailPage: React.FC<RaffleDetailProps> = () => {
   const { type } = useParams<{ type?: string }>();
   // const [participant, setParticipant] = useState(raffle.participant);
   const [raffleData, setRaffleData] = useState<RaffleDetailProps | null>(null);
