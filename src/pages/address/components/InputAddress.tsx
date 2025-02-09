@@ -6,16 +6,20 @@ type TInputAddress = {
   listColor:string,
   title:string,
   inputType?: 'tel',
+  value:string,
+  setValue:React.Dispatch<React.SetStateAction<string>>,
 }
 
-const InputAddress = ({listColor, title, inputType}:TInputAddress) => {
+const InputAddress = ({listColor, title, inputType, value, setValue}:TInputAddress) => {
   return (
     <Container>
       <IcList fill={listColor} width={7} height={7} />
       <TitleBox>
         {title}
       </TitleBox>
-      <Input type={inputType||"text"} />
+      <Input type={inputType||"text"} value={value} 
+      onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
+      setValue(e.target.value)} />
     </Container>
   );
 };
