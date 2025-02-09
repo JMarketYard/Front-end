@@ -2,6 +2,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as checkbox } from "../../../assets/imgCheckbox.svg";
+import media from "../../../styles/media";
 
 const Address = ({isSelect}:{isSelect:boolean}) => {
   // 임의의 default state: 후에 데이터 연결하면 삭제할 state
@@ -12,8 +13,6 @@ const Address = ({isSelect}:{isSelect:boolean}) => {
     <List>
       {isSelect ?
       <Checkbox
-      width={27.2}
-      height={27.1}
       onClick={()=>setIsClicked(!isClicked)}
       fill={isClicked ? "#C908FF" : "none"}
       />
@@ -38,15 +37,28 @@ export default Address;
 const List = styled.li`
   display: flex;
   align-items: center;
-  column-gap: 66px;
-  width: 1000px;
+  // justify-content: space-between;
+  column-gap: 74px;
+  width: 925px;
   box-sizing: border-box;
+  ${media.medium`
+    width: 631px;
+    column-gap: 49px;
+    // justify-content: space-between;
+  `}
 `
 
 const Checkbox = styled(checkbox)`
+  width: 27.2px;
+  height: 27.1px;
   &:hover {
     cursor: pointer;
   };
+
+  ${media.medium`
+    width: 21px;
+    height: 21px;
+  `}
 `
 
 const ListIcon = styled.span`
@@ -69,7 +81,7 @@ const TitleSpan = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100px;
+  // width: 100px;
 `
 
 const AddressSpan = styled.span`
@@ -83,6 +95,9 @@ const AddressSpan = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   width: 460px;
+  ${media.medium`
+    width: 229px;
+  `}
 `
 
 const SetBtn = styled.button<{$default:boolean}>`
@@ -100,7 +115,7 @@ const SetBtn = styled.button<{$default:boolean}>`
   font-style: normal;
   font-weight: 500;
   line-height: 36.832px; /* 230.199% */
-  margin-right: 14px;
+  // margin-right: 14px;
   box-sizing: border-box;
   &:hover {
     cursor: pointer;

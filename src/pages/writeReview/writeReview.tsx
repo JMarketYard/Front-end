@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import StarRating from "../../components/StarRating";
+import media from "../../styles/media";
 
 const WriteReview = () => {
   return (
@@ -56,6 +57,10 @@ const Textarea = styled.textarea`
   font-weight: 400;
   line-height: normal;
   resize: none;
+  
+  ${media.medium`
+    width: 658px;
+  `}
 `
 
 const Button = styled.button`
