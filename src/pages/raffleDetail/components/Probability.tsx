@@ -4,114 +4,101 @@ import DonutChart from './DonutChart';
 import NpDonutChart from './NpDonutChart';
 import DonutText from './DonutText';
 import icMark from '../../../assets/raffleDetail/icon-mark.svg';
+import RaffleDetailProps from '../../../components/RaffleDetailProps';
 
-interface ItemProps {
-  participant: number;
-  atLeastParticipant: number;
-  role: 'p' | 'np' | 'h';
-  raffleStatus: string;
-  result: 'success' | 'less' | 'failed';
-  winner: 'y' | 'n' | 'idk';
-}
-
-const Probability = ({
-  participant,
-  atLeastParticipant,
-  role,
-  raffleStatus,
-  result,
-  winner,
-}: ItemProps) => {
+const Probability: React.FC<RaffleDetailProps> = (raffle) => {
   return (
     <Wrapper>
-      {raffleStatus === 'unopen' && (
+      {raffle.raffleStatus === 'UNOPENED' && (
         <UnOpenContainer>
           <img src={icMark} alt={'icMark'} />
           <UnOpenBox>해당 래플은 가직 개최되지 않았습니다.</UnOpenBox>
         </UnOpenContainer>
       )}
 
-      {raffleStatus === 'ongoing' && (
+      {raffle.raffleStatus === 'ACTIVE' && (
         <>
-          {(role === 'np' || role === 'h') && (
+          {(raffle.userStatus === 'nonParticipant' ||
+            raffle.userStatus === 'host') && (
             <CenteredContainer>
               <TitleBox>지금 참여하면 당첨될 확률은?</TitleBox>
-              <NpDonutChart participant={participant} />
+              <NpDonutChart participant={raffle.applyCount} />
             </CenteredContainer>
           )}
-          {role === 'p' && (
+          {raffle.userStatus === 'participant' && (
             <CenteredContainer>
               <TitleBox>지금 당신이 당첨될 확률은?</TitleBox>
-              <DonutChart participant={participant} />
+              <DonutChart participant={raffle.applyCount} />
             </CenteredContainer>
           )}
           <InfoContainer>
-            <ParticipantBox>현재 참여자 수 : {participant}명</ParticipantBox>
             <ParticipantBox>
-              판매자 희망 최소 참여자 : {atLeastParticipant}명
+              현재 참여자 수 : {raffle.applyCount}명
+            </ParticipantBox>
+            <ParticipantBox>
+              판매자 희망 최소 참여자 : {raffle.minUser}명
             </ParticipantBox>
           </InfoContainer>
         </>
       )}
-      {raffleStatus === 'ended' && (
+
+      {raffle.raffleStatus === 'ENDED' && ( //DRAW 확인 전
         <>
-          {result === 'success' && ( //DRAW 확인 전
-            <>
-              {(role === 'np' || role === 'h') && (
-                <CenteredContainer>
-                  <TitleBox>누군가 당첨될 확률은?</TitleBox>
-                  <DonutChart participant={participant} />
-                  <InfoContainer>
-                    <ParticipantBox>
-                      현재 참여자 수 : {participant}명
-                    </ParticipantBox>
-                    <ParticipantBox>
-                      판매자 희망 최소 참여자 : {atLeastParticipant}명
-                    </ParticipantBox>
-                  </InfoContainer>
-                </CenteredContainer>
-              )}
-              {role === 'p' && winner === 'idk' && (
-                <CenteredContainer>
-                  <TitleBox>지금 당신이 당첨될 확률은?</TitleBox>
-                  <DonutChart participant={participant} />
-                  <InfoContainer>
-                    <ParticipantBox>
-                      현재 참여자 수 : {participant}명
-                    </ParticipantBox>
-                    <ParticipantBox>
-                      판매자 희망 최소 참여자 : {atLeastParticipant}명
-                    </ParticipantBox>
-                  </InfoContainer>
-                </CenteredContainer>
-              )}
-              {role === 'p' && (winner === 'y' || winner === 'n') && (
-                <CenteredContainer>
-                  <TitleBox>해당 래플은 종료되었습니다</TitleBox>
-                  <DonutText text="래플 종료" />
-                </CenteredContainer>
-              )}
-            </>
+          {(raffle.userStatus === 'nonParticipant' ||
+            raffle.userStatus === 'host') && (
+            <CenteredContainer>
+              <TitleBox>누군가 당첨될 확률은?</TitleBox>
+              <DonutChart participant={raffle.applyCount} />
+              <InfoContainer>
+                <ParticipantBox>
+                  현재 참여자 수 : {raffle.applyCount}명
+                </ParticipantBox>
+                <ParticipantBox>
+                  판매자 희망 최소 참여자 : {raffle.minUser}명
+                </ParticipantBox>
+              </InfoContainer>
+            </CenteredContainer>
           )}
-          {result === 'failed' && ( //DRAW 확인 전
-            <FailedContainer>
-              래플 종료
-              <FailedBox>
-                해당 래플은 판매자 희망 최소 참여자 이상 모이지 않아
-                취소되었습니다. 취소된 래플에 대한 티켓은 다시 적립됩니다.
-              </FailedBox>
-            </FailedContainer>
+          {raffle.isWinner === 'hope' && (
+            <CenteredContainer>
+              <TitleBox>지금 당신이 당첨될 확률은?</TitleBox>
+              <DonutChart participant={raffle.applyCount} />
+              <InfoContainer>
+                <ParticipantBox>
+                  현재 참여자 수 : {raffle.applyCount}명
+                </ParticipantBox>
+                <ParticipantBox>
+                  판매자 희망 최소 참여자 : {raffle.minUser}명
+                </ParticipantBox>
+              </InfoContainer>
+            </CenteredContainer>
           )}
-          {result === 'less' && (
-            <LessContainer>
-              <img src={icMark} alt={'icMark'} />
-              <LessBox>
-                해당 래플은 판매자가 설정한 최소 참여자 수에 미치지 못해, 현재
-                판매자가 당첨자 선정 여부를 결정해야 하는 대기 상태에 있습니다.
-              </LessBox>
-            </LessContainer>
+          {(raffle.isWinner === 'yes' || raffle.isWinner === 'no') && (
+            <CenteredContainer>
+              <TitleBox>해당 래플은 종료되었습니다</TitleBox>
+              <DonutText text="래플 종료" />
+            </CenteredContainer>
           )}
         </>
+      )}
+      {raffle.raffleStatus === 'FINISHED' &&
+        raffle.applyCount < raffle.minUser && ( //DRAW 확인 전
+          <FailedContainer>
+            래플 종료
+            <FailedBox>
+              해당 래플은 판매자 희망 최소 참여자 이상 모이지 않아
+              취소되었습니다. 취소된 래플에 대한 티켓은 다시 적립됩니다.
+            </FailedBox>
+          </FailedContainer>
+        )}
+      {raffle.raffleStatus === 'UNFULFILLED' && (
+        <LessContainer>
+          <img src={icMark} alt={'icMark'} />
+          <LessBox>
+            해당 래플은 판매자가 설정한 최소 참여자 수에 미치지 못해, 현재
+            판매자가 당첨자 선정 여부를 결정해야 하는 대기 상태에 있습니다.
+          </LessBox>
+        </LessContainer>
       )}
     </Wrapper>
   );
