@@ -27,11 +27,9 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const openModal = () => {
     setIsModalOpen(true); // 모달 열기
   };
-
   const closeModal = () => {
     setIsModalOpen(false); // 모달 닫기
   };
-
   const handleRoleChange = () => {
     const postApply = async () => {
       const { data } = await axiosInstance.post(
@@ -41,6 +39,17 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
     postApply();
     setIsModalOpen(false); // 모달을 닫기
   };
+
+  const formatDate = (isoString: string) =>
+    new Date(isoString).toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  // .replace(' ', ' ');
 
   return (
     <Wrapper>
@@ -52,6 +61,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
           name={raffle.name}
           ticket={raffle.ticketNum}
           image={raffle.imageUrls[0]}
+          resultTime={raffle.endAt}
         />
       )}
 
@@ -80,11 +90,11 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
           </DetailContainer>
           <DetailContainer>
             <TitleBox>응모오픈</TitleBox>
-            <DescriptionBox>{raffle.startAt}</DescriptionBox>
+            <DescriptionBox>{formatDate(raffle.startAt)}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
             <TitleBox>응모마감</TitleBox>
-            <DescriptionBox>{raffle.endAt}</DescriptionBox>
+            <DescriptionBox>{formatDate(raffle.endAt)}</DescriptionBox>
             {(raffle.raffleStatus === 'UNFULFILLED' ||
               raffle.raffleStatus === 'ENDED' ||
               raffle.raffleStatus === 'FINISHED' ||
@@ -156,13 +166,16 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
             {raffle.raffleStatus === 'FINISHED' && (
               <GrayButton>래플 종료</GrayButton>
             )}
-            {raffle.raffleStatus === ' COMPLETED' &&
-              raffle.isWinner === 'yes' && (
-                <PurpleButton onClick={() => navigate('/review')}>
-                  후기남기기
-                </PurpleButton>
-              )}
-
+            {raffle.raffleStatus === ' COMPLETED' && (
+              <>
+                {raffle.isWinner === 'yes' && (
+                  <PurpleButton onClick={() => navigate('/review')}>
+                    후기남기기
+                  </PurpleButton>
+                )}
+                {raffle.isWinner === 'no' && <GrayButton>래플 종료</GrayButton>}
+              </>
+            )}
             <LikeBox onClick={toggleLike}>
               <img
                 src={isLiked ? icLike : icUnlike}

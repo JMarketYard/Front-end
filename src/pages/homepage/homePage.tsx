@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
             title="마감임박"
             icon={clockIcon}
             apiKey="approaching"
-            moreLink="raffles/approaching"
+            moreLink="raffles/list/approaching"
             products={homeData.approaching}
           />
         ) : null}
@@ -71,7 +71,7 @@ const HomePage: React.FC = () => {
             title="내가 찜한 래플"
             icon={likeIcon}
             apiKey="myLikeRaffles"
-            moreLink="raffles/myLikes"
+            moreLink="raffles/list/myLikes"
             products={homeData.myLikeRaffles || []}
           />
         ) : null}
@@ -80,13 +80,13 @@ const HomePage: React.FC = () => {
             title="내가 팔로우한 상점"
             icon={followIcon}
             apiKey="myFollowRaffles"
-            moreLink="raffles/myFollow"
+            moreLink="raffles/list/myFollow"
             products={homeData.myFollowRaffles || []}
           />
         ) : null}
         <LookAroundContainer>
           <LookAroundBox>래플 둘러보기</LookAroundBox>
-          <Link to={'raffles/more'}>
+          <Link to={'raffles/list/more'}>
             <MoreListBox>
               더보기
               <img src={moreList} alt="moreList" />

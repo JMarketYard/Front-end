@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-// import { ReactComponent as Next } from "../../assets/next.svg";
-// import { ReactComponent as Prev } from "../../assets/prev.svg";
+import icRight from '../../../assets/raffleDetail/icon-right.svg';
+import icLeft from '../../../assets/raffleDetail/icon-left.svg';
 
 interface ItemProps {
   images: string[];
@@ -17,34 +17,47 @@ function ImgSlider({ images, name, children }: ItemProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = (images ?? []).length;
   const lastSlide = totalSlides - 1;
+  const totalDots = Math.min(totalSlides, 3);
+  const lastDotIndex = totalDots - 1;
 
   const getActiveDot = () => {
     if (currentSlide === 0) return 0; // 첫 번째 dot 선택
-    if (currentSlide === lastSlide) return 2; // 마지막 dot 선택
-    return 1; // 중간 dot 선택
+    if (currentSlide === lastSlide) return lastDotIndex; // 마지막 dot 선택
+    return totalDots === 2 ? 1 : 1; // 중간 dot 선택
   };
 
   const settings = {
-    rows: 1,
+    centerMode: false,
     dots: true,
-    infinite: true,
+    infinite: totalSlides > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
-    nextArrow: <Div />,
-    prevArrow: <DivPre />,
-    beforeChange: (_: number, next: number) => setCurrentSlide(next),
-    appendDots: () => (
-      <CustomDots>
-        {[0, 1, 2].map((dotIndex) => (
-          <li
-            key={dotIndex}
-            className={dotIndex === getActiveDot() ? 'active' : ''}
-          />
-        ))}
-      </CustomDots>
+    arrows: false,
+    nextArrow: (
+      <Div>
+        <img src={icRight} alt="right" />
+      </Div>
     ),
+    prevArrow: (
+      <DivPre>
+        <img src={icLeft} alt="left" />
+      </DivPre>
+    ),
+    beforeChange: (_: number, next: number) => setCurrentSlide(next),
+    appendDots: () => {
+      const totalDots = Math.min(images.length, 3);
+      return (
+        <CustomDots>
+          {Array.from({ length: totalDots }, (_, dotIndex) => (
+            <li
+              key={dotIndex}
+              className={dotIndex === getActiveDot() ? 'active' : ''}
+            />
+          ))}
+        </CustomDots>
+      );
+    },
     customPaging: () => <button style={{ display: 'none' }} />,
   };
   return (
@@ -111,41 +124,27 @@ const Img = styled.img.attrs((props) => ({
   justify-content: center;
   align-items: center;
   position: relative;
+  background-size: contain;
 `;
 
-const Div = styled.div`
-  width: 30px;
-  height: 30px;
+const Div = styled.button`
   position: absolute;
   right: 16px;
   z-index: 99;
   text-align: right;
   line-height: 30px;
+
+  &:hover {
+    color: #888; /* 호버 시 색상 변경 */
+  }
 `;
-const DivPre = styled.div`
-  width: 30px;
-  height: 30px;
+
+const DivPre = styled.button`
   position: absolute;
   left: 16px;
   z-index: 99;
   text-align: left;
   line-height: 30px;
-`;
-
-const ArrowButton = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 24px; /* 화살표 크기 조절 */
-  font-weight: bold;
-  color: #c1c1c1; /* 피그마 stroke 색상 적용 */
-  width: 11.836px;
-  height: 27.976px;
-  flex-shrink: 0;
-  stroke-width: 2px;
 
   &:hover {
     color: #888; /* 호버 시 색상 변경 */

@@ -8,18 +8,11 @@ import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RaffleDetailProps from '../../components/RaffleDetailProps';
 
-type Role = 'p' | 'np' | 'h';
-type Winner = 'y' | 'n' | 'idk';
-type Result = 'success' | 'less' | 'failed';
-
 const RaffleDetailPage = () => {
   const { type } = useParams<{ type?: string }>();
   // const [participant, setParticipant] = useState(raffle.participant);
   const [raffleData, setRaffleData] = useState<RaffleDetailProps | null>(null);
 
-  // const countParticipant = () => {
-  //   setParticipant((prev) => prev + 1);
-  // };
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
   useEffect(() => {

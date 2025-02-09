@@ -12,6 +12,7 @@ interface ModalProps {
   image: string;
   name: string;
   ticket: number;
+  resultTime: string;
 }
 
 const DrawModal: React.FC<ModalProps> = ({
@@ -21,11 +22,14 @@ const DrawModal: React.FC<ModalProps> = ({
   image,
   name,
   ticket,
+  resultTime,
 }) => {
   const { openModal } = useModalContext();
 
   const handleSubmit = () => {
-    openModal(({ onClose }) => <DrawOkModal onClose={onClose} />);
+    openModal(({ onClose }) => (
+      <DrawOkModal onClose={onClose} resultTime={resultTime} image={image} />
+    ));
     handleRoleChange();
     //countParticipant();
   };

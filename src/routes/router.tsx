@@ -103,7 +103,7 @@ const router = createBrowserRouter([
         element: <SetOpenInfoPage />,
       },
       {
-        path: '/raffles/:type', //더보기
+        path: '/raffles/list/:type', //더보기
         element: <RaffleListPage />,
       },
       {

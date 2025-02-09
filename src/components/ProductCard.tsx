@@ -39,7 +39,7 @@ const ProductCard: React.FC<RaffleProps> = ({
 
   return (
     <Wrapper>
-      <StyledLink to={`raffles/${raffleId}`}>
+      <StyledLink to={`/raffles/${raffleId}`}>
         <ImageContainer imageUrls={imageUrls}>
           {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
