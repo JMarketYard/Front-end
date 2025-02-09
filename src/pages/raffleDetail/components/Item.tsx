@@ -77,15 +77,9 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
             resultTime={raffle.endAt}
           />
         )}
-      {/* {isModalOpen &&
-        raffle.userStatus === 'nonParticipant' &&
-        raffle.raffleStatus === 'ACTIVE' && (
-          <RandomModal
-            onClose={closeModal}
-            handleWinner={handleWinner}
-            {...winnerData}
-          />
-        )} */}
+      {isModalOpen &&
+        raffle.userStatus === 'participant' &&
+        raffle.raffleStatus === 'ENDED' && <RandomModal onClose={closeModal} />}
 
       <BigTitle>{raffle.name}</BigTitle>
       <TopLayout>
@@ -165,13 +159,13 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                 {raffle.userStatus === 'participant' && (
                   <>
                     {raffle.isWinner === 'yes' && (
-                      <PurpleButton>DRAW</PurpleButton>
+                      <PurpleButton onClick={openModal}>DRAW</PurpleButton>
                     )}
                     {raffle.isWinner === 'no' && (
                       <GrayButton>래플 종료</GrayButton>
                     )}
                     {raffle.isWinner === 'hope' && (
-                      <PurpleButton>DRAW</PurpleButton>
+                      <PurpleButton onClick={openModal}>DRAW</PurpleButton>
                     )}
                   </>
                 )}
