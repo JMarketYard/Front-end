@@ -39,7 +39,7 @@ const List = styled.li`
   align-items: center;
   // justify-content: space-between;
   column-gap: 74px;
-  width: 925px;
+  width: 940px;
   box-sizing: border-box;
   ${media.medium`
     width: 631px;
