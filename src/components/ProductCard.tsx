@@ -180,15 +180,13 @@ const TitleContainer = styled.div`
 `;
 
 const TitleBox = styled.div`
-  display: flex;
-  align-items: center;
-
-  color: #000;
-  font-family: Pretendard;
   font-size: 16px;
-  font-style: normal;
   font-weight: 400;
-  line-height: 18px; /* 112.5% */
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px; /* ✅ 글자 수 제한 */
 `;
 
 const ParticipantsBox = styled.div`
