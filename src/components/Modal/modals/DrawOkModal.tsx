@@ -5,9 +5,20 @@ import ticket from '../../../assets/ticket.svg';
 
 interface ModalProps {
   onClose: () => void;
+  resultTime: string;
+  image: string;
 }
 
-const DrawOkModal: React.FC<ModalProps> = ({ onClose }) => {
+const DrawOkModal: React.FC<ModalProps> = ({ onClose, resultTime, image }) => {
+  const formatDate = (isoString: string) =>
+    new Date(isoString).toLocaleString('ko-KR', {
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      hour12: false,
+      year: undefined,
+    });
+  //메일로 결과가 전송됩니다. 수정하기!
   return (
     <Modal onClose={onClose}>
       <Container>
@@ -15,8 +26,8 @@ const DrawOkModal: React.FC<ModalProps> = ({ onClose }) => {
           <Img src={ticket} />
           <Ticket>응모 완료!</Ticket>
         </TicketBox>
-        <Short>0월 0일 00시 메일로 결과가 전송됩니다.</Short>
-        <Box />
+        <Short>메일로 결과가 전송됩니다.</Short>
+        <Box src={image} alt="상품 이미지" />
         <Button onClick={onClose}>내가 응모한 게시물 보러가기기</Button>
       </Container>
     </Modal>
@@ -67,7 +78,7 @@ const Short = styled.div`
   margin-bottom: 42px;
 `;
 
-const Box = styled.div`
+const Box = styled.img`
   width: 155px;
   height: 155px;
   flex-shrink: 0;

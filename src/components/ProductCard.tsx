@@ -39,7 +39,7 @@ const ProductCard: React.FC<RaffleProps> = ({
 
   return (
     <Wrapper>
-      <StyledLink to={`raffles/${raffleId}`}>
+      <StyledLink to={`/raffles/${raffleId}`}>
         <ImageContainer imageUrls={imageUrls}>
           {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
@@ -93,11 +93,10 @@ const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
   width: 228px;
   height: 227px;
   border-radius: 5px;
-  background: #e4e4e4;
   position: relative;
   margin-top: 6px;
 
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 `;

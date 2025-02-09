@@ -19,12 +19,14 @@ import FollowingList from '../pages/mypage/FollowingList';
 import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
 import ReviewPage from '../components/ReviewPage';
+import ScrollToTop from '../components/ScrollTop';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <div>
+        <ScrollToTop />
         <RootLayout />
         <ModalProvider />
       </div>
@@ -53,7 +55,7 @@ const router = createBrowserRouter([
         element: <RaffleUploadPage />,
       },
       {
-        path: 'raffles/detail', //래플 상세보기
+        path: 'raffles/:type', //래플 상세보기
         element: (
           <div>
             <RaffleDetailPage />
@@ -101,17 +103,17 @@ const router = createBrowserRouter([
         element: <SetOpenInfoPage />,
       },
       {
-        path: '/raffles/:type', //더보기
+        path: '/raffles/list/:type', //더보기
         element: <RaffleListPage />,
       },
-      // {
-      //   path: '/search/:type', //검색결과 조회
-      //   element: <SearchResultPage />,
-      // },
-      // {
-      //   path: '/categories/:type',
-      //   element: <CategoryResultPage />,
-      // },
+      {
+        path: '/search/:type', //검색결과 조회
+        element: <SearchResultPage />,
+      },
+      {
+        path: '/categories/:type',
+        element: <CategoryResultPage />,
+      },
       {
         path: 'result',
         element: (
@@ -122,28 +124,25 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'mypage/following-list', 
-        element: <FollowingList />        
-      
+        path: 'mypage/following-list',
+        element: <FollowingList />,
       },
       {
-        path: 'mypage/setting', 
-        element: <Setting />        
-      
+        path: 'mypage/setting',
+        element: <Setting />,
       },
       {
-         path: 'mypage', 
-         element: <MyProfilePage />        
+        path: 'mypage',
+        element: <MyProfilePage />,
       },
       {
-        path: 'mypage/public-information-set', 
-        element: <PublicInformationSet />        
-     },
-     {
-      path: 'mypage/my-review', 
-      element: <ReviewPage />        
-    },
-      
+        path: 'mypage/public-information-set',
+        element: <PublicInformationSet />,
+      },
+      {
+        path: 'mypage/my-review',
+        element: <ReviewPage />,
+      },
     ],
   },
 ]);

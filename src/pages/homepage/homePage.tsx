@@ -8,7 +8,6 @@ import followIcon from '../../assets/homePage/follow.svg';
 import moreList from '../../assets/homePage/moreList.svg';
 import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import media from '../../styles/media';
 import { Link } from 'react-router-dom';
 import RaffleProps from '../../components/RaffleProps';
@@ -30,23 +29,16 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     console.log('홈페이지 useEffect');
     const fetchHomeData = async () => {
-      // try {
-      //   const { data } = await axiosInstance.get(
-      //     isAuthenticated ? '/api/member/home' : '/api/permit/home',
-      //   );
+      try {
+        const { data } = await axiosInstance.get(
+          isAuthenticated ? '/api/member/home' : '/api/permit/home',
+        );
 
-      //   console.log('API Response:', data.result.raffles);
-      //   setHomeData(data.result);
-      // } catch (error) {
-      //   console.error('데이터 가져오기 실패', error);
-      // }
-
-      const { data } = await axiosInstance.get('/api/permit/home', {
-        withCredentials: true,
-      });
-
-      console.log('API Response:', data.result);
-      setHomeData(data.result);
+        console.log('API Response:', data.result.raffles);
+        setHomeData(data.result);
+      } catch (error) {
+        console.error('데이터 가져오기 실패', error);
+      }
     };
 
     fetchHomeData();
@@ -63,7 +55,7 @@ const HomePage: React.FC = () => {
             title="마감임박"
             icon={clockIcon}
             apiKey="approaching"
-            moreLink="raffles/approaching"
+            moreLink="raffles/list/approaching"
             products={homeData.approaching}
           />
         ) : null}
@@ -72,7 +64,7 @@ const HomePage: React.FC = () => {
             title="내가 찜한 래플"
             icon={likeIcon}
             apiKey="myLikeRaffles"
-            moreLink="raffles/myLikes"
+            moreLink="raffles/list/myLikes"
             products={homeData.myLikeRaffles || []}
           />
         ) : null}
@@ -81,13 +73,13 @@ const HomePage: React.FC = () => {
             title="내가 팔로우한 상점"
             icon={followIcon}
             apiKey="myFollowRaffles"
-            moreLink="raffles/myFollow"
+            moreLink="raffles/list/myFollow"
             products={homeData.myFollowRaffles || []}
           />
         ) : null}
         <LookAroundContainer>
           <LookAroundBox>래플 둘러보기</LookAroundBox>
-          <Link to={'raffles/more'}>
+          <Link to={'raffles/list/more'}>
             <MoreListBox>
               더보기
               <img src={moreList} alt="moreList" />
