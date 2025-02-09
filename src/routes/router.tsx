@@ -14,6 +14,11 @@ import RaffleListPage from '../pages/raffleList/RaffleListPage';
 import ResultPage from '../pages/hostResult/ResultPage';
 import SearchResultPage from '../pages/raffleList/SearchResultPage';
 import CategoryResultPage from '../pages/raffleList/CategoryResultPage';
+import MyProfilePage from '../pages/mypage/mypage';
+import FollowingList from '../pages/mypage/FollowingList';
+import PublicInformationSet from '../pages/mypage/PublicInformationSet';
+import Setting from '../pages/mypage/Setting';
+import ReviewPage from '../components/ReviewPage';
 
 const router = createBrowserRouter([
   {
@@ -116,6 +121,29 @@ const router = createBrowserRouter([
           </div>
         ),
       },
+      {
+        path: 'mypage/following-list', 
+        element: <FollowingList />        
+      
+      },
+      {
+        path: 'mypage/setting', 
+        element: <Setting />        
+      
+      },
+      {
+         path: 'mypage', 
+         element: <MyProfilePage />        
+      },
+      {
+        path: 'mypage/public-information-set', 
+        element: <PublicInformationSet />        
+     },
+     {
+      path: 'mypage/my-review', 
+      element: <ReviewPage />        
+    },
+      
     ],
   },
 ]);

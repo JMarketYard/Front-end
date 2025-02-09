@@ -147,7 +147,7 @@ const ResponsiveHeader = () => {
                     <img src={icHeart} width={22} />
                     <IconTextDiv fontSize={'10px'}>찜한래플</IconTextDiv>
                 </IconDiv>
-                <IconDiv>
+                <IconDiv onClick={() => navigate('/mypage')}>
                     <img src={icMyPage} width={22} />
                     <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
                 </IconDiv>
