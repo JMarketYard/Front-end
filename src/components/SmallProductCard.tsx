@@ -5,6 +5,7 @@ import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
 import smallLike from '../assets/smallProductCard/smallLike.svg';
 import { Link } from 'react-router-dom';
 import RaffleProps from './RaffleProps';
+import { useNavigate } from 'react-router-dom';
 
 const getFormatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -30,6 +31,7 @@ const SmallProductCard: React.FC<RaffleProps> = ({
   participantNum,
   like,
 }) => {
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation(); //Wrapper로 이벤트 전달 방지
@@ -38,30 +40,28 @@ const SmallProductCard: React.FC<RaffleProps> = ({
   };
 
   return (
-    <Wrapper>
-      <StyledLink to={`raffles/${raffleId}`}>
-        <ImageContainer imageUrls={imageUrls}>
-          {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
-          {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
-            <TextBox>마감임박</TextBox>
-          )}
-          <LikeBox onClick={toggleLike}>
-            <img
-              src={isLiked ? smallLike : smallUnlike}
-              alt={isLiked ? 'Liked' : 'Unliked'}
-            />
-          </LikeBox>
-        </ImageContainer>
-        <Layout>
-          <TitleContainer>{name}</TitleContainer>
-          <InfoContainer>
-            <TicketBox>
-              <img src={smallTicket} alt="smallTicket" /> {ticketNum}
-            </TicketBox>
-            {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
-          </InfoContainer>
-        </Layout>
-      </StyledLink>
+    <Wrapper onClick={() => navigate(`raffles/${raffleId}`)}>
+      <ImageContainer imageUrls={imageUrls}>
+        {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
+        {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
+          <TextBox>마감임박</TextBox>
+        )}
+        <LikeBox onClick={toggleLike}>
+          <img
+            src={isLiked ? smallLike : smallUnlike}
+            alt={isLiked ? 'Liked' : 'Unliked'}
+          />
+        </LikeBox>
+      </ImageContainer>
+      <Layout>
+        <TitleContainer>{name}</TitleContainer>
+        <InfoContainer>
+          <TicketBox>
+            <img src={smallTicket} alt="smallTicket" /> {ticketNum}
+          </TicketBox>
+          {!finish && <TimeBox>{getFormatTime(timeUntilEnd)}뒤 마감</TimeBox>}
+        </InfoContainer>
+      </Layout>
     </Wrapper>
   );
 };
@@ -74,10 +74,10 @@ const Wrapper = styled.div`
   background-color: #ffffff;
 `;
 
-const StyledLink = styled(Link)`
-  text-decoration: none; /* 밑줄 제거 */
-  color: inherit; /* 기본 색상 유지 */
-`;
+// const StyledLink = styled(Link)`
+//   text-decoration: none; /* 밑줄 제거 */
+//   color: inherit; /* 기본 색상 유지 */
+// `;
 
 const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
   ({ imageUrls }) => ({

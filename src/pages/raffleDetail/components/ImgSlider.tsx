@@ -15,7 +15,7 @@ interface ItemProps {
 
 function ImgSlider({ images, name, children }: ItemProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = images.length;
+  const totalSlides = (images ?? []).length;
   const lastSlide = totalSlides - 1;
 
   const getActiveDot = () => {
@@ -51,7 +51,7 @@ function ImgSlider({ images, name, children }: ItemProps) {
     <Wrapper>
       <ChildrenWrapper>{children}</ChildrenWrapper>
       <Slider {...settings}>
-        {images.map((image, index) => (
+        {(images ?? []).map((image, index) => (
           <ImgContainer key={index}>
             <Img src={image} alt={`${name} - 이미지 ${index + 1}`} />
           </ImgContainer>

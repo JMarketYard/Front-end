@@ -55,7 +55,7 @@ const router = createBrowserRouter([
         element: <RaffleUploadPage />,
       },
       {
-        path: 'raffles/detail', //래플 상세보기
+        path: 'raffles/:type', //래플 상세보기
         element: (
           <div>
             <RaffleDetailPage />

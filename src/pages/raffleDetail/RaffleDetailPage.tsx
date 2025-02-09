@@ -1,45 +1,51 @@
 import React, { useEffect, useState } from 'react';
-
 import styled from 'styled-components';
 import Item from './components/Item';
 import Market from './components/Market';
 import Probability from './components/Probability';
 import { raffleData } from '../../mocks/RaffleData';
+import axiosInstance from '../../apis/axiosInstance';
+import { useParams, useLocation } from 'react-router-dom';
+import RaffleDetailProps from '../../components/RaffleDetailProps';
 
 type Role = 'p' | 'np' | 'h';
 type Winner = 'y' | 'n' | 'idk';
 type Result = 'success' | 'less' | 'failed';
 
 const RaffleDetailPage = () => {
-  const [role, setRole] = useState<Role>('h'); // 기본값: 미참여자
-  const [winner, setWinner] = useState<Winner>('n');
-  const [result, setResult] = useState<Result>('success');
-  const raffle = raffleData[0]; // 0(ended) 1(ongoing) 2(unopen)
-  const [participant, setParticipant] = useState(raffle.participant);
-  const countParticipant = () => {
-    setParticipant((prev) => prev + 1);
-  };
+  const { type } = useParams<{ type?: string }>();
+  // const [participant, setParticipant] = useState(raffle.participant);
+  const [raffleData, setRaffleData] = useState<RaffleDetailProps | null>(null);
+
+  // const countParticipant = () => {
+  //   setParticipant((prev) => prev + 1);
+  // };
+  const typeNumber = type ? parseInt(type, 10) : undefined;
+
+  useEffect(() => {
+    console.log('래플 상세보기 useEffect');
+    const fetchRaffleData = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/permit/raffles/${typeNumber}`,
+        );
+
+        console.log('API Response:', data.result);
+        setRaffleData(data.result);
+      } catch (error) {
+        console.error('데이터 가져오기 실패', error);
+      }
+    };
+
+    fetchRaffleData();
+  }, []);
 
   return (
     <Wrapper>
-      <Item
-        {...raffle}
-        role={role}
-        setRole={setRole}
-        winner={winner}
-        result={result}
-        participant={participant}
-        countParticipant={countParticipant}
-      />
+      <Item {...raffleData} />
       <MoreInfoLayout>
         <Market />
-        <Probability
-          {...raffle}
-          participant={participant}
-          role={role}
-          result={result}
-          winner={winner}
-        />
+        <Probability {...raffleData} />
       </MoreInfoLayout>
     </Wrapper>
   );

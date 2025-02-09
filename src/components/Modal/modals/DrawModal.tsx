@@ -8,8 +8,8 @@ import DrawOkModal from './DrawOkModal';
 interface ModalProps {
   onClose: () => void;
   handleRoleChange: () => void;
-  countParticipant: () => void;
-  images: string[];
+  //countParticipant: () => void;
+  image: string;
   name: string;
   ticket: number;
 }
@@ -17,25 +17,23 @@ interface ModalProps {
 const DrawModal: React.FC<ModalProps> = ({
   onClose,
   handleRoleChange,
-  countParticipant,
-  images,
+  //countParticipant,
+  image,
   name,
   ticket,
 }) => {
-  const itemImg = images[0];
-
   const { openModal } = useModalContext();
 
   const handleSubmit = () => {
     openModal(({ onClose }) => <DrawOkModal onClose={onClose} />);
     handleRoleChange();
-    countParticipant();
+    //countParticipant();
   };
 
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Box src={itemImg} alt="상품 이미지" />
+        <Box src={image} alt="상품 이미지" />
         <Title>{name}</Title>
         <Short>해당 상품에 응모하시겠습니까?</Short>
         <TicketBox>
