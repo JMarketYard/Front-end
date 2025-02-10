@@ -12,7 +12,7 @@ import icMyPage from '../assets/header/icon-mypage.svg';
 import icUpload from '../assets/header/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
 import { useNavigate } from "react-router-dom";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import CategoryMenu from './CategoryMenu';
 import { useModalContext } from './Modal/context/ModalContext';
 import SplashModal from '../pages/login/components/SplashModal';
@@ -21,6 +21,7 @@ import { ReactComponent as IcList } from '../assets/icList.svg';
 import icDel from '../assets/icDel.svg';
 import axiosInstance from '../apis/axiosInstance';
 import { TSearch } from '../types/searchKeywords';
+import { AuthContext, useAuth } from '../context/AuthContext';
 
 const ResponsiveHeader = () => {
     const navigate = useNavigate();
@@ -36,14 +37,15 @@ const ResponsiveHeader = () => {
     const [dummy, setDummy] = useState<string[]>([
         '애플워치', '아이폰', '에어팟', '안경', '코트'
     ]);
+    const { isAuthenticated, logout } = useAuth();
 
     const getSearch = async () => {
         const { data }:{data:TSearch} = await axiosInstance.get(
-            isLoggedIn ? '/api/member/search/raffles'
+            isAuthenticated ? '/api/member/search'
             : '/api/permit/search'
         );
 
-        console.log('getSearch:', data);
+        // console.log('getSearch:', data);
         setHotKeywords(data.result.popularSearch);
         setRecentKeywords(data.result.recentSearch);
     };
@@ -67,6 +69,20 @@ const ResponsiveHeader = () => {
     const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
     };
+    const handleSearchEnter = (e:KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            if (isAuthenticated) {
+                axiosInstance.post('/api/member/search', searchText);
+                // formData.append('recentSearch', searchText);
+                // fetch(`/api/member/search`, {
+                //     method: "POST",
+                //     body: formData,
+                // });
+            }
+            navigate(`/search/${searchText}`);
+            setIsSearchClicked(false);
+        }
+    }
 
     const handleDelKeyword = (keyword:string) => {
         // delSearch(): 해당 키워드 서버에서 삭제
@@ -78,12 +94,9 @@ const ResponsiveHeader = () => {
         openModal(({ onClose }) => <SplashModal onClose={onClose} />);
     };
     const onClickLoginBtn = () => {
-        if (!isLoggedIn) handleOpenModal();
+        if (!isAuthenticated) handleOpenModal();
+        else logout();
     };
-
-    // const onClickSearchInput = () => {
-    //     setIsSearchClicked(true);
-    // };
 
     // 시작하자마자 호출될 API
     useEffect(() => {
@@ -103,8 +116,8 @@ const ResponsiveHeader = () => {
       <>
         <Wrapper>
             <TopContainer>
-                <LoginBtn onClick={onClickLoginBtn} state={String(isLoggedIn)}>
-                    {isLoggedIn ? '로그아웃' : '로그인'}
+                <LoginBtn onClick={onClickLoginBtn} state={String(isAuthenticated)}>
+                    {isAuthenticated ? '로그아웃' : '로그인'}
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} className='line-1' />
                 <SmallIconDiv>
@@ -133,10 +146,11 @@ const ResponsiveHeader = () => {
                 <SearchBoxDiv>
                     <TicketImg src={ticket} />
                     <SearchInput
-                    type="text"
+                    type="search"
                     onClick={()=>setIsSearchClicked(true)}
                     value={searchText}
                     onChange={handleSearchInput}
+                    onKeyUp={handleSearchEnter}
                     />
                     <SearchIcon src={icSearch} />
                     <KeywordContainer
@@ -150,8 +164,8 @@ const ResponsiveHeader = () => {
                                 <Span>최근 검색</Span>
                             </KeywordTitle>
                             <RecentKeywordsBox>
-                            {dummy.length!==0 ?
-                            dummy.map((v,_) => (
+                            {recentKeywords.length!==0 ?
+                            recentKeywords.map((v,_) => (
                                 <RecentKeyword key={_}>
                                     {v}
                                     <DelImg src={icDel} width={9.096} height={8.901}
