@@ -81,9 +81,9 @@ const ResponsiveHeader = () => {
         if (!isLoggedIn) handleOpenModal();
     };
 
-    const onClickSearchInput = () => {
-        setIsSearchClicked(true);
-    };
+    // const onClickSearchInput = () => {
+    //     setIsSearchClicked(true);
+    // };
 
     // 시작하자마자 호출될 API
     useEffect(() => {
@@ -112,7 +112,7 @@ const ResponsiveHeader = () => {
                     <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
                 </SmallIconDiv>
                 <LineDiv height={'27px'} margin={'0 32px'} />
-                <SmallIconDiv>
+                <SmallIconDiv onClick={()=>navigate('mypage/setting')}>
                     <IcSetting className='svg' width={22} height={24} fill={"#8F8E94"} />
                     <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
                 </SmallIconDiv>
@@ -134,7 +134,7 @@ const ResponsiveHeader = () => {
                     <TicketImg src={ticket} />
                     <SearchInput
                     type="text"
-                    onClick={()=>onClickSearchInput()}
+                    onClick={()=>setIsSearchClicked(true)}
                     value={searchText}
                     onChange={handleSearchInput}
                     />
@@ -181,11 +181,11 @@ const ResponsiveHeader = () => {
                         </KeywordBox>
                     </KeywordContainer>
                 </SearchBoxDiv>
-                <IconDiv>
+                <IconDiv onClick={() => navigate('/raffles/list/likes')}>
                     <img src={icHeart} width={22} />
                     <IconTextDiv fontSize={'10px'}>찜한래플</IconTextDiv>
                 </IconDiv>
-                <IconDiv>
+                <IconDiv onClick={() => navigate('/mypage')}>
                     <img src={icMyPage} width={22} />
                     <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
                 </IconDiv>

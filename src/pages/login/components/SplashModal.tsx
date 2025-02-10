@@ -27,7 +27,8 @@ const SplashModal: React.FC<ModalProps> = ({ onClose }) => {
   }, []);
 
   const handleLogin = () => {
-    window.location.href = 'http://43.201.106.194:8080/login/oauth2/code/kakao';
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    window.location.href = `${apiBaseUrl}/login/oauth2/code/kakao`;
   };
 
   const Content = (

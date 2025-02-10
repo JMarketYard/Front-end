@@ -1,30 +1,51 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as checkbox } from "../../../assets/imgCheckbox.svg";
+import media from "../../../styles/media";
+import { TAddress } from "../addressSetPage";
+import axiosInstance from "../../../apis/axiosInstance";
 
-const Address = ({isSelect}:{isSelect:boolean}) => {
-  // 임의의 default state: 후에 데이터 연결하면 삭제할 state
-  const [isDefault, setIsDefault] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
+type TAddressProps = {
+  isSelect: boolean,
+  address: TAddress,
+  addressId: number|null,
+  setAddressId: React.Dispatch<React.SetStateAction<number|null>>,
+  fetchAddresses: () => Promise<void>,
+}
+
+const Address = ({isSelect, address, addressId,
+  setAddressId, fetchAddresses}:TAddressProps) => {
+  // const [defaultId, setDefaultId] = useState<number|null>(null);
+
+  const defaultAddress = async () => {
+    const { data } = await axiosInstance.post(
+      '/api/member/mypage/setting/addresses',
+      { addressId: address.addressId }
+    );
+    await fetchAddresses();
+    console.log("Success POST: Change Default Address!");
+  };
+
+  const handleCheckbox = () => {
+    setAddressId(address.addressId);
+  }
   return (
     <>
     <List>
       {isSelect ?
       <Checkbox
-      width={27.2}
-      height={27.1}
-      onClick={()=>setIsClicked(!isClicked)}
-      fill={isClicked ? "#C908FF" : "none"}
+      onClick={handleCheckbox}
+      fill={addressId===address.addressId ? "#C908FF" : "none"}
       />
     : <ListIcon />}
-      <TitleSpan>우리집</TitleSpan>
-      <AddressSpan>서울특별시 마포구 와우산로 94 홍익대학교 제2기숙사</AddressSpan>
+      <TitleSpan>{address.addressName}</TitleSpan>
+      <AddressSpan>{address.addressDetail}</AddressSpan>
       <SetBtn
-      $default={isDefault}
-      onClick={()=>setIsDefault(!isDefault)}
+      $default={address.isDefault}
+      onClick={defaultAddress}
       >{
-        isDefault
+        address.isDefault
         ? '기본 배송지로 설정됨'
         : '기본 배송지로 설정하기'
       }</SetBtn>
@@ -38,15 +59,28 @@ export default Address;
 const List = styled.li`
   display: flex;
   align-items: center;
-  column-gap: 66px;
-  width: 1000px;
+  // justify-content: space-between;
+  column-gap: 74px;
+  width: 940px;
   box-sizing: border-box;
+  ${media.medium`
+    width: 631px;
+    column-gap: 49px;
+    // justify-content: space-between;
+  `}
 `
 
 const Checkbox = styled(checkbox)`
+  width: 27.2px;
+  height: 27.1px;
   &:hover {
     cursor: pointer;
   };
+
+  ${media.medium`
+    width: 21px;
+    height: 21px;
+  `}
 `
 
 const ListIcon = styled.span`
@@ -69,7 +103,7 @@ const TitleSpan = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100px;
+  // width: 100px;
 `
 
 const AddressSpan = styled.span`
@@ -83,6 +117,9 @@ const AddressSpan = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   width: 460px;
+  ${media.medium`
+    width: 229px;
+  `}
 `
 
 const SetBtn = styled.button<{$default:boolean}>`
@@ -100,7 +137,7 @@ const SetBtn = styled.button<{$default:boolean}>`
   font-style: normal;
   font-weight: 500;
   line-height: 36.832px; /* 230.199% */
-  margin-right: 14px;
+  // margin-right: 14px;
   box-sizing: border-box;
   &:hover {
     cursor: pointer;

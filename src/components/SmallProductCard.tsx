@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import smallTicket from '../assets/smallProductCard/smallTicket.svg';
 import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
 import smallLike from '../assets/smallProductCard/smallLike.svg';
 import { Link } from 'react-router-dom';
 import RaffleProps from './RaffleProps';
+import { useNavigate } from 'react-router-dom';
 
 const getFormatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
@@ -31,6 +31,7 @@ const SmallProductCard: React.FC<RaffleProps> = ({
   participantNum,
   like,
 }) => {
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation(); //Wrapper로 이벤트 전달 방지
@@ -40,7 +41,7 @@ const SmallProductCard: React.FC<RaffleProps> = ({
 
   return (
     <Wrapper>
-      <StyledLink to={`raffles/${raffleId}`}>
+      <StyledLink to={`/raffles/${raffleId}`}>
         <ImageContainer imageUrls={imageUrls}>
           {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
@@ -93,7 +94,7 @@ const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
   position: relative;
   margin-top: 14px;
 
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 `;

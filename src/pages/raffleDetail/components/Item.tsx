@@ -7,53 +7,19 @@ import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
 import DrawModal from '../../../components/Modal/modals/DrawModal';
+import RaffleDetailProps from '../../../components/RaffleDetailProps';
+import axiosInstance from '../../../apis/axiosInstance';
+import { useParams, useLocation } from 'react-router-dom';
+import RandomModal from '../../../components/Modal/modals/RandomModal';
 
-interface ItemProps {
-  id: number;
-  marketId: string;
-  images: string[];
-  name: string;
-  ticket: number;
-  category: string;
-  openTime: string;
-  closeTime: string;
-  description: string;
-  participant: number;
-  atLeastParticipant: number;
-  view: number;
-  like: number;
-  role: 'p' | 'np' | 'h';
-  raffleStatus: string;
-  setRole: (role: 'p' | 'np' | 'h') => void;
-  winner: 'y' | 'n' | 'idk';
-  result: 'success' | 'less' | 'failed';
-  countParticipant: () => void;
-}
-
-const Item = ({
-  images,
-  name,
-  ticket,
-  category,
-  openTime,
-  closeTime,
-  description,
-  participant,
-  view,
-  like: initialLike, // 초기 like 값
-  role,
-  raffleStatus,
-  setRole,
-  winner,
-  result,
-  countParticipant,
-}: ItemProps) => {
+const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(initialLike);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { type } = useParams<{ type?: string }>();
+  const typeNumber = type ? parseInt(type, 10) : undefined;
+
   const toggleLike = () => {
     setIsLiked((prevState) => !prevState);
     setLikeCount((prevLike) => (isLiked ? prevLike - 1 : prevLike + 1));
@@ -62,111 +28,170 @@ const Item = ({
   const openModal = () => {
     setIsModalOpen(true); // 모달 열기
   };
-
   const closeModal = () => {
     setIsModalOpen(false); // 모달 닫기
   };
-
   const handleRoleChange = () => {
-    setRole('p'); // role을 'p'로 변경
+    const postApply = async () => {
+      const { data } = await axiosInstance.post(
+        `/api/member/raffles/${typeNumber}/apply`,
+      );
+    };
+    postApply();
+    setIsModalOpen(false); // 모달을 닫기
+  };
+  const handleWinner = () => {
+    const getWinner = async () => {
+      const { data } = await axiosInstance.get(
+        `/api/member/raffles/${typeNumber}/draw`,
+      );
+    };
+    getWinner();
+    // const winnerData = data.result;
     setIsModalOpen(false); // 모달을 닫기
   };
 
+  const formatDate = (isoString: string) =>
+    new Date(isoString).toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  // .replace(' ', ' ');
+
   return (
     <Wrapper>
-      {isModalOpen && (
-        <DrawModal
-          onClose={closeModal}
-          handleRoleChange={handleRoleChange}
-          countParticipant={countParticipant}
-          name={name}
-          ticket={ticket}
-          images={images}
-        />
-      )}
+      {isModalOpen &&
+        raffle.userStatus === 'nonParticipant' &&
+        raffle.raffleStatus === 'ACTIVE' && (
+          <DrawModal
+            onClose={closeModal}
+            handleRoleChange={handleRoleChange}
+            // countParticipant={countParticipant}
+            name={raffle.name}
+            ticket={raffle.ticketNum}
+            image={raffle.imageUrls[0]}
+            resultTime={raffle.endAt}
+          />
+        )}
+      {isModalOpen &&
+        raffle.userStatus === 'participant' &&
+        raffle.raffleStatus === 'ENDED' && <RandomModal onClose={closeModal} />}
 
-      <BigTitle>{name}</BigTitle>
+      <BigTitle>{raffle.name}</BigTitle>
       <TopLayout>
-        <ImgSlider images={images} name={name}>
-          {raffleStatus === 'ended' && (
+        <ImgSlider images={raffle.imageUrls} name={raffle.name}>
+          {(raffle.raffleStatus === 'UNFULFILLED' ||
+            raffle.raffleStatus === 'ENDED' ||
+            raffle.raffleStatus === 'FINISHED' ||
+            raffle.raffleStatus === 'COMPLETED') && (
             <RaffleClosingBox>응모 마감</RaffleClosingBox>
           )}
         </ImgSlider>
         <DetailLayout>
-          <ItemTitleBox>{name}</ItemTitleBox>
+          <ItemTitleBox>{raffle.name}</ItemTitleBox>
           <ViewBox>
-            조회 {view} · 찜 {likeCount}
+            조회 {raffle.view} · 찜 {raffle.likeCount}
           </ViewBox>
           <TicketBox>
             <img src={icTicket} alt="ticket" />
-            {ticket}
+            {raffle.ticketNum}
           </TicketBox>
           <DetailContainer>
             <TitleBox>카테고리</TitleBox>
-            <DescriptionBox>{category}</DescriptionBox>
+            <DescriptionBox>{raffle.category}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
             <TitleBox>응모오픈</TitleBox>
-            <DescriptionBox>{openTime}</DescriptionBox>
+            <DescriptionBox>{formatDate(raffle.startAt)}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
             <TitleBox>응모마감</TitleBox>
-            <DescriptionBox>{closeTime}</DescriptionBox>
-            {raffleStatus === 'ended' && <TextBox>응모마감</TextBox>}
+            <DescriptionBox>{formatDate(raffle.endAt)}</DescriptionBox>
+            {(raffle.raffleStatus === 'UNFULFILLED' ||
+              raffle.raffleStatus === 'ENDED' ||
+              raffle.raffleStatus === 'FINISHED' ||
+              raffle.raffleStatus === 'COMPLETED') && (
+              <TextBox>응모마감</TextBox>
+            )}
           </DetailContainer>
 
           <ButtonContainer>
             {/*래플 오픈 전*/}
-            {raffleStatus === 'unopen' && <GrayButton>응모 오픈 전</GrayButton>}
+            {raffle.raffleStatus === 'UNOPENED' && (
+              <GrayButton>응모 오픈 전</GrayButton>
+            )}
 
             {/*래플 응모 중*/}
-            {raffleStatus === 'ongoing' && (
+            {raffle.raffleStatus === 'ACTIVE' && (
               <>
-                {role === 'h' && <GrayButton>래플 결과</GrayButton>}
-                {role === 'np' && (
+                {raffle.userStatus === 'host' && (
+                  <GrayButton>래플 결과</GrayButton>
+                )}
+                {raffle.userStatus === 'nonParticipant' && (
                   <PurpleButton onClick={openModal}>응모하기</PurpleButton>
                 )}
-                {role === 'p' && (
+                {raffle.userStatus === 'participant' && (
                   <LightPurpleButton>응모 완료</LightPurpleButton>
                 )}
               </>
             )}
 
             {/*래플 응모 마감*/}
-            {raffleStatus === 'ended' && (
+            {(raffle.raffleStatus === 'UNFULFILLED' ||
+              raffle.raffleStatus === 'ENDED') && (
               <>
-                {role === 'h' && (
+                {raffle.userStatus === 'host' && (
                   <PinkButton onClick={() => navigate('/result')}>
                     래플 결과
                   </PinkButton>
                 )}
-                {result == 'success' && (
-                  <>
-                    {role === 'np' && <GrayButton>래플 종료</GrayButton>}
-                    {role === 'p' && (
-                      <>
-                        {winner === 'y' && (
-                          <PurpleButton onClick={() => navigate('/review')}>
-                            후기남기기
-                          </PurpleButton>
-                        )}
-                        {winner === 'n' && <GrayButton>래플 종료</GrayButton>}
-                        {winner === 'idk' && <PurpleButton>DRAW</PurpleButton>}
-                      </>
-                    )}
-                  </>
-                )}
-                {result == 'less' && (
-                  <>
-                    {(role === 'np' || role === 'p') && (
-                      <GrayButton>래플 종료</GrayButton>
-                    )}
-                  </>
-                )}
-                {result == 'failed' && <GrayButton>래플 종료</GrayButton>}
               </>
             )}
-
+            {raffle.raffleStatus === 'ENDED' && (
+              <>
+                {raffle.userStatus === 'nonParticipant' && (
+                  <GrayButton>래플 종료</GrayButton>
+                )}
+                {raffle.userStatus === 'participant' && (
+                  <>
+                    {raffle.isWinner === 'yes' && (
+                      <PurpleButton onClick={openModal}>DRAW</PurpleButton>
+                    )}
+                    {raffle.isWinner === 'no' && (
+                      <GrayButton>래플 종료</GrayButton>
+                    )}
+                    {raffle.isWinner === 'hope' && (
+                      <PurpleButton onClick={openModal}>DRAW</PurpleButton>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            {raffle.raffleStatus === 'UNFULFILLED' && (
+              <>
+                {(raffle.userStatus === 'nonParticipant' ||
+                  raffle.userStatus === 'participant') && (
+                  <GrayButton>래플 종료</GrayButton>
+                )}
+              </>
+            )}
+            {raffle.raffleStatus === 'FINISHED' && (
+              <GrayButton>래플 종료</GrayButton>
+            )}
+            {raffle.raffleStatus === ' COMPLETED' && (
+              <>
+                {raffle.isWinner === 'yes' && (
+                  <PurpleButton onClick={() => navigate('/review')}>
+                    후기남기기
+                  </PurpleButton>
+                )}
+                {raffle.isWinner === 'no' && <GrayButton>래플 종료</GrayButton>}
+              </>
+            )}
             <LikeBox onClick={toggleLike}>
               <img
                 src={isLiked ? icLike : icUnlike}
@@ -183,7 +208,7 @@ const Item = ({
       </TopLayout>
       <BottomLayout>
         <TitleBox2>상품 설명</TitleBox2>
-        <DescriptionBox2>{description}</DescriptionBox2>
+        <DescriptionBox2>{raffle.description}</DescriptionBox2>
       </BottomLayout>
     </Wrapper>
   );

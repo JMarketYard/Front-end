@@ -10,14 +10,23 @@ import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
-import RaffleListPage from '../pages/RaffleListPage';
+import RaffleListPage from '../pages/raffleList/RaffleListPage';
 import ResultPage from '../pages/hostResult/ResultPage';
+import SearchResultPage from '../pages/raffleList/SearchResultPage';
+import CategoryResultPage from '../pages/raffleList/CategoryResultPage';
+import MyProfilePage from '../pages/mypage/mypage';
+import FollowingList from '../pages/mypage/FollowingList';
+import PublicInformationSet from '../pages/mypage/PublicInformationSet';
+import Setting from '../pages/mypage/Setting';
+import ReviewPage from '../components/ReviewPage';
+import ScrollToTop from '../components/ScrollTop';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <div>
+        <ScrollToTop />
         <RootLayout />
         <ModalProvider />
       </div>
@@ -45,9 +54,8 @@ const router = createBrowserRouter([
         path: 'raffle-upload',
         element: <RaffleUploadPage />,
       },
-      { path: 'homepage', element: <HomePage /> },
       {
-        path: 'raffle-detail',
+        path: 'raffles/:type', //래플 상세보기
         element: (
           <div>
             <RaffleDetailPage />
@@ -95,8 +103,16 @@ const router = createBrowserRouter([
         element: <SetOpenInfoPage />,
       },
       {
-        path: '/raffles/:type',
+        path: '/raffles/list/:type', //더보기
         element: <RaffleListPage />,
+      },
+      {
+        path: '/search/:type', //검색결과 조회
+        element: <SearchResultPage />,
+      },
+      {
+        path: '/categories/:type',
+        element: <CategoryResultPage />,
       },
       {
         path: 'result',
@@ -106,6 +122,26 @@ const router = createBrowserRouter([
             <ModalProvider />
           </div>
         ),
+      },
+      {
+        path: 'mypage/following-list',
+        element: <FollowingList />,
+      },
+      {
+        path: 'mypage/setting',
+        element: <Setting />,
+      },
+      {
+        path: 'mypage',
+        element: <MyProfilePage />,
+      },
+      {
+        path: 'mypage/public-information-set',
+        element: <PublicInformationSet />,
+      },
+      {
+        path: 'mypage/my-review',
+        element: <ReviewPage />,
       },
     ],
   },

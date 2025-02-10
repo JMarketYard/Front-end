@@ -4,12 +4,14 @@ import vector from '../../../assets/Vector.png';
 import Modal from '../../../components/Modal/Modal';
 import media from '../../../styles/media';
 import { Icon } from '@iconify/react';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
 }
 
 const EnterModal: React.FC<ModalProps> = ({ onClose }) => {
+  const navigate = useNavigate();
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth >= 745 : false,
   );
@@ -50,7 +52,7 @@ const EnterModal: React.FC<ModalProps> = ({ onClose }) => {
           서비스를 제공{'\n'}합니다. 여러분께 즐거운 판매 기회와 {'\n'}득템의
           기회를 제공하기 위해 최선을 {'\n'}다하겠습니다.
         </Describe>
-        <Button>장마당 입장하기</Button>
+        <Button onClick={() => navigate('/')}>장마당 입장하기</Button>
       </Container>
     </Contents>
   );

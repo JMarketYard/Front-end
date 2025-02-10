@@ -1,51 +1,57 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
-import moreList from '../assets/homePage/moreList.svg';
-import axios from 'axios';
-import RaffleProps from '../components/RaffleProps';
+import moreList from '../../assets/homePage/moreList.svg';
+import axiosInstance from '../../apis/axiosInstance';
+import RaffleProps from '../../components/RaffleProps';
 
-interface HomeSectionProps {
-  title: string;
-  icon: string;
-  apiKey: string;
-  moreLink: string;
-  products: RaffleProps[];
-}
-
-const RaffleListPage: React.FC<HomeSectionProps> = () => {
+const RaffleListPage: React.FC = () => {
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
   const [title, setTitle] = useState<string>('래플 리스트');
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [raffles, setRaffles] = useState<RaffleProps[]>([]);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMoreProducts = () => {
-    const newProducts = Array(16)
-      .fill(null)
-      .map((_, index) => ({
-        raffleId: raffles.length + index + 1, // ✅ raffleId 적용
-        imageUrls: ['https://via.placeholder.com/150'],
-        name: `상품 ${raffles.length + index + 1}`,
-        ticketNum: Math.floor(Math.random() * 100) + 1, // ✅ 랜덤 티켓 수
-        timeUntilEnd: Math.floor(Math.random() * 5000) + 100, // ✅ 랜덤 시간 (초 단위)
-        finish: false, // ✅ 기본값으로 false 설정
-        participantNum: Math.floor(Math.random() * 10) + 1, // ✅ 랜덤 참가자 수
-        like: Math.random() > 0.5, // ✅ 50% 확률로 좋아요 설정
-      }));
+  const fetchMoreProducts = async () => {
+    if (!hasMore || isLoading) return;
 
-    setRaffles((prevProducts) => [...prevProducts, ...newProducts]); // ✅ 기존 데이터에 추가
+    setIsLoading(true);
+    try {
+      const { data } = await axiosInstance.get(`/api/permit/home/${type}`, {});
+
+      const startIndex = (page - 1) * 16;
+      const endIndex = startIndex + 16;
+      const newRaffles = data.result.raffles.slice(startIndex, endIndex);
+
+      console.log('API 응답 자른 데이터 개수:', newRaffles.length);
+      console.log('API 응답 데이터:', newRaffles);
+
+      if (newRaffles.length < 16) {
+        setRaffles((prev) => [...prev, ...newRaffles]);
+        setHasMore(false);
+      } else {
+        setRaffles((prev) => [...prev, ...newRaffles]);
+      }
+      setPage((prev) => prev + 1);
+    } catch (error) {
+      console.error('데이터 불러오기 실패:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // 스크롤 감지 및 페이지 증가
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && hasMore && !isLoading) {
           setPage((prev) => prev + 1);
+        } else {
+          console.log('hasmore:', hasMore);
         }
       },
       { threshold: 1.0 },
@@ -56,19 +62,17 @@ const RaffleListPage: React.FC<HomeSectionProps> = () => {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [hasMore, isLoading]);
 
   // 페이지 변경 시 새로운 데이터 로드
   useEffect(() => {
+    if (!hasMore) return;
     fetchMoreProducts();
   }, [page]);
 
   useEffect(() => {
     // 페이지 제목 설정
     switch (type) {
-      // case `${apiKey}` :
-      //   setTitle(`${title}`);
-
       case 'approaching':
         setTitle('마감임박 래플');
         break;
@@ -87,15 +91,13 @@ const RaffleListPage: React.FC<HomeSectionProps> = () => {
       default:
         setTitle('래플 둘러보기');
     }
-    const fetchRaffleData = async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/permit/home/${type}`,
-      );
-      console.log('API Response:', data.result.raffles);
-      setRaffles(data.result.raffles);
-    };
+    // const fetchRaffleData = async () => {
+    //   const { data } = await axiosInstance.get(`/api/permit/home/${type}`);
+    //   console.log('API Response:', data.result.raffles);
+    //   setRaffles(data.result.raffles);
+    // };
 
-    fetchRaffleData();
+    // fetchRaffleData();
   }, [type]); // `type` 또는 `search`가 변경될 때마다 실행
 
   return (
@@ -113,12 +115,12 @@ const RaffleListPage: React.FC<HomeSectionProps> = () => {
       <Horizon />
 
       <ProductGrid>
-        {(raffles ?? []).map((product) => (
-          <ProductCard key={product.raffleId} {...product} />
+        {(raffles ?? []).map((raffle) => (
+          <ProductCard key={raffle.raffleId} {...raffle} />
         ))}
       </ProductGrid>
 
-      <Observer ref={observerRef} />
+      {hasMore && <Observer ref={observerRef} />}
     </Wrapper>
   );
 };

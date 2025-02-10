@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
 import icLike from '../assets/ProductCard/like.svg';
@@ -32,7 +31,6 @@ const ProductCard: React.FC<RaffleProps> = ({
   like,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
-  const navigate = useNavigate();
   const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation(); //Wrapper로 이벤트 전달 방지
     event.preventDefault(); // 기본 동작 (Link 이동) 방지
@@ -41,7 +39,7 @@ const ProductCard: React.FC<RaffleProps> = ({
 
   return (
     <Wrapper>
-      <StyledLink to={`raffles/${raffleId}`}>
+      <StyledLink to={`/raffles/${raffleId}`}>
         <ImageContainer imageUrls={imageUrls}>
           {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
@@ -95,11 +93,10 @@ const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
   width: 228px;
   height: 227px;
   border-radius: 5px;
-  background: #e4e4e4;
   position: relative;
   margin-top: 6px;
 
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 `;
@@ -183,15 +180,13 @@ const TitleContainer = styled.div`
 `;
 
 const TitleBox = styled.div`
-  display: flex;
-  align-items: center;
-
-  color: #000;
-  font-family: Pretendard;
   font-size: 16px;
-  font-style: normal;
   font-weight: 400;
-  line-height: 18px; /* 112.5% */
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px; /* ✅ 글자 수 제한 */
 `;
 
 const ParticipantsBox = styled.div`

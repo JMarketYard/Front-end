@@ -23,13 +23,13 @@ function AdBanner() {
     <Wrapper>
       <Slider {...settings}>
         <div>
-          <AdBox>1</AdBox>
+          <AdBox>래플로 즐기는 중고거래</AdBox>
         </div>
         <div>
-          <AdBox>2</AdBox>
+          <AdBox>장마당과 함께 해요!</AdBox>
         </div>
         <div>
-          <AdBox>3</AdBox>
+          <AdBox>가벼운 응모, 커다란 행복</AdBox>
         </div>
       </Slider>
     </Wrapper>
@@ -69,7 +69,11 @@ const Wrapper = styled.div`
       color: rgba(201, 8, 255, 0.2); /* 선택되지 않은 점의 색상 */
       font-size: 8px;
     }
+<<<<<<< HEAD
   };
+=======
+  }
+>>>>>>> 557e220385c92aee84baf142efb02e03c7f625bc
   ${media.medium`
       margin-top: 26px;
     `}
@@ -81,8 +85,15 @@ const AdBox = styled.a`
   flex-shrink: 0;
   margin: 0 23px;
   border-radius: 31px;
-  background: #e7e7e7;
+  background: rgba(201, 8, 255, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
+
+  color: white;
+  font-family: Pretendard;
+  font-size: 80px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 42px */
 `;
