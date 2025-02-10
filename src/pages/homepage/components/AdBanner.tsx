@@ -69,11 +69,7 @@ const Wrapper = styled.div`
       color: rgba(201, 8, 255, 0.2); /* 선택되지 않은 점의 색상 */
       font-size: 8px;
     }
-<<<<<<< HEAD
-  };
-=======
   }
->>>>>>> 557e220385c92aee84baf142efb02e03c7f625bc
   ${media.medium`
       margin-top: 26px;
     `}
