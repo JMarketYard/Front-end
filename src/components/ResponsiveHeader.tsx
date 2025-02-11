@@ -12,7 +12,7 @@ import icMyPage from '../assets/header/icon-mypage.svg';
 import icUpload from '../assets/header/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
 import { useNavigate } from "react-router-dom";
-import { ChangeEvent, KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import CategoryMenu from './CategoryMenu';
 import { useModalContext } from './Modal/context/ModalContext';
 import SplashModal from '../pages/login/components/SplashModal';
@@ -21,7 +21,8 @@ import { ReactComponent as IcList } from '../assets/icList.svg';
 import icDel from '../assets/icDel.svg';
 import axiosInstance from '../apis/axiosInstance';
 import { TSearch } from '../types/searchKeywords';
-import { AuthContext, useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
+import { useIsSearchCompleted } from '../store/store';
 
 const ResponsiveHeader = () => {
     const navigate = useNavigate();
@@ -34,10 +35,8 @@ const ResponsiveHeader = () => {
     const categoryRef = useRef<HTMLDivElement>(null);
     const [hotKeywords, setHotKeywords] = useState<string[]>([]);
     const [recentKeywords, setRecentKeywords] = useState<string[]>([]);
-    const [dummy, setDummy] = useState<string[]>([
-        '애플워치', '아이폰', '에어팟', '안경', '코트'
-    ]);
     const { isAuthenticated, logout } = useAuth();
+    const isSearchCompleted = useIsSearchCompleted(v=>v.isSearchCompleted);
 
     const getSearch = async () => {
         const { data }:{data:TSearch} = await axiosInstance.get(
@@ -45,11 +44,12 @@ const ResponsiveHeader = () => {
             : '/api/permit/search'
         );
 
-        // console.log('getSearch:', data);
+        console.log('recentSearch:', data.result.recentSearch);
         setHotKeywords(data.result.popularSearch);
         setRecentKeywords(data.result.recentSearch);
     };
-    const delSearch = async () => await axiosInstance.delete('/api/member/search');
+    const delSearch = async (keyword:string) =>
+        await axiosInstance.delete(`/api/member/search?keyword=${keyword}`);
     
     const handleCategoryOut = (e:MouseEvent) => {
         const currentCategoryRef = categoryRef.current;
@@ -71,24 +71,15 @@ const ResponsiveHeader = () => {
     };
     const handleSearchEnter = (e:KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            if (isAuthenticated) {
-                axiosInstance.post('/api/member/search', searchText);
-                // formData.append('recentSearch', searchText);
-                // fetch(`/api/member/search`, {
-                //     method: "POST",
-                //     body: formData,
-                // });
-            }
             navigate(`/search/${searchText}`);
             setIsSearchClicked(false);
-        }
-    }
+        };
+    };
 
     const handleDelKeyword = (keyword:string) => {
         // delSearch(): 해당 키워드 서버에서 삭제
-        setDummy(prev => prev.filter(v => v!==keyword));
-        console.log(dummy);
-    }
+        delSearch(keyword).then(_=>getSearch());
+    };
 
     const handleOpenModal = () => {
         openModal(({ onClose }) => <SplashModal onClose={onClose} />);
@@ -101,7 +92,12 @@ const ResponsiveHeader = () => {
     // 시작하자마자 호출될 API
     useEffect(() => {
         getSearch();
-    }, []);
+    }, [isAuthenticated]);
+
+    // 검색할 때마다 최신 검색어 갱신
+    useEffect(() => {
+        getSearch();
+    }, [isSearchCompleted]);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);

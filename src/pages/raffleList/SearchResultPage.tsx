@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ProductCard from '../../components/ProductCard';
 import RaffleProps from '../../components/RaffleProps';
 import axiosInstance from '../../apis/axiosInstance';
+import { useAuth } from '../../context/AuthContext';
+import { useIsSearchCompleted } from '../../store/store';
 
 const SearchResultPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
@@ -12,15 +14,21 @@ const SearchResultPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const setIsCompleted = useIsSearchCompleted(v=>v.setIsSearchCompleted);
 
   const fetchMoreProducts = async () => {
     if (!hasMore || isLoading) return;
 
     setIsLoading(true);
     try {
-      const { data } = await axiosInstance.get('/api/permit/search/raffles', {
+      const apirequest = isAuthenticated ? '/api/member/search/raffles'
+      : '/api/permit/search/raffles'
+
+      const { data } = await axiosInstance.get(apirequest, {
         params: { keyword: type },
       });
+      setIsCompleted(true); // Zustand 상태 업데이트
 
       const startIndex = (page - 1) * 16;
       const endIndex = startIndex + 16;
@@ -40,7 +48,8 @@ const SearchResultPage: React.FC = () => {
       setPage((prev) => prev + 1);
     } catch (error) {
       console.error('데이터 불러오기 실패:', error);
-    } finally {
+    }
+     finally {
       setIsLoading(false);
     }
   };
