@@ -42,7 +42,8 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
         const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
         const actualUrl = urlParams.get('url');
-        const tid = urlParams.get('tid'); // tid 추출
+        
+        let tid = urlParams.get('tid'); // tid 추출
 
         // tid가 null이면 "tid"라는 문자열로 설정
         if (!tid) {
