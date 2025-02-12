@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import moreList from '../../../assets/homePage/moreList.svg';
 import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
+import RaffleDetailProps from '../../../components/RaffleDetailProps';
 
-const Market = () => {
+const Market: React.FC<RaffleDetailProps> = (raffle) => {
   const navigate = useNavigate();
   return (
     <Wrapper>
@@ -20,14 +21,14 @@ const Market = () => {
         <MarketContainer>
           <NicknameBox>
             <img src={icLevel} alt="레벨" />
-            송유림
+            {raffle.nickname}
           </NicknameBox>
           <MarketInfo>
             <KeyBox>팔로워</KeyBox>
-            <ValueBox>26</ValueBox>
+            <ValueBox>{raffle.followCount}</ValueBox>
             <VerticalDivider />
             <KeyBox>후기 </KeyBox>
-            <ValueBox>50</ValueBox>
+            <ValueBox>{raffle.reviewCount}</ValueBox>
           </MarketInfo>
         </MarketContainer>
       </MarketLayout>

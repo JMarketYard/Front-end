@@ -7,11 +7,30 @@ import { raffleData } from '../../mocks/RaffleData';
 import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RaffleDetailProps from '../../components/RaffleDetailProps';
+import { TRaffleDetail } from '../../types/raffleDetails';
 
-const RaffleDetailPage: React.FC<RaffleDetailProps> = () => {
+const RaffleDetailPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
-  // const [participant, setParticipant] = useState(raffle.participant);
-  const [raffleData, setRaffleData] = useState<RaffleDetailProps | null>(null);
+  const [raffleData, setRaffleData] = useState<RaffleDetailProps>({
+    imageUrls: [],
+    name: '',
+    category: '',
+    ticketNum: 0,
+    startAt: '',
+    endAt: '',
+    description: '',
+    minUser: 0,
+    view: 0,
+    likeCount: 0,
+    applyCount: 0,
+    nickname: '',
+    followCount: 0,
+    reviewCount: 0,
+    userStatus: '',
+    isWinner: '',
+    raffleStatus: '',
+    deliveryId: 0,
+  });
 
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
@@ -19,7 +38,7 @@ const RaffleDetailPage: React.FC<RaffleDetailProps> = () => {
     console.log('래플 상세보기 useEffect');
     const fetchRaffleData = async () => {
       try {
-        const { data } = await axiosInstance.get(
+        const { data }: { data: TRaffleDetail } = await axiosInstance.get(
           `/api/permit/raffles/${typeNumber}`,
         );
 
@@ -37,7 +56,7 @@ const RaffleDetailPage: React.FC<RaffleDetailProps> = () => {
     <Wrapper>
       <Item {...raffleData} />
       <MoreInfoLayout>
-        <Market />
+        <Market {...raffleData} />
         <Probability {...raffleData} />
       </MoreInfoLayout>
     </Wrapper>

@@ -86,7 +86,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
         <ImgSlider images={raffle.imageUrls} name={raffle.name}>
           {(raffle.raffleStatus === 'UNFULFILLED' ||
             raffle.raffleStatus === 'ENDED' ||
-            raffle.raffleStatus === 'FINISHED' ||
+            raffle.raffleStatus === 'CANCELLED' ||
             raffle.raffleStatus === 'COMPLETED') && (
             <RaffleClosingBox>응모 마감</RaffleClosingBox>
           )}
@@ -113,7 +113,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
             <DescriptionBox>{formatDate(raffle.endAt)}</DescriptionBox>
             {(raffle.raffleStatus === 'UNFULFILLED' ||
               raffle.raffleStatus === 'ENDED' ||
-              raffle.raffleStatus === 'FINISHED' ||
+              raffle.raffleStatus === 'CANCELLED' ||
               raffle.raffleStatus === 'COMPLETED') && (
               <TextBox>응모마감</TextBox>
             )}
@@ -179,7 +179,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                 )}
               </>
             )}
-            {raffle.raffleStatus === 'FINISHED' && (
+            {raffle.raffleStatus === 'CANCELLED' && (
               <GrayButton>래플 종료</GrayButton>
             )}
             {raffle.raffleStatus === ' COMPLETED' && (

@@ -16,6 +16,7 @@ interface RaffleDetailProps {
   userStatus: string;
   isWinner: string;
   raffleStatus: string;
+  deliveryId: number;
   children?: React.ReactNode;
 }
 

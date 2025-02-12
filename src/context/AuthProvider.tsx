@@ -8,9 +8,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // 로그인 함수
   const login = async () => {
     try {
-      const { data } = await axiosInstance.get('/api/member/user-info', {
-        withCredentials: true,
-      });
+      const { data } = await axiosInstance.get('/api/member/user-info');
       if (data.isSuccess) {
         setIsAuthenticated(true);
       } else {
