@@ -56,7 +56,7 @@ const RaffleDetailPage: React.FC = () => {
     <Wrapper>
       <Item {...raffleData} />
       <MoreInfoLayout>
-        <Market {...raffleData} />
+        <Market {...raffleData} type={type} />
         <Probability {...raffleData} />
       </MoreInfoLayout>
     </Wrapper>

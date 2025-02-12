@@ -4,8 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
 import RaffleDetailProps from '../../../components/RaffleDetailProps';
 
-const Market: React.FC<RaffleDetailProps> = (raffle) => {
+interface MarketProps extends RaffleDetailProps {
+  type?: string;
+}
+
+const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
   const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`ask/${type}`, { state: raffle });
+  };
+
   return (
     <Wrapper>
       <BigTitleBox>
@@ -36,7 +44,7 @@ const Market: React.FC<RaffleDetailProps> = (raffle) => {
         <FollowButton>팔로우하기</FollowButton>
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
-      <AskBox>상품 문의</AskBox>
+      <AskButton onClick={handleClick}>상품 문의</AskButton>
     </Wrapper>
   );
 };
@@ -227,7 +235,8 @@ const ReviewButton = styled.button`
   cursor: pointer;
 `;
 
-const AskBox = styled.div`
+const AskButton = styled.button`
+  all: unset;
   display: flex;
   justify-content: center;
   align-items: center;
