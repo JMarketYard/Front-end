@@ -37,6 +37,7 @@ const ChargeOkModal: React.FC<ModalProps> = ({ onClose }) => {
     purchaseDate: '',
   };
 
+
   return (
     <Modal onClose={onClose}>
       <Container>

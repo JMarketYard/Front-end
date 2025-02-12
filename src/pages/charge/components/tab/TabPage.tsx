@@ -16,6 +16,7 @@ import ChargeOkModal from '../modal/ChargeOkModal';
 import ChangeOkModal from '../modal/ChangeOkModal';
 import { useLocation } from 'react-router-dom';
 
+
 interface TabTypeProps {
   type: number;
 }
@@ -41,6 +42,7 @@ function TabPage({ type }: TabTypeProps) {
     }
   }, [approvedAt]);
 
+
   const {
     data: Tickets,
     isPending,
@@ -56,6 +58,7 @@ function TabPage({ type }: TabTypeProps) {
   // if (isError) {
   //   return <p>에러</p>;
   // }
+
 
   useEffect(() => {
     console.log(ticket);
@@ -75,11 +78,13 @@ function TabPage({ type }: TabTypeProps) {
     openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
   }, [openModal]);
 
+
   const { mutate: postExchanging } = useMutation({
     mutationFn: PostExchange,
     onSuccess: () => {
       console.log('환전 요청 성공');
       handleOpenChangeOkModal();
+
     },
     onError: (error) => {
       console.log('환전 요청 실패 : ', error);

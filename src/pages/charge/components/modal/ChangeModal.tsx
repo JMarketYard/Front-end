@@ -29,6 +29,7 @@ const ChangeModal: React.FC<ModalProps> = ({ onClose, ticket }) => {
     onSuccess: () => {
       console.log('환전 요청 성공');
       openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
+
     },
     onError: (error) => {
       console.log('환전 요청 실패 : ', error);
@@ -42,6 +43,7 @@ const ChangeModal: React.FC<ModalProps> = ({ onClose, ticket }) => {
         amount: Number(ticket) || 0,
       });
     }
+
   };
 
   return (

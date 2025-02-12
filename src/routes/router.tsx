@@ -22,6 +22,7 @@ import ReviewPage from '../components/ReviewPage';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
 
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -148,6 +149,7 @@ const router = createBrowserRouter([
         path: 'ask',
         element: <AskPage />,
       },
+
     ],
   },
 ]);

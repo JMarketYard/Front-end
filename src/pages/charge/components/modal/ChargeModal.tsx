@@ -65,6 +65,7 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         totalAmount: amount,
       });
     }
+
   };
 
   return (
