@@ -7,8 +7,6 @@ import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import { PostCharge } from '../../apis/chargeAPI';
 import { useMutation } from '@tanstack/react-query';
-import { Ticket } from '../../apis/chargeType';
-import axiosInstance from '../../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
@@ -58,34 +56,6 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
       console.log('충전 요청 실패 : ', error);
     },
   });
-
-  // const PostCharge = async (data: Ticket) => {
-  //   try {
-  //     // 서버로 결제 생성 요청
-  //     const response = await axiosInstance.post('/api/payment/create', null, {
-  //       params: {
-  //         itemId: data.itemId,
-  //         itemName: data.itemName,
-  //         totalAmount: data.totalAmount,
-  //       },
-  //     });
-
-  //     console.log('충전 data', response);
-
-  //     // 응답 데이터 확인 후 리다이렉트
-
-  //     // 리다이렉트 URL이 존재하면 이동
-  //     if (response.data && response.data.redirectUrl) {
-  //       console.log('Redirecting to:', response.data.redirectUrl);
-  //       window.location.href = response.data.redirectUrl;
-  //     }
-
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //     throw error;
-  //   }
-  // };
 
   const handleNextModal = () => {
     if (checked) {
