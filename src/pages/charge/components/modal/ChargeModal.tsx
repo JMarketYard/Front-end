@@ -34,6 +34,7 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
       try {
         let fullRedirectUrl = data.redirectUrl;
 
+        // 만약 상대경로라면 절대경로로 변환
         if (!fullRedirectUrl.startsWith('http')) {
           fullRedirectUrl = `${window.location.origin}${fullRedirectUrl}`;
         }
@@ -45,24 +46,24 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         
         let tid = urlParams.get('tid'); // tid 추출
 
-        // tid가 null이면 "tid"라는 문자열로 설정
         if (!tid) {
-          tid = "tid";
-          console.log('⚠️ TID가 없어서 "tid" 문자열로 설정합니다.');
+          console.warn('⚠️ TID가 없어서 "tid"라는 기본 값을 사용합니다.');
+          tid = "tid"; // tid가 없을 경우 기본값 설정
         }
 
-        // 지정된 도메인에 tid를 쿠키로 저장
+        console.log('🔄 now tid:', tid); // tid 로그 출력
+
+        // 쿠키 설정
         Cookies.set('tid', tid, {
           expires: 1,
           path: '/',
           domain: 'api.jangmadang.site',
           secure: true,
-          sameSite: 'None', // SameSite 설정 추가
+          sameSite: 'None',
         });
 
         if (actualUrl && actualUrl.startsWith('https://')) {
           console.log('🔄 Redirecting to:', actualUrl);
-          console.log('🔄 now tid:', tid);
           window.location.href = actualUrl;
         } else {
           console.error('🚨 URL parameter "url" not found or invalid.');
@@ -75,6 +76,7 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
       console.log('충전 요청 실패 : ', error);
     },
   });
+
 
   const handleNextModal = () => {
     if (checked) {
