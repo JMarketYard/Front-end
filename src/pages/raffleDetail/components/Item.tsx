@@ -6,11 +6,11 @@ import icTicket from '../../../assets/raffleDetail/icon-ticket.svg';
 import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
-import DrawModal from '../../../components/Modal/modals/DrawModal';
+import ApplyModal from './modal/ApplyModal';
 import RaffleDetailProps from '../../../components/RaffleDetailProps';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
-import RandomModal from '../../../components/Modal/modals/RandomModal';
+import RandomModal from './modal/RandomModal';
 
 const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -31,16 +31,20 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const closeModal = () => {
     setIsModalOpen(false); // 모달 닫기
   };
-  const handleRoleChange = () => {
+
+  const handleApply = () => {
+    //응모하기
     const postApply = async () => {
       const { data } = await axiosInstance.post(
         `/api/member/raffles/${typeNumber}/apply`,
       );
     };
     postApply();
-    setIsModalOpen(false); // 모달을 닫기
+    setIsModalOpen(false); // 모달 닫음
   };
+
   const handleWinner = () => {
+    //DRAW 모달 누름, Winner 확인
     const getWinner = async () => {
       const { data } = await axiosInstance.get(
         `/api/member/raffles/${typeNumber}/draw`,
@@ -60,17 +64,15 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
       minute: '2-digit',
       hour12: false,
     });
-  // .replace(' ', ' ');
 
   return (
     <Wrapper>
       {isModalOpen &&
         raffle.userStatus === 'nonParticipant' &&
         raffle.raffleStatus === 'ACTIVE' && (
-          <DrawModal
+          <ApplyModal
             onClose={closeModal}
-            handleRoleChange={handleRoleChange}
-            // countParticipant={countParticipant}
+            handleApply={handleApply}
             name={raffle.name}
             ticket={raffle.ticketNum}
             image={raffle.imageUrls[0]}

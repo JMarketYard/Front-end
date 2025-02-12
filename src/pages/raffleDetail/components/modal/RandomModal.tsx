@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Icon } from '@iconify/react';
-import { useModalContext } from '../context/ModalContext';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import Slider from 'react-slick';
 
 interface Item {

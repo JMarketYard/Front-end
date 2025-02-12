@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Modal from '../Modal';
+import Modal from '../../../components/Modal/Modal';
 import vector from '../../../assets/Vector.png';
 
 interface ModalProps {

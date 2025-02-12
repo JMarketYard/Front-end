@@ -1,34 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
-import Modal from '../Modal';
-import questionVector from '../../../assets/questionVector.png';
+import Modal from '../../../components/Modal/Modal';
+import smileVector from '../../../assets/SmileVector.png';
 
 interface ModalProps {
   onClose: () => void;
 }
 
-const NewDrawerModal: React.FC<ModalProps> = ({ onClose }) => {
+const DeliverOkModal: React.FC<ModalProps> = ({ onClose }) => {
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={questionVector} />
-        <Title>새로운 당첨자를 뽑으시겠습니까?</Title>
-        <Short>해당 결정은 번복할 수 없습니다. </Short>
-        <Button onClick={onClose}>새로운 당첨자 뽑기</Button>
+        <Img src={smileVector} />
+        <Title>운송장 입력이 완료되었습니다</Title>
+        <Button onClick={onClose}>홈 화면으로 돌아가기</Button>
       </Container>
     </Modal>
   );
 };
-
-const Short = styled.div`
-  margin-bottom: 127px;
-  color: #c908ff;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-`;
 
 const Button = styled.button`
   width: 302px;
@@ -50,7 +39,7 @@ const Title = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 158px;
 `;
 
 const Img = styled.img`
@@ -67,4 +56,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default NewDrawerModal;
+export default DeliverOkModal;

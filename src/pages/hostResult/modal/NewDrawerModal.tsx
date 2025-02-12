@@ -1,20 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import Modal from '../Modal';
+import Modal from '../../../components/Modal/Modal';
 import questionVector from '../../../assets/questionVector.png';
 
 interface ModalProps {
   onClose: () => void;
 }
 
-const EndModal: React.FC<ModalProps> = ({ onClose }) => {
+const NewDrawerModal: React.FC<ModalProps> = ({ onClose }) => {
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
-        <Title>해당 래플을 강제종료 하겠습니까?</Title>
-        <Short>종료한 래플은 재개할 수 없습니다.</Short>
-        <Button onClick={onClose}>강제종료하기</Button>
+        <Title>새로운 당첨자를 뽑으시겠습니까?</Title>
+        <Short>해당 결정은 번복할 수 없습니다. </Short>
+        <Button onClick={onClose}>새로운 당첨자 뽑기</Button>
       </Container>
     </Modal>
   );
@@ -67,4 +67,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default EndModal;
+export default NewDrawerModal;

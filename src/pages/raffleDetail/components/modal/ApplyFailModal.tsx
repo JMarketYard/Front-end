@@ -1,13 +1,25 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
 import ticket from '../../../assets/ticket.svg';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
+  image: string;
+  name: string;
+  ticket: number;
+  resultTime: string;
 }
 
 const DrawFailModal: React.FC<ModalProps> = ({ onClose }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    onClose(); // 모달 닫기
+    navigate('change');
+  };
+
   return (
     <Modal onClose={onClose}>
       <Container>
@@ -17,9 +29,9 @@ const DrawFailModal: React.FC<ModalProps> = ({ onClose }) => {
         <TicketBox>
           <Text>부족한 티켓 개수 : </Text>
           <Img src={ticket} />
-          <Ticket>3</Ticket>
+          <Ticket></Ticket>
         </TicketBox>
-        <Button onClick={onClose}>응모하기</Button>
+        <Button onClick={handleClick}>티켓 충전 페이지로 이동하기</Button>
       </Container>
     </Modal>
   );

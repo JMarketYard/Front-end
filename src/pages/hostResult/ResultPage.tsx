@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import BigTitle from '../../components/BigTitle';
 import grayDelivery from '../../assets/hostResult/grayDelivery.svg';
 import icMark from '../../assets/hostResult/icMark.svg';
-import DeliverModal from '../../components/Modal/modals/DeliverModal';
+import DeliverModal from './modal/DeliverModal';
 
 type Result = 'success' | 'choose' | 'less';
 //type IfLess = 'exit' | 'toSuccess' | 'later';

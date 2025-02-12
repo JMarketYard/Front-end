@@ -1,24 +1,22 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
 import icTicket from '../../../assets/ticket.svg';
-import { useModalContext } from '../context/ModalContext';
-import DrawOkModal from './DrawOkModal';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import ApplyOkModal from './ApplyOkModal';
 
 interface ModalProps {
   onClose: () => void;
-  handleRoleChange: () => void;
-  //countParticipant: () => void;
+  handleApply: () => void;
   image: string;
   name: string;
   ticket: number;
   resultTime: string;
 }
 
-const DrawModal: React.FC<ModalProps> = ({
+const ApplyModal: React.FC<ModalProps> = ({
   onClose,
-  handleRoleChange,
-  //countParticipant,
+  handleApply: handleApply,
   image,
   name,
   ticket,
@@ -28,10 +26,9 @@ const DrawModal: React.FC<ModalProps> = ({
 
   const handleSubmit = () => {
     openModal(({ onClose }) => (
-      <DrawOkModal onClose={onClose} resultTime={resultTime} image={image} />
+      <ApplyOkModal onClose={onClose} resultTime={resultTime} image={image} />
     ));
-    handleRoleChange();
-    //countParticipant();
+    handleApply();
   };
 
   return (
@@ -124,5 +121,5 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-DrawModal.displayName = 'DrawModal';
-export default DrawModal;
+ApplyModal.displayName = 'ApplyModal';
+export default ApplyModal;
