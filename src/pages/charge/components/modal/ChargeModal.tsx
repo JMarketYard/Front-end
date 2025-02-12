@@ -50,9 +50,6 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
           console.log('⚠️ TID가 없어서 "tid" 문자열로 설정합니다.');
         }
 
-        // 기존 tid 쿠키 삭제
-        Cookies.remove('tid', { path: '/', domain: 'api.jangmadang.site', secure: window.location.protocol === 'https:' });
-
         // 지정된 도메인에 tid를 쿠키로 저장
         Cookies.set('tid', tid, {
           expires: 1,
