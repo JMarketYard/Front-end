@@ -62,6 +62,7 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
         if (actualUrl && actualUrl.startsWith('https://')) {
           console.log('🔄 Redirecting to:', actualUrl);
+          console.log('🔄 now tid:', tid);
           window.location.href = actualUrl;
         } else {
           console.error('🚨 URL parameter "url" not found or invalid.');
