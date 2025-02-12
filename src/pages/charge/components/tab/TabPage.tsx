@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ticketIcon from '../../../../assets/ticket.svg';
 import { Icon } from '@iconify/react';
@@ -14,7 +14,8 @@ import { GetMyTicket, PostCharge, PostExchange } from '../../apis/chargeAPI';
 import ChargeModal from '../modal/ChargeModal';
 import ChargeOkModal from '../modal/ChargeOkModal';
 import ChangeOkModal from '../modal/ChangeOkModal';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 
 interface TabTypeProps {
   type: number;
@@ -25,31 +26,39 @@ function TabPage({ type }: TabTypeProps) {
   const [checked, setChecked] = useState(false);
   const { openModal } = useModalContext();
   const { isSmallScreen, isLargeScreen } = useScreenSize();
-  const { approvedAt } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const approvedAt = queryParams.get('approvedAt');
 
   useEffect(() => {
+    if (!approvedAt) return;
+
     if (approvedAt) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
       }, 100);
+
+      return () => clearTimeout(timer);
     }
-  }, [approvedAt, openModal]);
+  }, [approvedAt]);
+
 
   const {
     data: Tickets,
     isPending,
     isError,
   } = useQuery({
-    queryFn: () => GetMyTicket(),
+    queryFn: GetMyTicket,
     queryKey: ['Tickets'],
   });
 
-  if (isPending) {
-    return <p>로딩중...</p>;
-  }
-  if (isError) {
-    return <p>에러</p>;
-  }
+  // if (isPending) {
+  //   return <p>로딩중...</p>;
+  // }
+  // if (isError) {
+  //   return <p>에러</p>;
+  // }
+
 
   useEffect(() => {
     console.log(ticket);
@@ -65,11 +74,17 @@ function TabPage({ type }: TabTypeProps) {
     },
   });
 
+  const handleOpenChangeOkModal = useCallback(() => {
+    openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
+  }, [openModal]);
+
+
   const { mutate: postExchanging } = useMutation({
     mutationFn: PostExchange,
     onSuccess: () => {
       console.log('환전 요청 성공');
-      openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
+      handleOpenChangeOkModal();
+
     },
     onError: (error) => {
       console.log('환전 요청 실패 : ', error);

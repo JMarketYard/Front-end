@@ -22,8 +22,35 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
   const { mutate: postMutation } = useMutation({
     mutationFn: PostCharge,
-    onSuccess: () => {
-      console.log('충전 요청 성공');
+    onSuccess: (data) => {
+      if (!data?.redirectUrl) {
+        console.error('🚨 redirectUrl이 존재하지 않습니다.');
+        return;
+      }
+
+      console.log('🔍 원본 redirectUrl:', data.redirectUrl);
+
+      try {
+        let fullRedirectUrl = data.redirectUrl;
+
+        if (!fullRedirectUrl.startsWith('http')) {
+          fullRedirectUrl = `${window.location.origin}${fullRedirectUrl}`;
+        }
+
+        console.log('🌍 변환된 URL:', fullRedirectUrl);
+
+        const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
+        const actualUrl = urlParams.get('url');
+
+        if (actualUrl && actualUrl.startsWith('https://')) {
+          console.log('🔄 Redirecting to:', actualUrl);
+          window.location.href = actualUrl;
+        } else {
+          console.error('🚨 URL parameter "url" not found or invalid.');
+        }
+      } catch (error) {
+        console.error('🚨 Error processing redirect URL:', error);
+      }
     },
     onError: (error) => {
       console.log('충전 요청 실패 : ', error);
@@ -31,11 +58,14 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
   });
 
   const handleNextModal = () => {
-    postMutation({
-      itemId: '티켓',
-      itemName: '테스트상품',
-      totalAmount: amount,
-    });
+    if (checked) {
+      postMutation({
+        itemId: '티켓',
+        itemName: '테스트상품',
+        totalAmount: amount,
+      });
+    }
+
   };
 
   return (

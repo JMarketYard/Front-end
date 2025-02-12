@@ -16,7 +16,8 @@ const ChangeOkModal: React.FC<ModalProps> = ({ onClose }) => {
   const { clearModals } = useModalContext();
 
   const {
-    data: history,
+    data: history = { result: [] },
+
     isPending,
     isError,
   } = useQuery({
