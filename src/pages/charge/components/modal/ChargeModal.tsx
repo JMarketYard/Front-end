@@ -62,20 +62,20 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
           sameSite: 'None', // SameSite 설정 추가
         });
 
-          if (actualUrl && actualUrl.startsWith('https://')) {
-            console.log('🔄 Redirecting to:', actualUrl);
-            window.location.href = actualUrl;
-          } else {
-            console.error('🚨 URL parameter "url" not found or invalid.');
-          }
-        } catch (error) {
-          console.error('🚨 Error processing redirect URL:', error);
+        if (actualUrl && actualUrl.startsWith('https://')) {
+          console.log('🔄 Redirecting to:', actualUrl);
+          window.location.href = actualUrl;
+        } else {
+          console.error('🚨 URL parameter "url" not found or invalid.');
         }
-      },
-      onError: (error) => {
-        console.log('충전 요청 실패 : ', error);
-      },
-    });
+      } catch (error) {
+        console.error('🚨 Error processing redirect URL:', error);
+      }
+    },
+    onError: (error) => {
+      console.log('충전 요청 실패 : ', error);
+    },
+  });
 
   const handleNextModal = () => {
     if (checked) {
