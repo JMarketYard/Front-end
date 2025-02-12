@@ -56,10 +56,10 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         // 쿠키를 '/api/payment/approve' 경로에 설정
         Cookies.set('tid', tid, {
           expires: 1,
-          path: '/api/payment/approve', // 쿠키를 이 경로에만 설정
-          domain: 'api.jangmadang.site', // 도메인 설정
-          secure: true,
-          sameSite: 'None',
+          path: '/', // 전체 경로에서 쿠키 유효
+          domain: 'jangmadang.site', // www.jangmadang.site와 api.jangmadang.site에서 쿠키 공유
+          secure: true, // HTTPS에서만 쿠키 유효
+          sameSite: 'None', // 크로스 사이트 요청에서도 쿠키 전송 허용
         });
         
         if (actualUrl && actualUrl.startsWith('https://')) {
