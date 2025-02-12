@@ -59,7 +59,7 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
           path: '/', // 전체 경로에서 쿠키 유효
           domain: 'jangmadang.site', // www.jangmadang.site와 api.jangmadang.site에서 쿠키 공유
           secure: true, // HTTPS에서만 쿠키 유효
-          sameSite: 'None', // 크로스 사이트 요청에서도 쿠키 전송 허용
+          sameSite: 'Lax', // SameSite 설정 변경 (보안을 위해 Lax로 설정)
         });
 
         console.log('쿠키 설정:', document.cookie); // 쿠키가 제대로 설정되었는지 확인
