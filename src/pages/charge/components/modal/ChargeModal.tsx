@@ -46,8 +46,8 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
         if (tid) {
           // 기존 tid 쿠키 삭제
-          Cookies.remove('tid', { path: '/', domain: 'api.jangmadang.site' });
-          
+          Cookies.remove('tid', { path: '/', domain: 'api.jangmadang.site', secure: window.location.protocol === 'https:' });
+
           // 지정된 도메인에 tid를 쿠키로 저장
           Cookies.set('tid', tid, {
             expires: 1,
