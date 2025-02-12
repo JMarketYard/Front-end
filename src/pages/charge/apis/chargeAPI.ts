@@ -1,15 +1,5 @@
 import axiosInstance from '../../../apis/axiosInstance';
-
-type Ticket = {
-  itemId: string;
-  itemName: string;
-  totalAmount: number;
-};
-
-type Exchange = {
-  quantity: number;
-  amount: number;
-};
+import { TExchange, Ticket } from './chargeType';
 
 const GetMyTicket = async () => {
   try {
@@ -32,7 +22,7 @@ const PostCharge = async (data: Ticket) => {
   return response.data;
 };
 
-const PostExchange = async (data: Exchange) => {
+const PostExchange = async (data: TExchange) => {
   const response = await axiosInstance.post('/api/member/payment/exchange', {
     quantity: data.quantity,
     amount: data.amount,
@@ -41,4 +31,38 @@ const PostExchange = async (data: Exchange) => {
   return response.data;
 };
 
-export { GetMyTicket, PostCharge, PostExchange };
+const GetChargeHistory = async (period: string) => {
+  try {
+    const response = await axiosInstance.get(
+      '/api/member/payment/history/charge',
+      {
+        params: { period },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.log('충전 내역 조회 API 에러', error);
+  }
+};
+
+const GetExchangeHistory = async (period: string) => {
+  try {
+    const response = await axiosInstance.get(
+      '/api/member/payment/history/exchange',
+      {
+        params: { period },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.log('환전 내역 조회 API 에러', error);
+  }
+};
+
+export {
+  GetMyTicket,
+  PostCharge,
+  PostExchange,
+  GetChargeHistory,
+  GetExchangeHistory,
+};

@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import vector from '../../../../assets/Vector.png';
 import ticket from '../../../../assets/ticket.svg';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import { useQuery } from '@tanstack/react-query';
+import { GetChargeHistory } from '../../apis/chargeAPI';
+import { THistory } from '../../apis/chargeType';
 
 interface ModalProps {
   onClose: () => void;
@@ -12,6 +15,24 @@ interface ModalProps {
 const ChargeOkModal: React.FC<ModalProps> = ({ onClose }) => {
   const { clearModals } = useModalContext();
 
+  const {
+    data: history,
+    isPending,
+    isError,
+  } = useQuery({
+    queryFn: () => GetChargeHistory('recent'),
+    queryKey: ['history'],
+  });
+
+  if (isPending) {
+    return <p>로딩중...</p>;
+  }
+  if (isError) {
+    return <p>에러</p>;
+  }
+
+  const chargeData: THistory = history?.result?.[0];
+
   return (
     <Modal onClose={onClose}>
       <Container>
@@ -19,24 +40,30 @@ const ChargeOkModal: React.FC<ModalProps> = ({ onClose }) => {
         <Title>티켓 충전 완료!</Title>
         <TicketBox>
           <img src={ticket} style={{ width: '21px', height: '12px' }} />
-          <Ticket>300개</Ticket>
+          <Ticket>{chargeData?.amount}개</Ticket>
         </TicketBox>
         <Option>
           <Name>거래 날짜</Name>
-          <Name>2024.01.20</Name>
+          <Name>
+            {new Date(chargeData?.purchaseDate)
+              .toLocaleDateString('ko-KR')
+              .replace(/-/g, '.')}
+          </Name>
         </Option>
         <Line />
         <Option>
           <Sname>구매한 티켓</Sname>
-          <Sname>300개</Sname>
+          <Sname>{chargeData?.amount}개</Sname>
         </Option>
         <Option>
           <Name>지불한 금액</Name>
-          <Price>30,000원</Price>
+          <Price>{Number(chargeData?.amount) * 100}원</Price>
         </Option>
         <Option>
           <div></div>
-          <Sname style={{ color: '#C908FF' }}>잔여 티켓: 500개</Sname>
+          <Sname style={{ color: '#C908FF' }}>
+            잔여 티켓: {chargeData.user_ticket}개
+          </Sname>
         </Option>
         <Button onClick={clearModals}>홈 화면으로 돌아가기</Button>
       </Container>

@@ -12,6 +12,9 @@ import Checkbox from '@mui/material/Checkbox';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { GetMyTicket, PostCharge, PostExchange } from '../../apis/chargeAPI';
 import ChargeModal from '../modal/ChargeModal';
+import ChargeOkModal from '../modal/ChargeOkModal';
+import ChangeOkModal from '../modal/ChangeOkModal';
+import { useParams } from 'react-router-dom';
 
 interface TabTypeProps {
   type: number;
@@ -22,6 +25,15 @@ function TabPage({ type }: TabTypeProps) {
   const [checked, setChecked] = useState(false);
   const { openModal } = useModalContext();
   const { isSmallScreen, isLargeScreen } = useScreenSize();
+  const { approvedAt } = useParams();
+
+  useEffect(() => {
+    if (approvedAt) {
+      setTimeout(() => {
+        openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
+      }, 100);
+    }
+  }, [approvedAt, openModal]);
 
   const {
     data: Tickets,
@@ -57,6 +69,7 @@ function TabPage({ type }: TabTypeProps) {
     mutationFn: PostExchange,
     onSuccess: () => {
       console.log('환전 요청 성공');
+      openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
     },
     onError: (error) => {
       console.log('환전 요청 실패 : ', error);
@@ -69,28 +82,36 @@ function TabPage({ type }: TabTypeProps) {
 
   const handleNext = () => {
     if (isLargeScreen) {
+      console.log('환전 모달 열기');
       openModal(({ onClose }) => (
         <ChangeModal ticket={Number(ticket)} onClose={onClose} />
       ));
     } else {
-      postExchanging({
-        quantity: 1,
-        amount: Number(ticket),
-      });
+      if (checked === true) {
+        postExchanging({
+          quantity: 1,
+          amount: Number(ticket),
+        });
+      }
+      return;
     }
   };
 
   const handleCharge = () => {
     if (isLargeScreen) {
+      console.log('충전 모달 열기');
       openModal(({ onClose }) => (
         <ChargeModal amount={Number(ticket) * 100} onClose={onClose} />
       ));
     } else {
-      postMutation({
-        itemId: '티켓',
-        itemName: '테스트상품',
-        totalAmount: Number(ticket) * 100,
-      });
+      if (checked === true) {
+        postMutation({
+          itemId: '티켓',
+          itemName: '테스트상품',
+          totalAmount: Number(ticket) * 100,
+        });
+      }
+      return;
     }
   };
 
@@ -130,21 +151,21 @@ function TabPage({ type }: TabTypeProps) {
       >
         <Button
           onClick={() => {
-            setTicket((prev) => (Number(prev) + 10).toString());
+            setTicket((prev) => ((prev ? Number(prev) : 0) + 10).toString());
           }}
         >
           + 10개
         </Button>
         <Button
           onClick={() => {
-            setTicket((prev) => (Number(prev) + 100).toString());
+            setTicket((prev) => ((prev ? Number(prev) : 0) + 100).toString());
           }}
         >
           + 100개
         </Button>
         <Button
           onClick={() => {
-            setTicket((prev) => (Number(prev) + 1000).toString());
+            setTicket((prev) => ((prev ? Number(prev) : 0) + 1000).toString());
           }}
         >
           + 1000개
@@ -163,12 +184,14 @@ function TabPage({ type }: TabTypeProps) {
       <Options>
         <Option>
           <div>{type === 0 ? '충전 후 티켓' : '환전 후 티켓'}</div>
-          <div>{Number(Tickets?.result?.ticket ?? 0) + Number(ticket)}개</div>
+          <div>
+            {Number(Tickets?.result?.ticket ?? 0) + (Number(ticket) || 0)}개
+          </div>{' '}
         </Option>
         <Line />
         <Option>
           <div>{type === 0 ? '티켓 금액' : '입금 받을 금액'}</div>
-          <div>{Number(ticket) * 100}원</div>
+          <div>{(Number(ticket) || 0) * 100}원</div>{' '}
         </Option>
         <Line />
         <div
