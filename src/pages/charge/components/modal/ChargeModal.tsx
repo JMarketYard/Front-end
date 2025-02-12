@@ -53,15 +53,15 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
         console.log('🔄 now tid:', tid); // tid 로그 출력
 
-        // 쿠키 설정
+        // 쿠키를 '/api/payment/approve' 경로에 설정
         Cookies.set('tid', tid, {
           expires: 1,
-          path: '/',
-          domain: 'api.jangmadang.site',
+          path: '/api/payment/approve', // 쿠키를 이 경로에만 설정
+          domain: 'api.jangmadang.site', // 도메인 설정
           secure: true,
           sameSite: 'None',
         });
-
+        
         if (actualUrl && actualUrl.startsWith('https://')) {
           console.log('🔄 Redirecting to:', actualUrl);
           window.location.href = actualUrl;
