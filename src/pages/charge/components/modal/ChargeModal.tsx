@@ -45,7 +45,13 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         const tid = urlParams.get('tid'); // tid 추출
 
         if (tid) {
-          Cookies.set('tid', tid, { expires: 1, path: '/' }); // tid를 1일 동안 쿠키에 저장
+          // 지정된 도메인에 tid를 쿠키로 저장
+          Cookies.set('tid', tid, {
+            expires: 1,
+            path: '/',
+            domain: 'jangmadang.site', // 도메인 설정
+            secure: true, // HTTPS 환경에서만 쿠키가 설정되도록
+          });
           console.log('✅ TID 저장 완료:', tid);
         } else {
           console.warn('⚠️ TID가 존재하지 않습니다.');
