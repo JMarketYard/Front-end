@@ -45,6 +45,9 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         const tid = urlParams.get('tid'); // tid 추출
 
         if (tid) {
+          // 기존 tid 쿠키 삭제
+          Cookies.remove('tid', { path: '/', domain: 'api.jangmadang.site' });
+          
           // 지정된 도메인에 tid를 쿠키로 저장
           Cookies.set('tid', tid, {
             expires: 1,
