@@ -5,24 +5,39 @@ import Checkbox from '@mui/material/Checkbox';
 import { Icon } from '@iconify/react';
 import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
-import ChargeOkModal from './ChargeOkModal';
-import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import { PostCharge } from '../../apis/chargeAPI';
+import { useMutation } from '@tanstack/react-query';
 
 interface ModalProps {
   onClose: () => void;
+  amount: number;
 }
 
-const ChargeModal: React.FC<ModalProps> = ({ onClose }) => {
+const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
   const [checked, setChecked] = useState(false);
-  const { openModal } = useModalContext();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
 
+  const { mutate: postMutation } = useMutation({
+    mutationFn: PostCharge,
+    onSuccess: () => {
+      console.log('충전 요청 성공');
+    },
+    onError: (error) => {
+      console.log('충전 요청 실패 : ', error);
+    },
+  });
+
   const handleNextModal = () => {
-    openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
+    postMutation({
+      itemId: '티켓',
+      itemName: '테스트상품',
+      totalAmount: amount,
+    });
   };
+
   return (
     <Modal onClose={onClose}>
       <Container>
