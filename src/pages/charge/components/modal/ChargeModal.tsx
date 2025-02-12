@@ -49,7 +49,7 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
           Cookies.set('tid', tid, {
             expires: 1,
             path: '/',
-            domain: 'jangmadang.site', // 도메인 설정
+            domain: 'api.jangmadang.site', // 도메인 설정
             secure: true, // HTTPS 환경에서만 쿠키가 설정되도록
           });
           console.log('✅ TID 저장 완료:', tid);
