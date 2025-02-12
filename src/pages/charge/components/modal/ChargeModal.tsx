@@ -7,6 +7,7 @@ import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import { PostCharge } from '../../apis/chargeAPI';
 import { useMutation } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 
 interface ModalProps {
   onClose: () => void;
@@ -41,6 +42,14 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
         const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
         const actualUrl = urlParams.get('url');
+        const tid = urlParams.get('tid'); // tid 추출
+
+        if (tid) {
+          Cookies.set('tid', tid, { expires: 1, path: '/' }); // tid를 1일 동안 쿠키에 저장
+          console.log('✅ TID 저장 완료:', tid);
+        } else {
+          console.warn('⚠️ TID가 존재하지 않습니다.');
+        }
 
         if (actualUrl && actualUrl.startsWith('https://')) {
           console.log('🔄 Redirecting to:', actualUrl);
