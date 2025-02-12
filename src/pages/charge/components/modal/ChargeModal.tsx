@@ -61,6 +61,8 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
           secure: true, // HTTPS에서만 쿠키 유효
           sameSite: 'None', // 크로스 사이트 요청에서도 쿠키 전송 허용
         });
+
+        console.log('쿠키 설정:', document.cookie); // 쿠키가 제대로 설정되었는지 확인
         
         if (actualUrl && actualUrl.startsWith('https://')) {
           console.log('🔄 Redirecting to:', actualUrl);
