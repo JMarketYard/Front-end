@@ -44,36 +44,38 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         const actualUrl = urlParams.get('url');
         const tid = urlParams.get('tid'); // tid 추출
 
-        if (tid) {
-          // 기존 tid 쿠키 삭제
-          Cookies.remove('tid', { path: '/', domain: 'api.jangmadang.site', secure: window.location.protocol === 'https:' });
-
-          // 지정된 도메인에 tid를 쿠키로 저장
-          Cookies.set('tid', tid, {
-            expires: 1,
-            path: '/',
-            domain: 'api.jangmadang.site', // 도메인 설정
-            secure: true, // HTTPS 환경에서만 쿠키가 설정되도록
-          });
-          console.log('✅ TID 저장 완료:', tid);
-        } else {
-          console.warn('⚠️ TID가 존재하지 않습니다.');
+        // tid가 null이면 "tid"라는 문자열로 설정
+        if (!tid) {
+          tid = "tid";
+          console.log('⚠️ TID가 없어서 "tid" 문자열로 설정합니다.');
         }
 
-        if (actualUrl && actualUrl.startsWith('https://')) {
-          console.log('🔄 Redirecting to:', actualUrl);
-          window.location.href = actualUrl;
-        } else {
-          console.error('🚨 URL parameter "url" not found or invalid.');
+        // 기존 tid 쿠키 삭제
+        Cookies.remove('tid', { path: '/', domain: 'api.jangmadang.site', secure: window.location.protocol === 'https:' });
+
+        // 지정된 도메인에 tid를 쿠키로 저장
+        Cookies.set('tid', tid, {
+          expires: 1,
+          path: '/',
+          domain: 'api.jangmadang.site',
+          secure: true,
+          sameSite: 'None', // SameSite 설정 추가
+        });
+
+          if (actualUrl && actualUrl.startsWith('https://')) {
+            console.log('🔄 Redirecting to:', actualUrl);
+            window.location.href = actualUrl;
+          } else {
+            console.error('🚨 URL parameter "url" not found or invalid.');
+          }
+        } catch (error) {
+          console.error('🚨 Error processing redirect URL:', error);
         }
-      } catch (error) {
-        console.error('🚨 Error processing redirect URL:', error);
-      }
-    },
-    onError: (error) => {
-      console.log('충전 요청 실패 : ', error);
-    },
-  });
+      },
+      onError: (error) => {
+        console.log('충전 요청 실패 : ', error);
+      },
+    });
 
   const handleNextModal = () => {
     if (checked) {
