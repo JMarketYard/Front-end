@@ -20,6 +20,7 @@ import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
 import ReviewPage from '../components/ReviewPage';
 import ScrollToTop from '../components/ScrollTop';
+import AskPage from '../pages/ask/askPage';
 
 const router = createBrowserRouter([
   {
@@ -142,6 +143,10 @@ const router = createBrowserRouter([
       {
         path: 'mypage/my-review',
         element: <ReviewPage />,
+      },
+      {
+        path: 'ask',
+        element: <AskPage />,
       },
     ],
   },

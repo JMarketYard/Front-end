@@ -31,7 +31,11 @@ const ChargeOkModal: React.FC<ModalProps> = ({ onClose }) => {
     return <p>에러</p>;
   }
 
-  const chargeData: THistory = history?.result?.[0];
+  const chargeData: THistory = history?.result?.[0] || {
+    amount: 0,
+    user_ticket: 0,
+    purchaseDate: '',
+  };
 
   return (
     <Modal onClose={onClose}>

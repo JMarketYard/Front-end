@@ -23,12 +23,21 @@ const PostCharge = async (data: Ticket) => {
 };
 
 const PostExchange = async (data: TExchange) => {
-  const response = await axiosInstance.post('/api/member/payment/exchange', {
-    quantity: data.quantity,
-    amount: data.amount,
-  });
-  console.log('환전 data', data);
-  return response.data;
+  try {
+    const response = await axiosInstance.post('/api/member/payment/exchange', {
+      quantity: data.quantity,
+      amount: data.amount,
+    });
+
+    console.log('환전 요청 성공:', {
+      quantity: data.quantity,
+      amount: data.amount,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('환전 요청 실패:', error);
+    throw error;
+  }
 };
 
 const GetChargeHistory = async (period: string) => {
@@ -53,9 +62,10 @@ const GetExchangeHistory = async (period: string) => {
         params: { period },
       },
     );
-    return response.data;
+    return response.data ?? { result: [] };
   } catch (error) {
     console.log('환전 내역 조회 API 에러', error);
+    return { result: [] };
   }
 };
 

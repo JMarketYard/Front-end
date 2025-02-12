@@ -7,6 +7,8 @@ import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import { PostCharge } from '../../apis/chargeAPI';
 import { useMutation } from '@tanstack/react-query';
+import { Ticket } from '../../apis/chargeType';
+import axiosInstance from '../../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
@@ -22,20 +24,77 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
   const { mutate: postMutation } = useMutation({
     mutationFn: PostCharge,
-    onSuccess: () => {
-      console.log('충전 요청 성공');
+    onSuccess: (data) => {
+      if (!data?.redirectUrl) {
+        console.error('🚨 redirectUrl이 존재하지 않습니다.');
+        return;
+      }
+
+      console.log('🔍 원본 redirectUrl:', data.redirectUrl);
+
+      try {
+        let fullRedirectUrl = data.redirectUrl;
+
+        if (!fullRedirectUrl.startsWith('http')) {
+          fullRedirectUrl = `${window.location.origin}${fullRedirectUrl}`;
+        }
+
+        console.log('🌍 변환된 URL:', fullRedirectUrl);
+
+        const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
+        const actualUrl = urlParams.get('url');
+
+        if (actualUrl && actualUrl.startsWith('https://')) {
+          console.log('🔄 Redirecting to:', actualUrl);
+          window.location.href = actualUrl;
+        } else {
+          console.error('🚨 URL parameter "url" not found or invalid.');
+        }
+      } catch (error) {
+        console.error('🚨 Error processing redirect URL:', error);
+      }
     },
     onError: (error) => {
       console.log('충전 요청 실패 : ', error);
     },
   });
 
+  // const PostCharge = async (data: Ticket) => {
+  //   try {
+  //     // 서버로 결제 생성 요청
+  //     const response = await axiosInstance.post('/api/payment/create', null, {
+  //       params: {
+  //         itemId: data.itemId,
+  //         itemName: data.itemName,
+  //         totalAmount: data.totalAmount,
+  //       },
+  //     });
+
+  //     console.log('충전 data', response);
+
+  //     // 응답 데이터 확인 후 리다이렉트
+
+  //     // 리다이렉트 URL이 존재하면 이동
+  //     if (response.data && response.data.redirectUrl) {
+  //       console.log('Redirecting to:', response.data.redirectUrl);
+  //       window.location.href = response.data.redirectUrl;
+  //     }
+
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     throw error;
+  //   }
+  // };
+
   const handleNextModal = () => {
-    postMutation({
-      itemId: '티켓',
-      itemName: '테스트상품',
-      totalAmount: amount,
-    });
+    if (checked) {
+      postMutation({
+        itemId: '티켓',
+        itemName: '테스트상품',
+        totalAmount: amount,
+      });
+    }
   };
 
   return (
