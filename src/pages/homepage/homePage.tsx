@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
       }
     };
 
-    // fetchHomeData();
+    fetchHomeData();
   }, []);
 
   if (!homeData) return <div>Loading...</div>;
