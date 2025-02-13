@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode } from 'react';
 import { AuthContext, AuthContextType } from './AuthContext';
 import axiosInstance from '../apis/axiosInstance';
+import axios, { AxiosError } from 'axios';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -8,17 +9,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // 로그인 함수
   const login = async () => {
     try {
-      const { data } = await axiosInstance.get('/api/member/user-info');
-      if (data.isSuccess) {
+      const response = await axiosInstance.get('/api/member/user-info');
+      if (response.data.result === 'guest') {
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
       }
-      console.log(data);
-      console.log(data.isSuccess);
+      console.log(response.data);
     } catch (error) {
-      console.error('로그인 체크 실패:', error);
-      setIsAuthenticated(false);
+      if (axios.isAxiosError(error)) {
+        //error가 unknown으로 뜨는 것 방지지
+        if (error.response?.status === 401) {
+          console.error('토큰 만료됨:', error);
+          try {
+            const response = await axiosInstance.get('/api/member/reissue'); //refresh?
+            if (response.data.result == 'guest') {
+              setIsAuthenticated(true);
+            } else {
+              setIsAuthenticated(false);
+            }
+            console.log(response.data);
+          } catch (error) {
+            setIsAuthenticated(false);
+          }
+        } else {
+          console.error('로그인 체크 실패:', error);
+          setIsAuthenticated(false);
+        }
+      } else {
+        console.error('예상치 못한 에러:', error);
+        setIsAuthenticated(false);
+      }
     }
   };
 
