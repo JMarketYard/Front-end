@@ -43,12 +43,12 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
 
         const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
         const actualUrl = urlParams.get('url');
-        
+
         let tid = urlParams.get('tid'); // tid 추출
 
         if (!tid) {
           console.warn('⚠️ TID가 없어서 "tid"라는 기본 값을 사용합니다.');
-          tid = "tid"; // tid가 없을 경우 기본값 설정
+          tid = 'tid'; // tid가 없을 경우 기본값 설정
         }
 
         console.log('🔄 now tid:', tid); // tid 로그 출력
@@ -63,7 +63,7 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         });
 
         console.log('쿠키 설정:', document.cookie); // 쿠키가 제대로 설정되었는지 확인
-        
+
         if (actualUrl && actualUrl.startsWith('https://')) {
           console.log('🔄 Redirecting to:', actualUrl);
           window.location.href = actualUrl;
@@ -79,7 +79,6 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
     },
   });
 
-
   const handleNextModal = () => {
     if (checked) {
       postMutation({
@@ -88,7 +87,6 @@ const ChargeModal: React.FC<ModalProps> = ({ onClose, amount }) => {
         totalAmount: amount,
       });
     }
-
   };
 
   return (
@@ -193,3 +191,4 @@ const Container = styled.div`
 `;
 
 export default ChargeModal;
+
