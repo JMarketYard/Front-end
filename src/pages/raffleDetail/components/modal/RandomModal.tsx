@@ -4,59 +4,38 @@ import styled from 'styled-components';
 import { Icon } from '@iconify/react';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import Slider from 'react-slick';
+import RandomOkModal from './RandomOkModal';
 
-interface Item {
-  id: number;
-  name: string;
-  handleWinner: () => void;
+interface RandomModalProps {
+  onClose: () => void;
+  raffle_id: number;
+  nickname_set: string[];
+  winner_id: number;
+  winner_nickname: string;
+  is_win: boolean;
+  delivery_id: number;
 }
 
 export default function RandomModal({
   onClose,
-}: PropsWithChildren<{ onClose: () => void }>) {
+  raffle_id,
+  nickname_set,
+  winner_id,
+  winner_nickname,
+  is_win,
+  delivery_id,
+}: PropsWithChildren<RandomModalProps>) {
   const { clearModals } = useModalContext();
   const sliderRef = useRef<Slider | null>(null);
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<string[]>([]);
   const [winner, setWinner] = useState<string>('');
   const [isRolling, setIsRolling] = useState(false);
-
-  const data = [
-    { id: 0, name: '안제웅' },
-    { id: 1, name: '닉네임' },
-    { id: 2, name: '김예린' },
-    { id: 3, name: '김철수' },
-    { id: 4, name: '박영희' },
-    { id: 5, name: '이민호' },
-    { id: 6, name: '정하나' },
-    { id: 7, name: '최준혁' },
-    { id: 8, name: '이서준' },
-    { id: 9, name: '박민지' },
-    { id: 10, name: '손영호' },
-    { id: 11, name: '한수민' },
-    { id: 12, name: '배지훈' },
-    { id: 13, name: '이유진' },
-    { id: 14, name: '송하영' },
-    { id: 15, name: '오지훈' },
-    { id: 16, name: '강도윤' },
-    { id: 17, name: '김다현' },
-    { id: 18, name: '정민호' },
-    { id: 19, name: '유진서' },
-    { id: 20, name: '이승연' },
-    { id: 21, name: '박서윤' },
-    { id: 22, name: '한지민' },
-    { id: 23, name: '조윤아' },
-    { id: 24, name: '서현우' },
-    { id: 25, name: '배윤지' },
-    { id: 26, name: '고민수' },
-    { id: 27, name: '김한별' },
-    { id: 28, name: '신지훈' },
-    { id: 29, name: '차민준' },
-  ];
+  const { openModal } = useModalContext();
 
   useEffect(() => {
-    // setItems(data);
-    setWinner('강도윤');
-  }, []);
+    setItems(nickname_set);
+    setWinner(winner_nickname);
+  }, [delivery_id]);
 
   const handleClick = () => {
     if (!isRolling && winner && sliderRef.current) {
@@ -64,14 +43,26 @@ export default function RandomModal({
       sliderRef.current.slickPlay();
 
       setTimeout(() => {
-        const winnerIndex = items.findIndex((item) => item.name === winner) - 1;
+        //const winnerIndex = items.findIndex((item) => item.name === winner) - 1;
+        const winnerIndex = items.length - 1;
         if (winnerIndex !== -1) {
           sliderRef.current?.slickGoTo(winnerIndex);
           setTimeout(() => sliderRef.current?.slickPause(), 500);
         }
         setIsRolling(false);
-      }, 500);
+        handleDelivery();
+      }, 500); //슬라이더 속도 조정하기
     }
+
+    const handleDelivery = async () => {
+      openModal(({ onClose }) => (
+        <RandomOkModal
+          onClose={onClose}
+          delivery_id={delivery_id}
+          winner_nickname={winner_nickname}
+        />
+      ));
+    };
   };
 
   const settings = {
@@ -114,8 +105,8 @@ export default function RandomModal({
         <ContainerBox onClick={(e) => e.stopPropagation()}>
           <Container>
             <Slider ref={sliderRef} {...settings}>
-              {items.map((item) => (
-                <List key={item.id}>{item.name}</List>
+              {items.map((nickname, index) => (
+                <List key={index}>{nickname}</List>
               ))}
             </Slider>
             <Border />

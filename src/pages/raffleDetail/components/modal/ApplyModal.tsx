@@ -1,13 +1,21 @@
 import React from 'react';
 import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import icTicket from '../../../assets/ticket.svg';
+import icTicket from '../../../../assets/ticket.svg';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import ApplyOkModal from './ApplyOkModal';
+import ApplyFailModal from './ApplyFailModal';
+import { useState } from 'react';
+import axiosInstance from '../../../../apis/axiosInstance';
+import { useParams, useLocation, data } from 'react-router-dom';
+import {
+  ApplyResponse,
+  ApplySuccessResult,
+  ApplyFailureMissingTickets,
+} from '../apis/applyResponseTypes';
 
 interface ModalProps {
   onClose: () => void;
-  handleApply: () => void;
   image: string;
   name: string;
   ticket: number;
@@ -16,19 +24,45 @@ interface ModalProps {
 
 const ApplyModal: React.FC<ModalProps> = ({
   onClose,
-  handleApply: handleApply,
   image,
   name,
   ticket,
   resultTime,
 }) => {
   const { openModal } = useModalContext();
+  const { type } = useParams<{ type?: string }>();
 
-  const handleSubmit = () => {
-    openModal(({ onClose }) => (
-      <ApplyOkModal onClose={onClose} resultTime={resultTime} image={image} />
-    ));
-    handleApply();
+  const handleSubmit = async () => {
+    const postApply = async () => {
+      const { data }: { data: ApplyResponse } = await axiosInstance.post(
+        `/api/member/raffles/${type}/apply`,
+      );
+
+      if (data.isSuccess) {
+        openModal(({ onClose }) => (
+          <ApplyOkModal
+            onClose={onClose}
+            resultTime={resultTime}
+            image={image}
+          />
+        ));
+        onClose();
+      } else {
+        if (data.result && 'missingTickets' in data.result) {
+          const failureResult = data.result as ApplyFailureMissingTickets;
+          openModal(({ onClose }) => (
+            <ApplyFailModal
+              onClose={onClose}
+              image={image}
+              name={name}
+              ticket={failureResult.missingTickets}
+            />
+          ));
+          onClose();
+        }
+      }
+    };
+    postApply();
   };
 
   return (

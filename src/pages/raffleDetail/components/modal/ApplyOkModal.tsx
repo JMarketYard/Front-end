@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import ticket from '../../../assets/ticket.svg';
+import ticket from '../../../../assets/ticket.svg';
 
 interface ModalProps {
   onClose: () => void;
