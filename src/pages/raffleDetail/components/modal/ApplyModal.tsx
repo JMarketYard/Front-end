@@ -13,6 +13,7 @@ import {
   ApplySuccessResult,
   ApplyFailureMissingTickets,
 } from '../apis/applyResponseTypes';
+import axios from 'axios';
 
 interface ModalProps {
   onClose: () => void;
@@ -33,12 +34,18 @@ const ApplyModal: React.FC<ModalProps> = ({
   const { type } = useParams<{ type?: string }>();
 
   const handleSubmit = async () => {
-    const postApply = async () => {
-      const { data }: { data: ApplyResponse } = await axiosInstance.post(
+    try {
+      // const { data }: { data: ApplyResponse } = await axiosInstance.post(
+      //   `/api/member/raffles/${type}/apply`,
+      // );
+
+      const response = await axiosInstance.post(
         `/api/member/raffles/${type}/apply`,
       );
 
-      if (data.isSuccess) {
+      if (response.data.code === 'COMMON200') {
+        // 응모 성공
+        onClose();
         openModal(({ onClose }) => (
           <ApplyOkModal
             onClose={onClose}
@@ -46,23 +53,32 @@ const ApplyModal: React.FC<ModalProps> = ({
             image={image}
           />
         ));
-        onClose();
       } else {
-        if (data.result && 'missingTickets' in data.result) {
-          const failureResult = data.result as ApplyFailureMissingTickets;
-          openModal(({ onClose }) => (
-            <ApplyFailModal
-              onClose={onClose}
-              image={image}
-              name={name}
-              ticket={failureResult.missingTickets}
-            />
-          ));
-          onClose();
-        }
+        console.error('Unexpected response code:', response);
+        // 필요하면 다른 예외 처리 추가
       }
-    };
-    postApply();
+    } catch (error) {
+      // `APPLY_4001` 에러 처리
+      console.log('에러 : ', error);
+      if (
+        axios.isAxiosError(error) &&
+        error.response?.data.code === 'APPLY_4001'
+      ) {
+        const failureResult = error.response.data
+          .result as ApplyFailureMissingTickets;
+        openModal(({ onClose }) => (
+          <ApplyFailModal
+            onClose={onClose}
+            image={image}
+            name={name}
+            ticket={failureResult.missingTickets}
+          />
+        ));
+      } else {
+        console.error('Error applying for raffle:', error);
+        // 네트워크 오류나 서버 오류 처리
+      }
+    }
   };
 
   return (
