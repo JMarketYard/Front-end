@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ticketIcon from '../../../../assets/ticket.svg';
 import { Icon } from '@iconify/react';
@@ -9,6 +9,13 @@ import media from '../../../../styles/media';
 import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { GetMyTicket, PostCharge, PostExchange } from '../../apis/chargeAPI';
+import ChargeModal from '../modal/ChargeModal';
+import ChargeOkModal from '../modal/ChargeOkModal';
+import ChangeOkModal from '../modal/ChangeOkModal';
+import { useLocation } from 'react-router-dom';
+
 
 interface TabTypeProps {
   type: number;
@@ -18,11 +25,71 @@ function TabPage({ type }: TabTypeProps) {
   const [ticket, setTicket] = useState<string>('');
   const [checked, setChecked] = useState(false);
   const { openModal } = useModalContext();
-  const { isSmallScreen, isMediumScreen, isLargeScreen } = useScreenSize();
+  const { isSmallScreen, isLargeScreen } = useScreenSize();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const approvedAt = queryParams.get('approvedAt');
+
+  useEffect(() => {
+    if (!approvedAt) return;
+
+    if (approvedAt) {
+      const timer = setTimeout(() => {
+        openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [approvedAt]);
+
+
+  const {
+    data: Tickets,
+    isPending,
+    isError,
+  } = useQuery({
+    queryFn: GetMyTicket,
+    queryKey: ['Tickets'],
+  });
+
+  // if (isPending) {
+  //   return <p>로딩중...</p>;
+  // }
+  // if (isError) {
+  //   return <p>에러</p>;
+  // }
+
 
   useEffect(() => {
     console.log(ticket);
   }, [ticket]);
+
+  const { mutate: postMutation } = useMutation({
+    mutationFn: PostCharge,
+    onSuccess: () => {
+      console.log('충전 요청 성공');
+    },
+    onError: (error) => {
+      console.log('충전 요청 실패 : ', error);
+    },
+  });
+
+  const handleOpenChangeOkModal = useCallback(() => {
+    openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
+  }, [openModal]);
+
+
+  const { mutate: postExchanging } = useMutation({
+    mutationFn: PostExchange,
+    onSuccess: () => {
+      console.log('환전 요청 성공');
+      handleOpenChangeOkModal();
+
+    },
+    onError: (error) => {
+      console.log('환전 요청 실패 : ', error);
+    },
+  });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -30,8 +97,35 @@ function TabPage({ type }: TabTypeProps) {
 
   const handleNext = () => {
     if (isLargeScreen) {
-      openModal(({ onClose }) => <ChangeModal onClose={onClose} />);
+      console.log('환전 모달 열기');
+      openModal(({ onClose }) => (
+        <ChangeModal ticket={Number(ticket)} onClose={onClose} />
+      ));
     } else {
+      if (checked === true) {
+        postExchanging({
+          quantity: 1,
+          amount: Number(ticket),
+        });
+      }
+      return;
+    }
+  };
+
+  const handleCharge = () => {
+    if (isLargeScreen) {
+      console.log('충전 모달 열기');
+      openModal(({ onClose }) => (
+        <ChargeModal amount={Number(ticket) * 100} onClose={onClose} />
+      ));
+    } else {
+      if (checked === true) {
+        postMutation({
+          itemId: '티켓',
+          itemName: '테스트상품',
+          totalAmount: Number(ticket) * 100,
+        });
+      }
       return;
     }
   };
@@ -72,28 +166,28 @@ function TabPage({ type }: TabTypeProps) {
       >
         <Button
           onClick={() => {
-            setTicket((prev) => (Number(prev) + 10).toString());
+            setTicket((prev) => ((prev ? Number(prev) : 0) + 10).toString());
           }}
         >
           + 10개
         </Button>
         <Button
           onClick={() => {
-            setTicket((prev) => (Number(prev) + 100).toString());
+            setTicket((prev) => ((prev ? Number(prev) : 0) + 100).toString());
           }}
         >
           + 100개
         </Button>
         <Button
           onClick={() => {
-            setTicket((prev) => (Number(prev) + 1000).toString());
+            setTicket((prev) => ((prev ? Number(prev) : 0) + 1000).toString());
           }}
         >
           + 1000개
         </Button>
       </TicketContainer>
       {type === 0 ? (
-        <KakaoButtons>
+        <KakaoButtons onClick={handleCharge}>
           <ResponsiveIcon icon="raphael:bubble" />
           <Kakao>카카오페이로 결제하기</Kakao>
         </KakaoButtons>
@@ -105,12 +199,14 @@ function TabPage({ type }: TabTypeProps) {
       <Options>
         <Option>
           <div>{type === 0 ? '충전 후 티켓' : '환전 후 티켓'}</div>
-          <div>500개</div>
+          <div>
+            {Number(Tickets?.result?.ticket ?? 0) + (Number(ticket) || 0)}개
+          </div>{' '}
         </Option>
         <Line />
         <Option>
           <div>{type === 0 ? '티켓 금액' : '입금 받을 금액'}</div>
-          <div>30,000원</div>
+          <div>{(Number(ticket) || 0) * 100}원</div>{' '}
         </Option>
         <Line />
         <div

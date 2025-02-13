@@ -5,24 +5,47 @@ import Checkbox from '@mui/material/Checkbox';
 import { Icon } from '@iconify/react';
 import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
+import { useMutation } from '@tanstack/react-query';
+import { PostExchange } from '../../apis/chargeAPI';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import ChangeOkModal from './ChangeOkModal';
+import { check } from 'prettier';
 
 interface ModalProps {
   onClose: () => void;
+  ticket: number;
 }
 
-const ChangeModal: React.FC<ModalProps> = ({ onClose }) => {
-  const { openModal } = useModalContext();
+const ChangeModal: React.FC<ModalProps> = ({ onClose, ticket }) => {
   const [checked, setChecked] = useState(false);
+  const { openModal } = useModalContext();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
 
+  const { mutate: postExchanging } = useMutation({
+    mutationFn: PostExchange,
+    onSuccess: () => {
+      console.log('환전 요청 성공');
+      openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
+
+    },
+    onError: (error) => {
+      console.log('환전 요청 실패 : ', error);
+    },
+  });
+
   const handleNextModal = () => {
-    openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
+    if (checked) {
+      postExchanging({
+        quantity: 1,
+        amount: Number(ticket) || 0,
+      });
+    }
+
   };
+
   return (
     <Modal onClose={onClose}>
       <Container>

@@ -12,17 +12,17 @@ import icMyPage from '../assets/header/icon-mypage.svg';
 import icUpload from '../assets/header/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
 import { useNavigate } from "react-router-dom";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import CategoryMenu from './CategoryMenu';
 import { useModalContext } from './Modal/context/ModalContext';
 import SplashModal from '../pages/login/components/SplashModal';
 import imgVector from '../assets/Vector.png';
 import { ReactComponent as IcList } from '../assets/icList.svg';
 import icDel from '../assets/icDel.svg';
-
-const recentKeywords = ['애플워치','애플워치','애플워치','애플워치',
-    '애플워치','애플워치','애플워치','애플워치','애플워치','애플워치',
-];
+import axiosInstance from '../apis/axiosInstance';
+import { TSearch } from '../types/searchKeywords';
+import { useAuth } from '../context/AuthContext';
+import { useIsSearchCompleted } from '../store/store';
 
 const ResponsiveHeader = () => {
     const navigate = useNavigate();
@@ -33,6 +33,23 @@ const ResponsiveHeader = () => {
     const searchRef = useRef<HTMLDivElement>(null);
     const [searchText, setSearchText] = useState<string>('');
     const categoryRef = useRef<HTMLDivElement>(null);
+    const [hotKeywords, setHotKeywords] = useState<string[]>([]);
+    const [recentKeywords, setRecentKeywords] = useState<string[]>([]);
+    const { isAuthenticated, logout } = useAuth();
+    const isSearchCompleted = useIsSearchCompleted(v=>v.isSearchCompleted);
+
+    const getSearch = async () => {
+        const { data }:{data:TSearch} = await axiosInstance.get(
+            isAuthenticated ? '/api/member/search'
+            : '/api/permit/search'
+        );
+
+        console.log('recentSearch:', data.result.recentSearch);
+        setHotKeywords(data.result.popularSearch);
+        setRecentKeywords(data.result.recentSearch);
+    };
+    const delSearch = async (keyword:string) =>
+        await axiosInstance.delete(`/api/member/search?keyword=${keyword}`);
     
     const handleCategoryOut = (e:MouseEvent) => {
         const currentCategoryRef = categoryRef.current;
@@ -52,13 +69,35 @@ const ResponsiveHeader = () => {
     const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
     };
+    const handleSearchEnter = (e:KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            navigate(`/search/${searchText}`);
+            setIsSearchClicked(false);
+        };
+    };
+
+    const handleDelKeyword = (keyword:string) => {
+        // delSearch(): 해당 키워드 서버에서 삭제
+        delSearch(keyword).then(_=>getSearch());
+    };
 
     const handleOpenModal = () => {
         openModal(({ onClose }) => <SplashModal onClose={onClose} />);
     };
     const onClickLoginBtn = () => {
-        if (!isLoggedIn) handleOpenModal();
+        if (!isAuthenticated) handleOpenModal();
+        else logout();
     };
+
+    // 시작하자마자 호출될 API
+    useEffect(() => {
+        getSearch();
+    }, [isAuthenticated]);
+
+    // 검색할 때마다 최신 검색어 갱신
+    useEffect(() => {
+        getSearch();
+    }, [isSearchCompleted]);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -73,8 +112,8 @@ const ResponsiveHeader = () => {
       <>
         <Wrapper>
             <TopContainer>
-                <LoginBtn onClick={onClickLoginBtn} state={String(isLoggedIn)}>
-                    {isLoggedIn ? '로그아웃' : '로그인'}
+                <LoginBtn onClick={onClickLoginBtn} state={String(isAuthenticated)}>
+                    {isAuthenticated ? '로그아웃' : '로그인'}
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} className='line-1' />
                 <SmallIconDiv>
@@ -82,7 +121,7 @@ const ResponsiveHeader = () => {
                     <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
                 </SmallIconDiv>
                 <LineDiv height={'27px'} margin={'0 32px'} />
-                <SmallIconDiv>
+                <SmallIconDiv onClick={()=>navigate('mypage/setting')}>
                     <IcSetting className='svg' width={22} height={24} fill={"#8F8E94"} />
                     <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
                 </SmallIconDiv>
@@ -103,37 +142,46 @@ const ResponsiveHeader = () => {
                 <SearchBoxDiv>
                     <TicketImg src={ticket} />
                     <SearchInput
-                    type="text"
+                    type="search"
                     onClick={()=>setIsSearchClicked(true)}
                     value={searchText}
                     onChange={handleSearchInput}
+                    onKeyUp={handleSearchEnter}
                     />
                     <SearchIcon src={icSearch} />
                     <KeywordContainer
                     ref={searchRef}
                     $show={String(isSearchClicked)}
                     >
-                        <KeywordBox>
+                        {isLoggedIn===false
+                        ? <KeywordBox>
                             <KeywordTitle>
                                 <img src={imgVector} width={15} height={15} />
                                 <Span>최근 검색</Span>
                             </KeywordTitle>
                             <RecentKeywordsBox>
-                            {recentKeywords.map((v,_) => (
+                            {recentKeywords.length!==0 ?
+                            recentKeywords.map((v,_) => (
                                 <RecentKeyword key={_}>
                                     {v}
-                                    <DelImg src={icDel} width={9.096} height={8.901} />
+                                    <DelImg src={icDel} width={9.096} height={8.901}
+                                    onClick={()=>handleDelKeyword(v)}
+                                    />
                                 </RecentKeyword>
-                            ))}
+                            ))
+                            : <KeywordSpan>최근 검색 내역이 없습니다.</KeywordSpan>
+                            }
                             </RecentKeywordsBox>
                         </KeywordBox>
+                        : <></>
+                        }
                         <KeywordBox>
                             <KeywordTitle>
                                 <img src={imgVector} width={15} height={15} />
                                 <Span>현재 인기있는 검색어</Span>
                             </KeywordTitle>
                             <HotKeywordsBox>
-                                {recentKeywords.map((v,_) => (
+                                {hotKeywords.map((v,_) => (
                                     <HotKeyword key={_}>
                                         <IcList width={9} height={9} fill={"rgba(201, 8, 255, 0.20)"} />
                                         {v}
@@ -143,7 +191,7 @@ const ResponsiveHeader = () => {
                         </KeywordBox>
                     </KeywordContainer>
                 </SearchBoxDiv>
-                <IconDiv>
+                <IconDiv onClick={() => navigate('/raffles/list/likes')}>
                     <img src={icHeart} width={22} />
                     <IconTextDiv fontSize={'10px'}>찜한래플</IconTextDiv>
                 </IconDiv>
@@ -171,7 +219,7 @@ export default ResponsiveHeader;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 1084px;
+  width: 1084px;
   height: 188px;
   box-sizing: border-box;
   z-index: 100;
@@ -316,15 +364,16 @@ const SearchIcon = styled.img`
 `;
 
 const KeywordContainer = styled.div<{$show:string}>`
-    // width: 560px;
-    width: 100%;
-    height: 386px;
+    width: 560px;
+    // width: 100%;
+    // height: 386px;
     border-radius: 18px;
     border: 1px solid #E4E4E4;
     background-color: #FFF;
     position: absolute;
-    left: 0;
+    left: 50%;
     top: 120%;
+    transform: translateX(-50%);
     padding: 38px 43px 5px 43px;
     box-sizing: border-box;
     display: ${props => props.$show==='true'
@@ -382,6 +431,14 @@ const RecentKeyword = styled.div`
     &:hover {
         cursor: default;
     }
+`
+const KeywordSpan = styled.span`
+    color: #8F8E94;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 36.832px; /* 306.932% */
 `
 const DelImg = styled.img`
     &:hover {

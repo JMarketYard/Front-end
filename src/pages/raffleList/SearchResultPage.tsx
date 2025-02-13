@@ -1,46 +1,66 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ProductCard from '../../components/ProductCard';
 import RaffleProps from '../../components/RaffleProps';
 import axiosInstance from '../../apis/axiosInstance';
+import { useAuth } from '../../context/AuthContext';
+import { useIsSearchCompleted } from '../../store/store';
 
 const SearchResultPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
-  const [title, setTitle] = useState<string>('검색');
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [raffles, setRaffles] = useState<RaffleProps[]>([]);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true); // 더 가져올 데이터가 있는지 여부
+  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const setIsCompleted = useIsSearchCompleted(v=>v.setIsSearchCompleted);
 
   const fetchMoreProducts = async () => {
     if (!hasMore || isLoading) return;
 
     setIsLoading(true);
     try {
-      const { data } = await axiosInstance.get('/api/permit/search/raffles', {
-        params: { keyword: type, page, limit: 16 },
+      const apirequest = isAuthenticated ? '/api/member/search/raffles'
+      : '/api/permit/search/raffles'
+
+      const { data } = await axiosInstance.get(apirequest, {
+        params: { keyword: type },
       });
-      const newRaffles = data.result.raffles;
+      setIsCompleted(true); // Zustand 상태 업데이트
+
+      const startIndex = (page - 1) * 16;
+      const endIndex = startIndex + 16;
+      const newRaffles = data.result.searchedRaffles.slice(
+        startIndex,
+        endIndex,
+      );
+
+      console.log('검색어:', type);
+
       if (newRaffles.length < 16) {
+        setRaffles((prev) => [...prev, ...newRaffles]);
         setHasMore(false);
       } else {
         setRaffles((prev) => [...prev, ...newRaffles]);
       }
+      setPage((prev) => prev + 1);
     } catch (error) {
-      console.error('데이터를 불러오기 실패:', error);
-    } finally {
+      console.error('데이터 불러오기 실패:', error);
+    }
+     finally {
       setIsLoading(false);
     }
   };
 
-  // 스크롤 감지 및 페이지 증가
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && hasMore && !isLoading) {
           setPage((prev) => prev + 1);
+        } else {
+          console.log('hasmore:', hasMore);
         }
       },
       { threshold: 1.0 },
@@ -51,25 +71,13 @@ const SearchResultPage: React.FC = () => {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [hasMore, isLoading]);
 
   // 페이지 변경 시 새로운 데이터 로드
   useEffect(() => {
+    if (!hasMore) return;
     fetchMoreProducts();
   }, [page]);
-
-  useEffect(() => {
-    const fetchRaffleData = async () => {
-      const { data } = await axiosInstance.get('/api/permit/search/raffles', {
-        params: { keyword: type, page, limit: 16 },
-      });
-      const newRaffles = data.result.raffles;
-      console.log('API Response:', newRaffles);
-      setRaffles(newRaffles);
-    };
-
-    fetchRaffleData();
-  }, [type]);
 
   return (
     <Wrapper>
@@ -95,16 +103,13 @@ const Wrapper = styled.div`
   width: 1080px;
   min-height: 1498px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
   padding-top: 64px;
-  position: relative;
+  gap: 45px;
 `;
 
 const SearchContainer = styled.div`
-  position: absolute;
-  left: 0px;
-
   display: inline-flex;
   padding: 0px 14px;
   justify-content: center;
@@ -112,8 +117,6 @@ const SearchContainer = styled.div`
   gap: 10px;
   border-radius: 11px;
   border: 1px solid #8f8e94;
-
-  margin-bottom: 44px;
 `;
 
 const KeywordBox = styled.div`
@@ -142,6 +145,7 @@ const ProductGrid = styled.div`
   gap: 44px;
   width: 100%;
   max-width: 1080px;
+  /* margin-top: 145px; */
 `;
 
 const Observer = styled.div`
