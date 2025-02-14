@@ -10,10 +10,14 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
   return (
     <Wrapper>
       {raffle.raffleStatus === 'UNOPENED' && (
-        <UnOpenContainer>
-          <img src={icMark} alt={'icMark'} />
-          <UnOpenBox>해당 래플은 가직 개최되지 않았습니다.</UnOpenBox>
-        </UnOpenContainer>
+        <SmallContainer>
+          오픈 대기
+          <UnOpenBox>
+            해당 래플은 아직 개최되지
+            <br />
+            않았습니다.
+          </UnOpenBox>
+        </SmallContainer>
       )}
 
       {raffle.raffleStatus === 'ACTIVE' && (
@@ -84,32 +88,31 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
       {raffle.raffleStatus === 'CANCELLED' && (
         <>
           {raffle.applyCount < raffle.minUser && ( //미달 취소
-            <FailedContainer>
+            <SmallContainer>
               래플 종료
               <FailedBox>
-                해당 래플은 판매자 희망 최소 참여자 이상 모이지 않아
-                취소되었습니다. 취소된 래플에 대한 티켓은 다시 적립됩니다.
+                해당 래플은 판매자 희망 최소 참여자
+                <br />
+                이상 모이지 않아 취소되었습니다.
+                <br />
+                취소된 래플에 대한 티켓은 다시
+                <br />
+                적립됩니다.
               </FailedBox>
-            </FailedContainer>
+            </SmallContainer>
           )}
           {raffle.applyCount >= raffle.minUser && ( //ENDED에서 배송/운송 관련으로 취소, 추후 멘트 필요.
-            <FailedContainer>
+            <SmallContainer>
               래플 종료
               <FailedBox>
-                해당 래플은 당첨 포기/취소로 인해 강제 종료 되었습니다.
+                해당 래플은 당첨 포기/취소로 인해 <br />
+                강제 종료 되었습니다.
               </FailedBox>
-            </FailedContainer>
+            </SmallContainer>
           )}
         </>
       )}
       {raffle.raffleStatus === 'UNFULFILLED' && (
-        // <LessContainer>
-        //   <img src={icMark} alt={'icMark'} />
-        //   <LessBox>
-        //     해당 래플은 판매자가 설정한 최소 참여자 수에 미치지 못해, 현재
-        //     판매자가 당첨자 선정 여부를 결정해야 하는 대기 상태에 있습니다.
-        //   </LessBox>
-        // </LessContainer>
         <FailedContainer>
           대기 상태
           <FailedBox>
@@ -133,17 +136,25 @@ const Wrapper = styled.div`
   flex-shrink: 0;
 `;
 
-const UnOpenContainer = styled.div`
+const SmallContainer = styled.div`
   width: 285px;
-  height: 195px;
+  height: 157px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 18px;
+  padding-top: 29px;
   box-sizing: border-box;
 
   border: 1px solid #8f8e94;
+
+  color: #000;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 27px */
 `;
 
 const UnOpenBox = styled.div`

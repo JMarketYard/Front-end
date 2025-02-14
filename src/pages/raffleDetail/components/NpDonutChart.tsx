@@ -27,6 +27,7 @@ const NpDonutChart: React.FC<DonutChartProps> = ({ participant }) => {
       {
         data: [winningProbability, 100 - winningProbability], // 퍼센트 값
         backgroundColor: ['#C908FF', '#E4E4E4'], // 보라색 & 회색
+        borderWidth: 0,
       },
     ],
   };
@@ -56,7 +57,6 @@ const NpDonutChart: React.FC<DonutChartProps> = ({ participant }) => {
 };
 
 const Wrapper = styled.div`
-  display: flex;
   width: 167px;
   height: 167px;
   position: relative;
@@ -64,15 +64,16 @@ const Wrapper = styled.div`
 
 const PercentageBox = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+
   width: 122px;
   height: 65px;
-  flex-direction: column;
-  justify-content: center;
 
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -40%);
 
   color: #000;
   text-align: center;

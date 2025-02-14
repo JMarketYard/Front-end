@@ -73,6 +73,13 @@ const SearchResultPage: React.FC = () => {
   };
 
   useEffect(() => {
+    setRaffles([]);
+    setPage(1);
+    setHasMore(true);
+    fetchMoreProducts();
+  }, [type]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isLoading) {

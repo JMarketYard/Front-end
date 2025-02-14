@@ -35,9 +35,6 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
   };
 
   const handleApply = async () => {
-    const { data }: { data: ApplyType } = await axiosInstance.post(
-      `/api/member/raffles/${type}/apply`,
-    );
     openModal(({ onClose }) => (
       <ApplyModal
         onClose={onClose}
@@ -47,7 +44,6 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
         resultTime={raffle.endAt}
       />
     ));
-    return data;
   };
 
   const handleWinner = async () => {

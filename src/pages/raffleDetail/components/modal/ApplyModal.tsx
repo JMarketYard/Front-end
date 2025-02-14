@@ -32,19 +32,17 @@ const ApplyModal: React.FC<ModalProps> = ({
 }) => {
   const { openModal } = useModalContext();
   const { type } = useParams<{ type?: string }>();
+  const typeNumber = type ? parseInt(type, 10) : undefined;
 
   const handleSubmit = async () => {
     try {
-      // const { data }: { data: ApplyResponse } = await axiosInstance.post(
-      //   `/api/member/raffles/${type}/apply`,
-      // );
-
       const response = await axiosInstance.post(
-        `/api/member/raffles/${type}/apply`,
+        `/api/member/raffles/${typeNumber}/apply`,
+        {},
       );
 
       if (response.data.code === 'COMMON200') {
-        // 응모 성공
+        console.log('응모성공');
         onClose();
         openModal(({ onClose }) => (
           <ApplyOkModal
@@ -53,31 +51,20 @@ const ApplyModal: React.FC<ModalProps> = ({
             image={image}
           />
         ));
-      } else {
-        console.error('Unexpected response code:', response);
-        // 필요하면 다른 예외 처리 추가
       }
-    } catch (error) {
-      // `APPLY_4001` 에러 처리
-      console.log('에러 : ', error);
-      if (
-        axios.isAxiosError(error) &&
-        error.response?.data.code === 'APPLY_4001'
-      ) {
-        const failureResult = error.response.data
-          .result as ApplyFailureMissingTickets;
+      if (response.data.code === 'APPLY_4001') {
+        console.log('티켓부족족');
         openModal(({ onClose }) => (
           <ApplyFailModal
             onClose={onClose}
             image={image}
             name={name}
-            ticket={failureResult.missingTickets}
+            ticket={response.data.result.missingTickets}
           />
         ));
-      } else {
-        console.error('Error applying for raffle:', error);
-        // 네트워크 오류나 서버 오류 처리
       }
+    } catch (error) {
+      console.log('에러 : ', error);
     }
   };
 

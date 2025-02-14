@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -33,17 +34,9 @@ function ImgSlider({ images, name, children }: ItemProps) {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: false,
-    nextArrow: (
-      <Div>
-        <img src={icRight} alt="right" />
-      </Div>
-    ),
-    prevArrow: (
-      <DivPre>
-        <img src={icLeft} alt="left" />
-      </DivPre>
-    ),
+    arrows: true,
+    nextArrow: <CustomNextArrow />,
+    prevArrow: <CustomPrevArrow />,
     beforeChange: (_: number, next: number) => setCurrentSlide(next),
     appendDots: () => {
       const totalDots = Math.min(images.length, 3);
@@ -60,8 +53,16 @@ function ImgSlider({ images, name, children }: ItemProps) {
     },
     customPaging: () => <button style={{ display: 'none' }} />,
   };
+
+  const GlobalStyle = createGlobalStyle`
+  .slick-prev, .slick-next {
+    display: none !important;  // 기본 화살표 숨기기
+  }
+`;
+
   return (
     <Wrapper>
+      <GlobalStyle />
       <ChildrenWrapper>{children}</ChildrenWrapper>
       <Slider {...settings}>
         {(images ?? []).map((image, index) => (
@@ -75,6 +76,24 @@ function ImgSlider({ images, name, children }: ItemProps) {
 }
 
 export default ImgSlider;
+
+const CustomNextArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <ArrowRight onClick={onClick}>
+      <img src={icRight} alt="next" />
+    </ArrowRight>
+  );
+};
+
+const CustomPrevArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <ArrowLeft onClick={onClick}>
+      <img src={icLeft} alt="prev" />
+    </ArrowLeft>
+  );
+};
 
 const Wrapper = styled.div`
   width: 390.582px;
@@ -127,9 +146,29 @@ const Img = styled.img.attrs((props) => ({
   background-size: contain;
 `;
 
+const ArrowRight = styled.button`
+  position: absolute;
+  top: 185px;
+  right: 14px;
+  z-index: 99;
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+
+const ArrowLeft = styled.button`
+  position: absolute;
+  top: 185px;
+  left: 14px;
+  z-index: 99;
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+
 const Div = styled.button`
   position: absolute;
-  right: 16px;
+  right: 14px;
   z-index: 99;
   text-align: right;
   line-height: 30px;
@@ -141,7 +180,7 @@ const Div = styled.button`
 
 const DivPre = styled.button`
   position: absolute;
-  left: 16px;
+  left: 14px;
   z-index: 99;
   text-align: left;
   line-height: 30px;
