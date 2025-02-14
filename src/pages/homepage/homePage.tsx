@@ -49,7 +49,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchHomeData();
-  }, [isAuthenticated]);
+  }, []);
 
   if (!homeData) return <div>Loading...</div>;
 

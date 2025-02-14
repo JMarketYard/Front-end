@@ -9,13 +9,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // 로그인 함수
   const login = async () => {
     try {
-      const response = await axiosInstance.get('/api/member/user-info');
-      if (response.data.result === 'guest') {
+      const { data } = await axiosInstance.get('/api/permit/user-info', {
+        withCredentials: true,
+      });
+      if (data.result === 'user') {
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
       }
-      console.log(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         //error가 unknown으로 뜨는 것 방지지
