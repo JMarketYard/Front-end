@@ -1,131 +1,199 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BigTitle from '../../components/BigTitle';
 import grayDelivery from '../../assets/hostResult/grayDelivery.svg';
 import icMark from '../../assets/hostResult/icMark.svg';
 import DeliverModal from './modal/DeliverModal';
+import EndModal from './modal/EndModal';
+import NewDrawerModal from './modal/NewDrawerModal';
+import axiosInstance from '../../apis/axiosInstance';
+import { useModalContext } from '../../components/Modal/context/ModalContext';
+import {
+  DeliveryResponse,
+  DeliverySuccessResult,
+  Address,
+} from './apis/deliveryResponseTypes';
 
-type Result = 'success' | 'choose' | 'less';
-//type IfLess = 'exit' | 'toSuccess' | 'later';
-type IfSuccess = 'wait' | 'done' | 'timeover';
+const ResultPage: React.FC = () => {
+  const [delivery, setDelivery] = useState<DeliverySuccessResult | null>(null);
+  const [deliveryStatus, setDeliveryStatus] = useState<string>('');
+  const location = useLocation();
+  const deliveryId = location.state?.id;
+  const raffleStatus = location.state?.status;
 
-const ResultPage = () => {
-  //const [ifLess, setIfLess] = useState<IfLess>('later'); // 기본값: 미참여자
-  const [ifSuccess, setIfSuccess] = useState<IfSuccess>('done');
-  const [result, setResult] = useState<Result>('success');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
+  const { openModal } = useModalContext();
 
-  const openModal = () => {
-    setIsModalOpen(true); // 모달 열기
+  const handleDelver = () => {
+    openModal(({ onClose }) => (
+      <DeliverModal onClose={onClose} deliveryId={deliveryId} />
+    ));
+  };
+  const handleEnd = () => {
+    openModal(({ onClose }) => <EndModal onClose={onClose} />);
+  };
+  const handleNew = () => {
+    openModal(({ onClose }) => (
+      <NewDrawerModal onClose={onClose} raffleId={delivery?.raffle_id ?? 0} />
+    ));
+  };
+  const handleWait = () => {
+    //새로운 모달 생성?
+    openModal(({ onClose }) => (
+      <DeliverModal onClose={onClose} deliveryId={deliveryId} />
+    ));
+  };
+  const handleConsider = () => {
+    //새로운 모달 생성?
+    openModal(({ onClose }) => (
+      <DeliverModal onClose={onClose} deliveryId={deliveryId} />
+    ));
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false); // 모달 닫기
-  };
+  useEffect(() => {
+    console.log('개최자 결과 페이지지 useEffect');
+    const fetchDelivery = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/member/delivery/${deliveryId}/owner`,
+        );
+        console.log('API Response:', data);
+        setDelivery(data.result);
+        setDeliveryStatus(data.result.delivery_status);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  }, [deliveryStatus]);
+
   return (
     <Wrapper>
-      {isModalOpen && <DeliverModal onClose={closeModal} />}
-
-      <BigTitle>래플 결과</BigTitle>
-      <ResultLayout>
-        <ResultContainer>
-          <TextBox>최소 마감 티켓</TextBox>
-          <TextBox>100개</TextBox>
-        </ResultContainer>
-        <ResultContainer>
-          <TextBox>현재 티켓</TextBox>
-          {result == 'success' && <PurpleTextBox>132개</PurpleTextBox>}
-          {(result == 'less' || result == 'choose') && (
-            <GrayTextBox>90개</GrayTextBox>
-          )}
-        </ResultContainer>
-        <HorizonBox />
-        <ResultContainer>
-          <TextBox>배송 후 정산금액</TextBox>
-          <PurpleTextBox>12,276 원</PurpleTextBox>
-        </ResultContainer>
-        <ResultContainer>
-          {(result == 'success' || result == 'less') && (
-            <>
-              <DeliverStausBox>당첨자 배송비 결제 현황</DeliverStausBox>
-              {ifSuccess == 'wait' && (
+      {delivery ? (
+        <>
+          <BigTitle>래플 결과</BigTitle>
+          <ResultLayout>
+            <ResultContainer>
+              <TextBox>최소 마감 티켓</TextBox>
+              <TextBox>{delivery.min_ticket}개</TextBox>
+            </ResultContainer>
+            <ResultContainer>
+              <TextBox>현재 티켓</TextBox>
+              {delivery.apply_ticket >= delivery.min_ticket && (
+                <PurpleTextBox>{delivery.apply_ticket} 개</PurpleTextBox>
+              )}
+              {delivery.apply_ticket < delivery.min_ticket && (
+                <GrayTextBox>{delivery.apply_ticket} 개</GrayTextBox>
+              )}
+            </ResultContainer>
+            <HorizonBox />
+            <ResultContainer>
+              <TextBox>배송 후 정산금액</TextBox>
+              <PurpleTextBox>{delivery.finalAmount} 원</PurpleTextBox>
+            </ResultContainer>
+            <ResultContainer>
+              {raffleStatus === 'ENDED' && (
                 <>
-                  <DeliveryWaitBox>배송지 입력 대기</DeliveryWaitBox>
+                  <DeliverStausBox>당첨자 배송비 결제 현황</DeliverStausBox>
+                  {(deliveryStatus === 'WAITING_ADDRESS' ||
+                    deliveryStatus === 'WAITING_PAYMENT') && (
+                    <>
+                      <DeliveryWaitBox>배송지 입력 대기</DeliveryWaitBox>
+                    </>
+                  )}
+                  {deliveryStatus === 'READY' && (
+                    <>
+                      <DeliveryDoneBox>배송 가능</DeliveryDoneBox>
+                    </>
+                  )}
+                  {deliveryStatus === 'ADDRESS_EXPIRED' && (
+                    <>
+                      <DeliveryTimeoverBox>
+                        <img src={icMark} /> 배송지 입력기한 초과
+                      </DeliveryTimeoverBox>
+                    </>
+                  )}
                 </>
               )}
-              {ifSuccess == 'done' && (
-                <>
-                  <DeliveryDoneBox>배송 가능</DeliveryDoneBox>
-                </>
-              )}
-              {ifSuccess == 'timeover' && (
-                <>
-                  <DeliveryTimeoverBox>
-                    <img src={icMark} /> 배송지 입력기한 초과
-                  </DeliveryTimeoverBox>
-                </>
-              )}
-            </>
-          )}
-        </ResultContainer>
-        {result == 'success' && (
-          <>
-            {(ifSuccess == 'wait' || ifSuccess == 'timeover') && (
-              <GrayAddressBox>
-                <img src={grayDelivery} />
-              </GrayAddressBox>
-            )}
-            {ifSuccess == 'done' && (
-              <WhiteAddressBox>
-                <NameBox>송유림</NameBox>
-                <VerticalBox />{' '}
-                <AddressBox>
-                  (04066)서울특별시 마포구 와우산로 94 홍익대학교 제2기숙사, 1호
-                  (010-7689-6108)
-                </AddressBox>{' '}
-              </WhiteAddressBox>
-            )}
-          </>
-        )}
-      </ResultLayout>
-      <ButtonContainer>
-        {(result == 'success' || result == 'less') && (
-          <>
-            {ifSuccess == 'wait' && (
+            </ResultContainer>
+            {raffleStatus == 'ENDED' && (
               <>
-                <GrayButtonBox>운송장 입력하기</GrayButtonBox>
-                <GrayButtonBox>나중에 입력하기 (입력기한 : 1/12)</GrayButtonBox>
+                {(deliveryStatus === 'WAITING_ADDRESS' ||
+                  deliveryStatus === 'WAITING_PAYMENT' ||
+                  deliveryStatus === 'ADDRESS_EXPIRED') && (
+                  <GrayAddressBox>
+                    <img src={grayDelivery} />
+                  </GrayAddressBox>
+                )}
+                {deliveryStatus === 'READY' && (
+                  <WhiteAddressBox>
+                    <NameBox>{delivery.address?.recipient_name}</NameBox>
+                    <VerticalBox />
+                    <AddressBox>
+                      ({delivery.address?.address_id})
+                      {delivery.address?.address_detail}(
+                      {delivery.address?.phone_number})
+                    </AddressBox>{' '}
+                  </WhiteAddressBox>
+                )}
               </>
             )}
-            {ifSuccess == 'done' && (
+          </ResultLayout>
+          <ButtonContainer>
+            {raffleStatus == 'ENDED' && (
               <>
-                <PurpleButtonBox onClick={openModal}>
-                  운송장 입력하기
+                {(deliveryStatus === 'WAITING_ADDRESS' ||
+                  deliveryStatus === 'WAITING_PAYMENT' ||
+                  deliveryStatus === 'ADDRESS_EXPIRED') && (
+                  <>
+                    <GrayButtonBox>운송장 입력하기</GrayButtonBox>
+                    <GrayButtonBox>
+                      나중에 입력하기 (입력기한 : {delivery.shipping_deadline})
+                    </GrayButtonBox>
+                  </>
+                )}
+                {deliveryStatus === 'READY' && (
+                  <>
+                    <PurpleButtonBox onClick={handleDelver}>
+                      운송장 입력하기
+                    </PurpleButtonBox>
+                    <PurpleButtonBox>
+                      나중에 입력하기 (입력기한 : {delivery.shipping_deadline})
+                    </PurpleButtonBox>
+                  </>
+                )}
+                {deliveryStatus === 'ADDRESS_EXPIRED' && (
+                  <>
+                    <PurpleButtonBox onClick={handleEnd}>
+                      래플 강제종료
+                    </PurpleButtonBox>
+                    <PurpleButtonBox onClick={handleNew}>
+                      새로운 당첨자 뽑기
+                    </PurpleButtonBox>
+                    <PurpleButtonBox onClick={handleWait}>
+                      기다리기(24시간)
+                    </PurpleButtonBox>
+                  </>
+                )}
+              </>
+            )}
+            {raffleStatus === 'UNFULFILLED' && (
+              <>
+                <PurpleButtonBox onClick={handleEnd}>
+                  래플 강제종료
                 </PurpleButtonBox>
-                <PurpleButtonBox>
-                  나중에 입력하기 (입력기한 : 1/12)
+                <PurpleButtonBox onClick={handleNew}>
+                  당첨자 추첨 진행
+                </PurpleButtonBox>
+                <PurpleButtonBox onClick={handleConsider}>
+                  나중에 선택하기(24시간)
                 </PurpleButtonBox>
               </>
             )}
-            {ifSuccess == 'timeover' && (
-              <>
-                <PurpleButtonBox>래플 강제종료</PurpleButtonBox>
-                <PurpleButtonBox>새로운 당첨자 뽑기</PurpleButtonBox>
-                <PurpleButtonBox>기다리기(24시간)</PurpleButtonBox>
-              </>
-            )}
-          </>
-        )}
-        {result == 'choose' && (
-          <>
-            <PurpleButtonBox>래플 강제종료</PurpleButtonBox>
-            <PurpleButtonBox>당첨자 추첨 진행</PurpleButtonBox>
-            <PurpleButtonBox>나중에 선택하기(24시간)</PurpleButtonBox>
-          </>
-        )}
-      </ButtonContainer>
+          </ButtonContainer>
+        </>
+      ) : (
+        <p>개최자가 아닙니다.</p>
+      )}
     </Wrapper>
   );
 };

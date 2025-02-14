@@ -24,6 +24,7 @@ const RaffleDetailPage: React.FC = () => {
     likeCount: 0,
     applyCount: 0,
     nickname: '',
+    storeId: 0,
     followCount: 0,
     reviewCount: 0,
     userStatus: '',

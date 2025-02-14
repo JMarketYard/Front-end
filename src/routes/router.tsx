@@ -22,7 +22,6 @@ import ReviewPage from '../components/ReviewPage';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
 
-
 const router = createBrowserRouter([
   {
     path: '/',
@@ -117,7 +116,7 @@ const router = createBrowserRouter([
         element: <CategoryResultPage />,
       },
       {
-        path: 'result',
+        path: 'host-result',
         element: (
           <div>
             <ResultPage />
@@ -149,7 +148,7 @@ const router = createBrowserRouter([
         path: 'ask',
         element: <AskPage />,
       },
-
+      { path: 'winner-page' },
     ],
   },
 ]);

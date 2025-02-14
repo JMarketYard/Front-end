@@ -2,13 +2,34 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
 import vector from '../../../assets/Vector.png';
+import { Navigate, useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
+  deliveryId: number;
 }
 
-const DeliverModal: React.FC<ModalProps> = ({ onClose }) => {
-  const [deliver, setDliver] = useState('');
+const DeliverModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
+  const navigate = useNavigate();
+  const [deliver, setDeliver] = useState('');
+  const handleClick = async () => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/api/member/delivery/${deliveryId}/owner`,
+        {
+          invoiceNumber: deliver,
+        },
+      );
+
+      console.log(data);
+      onClose();
+      navigate('/');
+    } catch (error) {
+      console.error('POST 요청 실패', error);
+    }
+  };
+
   return (
     <Modal onClose={onClose}>
       <Container>
@@ -16,13 +37,13 @@ const DeliverModal: React.FC<ModalProps> = ({ onClose }) => {
         <Title>상품의 운송장을 입력해주세요.</Title>
         <Input
           value={deliver}
-          onChange={(event) => setDliver(event.target.value)}
+          onChange={(event) => setDeliver(event.target.value)}
         />
         <Short>
           해당 운송장은 당첨자가 이메일과
           <br /> 알림페이지로 확인할 수 있습니다.
         </Short>
-        <Button onClick={onClose}>홈 화면으로 돌아가기</Button>
+        <Button onClick={handleClick}>홈 화면으로 돌아가기</Button>
       </Container>
     </Modal>
   );

@@ -39,7 +39,7 @@ export default function RandomOkModal({
     };
     postCheck();
     onClose(); // 모달 닫기
-    navigate(`/winner-page/${delivery_id}`); //path로 devliery_id 전달
+    navigate(`/winner-page`, { state: delivery_id }); //path로 devliery_id 전달
   };
 
   return ReactDOM.createPortal(

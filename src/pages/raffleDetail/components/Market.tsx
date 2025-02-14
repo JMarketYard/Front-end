@@ -1,8 +1,13 @@
 import styled from 'styled-components';
 import moreList from '../../../assets/homePage/moreList.svg';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
 import RaffleDetailProps from '../../../components/RaffleDetailProps';
+import axiosInstance from '../../../apis/axiosInstance';
+import { useAuth } from '../../../context/AuthContext';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import SplashModal from '../../login/components/SplashModal';
 
 interface MarketProps extends RaffleDetailProps {
   type?: string;
@@ -10,8 +15,48 @@ interface MarketProps extends RaffleDetailProps {
 
 const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
   const navigate = useNavigate();
-  const handleClick = () => {
+  const [isFollowing, setIsFollowing] = useState(false); // 팔로우 상태
+  const [followCount, setFollowCount] = useState<number>(raffle.followCount);
+  const { isAuthenticated, logout } = useAuth();
+  const { openModal } = useModalContext();
+
+  const handleAsk = () => {
     navigate(`ask/${type}`, { state: raffle });
+  };
+
+  const handleOpenModal = () => {
+    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+  };
+
+  const handleFollow = async () => {
+    if (isFollowing) {
+      try {
+        const { data } = await axiosInstance.delete(
+          '/api/member/follow/cancel',
+          { params: { storeId: raffle.storeId } },
+        );
+        console.log('상점 언팔로우 : ', data.message);
+        setIsFollowing(false);
+        setFollowCount((prev) => prev - 1); // 팔로워 수 증가
+      } catch (error) {
+        console.error('에러 : 팔로우 상태가 아님', error);
+        setIsFollowing(false);
+      }
+    } else {
+      try {
+        const { data } = await axiosInstance.post(
+          '/api/member/follow/',
+          {},
+          { params: { storeId: raffle.storeId } },
+        );
+        console.log('상점 팔로우 : ', data.message);
+        setIsFollowing(true);
+        setFollowCount((prev) => prev + 1); // 팔로워 수 증가
+      } catch (error) {
+        console.error('에러 : 이미 팔로잉 중', error);
+        setIsFollowing(true);
+      }
+    }
   };
 
   return (
@@ -19,7 +64,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
       <BigTitleBox>
         <TitleIcon />
         <div>상점 정보</div>
-        <MoreListBox onClick={() => navigate('/')}>
+        <MoreListBox onClick={() => navigate('/market')}>
           프로필 보기
           <img src={moreList} alt="moreList" />
         </MoreListBox>
@@ -33,7 +78,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
           </NicknameBox>
           <MarketInfo>
             <KeyBox>팔로워</KeyBox>
-            <ValueBox>{raffle.followCount}</ValueBox>
+            <ValueBox>{followCount}</ValueBox>
             <VerticalDivider />
             <KeyBox>후기 </KeyBox>
             <ValueBox>{raffle.reviewCount}</ValueBox>
@@ -41,10 +86,20 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
         </MarketContainer>
       </MarketLayout>
       <ButtonLayout>
-        <FollowButton>팔로우하기</FollowButton>
+        <FollowButton
+          onClick={() => {
+            if (isAuthenticated) {
+              handleFollow();
+            } else {
+              handleOpenModal(); // 로그인 모달 띄우기
+            }
+          }}
+        >
+          {isFollowing ? '팔로잉 취소' : '팔로우하기'}
+        </FollowButton>
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
-      <AskButton onClick={handleClick}>상품 문의</AskButton>
+      <AskButton onClick={handleAsk}>상품 문의</AskButton>
     </Wrapper>
   );
 };

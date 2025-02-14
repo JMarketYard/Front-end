@@ -13,6 +13,8 @@ import { useParams, useLocation } from 'react-router-dom';
 import RandomModal from './modal/RandomModal';
 import { ApplyType } from './apis/raffleType';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import { useAuth } from '../../../context/AuthContext';
+import SplashModal from '../../login/components/SplashModal';
 
 const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -20,7 +22,12 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
   const typeNumber = type ? parseInt(type, 10) : undefined;
+  const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
+
+  const handleOpenModal = () => {
+    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+  };
 
   const toggleLike = () => {
     setIsLiked((prevState) => !prevState);
@@ -114,7 +121,17 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                   <GrayButton>래플 결과</GrayButton>
                 )}
                 {raffle.userStatus === 'nonParticipant' && (
-                  <PurpleButton onClick={handleApply}>응모하기</PurpleButton>
+                  <PurpleButton
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        handleApply();
+                      } else {
+                        handleOpenModal();
+                      }
+                    }}
+                  >
+                    응모하기
+                  </PurpleButton>
                 )}
                 {raffle.userStatus === 'participant' && (
                   <LightPurpleButton>응모 완료</LightPurpleButton>
@@ -127,7 +144,16 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
               raffle.raffleStatus === 'ENDED') && (
               <>
                 {raffle.userStatus === 'host' && (
-                  <PinkButton onClick={() => navigate('/result')}>
+                  <PinkButton
+                    onClick={() =>
+                      navigate('/host-result', {
+                        state: {
+                          id: raffle.deliveryId,
+                          status: raffle.raffleStatus,
+                        },
+                      })
+                    }
+                  >
                     래플 결과
                   </PinkButton>
                 )}
