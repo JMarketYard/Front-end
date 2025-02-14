@@ -116,15 +116,31 @@ const ResponsiveHeader = () => {
                     {isAuthenticated ? '로그아웃' : '로그인'}
                 </LoginBtn>
                 <LineDiv height={'27px'} margin={'0 32px'} className='line-1' />
-                <SmallIconDiv>
-                    <IcNotice className='svg' width={18.65} height={21.32} fill={"#8F8E94"} />
-                    <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
-                </SmallIconDiv>
-                <LineDiv height={'27px'} margin={'0 32px'} />
-                <SmallIconDiv onClick={()=>navigate('mypage/setting')}>
-                    <IcSetting className='svg' width={22} height={24} fill={"#8F8E94"} />
-                    <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
-                </SmallIconDiv>
+                <SmallIconDiv
+            onClick={() => {
+                if (isAuthenticated) {
+                navigate('mypage/setting'); // 설정 페이지
+                } else {
+                handleOpenModal();
+                }
+            }}
+            >
+            <IcSetting className='svg' width={22} height={24} fill={"#8F8E94"} />
+            <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
+            </SmallIconDiv>
+            <LineDiv height={'27px'} margin={'0 32px'} className='line-1' />
+            <SmallIconDiv
+            onClick={() => {
+                if (isAuthenticated) {
+                navigate('/notification'); // 알림 페이지
+                } else {
+                handleOpenModal();
+                }
+            }}
+            >
+            <IcNotice className='svg' width={18.65} height={21.32} fill={"#8F8E94"} />
+            <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
+            </SmallIconDiv>
             </TopContainer>
             <SearchBoxContainer>
                 <LogoImg src={icLogo} onClick={()=>navigate('/')} />
@@ -191,22 +207,56 @@ const ResponsiveHeader = () => {
                         </KeywordBox>
                     </KeywordContainer>
                 </SearchBoxDiv>
-                <IconDiv onClick={() => navigate('/raffles/list/likes')}>
+                <IconDiv
+                    onClick={() => {
+                        if (isAuthenticated) {
+                        navigate('/raffles/list/likes'); // 찜한래플
+                        } else {
+                        handleOpenModal(); // 로그인 모달
+                        }
+                    }}
+                    >
                     <img src={icHeart} width={22} />
                     <IconTextDiv fontSize={'10px'}>찜한래플</IconTextDiv>
                 </IconDiv>
-                <IconDiv onClick={() => navigate('/mypage')}>
-                    <img src={icMyPage} width={22} />
+                <IconDiv
+                    onClick={() => {
+                        if (isAuthenticated) {
+                        navigate('/mypage');
+                        } else {
+                        handleOpenModal(); // 로그인 모달 띄우기
+                        }
+                    }}
+                    >
+                    <img src={icHeart} width={22} />
                     <IconTextDiv fontSize={'10px'}>마이페이지</IconTextDiv>
                 </IconDiv>
-                <IconDiv onClick={()=>navigate('/change')}>
+                <IconDiv
+                    onClick={() => {
+                        if (isAuthenticated) {
+                        navigate('/change'); // 충전/환전
+                        } else {
+                        handleOpenModal();
+                        }
+                    }}
+                    >
                     <Img src={imgTicket} height={18} />
                     <IconTextDiv fontSize={'10px'}>충전/환전</IconTextDiv>
                 </IconDiv>
-                <IconDiv onClick={()=>navigate('/raffle-upload')}>
+
+                <IconDiv
+                    onClick={() => {
+                        if (isAuthenticated) {
+                        navigate('/raffle-upload'); // 래플 업로드
+                        } else {
+                        handleOpenModal();
+                        }
+                    }}
+                    >
                     <img src={icUpload} width={22} />
                     <IconTextDiv fontSize={'10px'}>래플 업로드</IconTextDiv>
                 </IconDiv>
+
             </SearchBoxContainer>
         </Wrapper>
         <Line />
