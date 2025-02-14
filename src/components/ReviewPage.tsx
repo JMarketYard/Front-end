@@ -70,16 +70,15 @@ const ReviewPage: React.FC = () => {
 
 export default ReviewPage;
 
-
 const Container = styled.div`
   width: 100%;
   max-width: 1080px;
-  padding: 40px 20px; 
+  padding: 40px 20px;
   background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px; 
+  gap: 58px; /* 프로필·별점 박스와 리뷰 박스 사이 간격 */
 `;
 
 const AverageRatingBox = styled.div`
@@ -112,17 +111,19 @@ const RatingValue = styled.span`
 
 const ReviewCard = styled.div`
   display: flex;
-  width: 100%;
-  padding: 20px;
+  width: 701px;
+  height: 356px;
+  padding: 20px 50px;
   justify-content: space-between;
-  align-items: flex-start;
-  border-radius: 14px;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 10px;
   background: rgba(245, 245, 245, 0.79);
-  margin-bottom: 20px;
 `;
 
 const UserSection = styled.div`
   display: flex;
+  width: 295px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -147,19 +148,28 @@ const ReviewContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-left: 20px;
+  gap: 10px;
+  width: 295px;
 `;
 
 const ProductName = styled.div`
-  font-size: 18px;
-  font-weight: 500;
+  display: flex;
+  height: 50px;
+  flex-direction: column;
+  justify-content: center;
   color: #8f8e94;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 27px;
+  width: 295px;
 `;
 
 const ImageContainer = styled.div`
   display: flex;
-  gap: 10px;
+  width: 295px;
+  gap: 12.8px;
 `;
 
 const ReviewImage = styled.img`
@@ -171,8 +181,17 @@ const ReviewImage = styled.img`
 `;
 
 const ReviewText = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  color: #000;
-  line-height: 150%;
+display: flex;
+height: 108px;
+width: 295px;
+flex-direction: column;
+justify-content: center;
+flex-shrink: 0;
+align-self: stretch;
+color: #000;
+font-family: Pretendard;
+font-size: 16px;
+font-style: normal;
+font-weight: 400;
+line-height: 150%; /* 24px */
 `;

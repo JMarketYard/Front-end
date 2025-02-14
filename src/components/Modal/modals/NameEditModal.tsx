@@ -5,11 +5,13 @@ import vector from '../../../assets/Vector.png';
 
 interface ModalProps {
   onClose: () => void;
+  currentNickname: string;  // ✅ currentNickname prop 추가
+  onNicknameChange: (newNickname: string) => void;  // ✅ 닉네임 변경 후 전달할 함수
 }
 
-const NameEditModal: React.FC<ModalProps> = ({ onClose }) => {
-  const [isError, setIsError] = useState('');
-  const [name, setName] = useState('');
+const NameEditModal: React.FC<ModalProps> = ({ onClose, currentNickname, onNicknameChange }) => {
+  const [name, setName] = useState<string>(currentNickname);
+  const [isError, setIsError] = useState<string>('');
 
   const regex = /^[가-힣a-zA-Z0-9]{2,10}$/;
 
@@ -23,6 +25,7 @@ const NameEditModal: React.FC<ModalProps> = ({ onClose }) => {
       return;
     } else {
       setIsError('');
+      onNicknameChange(name);  // ✅ 변경된 닉네임을 상위 컴포넌트로 전달
       onClose();
     }
   };
@@ -49,7 +52,7 @@ const NameEditModal: React.FC<ModalProps> = ({ onClose }) => {
 
 const Error = styled.div`
   margin-top: 28px;
-  width: 234px;
+  width: 250px;
   height: 17px;
   font-size: 11px;
   font-style: normal;
@@ -73,6 +76,11 @@ const Button = styled.button`
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    background: #ccc;
+  }
 `;
 
 const Input = styled.input<{ isError: boolean }>`
@@ -83,11 +91,9 @@ const Input = styled.input<{ isError: boolean }>`
   background: #f7f7f7;
   width: 272px;
   height: 31px;
-  display: inline-flex;
   padding: 3.2px 14px;
-  justify-content: center;
-  align-items: center;
   outline: none;
+
   &::placeholder {
     font-family: Pretendard;
     font-size: 12px;
