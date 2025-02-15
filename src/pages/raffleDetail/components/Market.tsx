@@ -22,7 +22,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
   const { openModal } = useModalContext();
 
   const handleAsk = () => {
-    navigate(`ask/${type}`, { state: raffle });
+    navigate(`/ask/${type}`, { state: raffle });
   };
 
   const handleOpenModal = () => {
