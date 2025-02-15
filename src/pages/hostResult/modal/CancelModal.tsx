@@ -10,16 +10,16 @@ interface ModalProps {
   raffleId: number;
 }
 
-const NewDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
+const CancleModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   const navigate = useNavigate();
   const handleClick = async () => {
     try {
       const { data } = await axiosInstance.post(
-        `/api/member/raffles/${raffleId}/redraw`,
+        `/api/member/raffles/${raffleId}/cancel`,
       );
       console.log(data);
       onClose();
-      navigate('');
+      navigate(`/raffles//${raffleId}`);
     } catch (error) {
       console.error('POST 요청 실패', error);
     }
@@ -28,13 +28,15 @@ const NewDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
-        <Title>새로운 당첨자를 뽑으시겠습니까?</Title>
-        <Short>해당 결정은 번복할 수 없습니다. </Short>
-        <Button onClick={handleClick}>새로운 당첨자 뽑기</Button>
+        <Title>해당 래플을 강제종료 하겠습니까?</Title>
+        <Short>종료한 래플은 재개할 수 없습니다.</Short>
+        <Button onClick={handleClick}>강제종료하기</Button>
       </Container>
     </Modal>
   );
 };
+
+export default CancleModal;
 
 const Short = styled.div`
   margin-bottom: 127px;
@@ -82,5 +84,3 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
 `;
-
-export default NewDrawerModal;

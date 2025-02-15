@@ -8,22 +8,22 @@ import RandomOkModal from './RandomOkModal';
 
 interface RandomModalProps {
   onClose: () => void;
-  raffle_id: number;
-  nickname_set: string[];
-  winner_id: number;
-  winner_nickname: string;
-  is_win: boolean;
-  delivery_id: number;
+  raffleId: number;
+  nicknameSet: string[];
+  winnerId: number;
+  winnerNickname: string;
+  win: boolean;
+  deliveryId: number;
 }
 
 export default function RandomModal({
   onClose,
-  raffle_id,
-  nickname_set,
-  winner_id,
-  winner_nickname,
-  is_win,
-  delivery_id,
+  raffleId,
+  nicknameSet,
+  winnerId,
+  winnerNickname,
+  win,
+  deliveryId,
 }: PropsWithChildren<RandomModalProps>) {
   const { clearModals } = useModalContext();
   const sliderRef = useRef<Slider | null>(null);
@@ -33,9 +33,11 @@ export default function RandomModal({
   const { openModal } = useModalContext();
 
   useEffect(() => {
-    setItems(nickname_set);
-    setWinner(winner_nickname);
-  }, [delivery_id]);
+    console.log('nicknameSet:', nicknameSet);
+    console.log('winner:', winner);
+    setItems(nicknameSet);
+    setWinner(winnerNickname);
+  }, [nicknameSet, deliveryId]);
 
   const handleClick = () => {
     if (!isRolling && winner && sliderRef.current) {
@@ -50,25 +52,26 @@ export default function RandomModal({
           setTimeout(() => sliderRef.current?.slickPause(), 500);
         }
         setIsRolling(false);
-        handleDelivery();
+
+        openModal(({ onClose }) => (
+          <RandomOkModal
+            onClose={onClose}
+            delivery_id={deliveryId}
+            winner_nickname={winnerNickname}
+          />
+        ));
+
+        console.log('새로운 모달 열기');
+        onClose();
+        console.log('기존 모달 닫기');
       }, 500); //슬라이더 속도 조정하기
     }
-
-    const handleDelivery = async () => {
-      openModal(({ onClose }) => (
-        <RandomOkModal
-          onClose={onClose}
-          delivery_id={delivery_id}
-          winner_nickname={winner_nickname}
-        />
-      ));
-    };
   };
 
   const settings = {
     dots: false,
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: Math.min(3, items.length),
     slidesToScroll: 1,
     vertical: true,
     verticalSwiping: true,

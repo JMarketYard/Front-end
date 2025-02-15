@@ -22,6 +22,7 @@ export default function RandomOkModal({
   const { clearModals } = useModalContext();
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
+  const typeNumber = type ? Number(type) : undefined;
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -34,7 +35,7 @@ export default function RandomOkModal({
   const handleClick = () => {
     const postCheck = async () => {
       const { data } = await axiosInstance.post(
-        `/api/member/raffles/${type}/check`,
+        `/api/member/raffles/${typeNumber}/check`,
       );
     };
     postCheck();
@@ -64,7 +65,7 @@ export default function RandomOkModal({
             <Name>당첨자는</Name>
             <Final>
               <img src={yellow} />
-              <FinalName></FinalName>
+              <FinalName>{winner_nickname}</FinalName>
               <img src={yellow} />
             </Final>
             <Name>축하합니다!</Name>

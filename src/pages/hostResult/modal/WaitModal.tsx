@@ -1,21 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
-import questionVector from '../../../assets/questionVector.png';
+import smileVector from '../../../assets/SmileVector.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
-  raffleId: number;
+  deliveryId: number;
 }
-
-const NewDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
+//미추첨 당첨자 뽑기
+const WaitModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
   const navigate = useNavigate();
   const handleClick = async () => {
     try {
       const { data } = await axiosInstance.post(
-        `/api/member/raffles/${raffleId}/redraw`,
+        `/api/member/delivery/${deliveryId}/owner/wait`,
       );
       console.log(data);
       onClose();
@@ -27,10 +27,10 @@ const NewDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={questionVector} />
-        <Title>새로운 당첨자를 뽑으시겠습니까?</Title>
-        <Short>해당 결정은 번복할 수 없습니다. </Short>
-        <Button onClick={handleClick}>새로운 당첨자 뽑기</Button>
+        <Img src={smileVector} />
+        <Title>배송지 입력을 기다리시겠습니까?</Title>
+        <Short>종료한 래플은 재개할 수 없습니다.</Short>
+        <Button onClick={handleClick}>기다리기 (24시간)</Button>
       </Container>
     </Modal>
   );
@@ -83,4 +83,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default NewDrawerModal;
+export default WaitModal;

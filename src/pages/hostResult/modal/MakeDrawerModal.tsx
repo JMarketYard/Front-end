@@ -1,25 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
-import questionVector from '../../../assets/questionVector.png';
+import smileVector from '../../../assets/SmileVector.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
+  raffleId: number;
 }
-
-const EndModal: React.FC<ModalProps> = ({ onClose }) => {
+//미추첨 당첨자 뽑기
+const MakeDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   const navigate = useNavigate();
   const handleClick = async () => {
     try {
       const { data } = await axiosInstance.post(
-        `/api/member/raffles/{raffleId}/cancel`,
+        `/api/member/raffles/${raffleId}/draw`,
       );
-
       console.log(data);
       onClose();
-      navigate('/');
+      navigate('');
     } catch (error) {
       console.error('POST 요청 실패', error);
     }
@@ -27,10 +27,10 @@ const EndModal: React.FC<ModalProps> = ({ onClose }) => {
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={questionVector} />
-        <Title>해당 래플을 강제종료 하겠습니까?</Title>
-        <Short>종료한 래플은 재개할 수 없습니다.</Short>
-        <Button onClick={handleClick}>강제종료하기</Button>
+        <Img src={smileVector} />
+        <Title>당첨자를 뽑으시겠습니까?</Title>
+        <Short>해당 결정은 번복할 수 없습니다. </Short>
+        <Button onClick={handleClick}>당첨자 뽑기</Button>
       </Container>
     </Modal>
   );
@@ -83,4 +83,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default EndModal;
+export default MakeDrawerModal;

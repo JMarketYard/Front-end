@@ -4,37 +4,98 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import BigTitle from '../../components/BigTitle';
 import grayDelivery from '../../assets/hostResult/grayDelivery.svg';
 import icMark from '../../assets/hostResult/icMark.svg';
-import DeliverModal from './modal/DeliverModal';
-import EndModal from './modal/EndModal';
-import NewDrawerModal from './modal/NewDrawerModal';
 import axiosInstance from '../../apis/axiosInstance';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
-import {
-  DeliveryResponse,
-  DeliverySuccessResult,
-  Address,
-} from './apis/deliveryResponseTypes';
+import { DeliverySuccessResult } from './apis/deliveryResponseTypes';
+import DeliverModal from './modal/DeliverModal';
+import CancleModal from './modal/CancelModal';
+import NewDrawerModal from './modal/NewDrawerModal';
+import MakeDrawerModal from './modal/MakeDrawerModal';
+
+interface RaffleResult {
+  raffleId: number;
+  minTicket: number;
+  applyTicket: number;
+  totalAmount: number;
+}
 
 const ResultPage: React.FC = () => {
-  const [delivery, setDelivery] = useState<DeliverySuccessResult | null>(null);
+  const [delivery, setDelivery] = useState<DeliverySuccessResult>({
+    raffleId: 0,
+    winnerId: 0,
+    deliveryId: 0,
+    minTicket: 0,
+    applyTicket: 0,
+    finalAmount: 0,
+    deliveryStatus: '',
+    shippingDeadline: null,
+    isExtendShipping: null,
+    address: null,
+  });
+  const [raffle, setRaffle] = useState<RaffleResult>({
+    raffleId: 0,
+    minTicket: 0,
+    applyTicket: 0,
+    totalAmount: 0,
+  });
   const [deliveryStatus, setDeliveryStatus] = useState<string>('');
+
   const location = useLocation();
-  const deliveryId = location.state?.id;
+  const deliveryId = location.state?.deliveryId;
   const raffleStatus = location.state?.status;
+  const raffleId = location.state?.raffleId;
 
+  useEffect(() => {
+    console.log('개최자 결과 페이지 useEffect');
+
+    const fetchResult = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/member/raffles/${raffleId}/result`,
+        );
+        console.log('래플 결과:', data);
+        setRaffle(data.result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchResult();
+
+    const fetchDelivery = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/member/delivery/${deliveryId}/owner`,
+        );
+        console.log('API Response:', data);
+        setDelivery(data.result);
+        setDeliveryStatus(data.result.deliveryStatus);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchDelivery();
+  }, [deliveryId, deliveryStatus]);
+
+  //모달
   const { openModal } = useModalContext();
-
   const handleDelver = () => {
     openModal(({ onClose }) => (
       <DeliverModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
   const handleEnd = () => {
-    openModal(({ onClose }) => <EndModal onClose={onClose} />);
+    openModal(({ onClose }) => (
+      <CancleModal onClose={onClose} raffleId={delivery?.raffleId ?? 0} />
+    ));
   };
   const handleNew = () => {
     openModal(({ onClose }) => (
-      <NewDrawerModal onClose={onClose} raffleId={delivery?.raffle_id ?? 0} />
+      <NewDrawerModal onClose={onClose} raffleId={delivery?.raffleId ?? 0} />
+    ));
+  };
+  const handleMake = () => {
+    openModal(({ onClose }) => (
+      <MakeDrawerModal onClose={onClose} raffleId={raffle?.raffleId ?? 0} />
     ));
   };
   const handleWait = () => {
@@ -50,150 +111,126 @@ const ResultPage: React.FC = () => {
     ));
   };
 
-  useEffect(() => {
-    console.log('개최자 결과 페이지 useEffect');
-    const fetchDelivery = async () => {
-      try {
-        const { data } = await axiosInstance.get(
-          `/api/member/delivery/${deliveryId}/owner`,
-        );
-        console.log('API Response:', data);
-        setDelivery(data.result);
-        setDeliveryStatus(data.result.delivery_status);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  }, [deliveryStatus]);
-
   return (
     <Wrapper>
-      {delivery ? (
-        <>
-          <BigTitle>래플 결과</BigTitle>
-          <ResultLayout>
-            <ResultContainer>
-              <TextBox>최소 마감 티켓</TextBox>
-              <TextBox>{delivery.min_ticket}개</TextBox>
-            </ResultContainer>
-            <ResultContainer>
-              <TextBox>현재 티켓</TextBox>
-              {delivery.apply_ticket >= delivery.min_ticket && (
-                <PurpleTextBox>{delivery.apply_ticket} 개</PurpleTextBox>
-              )}
-              {delivery.apply_ticket < delivery.min_ticket && (
-                <GrayTextBox>{delivery.apply_ticket} 개</GrayTextBox>
-              )}
-            </ResultContainer>
-            <HorizonBox />
-            <ResultContainer>
-              <TextBox>배송 후 정산금액</TextBox>
-              <PurpleTextBox>{delivery.finalAmount} 원</PurpleTextBox>
-            </ResultContainer>
-            <ResultContainer>
-              {raffleStatus === 'ENDED' && (
+      <BigTitle>래플 결과</BigTitle>
+      <ResultLayout>
+        <ResultContainer>
+          <TextBox>최소 마감 티켓</TextBox>
+          <TextBox>{raffle.minTicket} 개</TextBox>
+        </ResultContainer>
+        <ResultContainer>
+          <TextBox>현재 티켓</TextBox>
+          {raffle.applyTicket >= raffle.minTicket && (
+            <PurpleTextBox>{raffle.applyTicket} 개</PurpleTextBox>
+          )}
+          {raffle.applyTicket < raffle.minTicket && (
+            <GrayTextBox>{raffle.applyTicket} 개</GrayTextBox>
+          )}
+        </ResultContainer>
+        <HorizonBox />
+        <ResultContainer>
+          <TextBox>배송 후 정산금액</TextBox>
+          <PurpleTextBox>{raffle.totalAmount} 원</PurpleTextBox>
+        </ResultContainer>
+        <ResultContainer>
+          {raffleStatus === 'ENDED' && (
+            <>
+              <DeliverStausBox>당첨자 배송비 결제 현황</DeliverStausBox>
+              {(deliveryStatus === 'WAITING_ADDRESS' ||
+                deliveryStatus === 'WAITING_PAYMENT') && (
                 <>
-                  <DeliverStausBox>당첨자 배송비 결제 현황</DeliverStausBox>
-                  {(deliveryStatus === 'WAITING_ADDRESS' ||
-                    deliveryStatus === 'WAITING_PAYMENT') && (
-                    <>
-                      <DeliveryWaitBox>배송지 입력 대기</DeliveryWaitBox>
-                    </>
-                  )}
-                  {deliveryStatus === 'READY' && (
-                    <>
-                      <DeliveryDoneBox>배송 가능</DeliveryDoneBox>
-                    </>
-                  )}
-                  {deliveryStatus === 'ADDRESS_EXPIRED' && (
-                    <>
-                      <DeliveryTimeoverBox>
-                        <img src={icMark} /> 배송지 입력기한 초과
-                      </DeliveryTimeoverBox>
-                    </>
-                  )}
+                  <DeliveryWaitBox>배송지 입력 대기</DeliveryWaitBox>
                 </>
               )}
-            </ResultContainer>
-            {raffleStatus == 'ENDED' && (
+              {deliveryStatus === 'READY' && (
+                <>
+                  <DeliveryDoneBox>배송 가능</DeliveryDoneBox>
+                </>
+              )}
+              {deliveryStatus === 'ADDRESS_EXPIRED' && (
+                <>
+                  <DeliveryTimeoverBox>
+                    <img src={icMark} /> 배송지 입력기한 초과
+                  </DeliveryTimeoverBox>
+                </>
+              )}
+            </>
+          )}
+        </ResultContainer>
+        {raffleStatus == 'ENDED' && (
+          <>
+            {(deliveryStatus === 'WAITING_ADDRESS' ||
+              deliveryStatus === 'WAITING_PAYMENT' ||
+              deliveryStatus === 'ADDRESS_EXPIRED') && (
+              <GrayAddressBox>
+                <img src={grayDelivery} />
+              </GrayAddressBox>
+            )}
+            {deliveryStatus === 'READY' && (
+              <WhiteAddressBox>
+                <NameBox>{delivery.address?.recipientName}</NameBox>
+                <VerticalBox />
+                <AddressBox>
+                  ({delivery.address?.addressId})
+                  {delivery.address?.addressDetail}(
+                  {delivery.address?.phoneNumber})
+                </AddressBox>{' '}
+              </WhiteAddressBox>
+            )}
+          </>
+        )}
+      </ResultLayout>
+      <ButtonContainer>
+        {raffleStatus == 'ENDED' && (
+          <>
+            {(deliveryStatus === 'WAITING_ADDRESS' ||
+              deliveryStatus === 'WAITING_PAYMENT' ||
+              deliveryStatus === 'ADDRESS_EXPIRED') && (
               <>
-                {(deliveryStatus === 'WAITING_ADDRESS' ||
-                  deliveryStatus === 'WAITING_PAYMENT' ||
-                  deliveryStatus === 'ADDRESS_EXPIRED') && (
-                  <GrayAddressBox>
-                    <img src={grayDelivery} />
-                  </GrayAddressBox>
-                )}
-                {deliveryStatus === 'READY' && (
-                  <WhiteAddressBox>
-                    <NameBox>{delivery.address?.recipient_name}</NameBox>
-                    <VerticalBox />
-                    <AddressBox>
-                      ({delivery.address?.address_id})
-                      {delivery.address?.address_detail}(
-                      {delivery.address?.phone_number})
-                    </AddressBox>{' '}
-                  </WhiteAddressBox>
-                )}
+                <GrayButtonBox>운송장 입력하기</GrayButtonBox>
+                <GrayButtonBox>
+                  나중에 입력하기 (입력기한 : {delivery.shippingDeadline})
+                </GrayButtonBox>
               </>
             )}
-          </ResultLayout>
-          <ButtonContainer>
-            {raffleStatus == 'ENDED' && (
+            {deliveryStatus === 'READY' && (
               <>
-                {(deliveryStatus === 'WAITING_ADDRESS' ||
-                  deliveryStatus === 'WAITING_PAYMENT' ||
-                  deliveryStatus === 'ADDRESS_EXPIRED') && (
-                  <>
-                    <GrayButtonBox>운송장 입력하기</GrayButtonBox>
-                    <GrayButtonBox>
-                      나중에 입력하기 (입력기한 : {delivery.shipping_deadline})
-                    </GrayButtonBox>
-                  </>
-                )}
-                {deliveryStatus === 'READY' && (
-                  <>
-                    <PurpleButtonBox onClick={handleDelver}>
-                      운송장 입력하기
-                    </PurpleButtonBox>
-                    <PurpleButtonBox>
-                      나중에 입력하기 (입력기한 : {delivery.shipping_deadline})
-                    </PurpleButtonBox>
-                  </>
-                )}
-                {deliveryStatus === 'ADDRESS_EXPIRED' && (
-                  <>
-                    <PurpleButtonBox onClick={handleEnd}>
-                      래플 강제종료
-                    </PurpleButtonBox>
-                    <PurpleButtonBox onClick={handleNew}>
-                      새로운 당첨자 뽑기
-                    </PurpleButtonBox>
-                    <PurpleButtonBox onClick={handleWait}>
-                      기다리기(24시간)
-                    </PurpleButtonBox>
-                  </>
-                )}
+                <PurpleButtonBox onClick={handleDelver}>
+                  운송장 입력하기
+                </PurpleButtonBox>
+                <PurpleButtonBox>
+                  나중에 입력하기 (입력기한 : {delivery.shippingDeadline})
+                </PurpleButtonBox>
               </>
             )}
-            {raffleStatus === 'UNFULFILLED' && (
+            {deliveryStatus === 'ADDRESS_EXPIRED' && (
               <>
                 <PurpleButtonBox onClick={handleEnd}>
                   래플 강제종료
                 </PurpleButtonBox>
                 <PurpleButtonBox onClick={handleNew}>
-                  당첨자 추첨 진행
+                  새로운 당첨자 뽑기
                 </PurpleButtonBox>
-                <PurpleButtonBox onClick={handleConsider}>
-                  나중에 선택하기(24시간)
+                <PurpleButtonBox onClick={handleWait}>
+                  기다리기(24시간)
                 </PurpleButtonBox>
               </>
             )}
-          </ButtonContainer>
-        </>
-      ) : (
-        <p>개최자가 아닙니다.</p>
-      )}
+          </>
+        )}
+        {raffleStatus === 'UNFULFILLED' && (
+          <>
+            <PurpleButtonBox onClick={handleEnd}>래플 강제종료</PurpleButtonBox>
+            <PurpleButtonBox onClick={handleMake}>
+              당첨자 추첨 진행
+            </PurpleButtonBox>
+            <PurpleButtonBox onClick={handleConsider}>
+              나중에 선택하기(24시간)
+            </PurpleButtonBox>
+          </>
+        )}
+      </ButtonContainer>
     </Wrapper>
   );
 };
