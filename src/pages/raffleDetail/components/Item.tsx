@@ -21,7 +21,6 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
-  const typeNumber = type ? parseInt(type, 10) : undefined;
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
 
@@ -501,7 +500,7 @@ const BottomLayout = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  padding: 0 109px 30px 67px; //최상위 wrapper 기준으으로 다시 설정해야 하나?
+  padding: 0 109px 30px 67px;
   box-sizing: border-box;
   gap: 45px;
 `;

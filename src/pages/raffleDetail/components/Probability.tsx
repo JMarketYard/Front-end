@@ -88,7 +88,7 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
       {raffle.raffleStatus === 'CANCELLED' && (
         <>
           {raffle.applyCount < raffle.minUser && ( //미달 취소
-            <SmallContainer>
+            <FailedContainer>
               래플 종료
               <FailedBox>
                 해당 래플은 판매자 희망 최소 참여자
@@ -99,7 +99,7 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
                 <br />
                 적립됩니다.
               </FailedBox>
-            </SmallContainer>
+            </FailedContainer>
           )}
           {raffle.applyCount >= raffle.minUser && ( //ENDED에서 배송/운송 관련으로 취소, 추후 멘트 필요.
             <SmallContainer>
@@ -129,7 +129,7 @@ export default Probability;
 
 const Wrapper = styled.div`
   display: flex;
-  width: 257px;
+  width: 280px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -175,41 +175,11 @@ const UnOpenBox = styled.div`
   line-height: 150%; /* 27px */
 `;
 
-const LessContainer = styled.div`
-  width: 285px;
-  height: 233px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 18px;
-  box-sizing: border-box;
-  border: 1px solid #8f8e94;
-`;
-
-const LessBox = styled.div`
-  display: flex;
-  width: 234px;
-  height: 120.908px;
-  flex-direction: column;
-  justify-content: center;
-  margin: 12px auto 26px auto;
-  box-sizing: border-box;
-
-  color: #8f8e94;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 150%; /* 27px */
-`;
-
 // 중앙 정렬을 위한 컨테이너
 const CenteredContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center; /* ✅ 내부 요소를 중앙 정렬 */
+  align-items: center;
   justify-content: center;
   width: 100%;
 `;
@@ -250,7 +220,7 @@ const ParticipantBox = styled.div`
 
 const FailedContainer = styled.div`
   width: 285px;
-  height: 185px;
+  height: 195px;
   flex-direction: column;
   justify-content: center;
   align-items: center;

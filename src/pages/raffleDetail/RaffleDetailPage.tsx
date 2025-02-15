@@ -79,5 +79,6 @@ const MoreInfoLayout = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
-  gap: 157px;
+  justify-content: space-between;
+  width: 100%;
 `;
