@@ -8,6 +8,7 @@ import axiosInstance from '../../../apis/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import SplashModal from '../../login/components/SplashModal';
+import FollowFailModal from './modal/FollowFailModal';
 
 interface MarketProps extends RaffleDetailProps {
   type?: string;
@@ -26,6 +27,10 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
 
   const handleOpenModal = () => {
     openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+  };
+
+  const handleFollowFail = () => {
+    openModal(({ onClose }) => <FollowFailModal onClose={onClose} />);
   };
 
   const handleFollow = async () => {
@@ -86,17 +91,28 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
         </MarketContainer>
       </MarketLayout>
       <ButtonLayout>
-        <FollowButton
-          onClick={() => {
-            if (isAuthenticated) {
-              handleFollow();
-            } else {
-              handleOpenModal(); // 로그인 모달 띄우기
-            }
-          }}
-        >
-          {isFollowing ? '팔로잉 취소' : '팔로우하기'}
-        </FollowButton>
+        {raffle.userStatus === 'host' && (
+          <FollowFailButton
+            onClick={() => {
+              handleFollowFail(); // 내 계정은 팔로우 할 수 없습니다.
+            }}
+          >
+            팔로우하기
+          </FollowFailButton>
+        )}
+        {raffle.userStatus !== 'host' && (
+          <FollowButton
+            onClick={() => {
+              if (isAuthenticated) {
+                handleFollow();
+              } else {
+                handleOpenModal(); // 로그인 모달 띄우기
+              }
+            }}
+          >
+            {isFollowing ? '팔로잉 취소' : '팔로우하기'}
+          </FollowButton>
+        )}
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
       <AskButton onClick={handleAsk}>상품 문의</AskButton>
@@ -244,6 +260,28 @@ const ButtonLayout = styled.div`
   align-items: center;
   gap: 35px;
   margin: 30px 0 71.5px 0;
+`;
+
+const FollowFailButton = styled.button`
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 162px;
+  height: 38.5px;
+  border-radius: 9px;
+  border: 1px solid #8f8e94;
+  background: #e4e4e4;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 24px */
+
+  cursor: pointer;
 `;
 
 const FollowButton = styled.button`
