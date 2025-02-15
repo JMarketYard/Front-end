@@ -1,20 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
-import Modal from '../Modal';
+import Modal from '../../../components/Modal/Modal';
 import questionVector from '../../../assets/questionVector.png';
+import { Navigate, useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
 }
 
 const EndModal: React.FC<ModalProps> = ({ onClose }) => {
+  const navigate = useNavigate();
+  const handleClick = async () => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/api/member/raffles/{raffleId}/cancel`,
+      );
+
+      console.log(data);
+      onClose();
+      navigate('/');
+    } catch (error) {
+      console.error('POST 요청 실패', error);
+    }
+  };
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
         <Title>해당 래플을 강제종료 하겠습니까?</Title>
         <Short>종료한 래플은 재개할 수 없습니다.</Short>
-        <Button onClick={onClose}>강제종료하기</Button>
+        <Button onClick={handleClick}>강제종료하기</Button>
       </Container>
     </Modal>
   );

@@ -28,6 +28,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     console.log('홈페이지 useEffect');
+    console.log('홈페이지에서 일단 isAutenticated 확인 : ', isAuthenticated);
     const fetchHomeData = async () => {
       try {
         const { data } = await axiosInstance.get(
@@ -38,7 +39,13 @@ const HomePage: React.FC = () => {
         setHomeData(data.result);
       } catch (error) {
         console.error('데이터 가져오기 실패', error);
+        const { data } = await axiosInstance.get('/api/permit/home');
+        setHomeData(data.result);
+        console.error('그래서 permit 함', data.result);
       }
+      const { data } = await axiosInstance.get('/api/permit/home');
+      setHomeData(data.result);
+      console.error('catch에서도 안잡힘??', data.result);
     };
 
     fetchHomeData();

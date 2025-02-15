@@ -6,49 +6,51 @@ import icTicket from '../../../assets/raffleDetail/icon-ticket.svg';
 import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
-import DrawModal from '../../../components/Modal/modals/DrawModal';
+import ApplyModal from './modal/ApplyModal';
 import RaffleDetailProps from '../../../components/RaffleDetailProps';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
-import RandomModal from '../../../components/Modal/modals/RandomModal';
+import RandomModal from './modal/RandomModal';
+import { ApplyType } from './apis/raffleType';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import { useAuth } from '../../../context/AuthContext';
+import SplashModal from '../../login/components/SplashModal';
 
 const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { type } = useParams<{ type?: string }>();
-  const typeNumber = type ? parseInt(type, 10) : undefined;
+  const { isAuthenticated, logout } = useAuth();
+  const { openModal } = useModalContext();
+
+  const handleOpenModal = () => {
+    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+  };
 
   const toggleLike = () => {
     setIsLiked((prevState) => !prevState);
     setLikeCount((prevLike) => (isLiked ? prevLike - 1 : prevLike + 1));
   };
 
-  const openModal = () => {
-    setIsModalOpen(true); // 모달 열기
+  const handleApply = async () => {
+    openModal(({ onClose }) => (
+      <ApplyModal
+        onClose={onClose}
+        name={raffle.name}
+        ticket={raffle.ticketNum}
+        image={raffle.imageUrls[0]}
+        resultTime={raffle.endAt}
+      />
+    ));
   };
-  const closeModal = () => {
-    setIsModalOpen(false); // 모달 닫기
-  };
-  const handleRoleChange = () => {
-    const postApply = async () => {
-      const { data } = await axiosInstance.post(
-        `/api/member/raffles/${typeNumber}/apply`,
-      );
-    };
-    postApply();
-    setIsModalOpen(false); // 모달을 닫기
-  };
-  const handleWinner = () => {
-    const getWinner = async () => {
-      const { data } = await axiosInstance.get(
-        `/api/member/raffles/${typeNumber}/draw`,
-      );
-    };
-    getWinner();
-    // const winnerData = data.result;
-    setIsModalOpen(false); // 모달을 닫기
+
+  const handleWinner = async () => {
+    const { data } = await axiosInstance.get(
+      `/api/member/raffles/${type}/draw`,
+    );
+    const drawData = data.result;
+    openModal(({ onClose }) => <RandomModal onClose={onClose} {...drawData} />);
   };
 
   const formatDate = (isoString: string) =>
@@ -60,33 +62,15 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
       minute: '2-digit',
       hour12: false,
     });
-  // .replace(' ', ' ');
 
   return (
     <Wrapper>
-      {isModalOpen &&
-        raffle.userStatus === 'nonParticipant' &&
-        raffle.raffleStatus === 'ACTIVE' && (
-          <DrawModal
-            onClose={closeModal}
-            handleRoleChange={handleRoleChange}
-            // countParticipant={countParticipant}
-            name={raffle.name}
-            ticket={raffle.ticketNum}
-            image={raffle.imageUrls[0]}
-            resultTime={raffle.endAt}
-          />
-        )}
-      {isModalOpen &&
-        raffle.userStatus === 'participant' &&
-        raffle.raffleStatus === 'ENDED' && <RandomModal onClose={closeModal} />}
-
       <BigTitle>{raffle.name}</BigTitle>
       <TopLayout>
         <ImgSlider images={raffle.imageUrls} name={raffle.name}>
           {(raffle.raffleStatus === 'UNFULFILLED' ||
             raffle.raffleStatus === 'ENDED' ||
-            raffle.raffleStatus === 'FINISHED' ||
+            raffle.raffleStatus === 'CANCELLED' ||
             raffle.raffleStatus === 'COMPLETED') && (
             <RaffleClosingBox>응모 마감</RaffleClosingBox>
           )}
@@ -113,7 +97,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
             <DescriptionBox>{formatDate(raffle.endAt)}</DescriptionBox>
             {(raffle.raffleStatus === 'UNFULFILLED' ||
               raffle.raffleStatus === 'ENDED' ||
-              raffle.raffleStatus === 'FINISHED' ||
+              raffle.raffleStatus === 'CANCELLED' ||
               raffle.raffleStatus === 'COMPLETED') && (
               <TextBox>응모마감</TextBox>
             )}
@@ -132,7 +116,17 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                   <GrayButton>래플 결과</GrayButton>
                 )}
                 {raffle.userStatus === 'nonParticipant' && (
-                  <PurpleButton onClick={openModal}>응모하기</PurpleButton>
+                  <PurpleButton
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        handleApply();
+                      } else {
+                        handleOpenModal();
+                      }
+                    }}
+                  >
+                    응모하기
+                  </PurpleButton>
                 )}
                 {raffle.userStatus === 'participant' && (
                   <LightPurpleButton>응모 완료</LightPurpleButton>
@@ -145,7 +139,16 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
               raffle.raffleStatus === 'ENDED') && (
               <>
                 {raffle.userStatus === 'host' && (
-                  <PinkButton onClick={() => navigate('/result')}>
+                  <PinkButton
+                    onClick={() =>
+                      navigate('/host-result', {
+                        state: {
+                          id: raffle.deliveryId,
+                          status: raffle.raffleStatus,
+                        },
+                      })
+                    }
+                  >
                     래플 결과
                   </PinkButton>
                 )}
@@ -159,13 +162,13 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                 {raffle.userStatus === 'participant' && (
                   <>
                     {raffle.isWinner === 'yes' && (
-                      <PurpleButton onClick={openModal}>DRAW</PurpleButton>
+                      <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
                     )}
                     {raffle.isWinner === 'no' && (
                       <GrayButton>래플 종료</GrayButton>
                     )}
                     {raffle.isWinner === 'hope' && (
-                      <PurpleButton onClick={openModal}>DRAW</PurpleButton>
+                      <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
                     )}
                   </>
                 )}
@@ -179,7 +182,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                 )}
               </>
             )}
-            {raffle.raffleStatus === 'FINISHED' && (
+            {raffle.raffleStatus === 'CANCELLED' && (
               <GrayButton>래플 종료</GrayButton>
             )}
             {raffle.raffleStatus === ' COMPLETED' && (
@@ -378,6 +381,8 @@ const ButtonContainer = styled.div`
 `;
 
 const PurpleButton = styled.button`
+  all: unset;
+  display: block;
   width: 344px;
   height: 48px;
   flex-shrink: 0;
@@ -495,7 +500,7 @@ const BottomLayout = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  padding: 0 109px 30px 67px; //최상위 wrapper 기준으으로 다시 설정해야 하나?
+  padding: 0 109px 30px 67px;
   box-sizing: border-box;
   gap: 45px;
 `;
