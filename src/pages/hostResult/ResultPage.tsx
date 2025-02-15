@@ -51,7 +51,7 @@ const ResultPage: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log('개최자 결과 페이지지 useEffect');
+    console.log('개최자 결과 페이지 useEffect');
     const fetchDelivery = async () => {
       try {
         const { data } = await axiosInstance.get(
