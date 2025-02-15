@@ -21,6 +21,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
   const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
+  const typeNumber = type ? parseInt(type, 10) : undefined;
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
 
@@ -47,7 +48,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
 
   const handleWinner = async () => {
     const { data } = await axiosInstance.get(
-      `/api/member/raffles/${type}/draw`,
+      `/api/member/raffles/${typeNumber}/draw`,
     );
     const drawData = data.result;
     console.log('draw data:', drawData);
@@ -144,8 +145,9 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                     onClick={() =>
                       navigate('/host-result', {
                         state: {
-                          id: raffle.deliveryId,
+                          deliveryId: raffle.deliveryId,
                           status: raffle.raffleStatus,
+                          raffleId: typeNumber,
                         },
                       })
                     }

@@ -6,22 +6,22 @@ export interface DeliveryResponse {
 }
 
 export interface DeliverySuccessResult {
-  raffle_id: number;
-  winner_id: number;
-  delivery_id: number;
-  min_ticket: number;
-  apply_ticket: number;
+  raffleId: number;
+  winnerId: number;
+  deliveryId: number;
+  minTicket: number;
+  applyTicket: number;
   finalAmount: number;
-  delivery_status: string;
-  shipping_deadline?: string | null;
-  is_extend_shipping?: boolean | null;
+  deliveryStatus: string;
+  shippingDeadline?: string | null;
+  isExtendShipping?: boolean | null;
   address?: Address | null;
 }
 
 export interface Address {
-  address_id: number;
-  recipient_name: string;
-  postal_code: string;
-  address_detail: string;
-  phone_number: string;
+  addressId: number;
+  recipientName: string;
+  postalCode: string;
+  addressDetail: string;
+  phoneNumber: string;
 }
