@@ -50,6 +50,7 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
       `/api/member/raffles/${type}/draw`,
     );
     const drawData = data.result;
+    console.log('draw data:', drawData);
     openModal(({ onClose }) => <RandomModal onClose={onClose} {...drawData} />);
   };
 
@@ -134,11 +135,11 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
               </>
             )}
 
-            {/*래플 응모 마감*/}
-            {(raffle.raffleStatus === 'UNFULFILLED' ||
-              raffle.raffleStatus === 'ENDED') && (
+            {/*래플 응모 마감-개최자*/}
+            {raffle.userStatus === 'host' && (
               <>
-                {raffle.userStatus === 'host' && (
+                {(raffle.raffleStatus === 'UNFULFILLED' ||
+                  raffle.raffleStatus === 'ENDED') && (
                   <PinkButton
                     onClick={() =>
                       navigate('/host-result', {
@@ -152,14 +153,25 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                     래플 결과
                   </PinkButton>
                 )}
-              </>
-            )}
-            {raffle.raffleStatus === 'ENDED' && (
-              <>
-                {raffle.userStatus === 'nonParticipant' && (
+                {(raffle.raffleStatus === 'COMPLETED' ||
+                  raffle.raffleStatus === 'CANCELLED') && (
                   <GrayButton>래플 종료</GrayButton>
                 )}
-                {raffle.userStatus === 'participant' && (
+              </>
+            )}
+            {/*래플 응모 마감-미참가자*/}
+            {raffle.userStatus === 'nonParticipant' &&
+              (raffle.raffleStatus === 'UNFULFILLED' ||
+                raffle.raffleStatus === 'ENDED' ||
+                raffle.raffleStatus === 'CANCELLED' ||
+                raffle.raffleStatus === 'COMPLETED') && (
+                <GrayButton>래플 종료</GrayButton>
+              )}
+
+            {/*래플 응모 마감-참가자*/}
+            {raffle.userStatus === 'participant' && (
+              <>
+                {raffle.raffleStatus === 'ENDED' && (
                   <>
                     {raffle.isWinner === 'yes' && (
                       <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
@@ -172,29 +184,28 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
                     )}
                   </>
                 )}
-              </>
-            )}
-            {raffle.raffleStatus === 'UNFULFILLED' && (
-              <>
-                {(raffle.userStatus === 'nonParticipant' ||
-                  raffle.userStatus === 'participant') && (
+                {(raffle.raffleStatus === 'UNFULFILLED' ||
+                  raffle.raffleStatus === 'CANCELLED') && (
                   <GrayButton>래플 종료</GrayButton>
                 )}
-              </>
-            )}
-            {raffle.raffleStatus === 'CANCELLED' && (
-              <GrayButton>래플 종료</GrayButton>
-            )}
-            {raffle.raffleStatus === ' COMPLETED' && (
-              <>
-                {raffle.isWinner === 'yes' && (
-                  <PurpleButton onClick={() => navigate('/review')}>
-                    후기남기기
-                  </PurpleButton>
+                {raffle.raffleStatus === 'COMPLETED' && (
+                  <>
+                    {raffle.isWinner === 'yes' && (
+                      <PurpleButton onClick={() => navigate('/review')}>
+                        후기남기기
+                      </PurpleButton>
+                    )}
+                    {raffle.isWinner === 'no' && (
+                      <GrayButton>래플 종료</GrayButton>
+                    )}
+                    {raffle.isWinner === 'hope' && (
+                      <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
+                    )}
+                  </>
                 )}
-                {raffle.isWinner === 'no' && <GrayButton>래플 종료</GrayButton>}
               </>
             )}
+
             <LikeBox onClick={toggleLike}>
               <img
                 src={isLiked ? icLike : icUnlike}

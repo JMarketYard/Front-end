@@ -64,7 +64,7 @@ export default function RandomOkModal({
             <Name>당첨자는</Name>
             <Final>
               <img src={yellow} />
-              <FinalName></FinalName>
+              <FinalName>{winner_nickname}</FinalName>
               <img src={yellow} />
             </Final>
             <Name>축하합니다!</Name>

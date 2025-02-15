@@ -85,6 +85,34 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
           )}
         </>
       )}
+
+      {(raffle.raffleStatus === 'CANCELLED' ||
+        raffle.raffleStatus === 'COMPLETED') && ( //완전 종료료
+        <>
+          {(raffle.userStatus === 'nonParticipant' ||
+            raffle.userStatus === 'host') && (
+            <CenteredContainer>
+              <TitleBox>누군가 당첨될 확률은?</TitleBox>
+              <DonutChart participant={raffle.applyCount} />
+              <InfoContainer>
+                <ParticipantBox>
+                  현재 참여자 수 : {raffle.applyCount}명
+                </ParticipantBox>
+                <ParticipantBox>
+                  판매자 희망 최소 참여자 : {raffle.minUser}명
+                </ParticipantBox>
+              </InfoContainer>
+            </CenteredContainer>
+          )}
+          {raffle.userStatus === 'participant' && (
+            <CenteredContainer>
+              <TitleBox>해당 래플은 종료되었습니다</TitleBox>
+              <DonutText text="래플 종료" />
+            </CenteredContainer>
+          )}
+        </>
+      )}
+
       {raffle.raffleStatus === 'CANCELLED' && (
         <>
           {raffle.applyCount < raffle.minUser && ( //미달 취소
