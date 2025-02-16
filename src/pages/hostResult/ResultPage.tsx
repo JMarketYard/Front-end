@@ -78,6 +78,7 @@ const ResultPage: React.FC = () => {
     fetchDelivery();
   }, [deliveryId, deliveryStatus]);
 
+
   //모달
   const { openModal } = useModalContext();
   const handleDelver = () => {
