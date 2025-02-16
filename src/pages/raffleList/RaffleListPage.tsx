@@ -5,7 +5,7 @@ import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import moreList from '../../assets/homePage/moreList.svg';
 import axiosInstance from '../../apis/axiosInstance';
-import RaffleProps from '../../components/RaffleProps';
+import RaffleProps from '../../types/RaffleProps';
 
 const RaffleListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -91,13 +91,6 @@ const RaffleListPage: React.FC = () => {
       default:
         setTitle('래플 둘러보기');
     }
-    // const fetchRaffleData = async () => {
-    //   const { data } = await axiosInstance.get(`/api/permit/home/${type}`);
-    //   console.log('API Response:', data.result.raffles);
-    //   setRaffles(data.result.raffles);
-    // };
-
-    // fetchRaffleData();
   }, [type]); // `type` 또는 `search`가 변경될 때마다 실행
 
   return (

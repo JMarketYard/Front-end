@@ -1,4 +1,6 @@
-interface RaffleDetailProps {
+import { TRaffleStatus } from './raffleStatus';
+
+type RaffleDetailProps = {
   imageUrls: string[];
   name: string;
   category: string;
@@ -16,9 +18,9 @@ interface RaffleDetailProps {
   reviewCount: number;
   userStatus: string;
   isWinner: string;
-  raffleStatus: string;
+  raffleStatus: TRaffleStatus;
   deliveryId: number;
   children?: React.ReactNode;
-}
+};
 
 export default RaffleDetailProps;

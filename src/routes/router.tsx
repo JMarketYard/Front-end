@@ -21,6 +21,7 @@ import Setting from '../pages/mypage/Setting';
 import ReviewPage from '../components/ReviewPage';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
+import WinnerPage from '../pages/winner/winnerPage';
 
 const router = createBrowserRouter([
   {
@@ -148,7 +149,7 @@ const router = createBrowserRouter([
         path: 'ask',
         element: <AskPage />,
       },
-      { path: 'winner-page' },
+      { path: 'winner-page', element: <WinnerPage /> },
     ],
   },
 ]);
