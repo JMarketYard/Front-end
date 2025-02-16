@@ -91,7 +91,7 @@ const router = createBrowserRouter([
         element: <WriteReview />,
       },
       {
-        path: 'address',
+        path: 'mypage/address',
         element: (
           <>
             <AddressSetPage />
