@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BigTitle from '../../components/BigTitle';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import ImgSlider from '../raffleDetail/components/ImgSlider';
 import icTicket from '../../assets/raffleDetail/icon-ticket.svg'
 import NotAnswered from './components/NotAnswered';
@@ -15,6 +15,7 @@ const ASK = 'ASK';
 const AskPage = () => {
   const [menu, setMenu] = useState(NOT_ANSWERED);
   const {state} = useLocation();
+  const { type } = useParams();
   const formatDate = (isoString: string) =>
     new Date(isoString).toLocaleString('ko-KR', {
       year: 'numeric',
@@ -24,7 +25,7 @@ const AskPage = () => {
       minute: '2-digit',
       hour12: false,
     });
-
+  
   return (
     <Container>
       <BigTitle>문의 게시판</BigTitle>
@@ -76,13 +77,13 @@ const AskPage = () => {
             $menu={menu}>답변 작성 완료</Menu>
           <Menu onClick={()=>setMenu(ASK)}
             $myMenu={ASK}
-            $menu={menu}>답변 문의하기</Menu>
+            $menu={menu}>문의하기</Menu>
         </MenuTab>
         {menu===NOT_ANSWERED
         ? <NotAnswered />
         : menu === ANSWERED
         ? <Answered />
-        : <WriteAsk />}
+        : <WriteAsk type={type} />}
       </AskLayout>
     </Container>
   );

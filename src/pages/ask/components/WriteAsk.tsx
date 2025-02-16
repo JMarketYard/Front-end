@@ -1,19 +1,45 @@
 import styled from "styled-components";
+import axiosInstance from "../../../apis/axiosInstance";
+import { useState } from "react";
 
-const WriteAsk = () => {
+const WriteAsk = ({type}:{type:string|undefined}) => {
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+
+  const handleAsk = () => {
+    const postAsk = async () => {
+      await axiosInstance.post('/api/member/inquiry', {
+        raffleId: Number(type),
+        title,
+        content
+      }).then(_=>{
+        setTitle('');
+        setContent('');
+        console.log('postAsk OK');
+      });
+    }
+    if (title==='') alert('제목을 입력해주세요');
+    else if (content==='') alert('내용을 입력해주세요');
+    else postAsk();
+  };
+
   return (
     <Container>
       <TitleContainer>
         <Text>제목</Text>
         <TitleBox>
-          <Input />
+          <Input value={title}
+          onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
+          setTitle(e.target.value)} />
         </TitleBox>
       </TitleContainer>
       <ContentsContainer>
         <Text>내용</Text>
-        <Textarea />
+        <Textarea value={content}
+        onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>
+          setContent(e.target.value)} />
       </ContentsContainer>
-      <Button>문의하기</Button>
+      <Button onClick={handleAsk}>문의하기</Button>
     </Container>
   )
 }
@@ -21,7 +47,6 @@ const WriteAsk = () => {
 export default WriteAsk;
 
 const Container = styled.div`
-  // padding-left: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,7 +92,7 @@ const Input = styled.input`
   font-style: normal;
   font-weight: 500;
   line-height: 36.832px; /* 184.159% */
-`
+`;
 
 const ContentsContainer = styled.div`
   display: flex;
@@ -113,4 +138,4 @@ const Button = styled.button`
   &:hover {
     cursor: pointer;
   };
-`
+`;
