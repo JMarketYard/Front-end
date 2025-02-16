@@ -7,6 +7,7 @@ import icTicket from '../../assets/raffleDetail/icon-ticket.svg'
 import NotAnswered from './components/NotAnswered';
 import Answered from './components/Answered';
 import WriteAsk from './components/WriteAsk';
+import media from '../../styles/media';
 
 const NOT_ANSWERED = 'NOT_ANSWERED';
 const ANSWERED = 'ANSWERED';
@@ -44,7 +45,7 @@ const AskPage = () => {
             조회 {state.view} · 찜 {state.likeCount}
           </ViewBox>
           <TicketBox>
-            <img src={icTicket} alt="ticket" />
+            <img src={icTicket} alt="ticket" width={34.61} height={22.023} />
             {state.ticketNum}
           </TicketBox>
           <DetailContainer>
@@ -55,7 +56,7 @@ const AskPage = () => {
             <TitleBox>응모오픈</TitleBox>
             <DescriptionBox>{formatDate(state.startAt)}</DescriptionBox>
           </DetailContainer>
-          <DetailContainer>
+          <DetailContainer className='last'>
             <TitleBox>응모마감</TitleBox>
             <DescriptionBox>{formatDate(state.endAt)}</DescriptionBox>
             {(state.raffleStatus === 'UNFULFILLED' ||
@@ -94,7 +95,7 @@ export default AskPage;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: safe center;
   margin-top: 64px;
 `;
 
@@ -107,6 +108,10 @@ const TopLayout = styled.div`
   // padding: 50px 109px 51px 67px;
   box-sizing: border-box;
   gap: 99.42px;
+
+  ${media.medium`
+    gap: 25px;
+  `}
 `;
 
 const RaffleClosingBox = styled.div`
@@ -148,6 +153,7 @@ const ItemTitleBox = styled.p`
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
+  margin: 23px 0 15px;
 
   color: #000;
   font-family: Pretendard;
@@ -155,6 +161,9 @@ const ItemTitleBox = styled.p`
   font-style: normal;
   font-weight: 700;
   line-height: 150%; /* 33px */
+  ${media.medium`
+    margin: 8px 0 15px;
+  `}
 `;
 const ViewBox = styled.div`
   display: flex;
@@ -179,6 +188,7 @@ const ViewBox = styled.div`
 `;
 const TicketBox = styled.div`
   display: flex;
+  align-items: center;
   gap: 8.31px;
   padding-top: 40px;
   padding-bottom: 38.98px;
@@ -197,6 +207,10 @@ const DetailContainer = styled.div`
 
   gap: 50px;
   padding-bottom: 26px;
+
+  &.last {
+    padding-bottom: 0;
+  };
 `;
 const TitleBox = styled.div`
   display: inline-block;
@@ -211,7 +225,7 @@ const TitleBox = styled.div`
 `;
 const DescriptionBox = styled.div`
   display: flex;
-  width: 269px;
+  max-width: 269px;
   height: 19px;
   flex-direction: column;
   justify-content: center;
@@ -251,6 +265,12 @@ const AskLayout = styled.div`
   width: 918px;
   box-sizing: border-box;
   margin-top: 102px;
+
+  ${media.medium`
+    width: 532px;
+    heigt: 47px;
+    margin-top: 80px;
+  `}
 `
 
 const MenuTab = styled.div`
@@ -258,7 +278,8 @@ const MenuTab = styled.div`
   margin-bottom: 40px;
 `
 const Menu = styled.div<{$myMenu:string, $menu: string}>`
-  width: 306px;
+  // width: 306px;
+  flex: 1;
   text-align: center;
   padding-bottom: 25px;
   box-sizing: border-box;

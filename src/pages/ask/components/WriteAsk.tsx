@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import axiosInstance from "../../../apis/axiosInstance";
 import { useState } from "react";
+import media from "../../../styles/media";
 
 const WriteAsk = ({type}:{type:string|undefined}) => {
   const [title, setTitle] = useState<string>('');
@@ -69,6 +70,10 @@ const Text = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 36.832px; /* 184.159% */
+
+  ${media.medium`
+    margin-right: 20px;
+  `}
 `;
 
 const TitleBox = styled.div`
@@ -79,6 +84,10 @@ const TitleBox = styled.div`
   background: #F5F5F5;
   padding: 0 8px;
   box-sizing: border-box;
+
+  ${media.medium`
+    width: 467px;
+  `}
 `;
 const Input = styled.input`
   background: transparent;
@@ -116,6 +125,10 @@ const Textarea = styled.textarea`
   font-style: normal;
   font-weight: 500;
   line-height: 36.832px; /* 184.159% */
+
+  ${media.medium`
+    width: 467px;
+  `}
 `;
 
 const Button = styled.button`
