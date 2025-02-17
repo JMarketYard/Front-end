@@ -13,7 +13,7 @@ import {
   ApplySuccessResult,
   ApplyFailureMissingTickets,
 } from '../apis/applyResponseTypes';
-import axios from 'axios';
+import { AxiosError } from 'axios';
 
 interface ModalProps {
   onClose: () => void;
@@ -43,7 +43,6 @@ const ApplyModal: React.FC<ModalProps> = ({
 
       if (response.data.code === 'COMMON200') {
         console.log('응모성공');
-        onClose();
         openModal(({ onClose }) => (
           <ApplyOkModal
             onClose={onClose}
@@ -53,7 +52,7 @@ const ApplyModal: React.FC<ModalProps> = ({
         ));
       }
       if (response.data.code === 'APPLY_4001') {
-        console.log('티켓부족족');
+        console.log('티켓부족');
         openModal(({ onClose }) => (
           <ApplyFailModal
             onClose={onClose}
@@ -66,6 +65,7 @@ const ApplyModal: React.FC<ModalProps> = ({
     } catch (error) {
       console.log('에러 : ', error);
     }
+    onClose();
   };
 
   return (
