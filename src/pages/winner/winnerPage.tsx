@@ -9,6 +9,9 @@ import media from '../../styles/media';
 import { TAddress } from '../address/addressSetPage';
 import { TDeliveryStatus } from '../../types/deliveryStatus';
 import { ReactComponent as checkbox } from '../../assets/imgCheckbox.svg';
+import icWarning from '../../assets/icWarning.svg';
+import { useModalContext } from '../../components/Modal/context/ModalContext';
+import GiveUpModal from './modals/GiveUpModal';
 
 export type TWinner = {
   raffleId: number;
@@ -23,7 +26,10 @@ export type TWinner = {
 const WinnerPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { deliveryId } = location.state || {};
+  const deliveryId = location.state?.deliveryId ?? '';
+  const image = location.state?.image ?? '';
+  const { openModal } = useModalContext();
+
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
     addressName: '',
@@ -49,11 +55,59 @@ const WinnerPage: React.FC = () => {
       console.error(error);
     }
   };
-
   fetchAddress();
-  if (deliveryStatus === 'SHIPPING_EXPIRED') {
-    <Hr />;
+
+  const handleOpenModal = () => {
+    openModal(({ onClose }) => <GiveUpModal onClose={onClose} />);
+  };
+
+  if (0) {
+    // 운송장 입력기한 만료 (당첨자의 선택이 필요함)
+    // deliveryStatus === 'SHIPPING_EXPIRED'
+    return (
+      <Wrapper>
+        <BigTitle>래플 결과</BigTitle>
+        <RaffleLayout>
+          <Box src={image} alt="상품 이미지" />
+          <RaffleContainer>
+            <NameBox>로지텍 무소음 마우스</NameBox>
+            <DateBox>당첨 일시 : </DateBox>
+          </RaffleContainer>
+        </RaffleLayout>
+        <Mark>!</Mark>
+        <InfoBox1>해당 래플 개최자가 운송장을 입력하지 않았습니다.</InfoBox1>
+        <InfoBox2>당첨을 포기하겠습니까?</InfoBox2>
+
+        <ButtonLayout2>
+          <PurpleButton onClick={handleOpenModal}>당첨 포기하기</PurpleButton>
+          <WarningContainer>
+            <img src={icWarning} />
+            <WarningBox>
+              당첨을 포기 할 경우 티켓과 배송비는 환불됩니다. 개최자는 일주일간
+              활동정지되며, 미발송 상점 횟수가 프로필에 표시됩니다.
+            </WarningBox>
+          </WarningContainer>
+
+          <PurpleButton onClick={() => navigate('/')}>
+            기다리기 (24시간)
+          </PurpleButton>
+        </ButtonLayout2>
+      </Wrapper>
+    );
   } else {
+    if (1) {
+      return (
+        <Wrapper>
+          <BigTitle>
+            당첨자 정보
+            <MoreListBox onClick={() => navigate('/address')}>
+              배송지 목록 조회
+              <img src={moreList} alt="moreList" />
+            </MoreListBox>
+          </BigTitle>
+        </Wrapper>
+      );
+    }
     return (
       <Wrapper>
         <BigTitle>
@@ -63,6 +117,8 @@ const WinnerPage: React.FC = () => {
             <img src={moreList} alt="moreList" />
           </MoreListBox>
         </BigTitle>
+
+        {/* */}
         {(deliveryStatus === 'WAITING_ADDRESS' ||
           deliveryStatus === 'WAITING_PAYMENT') && (
           <AddressLayout>
@@ -337,4 +393,134 @@ const PurpleButton = styled.button`
   line-height: normal;
 
   cursor: pointer;
+`;
+
+const Box = styled.img`
+  width: 209px;
+  height: 209px;
+  flex-shrink: 0;
+  background: #f5f5f5;
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+
+const NameBox = styled.div`
+  display: flex;
+  width: 209px;
+  height: 29px;
+  flex-direction: column;
+  justify-content: center;
+
+  color: #000;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 30px */
+`;
+
+const DateBox = styled.div`
+  display: flex;
+  width: 277px;
+  height: 20px;
+  flex-direction: column;
+  justify-content: center;
+
+  color: #000;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 30px */
+`;
+
+const RaffleLayout = styled.div`
+  display: flex;
+  flex-direction: row;
+  max-width: 725px;
+  justify-content: center;
+  align-items: center;
+  gap: 76.5px;
+  margin-top: 54px;
+`;
+
+const RaffleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+`;
+
+const Mark = styled.div`
+  display: flex;
+  width: 71px;
+  height: 71px;
+  margin: 51px 0 27px 0;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #f5f5f5;
+
+  border-radius: 50px;
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 134.814%; /* 67.407px */
+`;
+
+const InfoBox1 = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 134.814%; /* 24.266px */
+`;
+
+const InfoBox2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #8f8e94;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 134.814%;
+`;
+
+const ButtonLayout2 = styled.div`
+  margin-top: 149px;
+`;
+
+const WarningContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 17px 0 29px 0;
+`;
+
+const WarningBox = styled.div`
+  display: flex;
+  width: 424px;
+  height: 28px;
+  flex-direction: column;
+  justify-content: center;
+  color: #c908ff;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;

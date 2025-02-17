@@ -52,7 +52,13 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
     );
     const drawData = data.result;
     console.log('draw data:', drawData);
-    openModal(({ onClose }) => <RandomModal onClose={onClose} {...drawData} />);
+    openModal(({ onClose }) => (
+      <RandomModal
+        onClose={onClose}
+        image={raffle.imageUrls[0]}
+        {...drawData}
+      />
+    ));
   };
 
   const formatDate = (isoString: string) =>
@@ -540,3 +546,5 @@ const DescriptionBox2 = styled.div`
   font-weight: 400;
   line-height: 150%; /* 30px */
 `;
+
+const WarningContainer = styled.div``;

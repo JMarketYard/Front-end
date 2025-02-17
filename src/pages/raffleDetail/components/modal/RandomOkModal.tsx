@@ -10,14 +10,16 @@ import { useParams, useLocation } from 'react-router-dom';
 
 interface RandomOkModalProps {
   onClose: () => void;
-  winner_nickname: string;
-  delivery_id: number;
+  winnerNickname: string;
+  deliveryId: number;
+  image: string;
 }
 
 export default function RandomOkModal({
   onClose,
-  winner_nickname,
-  delivery_id,
+  winnerNickname,
+  deliveryId,
+  image,
 }: PropsWithChildren<RandomOkModalProps>) {
   const { clearModals } = useModalContext();
   const navigate = useNavigate();
@@ -40,7 +42,9 @@ export default function RandomOkModal({
     };
     postCheck();
     onClose(); // 모달 닫기
-    navigate(`/winner-page`, { state: delivery_id }); //state로 devliery_id 전달
+    navigate(`/winner-page`, {
+      state: { deliveryId: deliveryId, image: image },
+    }); //state로 devliery_id 전달
   };
 
   return ReactDOM.createPortal(
@@ -65,7 +69,7 @@ export default function RandomOkModal({
             <Name>당첨자는</Name>
             <Final>
               <img src={yellow} />
-              <FinalName>{winner_nickname}</FinalName>
+              <FinalName>{winnerNickname}</FinalName>
               <img src={yellow} />
             </Final>
             <Name>축하합니다!</Name>
