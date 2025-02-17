@@ -128,7 +128,6 @@ const Container = styled.div`
   margin: 0 auto;
   text-align: center;
   margin-top: 64px;
-  padding: 20px;
 `;
 
 const BigTitleWrapper = styled.div`

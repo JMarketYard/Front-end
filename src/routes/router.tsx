@@ -18,9 +18,10 @@ import MyProfilePage from '../pages/mypage/mypage';
 import FollowingList from '../pages/mypage/FollowingList';
 import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
-import ReviewPage from '../components/ReviewPage';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
+import MyReview from '../pages/mypage/MyReview';
+import Payment from '../pages/mypage/Payment';
 
 
 const router = createBrowserRouter([
@@ -143,7 +144,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'mypage/my-review',
-        element: <ReviewPage />,
+        element: <MyReview />,
+      },
+      {
+        path: 'mypage/payment',
+        element: <Payment />,
       },
       {
         path: 'ask',

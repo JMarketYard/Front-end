@@ -3,31 +3,26 @@ import styled from "styled-components";
 import StarIcon from "../assets/mypages/Star.svg";
 import GrayStarIcon from "../assets/mypages/Graystar.svg";
 
-const ReviewPage: React.FC = () => {
-  const averageRating = 5.0;
-  const totalReviews = 50;
+interface Review {
+  id: number;
+  username: string;
+  rating: number;
+  product: string;
+  reviewText: string;
+  images: string[];
+}
 
-  const reviews = [
-    {
-      id: 1,
-      username: "이유진",
-      rating: 4,
-      product: "다영이언니의 텀블러",
-      reviewText:
-        "멋진 텀블러 잘 받았습니다! 주최자분께서 올려주신 사진과 동일합니다. 다만 배송이 조금 늦었네요. 반성하세요!",
-      images: ["/image1.jpg", "/image2.jpg", "/image3.jpg"],
-    },
-    {
-      id: 2,
-      username: "닉네임",
-      rating: 4,
-      product: "다영이언니의 텀블러",
-      reviewText:
-        "멋진 텀블러 잘 받았습니다! 주최자분께서 올려주신 사진과 동일합니다. 다만 배송이 조금 늦었네요. 반성하세요!",
-      images: ["/image4.jpg", "/image5.jpg", "/image6.jpg"],
-    },
-  ];
+interface ReviewComponentProps {
+  reviews: Review[];
+  averageScore: number;
+  reviewCount: number;
+}
 
+const ReviewComponent: React.FC<ReviewComponentProps> = ({
+  reviews,
+  averageScore,
+  reviewCount,
+}) => {
   return (
     <Container>
       <AverageRatingBox>
@@ -37,7 +32,7 @@ const ReviewPage: React.FC = () => {
           ))}
         </StarRow>
         <RatingText>
-          평점: <RatingValue>{averageRating.toFixed(1)}</RatingValue> ({totalReviews})
+          평점: <RatingValue>{averageScore.toFixed(1)}</RatingValue> ({reviewCount})
         </RatingText>
       </AverageRatingBox>
 
@@ -68,7 +63,8 @@ const ReviewPage: React.FC = () => {
   );
 };
 
-export default ReviewPage;
+export default ReviewComponent;
+
 
 const Container = styled.div`
   width: 100%;
@@ -78,7 +74,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 58px; /* 프로필·별점 박스와 리뷰 박스 사이 간격 */
+  gap: 58px;
 `;
 
 const AverageRatingBox = styled.div`
@@ -129,12 +125,13 @@ const UserSection = styled.div`
   justify-content: center;
 `;
 
-const ProfileImage = styled.div`
+const ProfileImage = styled.img`
   width: 62px;
   height: 61px;
   border-radius: 50%;
   background: #d9d9d9;
   margin-bottom: 10px;
+  object-fit: cover;
 `;
 
 const Username = styled.div`
@@ -160,7 +157,6 @@ const ProductName = styled.div`
   color: #8f8e94;
   font-family: Pretendard;
   font-size: 18px;
-  font-style: normal;
   font-weight: 500;
   line-height: 27px;
   width: 295px;
@@ -181,17 +177,28 @@ const ReviewImage = styled.img`
 `;
 
 const ReviewText = styled.div`
-display: flex;
-height: 108px;
-width: 295px;
-flex-direction: column;
-justify-content: center;
-flex-shrink: 0;
-align-self: stretch;
-color: #000;
-font-family: Pretendard;
-font-size: 16px;
-font-style: normal;
-font-weight: 400;
-line-height: 150%; /* 24px */
+  display: flex;
+  height: 108px;
+  width: 295px;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: stretch;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 150%;
+`;
+
+const NoReviewsMessage = styled.div`
+  font-size: 18px;
+  color: #999;
+  margin-top: 20px;
+`;
+
+const LoadingMessage = styled.div`
+  font-size: 18px;
+  color: #666;
+  margin-top: 20px;
 `;
