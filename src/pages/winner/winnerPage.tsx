@@ -12,6 +12,7 @@ import { ReactComponent as checkbox } from '../../assets/imgCheckbox.svg';
 import icWarning from '../../assets/icWarning.svg';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
 import GiveUpModal from './modals/GiveUpModal';
+import { Icon } from '@iconify/react';
 
 export type TWinner = {
   raffleId: number;
@@ -95,7 +96,8 @@ const WinnerPage: React.FC = () => {
       </Wrapper>
     );
   } else {
-    if (1) {
+    if (0) {
+      //(deliveryStatus === 'WAITING_ADDRESS' || deliveryStatus === 'WAITING_PAYMENT')
       return (
         <Wrapper>
           <BigTitle>
@@ -105,22 +107,7 @@ const WinnerPage: React.FC = () => {
               <img src={moreList} alt="moreList" />
             </MoreListBox>
           </BigTitle>
-        </Wrapper>
-      );
-    }
-    return (
-      <Wrapper>
-        <BigTitle>
-          당첨자 정보
-          <MoreListBox onClick={() => navigate('/address')}>
-            배송지 목록 조회
-            <img src={moreList} alt="moreList" />
-          </MoreListBox>
-        </BigTitle>
 
-        {/* */}
-        {(deliveryStatus === 'WAITING_ADDRESS' ||
-          deliveryStatus === 'WAITING_PAYMENT') && (
           <AddressLayout>
             <Checkbox fill={'#C908FF'} />
             <AddressContainer>
@@ -132,57 +119,93 @@ const WinnerPage: React.FC = () => {
               </AddressSpan>
             </AddressContainer>
           </AddressLayout>
-        )}
 
-        <InfoLayout>
-          <InfoContainer>
-            <SmallTitleSpan>당첨자 배송비 결제현황</SmallTitleSpan>
-            {(deliveryStatus === 'WAITING_ADDRESS' ||
-              deliveryStatus === 'WAITING_PAYMENT') && (
+          <InfoLayout>
+            <InfoContainer>
+              <SmallTitleSpan>당첨자 배송비 결제현황</SmallTitleSpan>
               <SmallGraySpan>배송지 입력 대기</SmallGraySpan>
-            )}
-            {(deliveryStatus === 'READY' || deliveryStatus === 'SHIPPED') && (
-              <SmallPurpleSpan>결제 완료</SmallPurpleSpan>
-            )}
-          </InfoContainer>
-          <Hr />
-          <InfoContainer>
-            <SmallTitleSpan>개최자 운송장번호 입력현황</SmallTitleSpan>
-            {isShipped ? (
-              <SmallPurpleSpan>운송장번호 입력 완료</SmallPurpleSpan>
-            ) : (
+            </InfoContainer>
+            <Hr />
+            <InfoContainer>
+              <SmallTitleSpan>개최자 운송장번호 입력현황</SmallTitleSpan>
               <SmallGraySpan>운송장번호 입력 대기</SmallGraySpan>
-            )}
-          </InfoContainer>
-          <Hr />
-          <InfoContainer>
-            <SmallTitleSpan>운송장번호</SmallTitleSpan>
-            {isShipped ? (
-              <SmallPurpleSpan>0000</SmallPurpleSpan>
-            ) : (
+            </InfoContainer>
+            <Hr />
+            <InfoContainer>
+              <SmallTitleSpan>운송장번호</SmallTitleSpan>
               <SmallGraySpan>-------</SmallGraySpan>
-            )}
-          </InfoContainer>
-          <Hr />
-        </InfoLayout>
-        <ButtonLayout>
-          <PurpleButton>거래 완료</PurpleButton>
-          <PurpleButton onClick={() => navigate('/')}>
-            후기 작성하기
-          </PurpleButton>
-          {/*state 수정!!*/}
-          <PurpleButton
-            onClick={() =>
-              navigate('/review', {
-                state: { deliveryId: 1 },
-              })
-            }
-          >
-            홈 화면으로 돌아가기
-          </PurpleButton>
-        </ButtonLayout>
-      </Wrapper>
-    );
+            </InfoContainer>
+            <Hr />
+            <p>전체 동의</p>
+            <FeeContainer>
+              <FeeTitleBox>배송비</FeeTitleBox>
+              <FeeAmountBox>4000 원</FeeAmountBox>
+            </FeeContainer>
+          </InfoLayout>
+
+          <ButtonLayout>
+            <KakaoButtons>
+              <ResponsiveIcon icon="raphael:bubble" />
+              <Kakao>카카오페이로 결제하기</Kakao>
+            </KakaoButtons>
+            <PurpleButton onClick={() => navigate('/')}>
+              나중에 결제하기(입력기한 : 1/12)
+            </PurpleButton>
+          </ButtonLayout>
+        </Wrapper>
+      );
+    } else {
+      return (
+        <Wrapper>
+          <BigTitle>
+            당첨자 정보
+            <MoreListBox onClick={() => navigate('/address')}>
+              배송지 목록 조회
+              <img src={moreList} alt="moreList" />
+            </MoreListBox>
+          </BigTitle>
+
+          <InfoLayout>
+            <InfoContainer>
+              <SmallTitleSpan>당첨자 배송비 결제현황</SmallTitleSpan>
+              <SmallPurpleSpan>결제 완료</SmallPurpleSpan>
+            </InfoContainer>
+            <Hr />
+            <InfoContainer>
+              <SmallTitleSpan>개최자 운송장번호 입력현황</SmallTitleSpan>
+              <SmallPurpleSpan>운송장번호 입력 완료</SmallPurpleSpan>
+            </InfoContainer>
+            <Hr />
+            <InfoContainer>
+              <SmallTitleSpan>운송장번호</SmallTitleSpan>
+              <SmallPurpleSpan>0000</SmallPurpleSpan>
+            </InfoContainer>
+            <Hr />
+            <FeeContainer>
+              <FeeTitleBox>배송비</FeeTitleBox>
+              <FeeAmountBox>4000 원</FeeAmountBox>
+            </FeeContainer>
+          </InfoLayout>
+
+          <ButtonLayout>
+            <PurpleButton>거래 완료</PurpleButton>
+            <PurpleButton
+              onClick={() =>
+                navigate('/review', {
+                  state: { deliveryId: 1 },
+                })
+              }
+            >
+              후기 작성하기
+            </PurpleButton>
+            {/*state 수정!!*/}
+            <PurpleButton onClick={() => navigate('/')}>
+              홈 화면으로 돌아가기
+            </PurpleButton>
+          </ButtonLayout>
+        </Wrapper>
+      );
+    }
   }
 };
 
@@ -523,4 +546,87 @@ const WarningBox = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+`;
+
+const FeeContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 89px 0 47px 0;
+`;
+
+const FeeTitleBox = styled.div`
+  display: flex;
+  width: 50px;
+  height: 20px;
+  flex-direction: column;
+  justify-content: center;
+
+  color: #000;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17.308px; /* 96.154% */
+`;
+
+const FeeAmountBox = styled.div`
+  display: flex;
+  width: 92px;
+  height: 20px;
+  flex-direction: column;
+  justify-content: center;
+
+  color: #000;
+  text-align: right;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 17.308px; /* 96.154% */
+`;
+
+const KakaoButtons = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 46px;
+  border-radius: 7px;
+  border: 0;
+  background-color: #fbe44e;
+  color: black;
+`;
+
+const Kakao = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transform: translateY(1px);
+  color: #000;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  ${media.notLarge`
+      font-size: 15px;
+    `}
+`;
+
+const ResponsiveIcon = styled(Icon)`
+  width: 24px;
+  height: 20px;
+  color: black;
+
+  ${media.notLarge`
+    width: 19px; 
+    height: 15px;
+  `}
 `;
