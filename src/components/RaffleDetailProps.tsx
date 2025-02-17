@@ -11,11 +11,13 @@ interface RaffleDetailProps {
   likeCount: number;
   applyCount: number;
   nickname: string;
+  storeId: number;
   followCount: number;
   reviewCount: number;
   userStatus: string;
   isWinner: string;
   raffleStatus: string;
+  deliveryId: number;
   children?: React.ReactNode;
 }
 

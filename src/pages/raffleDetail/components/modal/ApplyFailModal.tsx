@@ -1,37 +1,27 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import icTicket from '../../../assets/ticket.svg';
-import { useModalContext } from '../context/ModalContext';
-import DrawOkModal from './DrawOkModal';
+import icTicket from '../../../../assets/ticket.svg';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
-  handleRoleChange: () => void;
-  //countParticipant: () => void;
   image: string;
   name: string;
   ticket: number;
-  resultTime: string;
 }
 
-const DrawModal: React.FC<ModalProps> = ({
+const ApplyFailModal: React.FC<ModalProps> = ({
   onClose,
-  handleRoleChange,
-  //countParticipant,
   image,
   name,
   ticket,
-  resultTime,
 }) => {
-  const { openModal } = useModalContext();
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    openModal(({ onClose }) => (
-      <DrawOkModal onClose={onClose} resultTime={resultTime} image={image} />
-    ));
-    handleRoleChange();
-    //countParticipant();
+  const handleClick = async () => {
+    await onClose(); // 모달 닫기
+    navigate('change');
   };
 
   return (
@@ -39,25 +29,23 @@ const DrawModal: React.FC<ModalProps> = ({
       <Container>
         <Box src={image} alt="상품 이미지" />
         <Title>{name}</Title>
-        <Short>해당 상품에 응모하시겠습니까?</Short>
+        <Short>응모 실패! 티켓이 부족합니다.</Short>
         <TicketBox>
+          <Text>부족한 티켓 개수 : </Text>
           <Img src={icTicket} />
           <Ticket>{ticket}</Ticket>
         </TicketBox>
-        <Button onClick={handleSubmit}>응모하기</Button>
-        <Info>응모 후 취소할 수 없습니다.</Info>
+        <Button onClick={handleClick}>티켓 충전 페이지로 이동하기</Button>
       </Container>
     </Modal>
   );
 };
 
-const Info = styled.div`
-  margin-top: 11px;
-  color: #8f8e94;
+const Text = styled.div`
   font-family: Pretendard;
-  font-size: 11px;
+  font-size: 14px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 const Ticket = styled.div`
@@ -94,7 +82,10 @@ const Button = styled.button`
 `;
 
 const Short = styled.div`
-  margin-top: 12px;
+  margin-top: 10px;
+  color: #ff008c;
+  text-align: center;
+  font-family: Pretendard;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -124,5 +115,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-DrawModal.displayName = 'DrawModal';
-export default DrawModal;
+export default ApplyFailModal;

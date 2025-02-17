@@ -23,7 +23,6 @@ import AskPage from '../pages/ask/askPage';
 import MyReview from '../pages/mypage/MyReview';
 import Payment from '../pages/mypage/Payment';
 
-
 const router = createBrowserRouter([
   {
     path: '/',
@@ -118,7 +117,7 @@ const router = createBrowserRouter([
         element: <CategoryResultPage />,
       },
       {
-        path: 'result',
+        path: 'host-result',
         element: (
           <div>
             <ResultPage />
@@ -154,7 +153,7 @@ const router = createBrowserRouter([
         path: 'ask',
         element: <AskPage />,
       },
-
+      { path: 'winner-page' },
     ],
   },
 ]);

@@ -1,16 +1,75 @@
 import styled from 'styled-components';
 import moreList from '../../../assets/homePage/moreList.svg';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
+import RaffleDetailProps from '../../../components/RaffleDetailProps';
+import axiosInstance from '../../../apis/axiosInstance';
+import { useAuth } from '../../../context/AuthContext';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import SplashModal from '../../login/components/SplashModal';
+import FollowFailModal from './modal/FollowFailModal';
 
-const Market = () => {
+interface MarketProps extends RaffleDetailProps {
+  type?: string;
+}
+
+const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
   const navigate = useNavigate();
+  const [isFollowing, setIsFollowing] = useState(false); // 팔로우 상태
+  const [followCount, setFollowCount] = useState<number>(raffle.followCount);
+  const { isAuthenticated, logout } = useAuth();
+  const { openModal } = useModalContext();
+
+  const handleAsk = () => {
+    navigate(`/ask/${type}`, { state: raffle });
+  };
+
+  const handleOpenModal = () => {
+    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+  };
+
+  const handleFollowFail = () => {
+    openModal(({ onClose }) => <FollowFailModal onClose={onClose} />);
+  };
+
+  const handleFollow = async () => {
+    if (isFollowing) {
+      try {
+        const { data } = await axiosInstance.delete(
+          '/api/member/follow/cancel',
+          { params: { storeId: raffle.storeId } },
+        );
+        console.log('상점 언팔로우 : ', data.message);
+        setIsFollowing(false);
+        setFollowCount((prev) => prev - 1); // 팔로워 수 증가
+      } catch (error) {
+        console.error('에러 : 팔로우 상태가 아님', error);
+        setIsFollowing(false);
+      }
+    } else {
+      try {
+        const { data } = await axiosInstance.post(
+          '/api/member/follow/',
+          {},
+          { params: { storeId: raffle.storeId } },
+        );
+        console.log('상점 팔로우 : ', data.message);
+        setIsFollowing(true);
+        setFollowCount((prev) => prev + 1); // 팔로워 수 증가
+      } catch (error) {
+        console.error('에러 : 이미 팔로잉 중', error);
+        setIsFollowing(true);
+      }
+    }
+  };
+
   return (
     <Wrapper>
       <BigTitleBox>
         <TitleIcon />
         <div>상점 정보</div>
-        <MoreListBox onClick={() => navigate('/')}>
+        <MoreListBox onClick={() => navigate('/market')}>
           프로필 보기
           <img src={moreList} alt="moreList" />
         </MoreListBox>
@@ -20,22 +79,43 @@ const Market = () => {
         <MarketContainer>
           <NicknameBox>
             <img src={icLevel} alt="레벨" />
-            송유림
+            {raffle.nickname}
           </NicknameBox>
           <MarketInfo>
             <KeyBox>팔로워</KeyBox>
-            <ValueBox>26</ValueBox>
+            <ValueBox>{followCount}</ValueBox>
             <VerticalDivider />
             <KeyBox>후기 </KeyBox>
-            <ValueBox>50</ValueBox>
+            <ValueBox>{raffle.reviewCount}</ValueBox>
           </MarketInfo>
         </MarketContainer>
       </MarketLayout>
       <ButtonLayout>
-        <FollowButton>팔로우하기</FollowButton>
+        {raffle.userStatus === 'host' && (
+          <FollowFailButton
+            onClick={() => {
+              handleFollowFail(); // 내 계정은 팔로우 할 수 없습니다.
+            }}
+          >
+            팔로우하기
+          </FollowFailButton>
+        )}
+        {raffle.userStatus !== 'host' && (
+          <FollowButton
+            onClick={() => {
+              if (isAuthenticated) {
+                handleFollow();
+              } else {
+                handleOpenModal(); // 로그인 모달 띄우기
+              }
+            }}
+          >
+            {isFollowing ? '팔로잉 취소' : '팔로우하기'}
+          </FollowButton>
+        )}
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
-      <AskBox>상품 문의</AskBox>
+      <AskButton onClick={handleAsk}>상품 문의</AskButton>
     </Wrapper>
   );
 };
@@ -182,6 +262,28 @@ const ButtonLayout = styled.div`
   margin: 30px 0 71.5px 0;
 `;
 
+const FollowFailButton = styled.button`
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 162px;
+  height: 38.5px;
+  border-radius: 9px;
+  border: 1px solid #8f8e94;
+  background: #e4e4e4;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 24px */
+
+  cursor: pointer;
+`;
+
 const FollowButton = styled.button`
   all: unset;
   display: flex;
@@ -226,7 +328,8 @@ const ReviewButton = styled.button`
   cursor: pointer;
 `;
 
-const AskBox = styled.div`
+const AskButton = styled.button`
+  all: unset;
   display: flex;
   justify-content: center;
   align-items: center;
