@@ -86,8 +86,7 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
         </>
       )}
 
-      {(raffle.raffleStatus === 'CANCELLED' ||
-        raffle.raffleStatus === 'COMPLETED') && ( //완전 종료료
+      {raffle.raffleStatus === 'COMPLETED' && ( //완전 종료
         <>
           {(raffle.userStatus === 'nonParticipant' ||
             raffle.userStatus === 'host') && (
