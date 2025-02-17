@@ -12,19 +12,23 @@ const FollowingList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [modalMessage, setModalMessage] = useState<string | null>(null);
 
-  /** ✅ 팔로우 목록 조회 */
   const fetchFollowingList = async () => {
     setLoading(true);
     try {
-      const { data } = await axiosInstance.get("/api/following/list", {
+      const { data } = await axiosInstance.get("/api/member/follow/list", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}` // ✅ Authorization 헤더 추가
         }
       });
-      setFollowingList(data.result); // ✅ 실제 데이터 사용
+  
+      if (data.isSuccess) {
+        setFollowingList(data.result); // ✅ API 응답 값 반영
+      } else {
+        setFollowingList([]); // ✅ 응답 실패 시 빈 배열 처리
+      }
     } catch (error) {
       console.error("팔로잉 목록을 불러오는 중 오류 발생:", error);
-      setFollowingList([]); // ✅ 오류 시 빈 리스트
+      setFollowingList([]); // ✅ 에러 발생 시 빈 리스트
     } finally {
       setLoading(false);
     }
@@ -45,26 +49,26 @@ const FollowingList: React.FC = () => {
       for (const storeId of storeIdsToUnfollow) {
         await axiosInstance.delete(`/api/following/unfollow?storeId=${storeId}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}` // ✅ Authorization 헤더 추가
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
           }
         });
       }
       setModalMessage("팔로우가 취소되었습니다.");
+      fetchFollowingList();
     } catch (error) {
       console.error("팔로우 취소 중 오류 발생:", error);
       setModalMessage("팔로우 취소에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setCheckedItems({});
-      fetchFollowingList();
       setIsDeleteMode(false);
     }
   };
 
   /** ✅ 체크 토글 */
-  const handleToggle = (index: number) => {
+  const handleToggle = (storeId: number) => {
     setCheckedItems((prev) => ({
       ...prev,
-      [index]: !prev[index],
+      [storeId]: !prev[storeId],
     }));
   };
 
@@ -93,14 +97,14 @@ const FollowingList: React.FC = () => {
         {loading ? (
           <LoadingMessage>팔로잉 목록을 불러오는 중...</LoadingMessage>
         ) : followingList.length > 0 ? (
-          followingList.map((item) => (
+          followingList.map((store) => (
             <FollowingItem
-              key={item.storeId}
-              username={`상점 ${item.storeId}`}
-              profileImage={item.profileImg}
+              key={store.storeId}
+              username={`상점 ${store.storeId}`}
+              profileImage={store.profileImg}
               isDeleteMode={isDeleteMode}
-              isChecked={!!checkedItems[item.storeId]}
-              onToggle={() => handleToggle(item.storeId)}
+              isChecked={!!checkedItems[store.storeId]}
+              onToggle={() => handleToggle(store.storeId)}
             />
           ))
         ) : (
@@ -109,10 +113,7 @@ const FollowingList: React.FC = () => {
       </ListContainer>
 
       {modalMessage && (
-        <FollowNoModal
-          onClose={() => setModalMessage(null)}
-          message={modalMessage}
-        />
+        <FollowNoModal onClose={() => setModalMessage(null)} message={modalMessage} />
       )}
     </Container>
   );

@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import Modal from '../Modal';
-import styled from 'styled-components';
-import vector from '../../../assets/Vector.png';
+import React, { useState } from "react";
+import axiosInstance from "../../../apis/axiosInstance"; // ✅ axios 추가
+import Modal from "../Modal";
+import styled from "styled-components";
+import vector from "../../../assets/Vector.png";
 
 interface ModalProps {
   onClose: () => void;
-  currentNickname: string;  // ✅ currentNickname prop 추가
-  onNicknameChange: (newNickname: string) => void;  // ✅ 닉네임 변경 후 전달할 함수
+  currentNickname: string; // ✅ 현재 닉네임
+  onNicknameChange: (newNickname: string) => void; // ✅ 변경된 닉네임을 상위 컴포넌트로 전달
 }
 
 const NameEditModal: React.FC<ModalProps> = ({ onClose, currentNickname, onNicknameChange }) => {
   const [name, setName] = useState<string>(currentNickname);
-  const [isError, setIsError] = useState<string>('');
+  const [isError, setIsError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false); // ✅ 로딩 상태 추가
 
   const regex = /^[가-힣a-zA-Z0-9]{2,10}$/;
 
@@ -19,14 +21,36 @@ const NameEditModal: React.FC<ModalProps> = ({ onClose, currentNickname, onNickn
     setName(event.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!regex.test(name)) {
-      setIsError('닉네임은 2~10자의 한글 또는 영어만 사용 가능합니다.');
+      setIsError("닉네임은 2~10자의 한글, 영어, 숫자만 사용 가능합니다.");
       return;
-    } else {
-      setIsError('');
-      onNicknameChange(name);  // ✅ 변경된 닉네임을 상위 컴포넌트로 전달
-      onClose();
+    }
+    setIsError(""); // ✅ 기존 에러 메시지 제거
+    setLoading(true); // ✅ API 요청 시작 (버튼 비활성화)
+
+    try {
+      const response = await axiosInstance.patch(
+        "/mypage/nickname",
+        { nickname: name }, // ✅ API 요청 데이터
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // ✅ 토큰 추가
+          },
+        }
+      );
+
+      if (response.data.isSuccess) {
+        onNicknameChange(name); // ✅ 상위 컴포넌트에 변경된 닉네임 전달
+        onClose(); // ✅ 모달 닫기
+      } else {
+        setIsError("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("닉네임 변경 오류:", error);
+      setIsError("서버 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setLoading(false); // ✅ API 요청 완료 (버튼 활성화)
     }
   };
 
@@ -42,8 +66,8 @@ const NameEditModal: React.FC<ModalProps> = ({ onClose, currentNickname, onNickn
           placeholder="닉네임을 입력하세요. (한글, 숫자, 영어 2~10자)"
           isError={!!isError}
         />
-        <Button disabled={!name} onClick={handleSubmit}>
-          변경하기
+        <Button disabled={!name || loading} onClick={handleSubmit}>
+          {loading ? "변경 중..." : "변경하기"}
         </Button>
       </Container>
     </Modal>
@@ -52,14 +76,13 @@ const NameEditModal: React.FC<ModalProps> = ({ onClose, currentNickname, onNickn
 
 const Error = styled.div`
   margin-top: 28px;
-  width: 250px;
+  width: 255px;
   height: 17px;
   font-size: 11px;
-  font-style: normal;
   font-weight: 400;
   line-height: 150%;
   color: #c908ff;
-  font-family: 'Noto Sans KR';
+  font-family: "Noto Sans KR";
   transform: translateX(-18px);
 `;
 
@@ -74,7 +97,6 @@ const Button = styled.button`
   align-items: center;
   color: #fff;
   font-size: 14px;
-  font-style: normal;
   font-weight: 700;
   cursor: pointer;
 
@@ -87,7 +109,7 @@ const Input = styled.input<{ isError: boolean }>`
   margin-top: 4px;
   margin-bottom: 161px;
   border-radius: 5px;
-  border: ${({ isError }) => (isError ? '1px solid #C908FF' : 'none')};
+  border: ${({ isError }) => (isError ? "1px solid #C908FF" : "none")};
   background: #f7f7f7;
   width: 272px;
   height: 31px;
@@ -97,14 +119,12 @@ const Input = styled.input<{ isError: boolean }>`
   &::placeholder {
     font-family: Pretendard;
     font-size: 12px;
-    font-style: normal;
     font-weight: 300;
   }
 `;
 
 const Title = styled.div`
   font-size: 18px;
-  font-style: normal;
   font-weight: 600;
   font-family: Pretendard;
 `;

@@ -1,49 +1,64 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import ProductCard from "../../components/ProductCard";
-import BigTitle from "../../components/BigTitle";
-import ProfileComponent from "../../components/ProfileComponent";
-import NameEditModal from "../../components/Modal/modals/NameEditModal";
-import { Link } from "react-router-dom";
-import axiosInstance from "../../apis/axiosInstance";
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import ProductCard from '../../components/ProductCard';
+import BigTitle from '../../components/BigTitle';
+import ProfileComponent from '../../components/ProfileComponent';
+import NameEditModal from '../../components/Modal/modals/NameEditModal';
+import axiosInstance from '../../apis/axiosInstance';
+
+interface ProfileData {
+  nickname: string;
+  followerNum: number;
+  reviewNum: number;
+  raffles: any[];
+}
 
 const MyProfilePage: React.FC = () => {
-  const [selectedToggle, setSelectedToggle] = useState("응모한 래플");
-  const [products, setProducts] = useState<any[]>([]);
+  const [selectedToggle, setSelectedToggle] = useState('응모한 래플');
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [nickname, setNickname] = useState<string>("");
-  const [followerNum, setFollowerNum] = useState<string>("-");
-  const [reviewNum, setReviewNum] = useState<string>("-");
-  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 모달 상태 관리
+  const [isNameEditModalOpen, setIsNameEditModalOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const fetchProfileData = async (toggle: string) => {
+  /** ✅ API 요청 */
+  const fetchProfileData = async () => {
     setLoading(true);
     try {
       const endpoint =
-        toggle === "응모한 래플" ? "/api/member/mypage" : "/api/member/myRaffles";
+        selectedToggle === '응모한 래플' ? '/api/member/mypage' : '/api/member/myRaffles';
       const { data } = await axiosInstance.get(endpoint);
 
+      console.log('📌 API 응답 데이터:', data);
+
       if (data.isSuccess) {
-        setNickname(data.result.nickname || "-");
-        setFollowerNum(data.result.followerNum?.toString() || "-");
-        setReviewNum(data.result.reviewNum?.toString() || "-");
-        setProducts(data.result.raffles || []);
+        setProfileData({
+          nickname: data.result.nickname || '-',
+          followerNum: data.result.followerNum || 0,
+          reviewNum: data.result.reviewNum || 0,
+          raffles: data.result.raffles ?? [],
+        });
       } else {
-        setProducts([]);
+        setProfileData(null);
       }
     } catch (error) {
-      console.error(`"${toggle}" 데이터를 불러오는 중 오류 발생:`, error);
-      setProducts([]);
+      console.error('API 요청 중 오류 발생:', error);
+      setProfileData(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProfileData(selectedToggle);
+    fetchProfileData();
   }, [selectedToggle]);
 
-  const handleModalClose = () => setIsModalOpen(false);
+  const handleNicknameChange = (newNickname: string) => {
+    if (profileData) {
+      setProfileData((prev) => (prev ? { ...prev, nickname: newNickname } : null));
+    }
+    setIsNameEditModalOpen(false);
+  };
 
   return (
     <Container>
@@ -53,26 +68,28 @@ const MyProfilePage: React.FC = () => {
           <SettingsLink to="/mypage/setting">설정 및 내 정보 수정하기 &gt;</SettingsLink>
         </BigTitle>
 
-        <ProfileComponent
-          username={nickname || "-"}
-          followers={parseInt(followerNum) || 0}
-          reviews={parseInt(reviewNum) || 0}
-          onEditProfile={() => setIsModalOpen(true)} // ✅ 모달 열기
-        />
+        {profileData && (
+          <ProfileComponent
+            username={profileData.nickname}
+            followers={profileData.followerNum}
+            reviews={profileData.reviewNum}
+            onEditProfile={() => setIsNameEditModalOpen(true)}
+          />
+        )}
 
         <ToggleContainer>
           <ToggleIndicator selectedToggle={selectedToggle} />
           <ToggleOption
             selectedToggle={selectedToggle}
             value="응모한 래플"
-            onClick={() => setSelectedToggle("응모한 래플")}
+            onClick={() => setSelectedToggle('응모한 래플')}
           >
             응모한 래플
           </ToggleOption>
           <ToggleOption
             selectedToggle={selectedToggle}
             value="주최하는 래플"
-            onClick={() => setSelectedToggle("주최하는 래플")}
+            onClick={() => setSelectedToggle('주최하는 래플')}
           >
             주최하는 래플
           </ToggleOption>
@@ -80,17 +97,17 @@ const MyProfilePage: React.FC = () => {
 
         {loading ? (
           <LoadingMessage>상품을 불러오는 중...</LoadingMessage>
-        ) : products.length > 0 ? (
+        ) : profileData && profileData.raffles.length > 0 ? (
           <ProductGrid>
-            {products.map((product) => (
+            {profileData.raffles.map((product) => (
               <ProductCard
                 key={product.raffle_id}
                 raffleId={product.raffle_id}
                 name={product.raffle_name}
-                imageUrls={[product.raffle_image]}
+                imageUrls={[product.raffle_image || 'https://via.placeholder.com/150']}
                 ticketNum={product.ticket_num}
                 participantNum={product.apply_num}
-                timeUntilEnd={product.time_until_end}
+                timeUntilEnd={Number(product.time_until_end) || 0}
                 finish={product.finished}
                 like={product.liked}
               />
@@ -99,19 +116,22 @@ const MyProfilePage: React.FC = () => {
         ) : (
           <NoProductsMessage>{selectedToggle}이 없습니다.</NoProductsMessage>
         )}
-
-        {/* ✅ 닉네임 변경 모달 */}
-        {isModalOpen && (
-          <NameEditModal onClose={handleModalClose} currentNickname={nickname} />
-        )}
       </InnerContainer>
+
+      {isNameEditModalOpen && (
+        <NameEditModal
+          currentNickname={profileData?.nickname || '-'}
+          onClose={() => setIsNameEditModalOpen(false)}
+          onNicknameChange={handleNicknameChange}
+        />
+      )}
     </Container>
   );
 };
 
 export default MyProfilePage;
 
-/* ✅ 스타일링 */
+/* ✅ 스타일 */
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -160,7 +180,7 @@ const ToggleIndicator = styled.div<{ selectedToggle: string }>`
   background: #c908ff;
   border-radius: 50px;
   top: 0;
-  left: ${({ selectedToggle }) => (selectedToggle === "응모한 래플" ? "0" : "50%")};
+  left: ${({ selectedToggle }) => (selectedToggle === '응모한 래플' ? '0' : '50%')};
   transition: left 0.3s ease;
 `;
 
@@ -172,7 +192,7 @@ const ToggleOption = styled.div<{ selectedToggle: string; value: string }>`
   justify-content: center;
   font-weight: 700;
   font-size: 20px;
-  color: ${({ selectedToggle, value }) => (selectedToggle === value ? "#fff" : "#c908ff")};
+  color: ${({ selectedToggle, value }) => (selectedToggle === value ? '#fff' : '#c908ff')};
 `;
 
 const ProductGrid = styled.div`
