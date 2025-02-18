@@ -20,6 +20,8 @@ import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
 import ReviewPage from '../components/ReviewPage';
 import ScrollToTop from '../components/ScrollTop';
+import AskPage from '../pages/ask/askPage';
+import WinnerPage from '../pages/winner/winnerPage';
 
 const router = createBrowserRouter([
   {
@@ -115,7 +117,7 @@ const router = createBrowserRouter([
         element: <CategoryResultPage />,
       },
       {
-        path: 'result',
+        path: 'host-result',
         element: (
           <div>
             <ResultPage />
@@ -143,6 +145,11 @@ const router = createBrowserRouter([
         path: 'mypage/my-review',
         element: <ReviewPage />,
       },
+      {
+        path: 'ask/:type',
+        element: <AskPage />,
+      },
+      { path: 'winner-page', element: <WinnerPage /> },
     ],
   },
 ]);

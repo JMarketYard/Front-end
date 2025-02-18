@@ -1,7 +1,9 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import ticket from '../../../assets/ticket.svg';
+import ticket from '../../../../assets/ticket.svg';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
@@ -9,16 +11,20 @@ interface ModalProps {
   image: string;
 }
 
-const DrawOkModal: React.FC<ModalProps> = ({ onClose, resultTime, image }) => {
-  const formatDate = (isoString: string) =>
-    new Date(isoString).toLocaleString('ko-KR', {
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      hour12: false,
-      year: undefined,
-    });
-  //메일로 결과가 전송됩니다. 수정하기!
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1 필요
+  const day = date.getDate();
+  const hours = date.getHours(); // 24시간 형식 그대로 사용
+
+  return `${month}월 ${day}일 ${hours}시`;
+};
+
+const ApplyOkModal: React.FC<ModalProps> = ({ onClose, resultTime, image }) => {
+  const time = formatDate(resultTime);
+  const navigate = useNavigate();
+  const { type } = useParams<{ type?: string }>();
+
   return (
     <Modal onClose={onClose}>
       <Container>
@@ -26,9 +32,9 @@ const DrawOkModal: React.FC<ModalProps> = ({ onClose, resultTime, image }) => {
           <Img src={ticket} />
           <Ticket>응모 완료!</Ticket>
         </TicketBox>
-        <Short>메일로 결과가 전송됩니다.</Short>
+        <Short>{time} 메일로 결과가 전송됩니다.</Short>
         <Box src={image} alt="상품 이미지" />
-        <Button onClick={onClose}>내가 응모한 게시물 보러가기기</Button>
+        <Button onClick={onClose}>내가 응모한 게시물 보러가기</Button>
       </Container>
     </Modal>
   );
@@ -93,4 +99,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default DrawOkModal;
+export default ApplyOkModal;

@@ -1,25 +1,41 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import ticket from '../../../assets/ticket.svg';
+import icTicket from '../../../../assets/ticket.svg';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
+  image: string;
+  name: string;
+  ticket: number;
 }
 
-const DrawFailModal: React.FC<ModalProps> = ({ onClose }) => {
+const ApplyFailModal: React.FC<ModalProps> = ({
+  onClose,
+  image,
+  name,
+  ticket,
+}) => {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    await onClose(); // 모달 닫기
+    navigate('change');
+  };
+
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Box />
-        <Title>로지텍 무소음 마우스</Title>
+        <Box src={image} alt="상품 이미지" />
+        <Title>{name}</Title>
         <Short>응모 실패! 티켓이 부족합니다.</Short>
         <TicketBox>
           <Text>부족한 티켓 개수 : </Text>
-          <Img src={ticket} />
-          <Ticket>3</Ticket>
+          <Img src={icTicket} />
+          <Ticket>{ticket}</Ticket>
         </TicketBox>
-        <Button onClick={onClose}>응모하기</Button>
+        <Button onClick={handleClick}>티켓 충전 페이지로 이동하기</Button>
       </Container>
     </Modal>
   );
@@ -83,7 +99,7 @@ const Title = styled.div`
   font-weight: 700;
 `;
 
-const Box = styled.div`
+const Box = styled.img`
   width: 190px;
   height: 190px;
   flex-shrink: 0;
@@ -99,4 +115,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default DrawFailModal;
+export default ApplyFailModal;

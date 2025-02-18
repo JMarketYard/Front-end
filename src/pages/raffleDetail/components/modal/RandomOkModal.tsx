@@ -2,13 +2,29 @@ import React, { PropsWithChildren, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Icon } from '@iconify/react';
-import { useModalContext } from '../context/ModalContext';
-import yellow from '../../../assets/yellowVector.svg';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import yellow from '../../../../assets/yellowVector.svg';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../../apis/axiosInstance';
+import { useParams, useLocation } from 'react-router-dom';
+
+interface RandomOkModalProps {
+  onClose: () => void;
+  winnerNickname: string;
+  deliveryId: number;
+  image: string;
+}
 
 export default function RandomOkModal({
   onClose,
-}: PropsWithChildren<{ onClose: () => void }>) {
+  winnerNickname,
+  deliveryId,
+  image,
+}: PropsWithChildren<RandomOkModalProps>) {
   const { clearModals } = useModalContext();
+  const navigate = useNavigate();
+  const { type } = useParams<{ type?: string }>();
+  const typeNumber = type ? Number(type) : undefined;
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -17,6 +33,19 @@ export default function RandomOkModal({
       document.body.style.overflow = 'auto';
     };
   }, []);
+
+  const handleClick = () => {
+    const postCheck = async () => {
+      const { data } = await axiosInstance.post(
+        `/api/member/raffles/${typeNumber}/check`,
+      );
+    };
+    postCheck();
+    onClose(); // 모달 닫기
+    navigate(`/winner-page`, {
+      state: { deliveryId: deliveryId, image: image },
+    }); //state로 devliery_id 전달
+  };
 
   return ReactDOM.createPortal(
     <ModalOverlay onClick={clearModals}>
@@ -37,15 +66,15 @@ export default function RandomOkModal({
         </div>
         <ContainerBox onClick={(e) => e.stopPropagation()}>
           <Container>
-            <Name>당점자는</Name>
+            <Name>당첨자는</Name>
             <Final>
               <img src={yellow} />
-              <FinalName>당첨자당첨자</FinalName>
+              <FinalName>{winnerNickname}</FinalName>
               <img src={yellow} />
             </Final>
             <Name>축하합니다!</Name>
           </Container>
-          <Button>다음으로</Button>
+          <Button onClick={handleClick}>다음으로</Button>
         </ContainerBox>
       </ModalContent>
     </ModalOverlay>,

@@ -1,21 +1,36 @@
 import React from 'react';
-import Modal from '../Modal';
 import styled from 'styled-components';
-import questionVector from '../../../assets/questionVector.png';
+import Modal from '../../../components/Modal/Modal';
+import smileVector from '../../../assets/SmileVector.png';
+import { Navigate, useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
+  raffleId: number;
 }
-
-const GiveUpModal: React.FC<ModalProps> = ({ onClose }) => {
+//미추첨 당첨자 뽑기
+const MakeDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
+  const navigate = useNavigate();
+  const handleClick = async () => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/api/member/raffles/${raffleId}/draw`,
+      );
+      console.log(data);
+      onClose();
+      navigate('');
+    } catch (error) {
+      console.error('POST 요청 실패', error);
+    }
+  };
   return (
     <Modal onClose={onClose}>
-      {' '}
       <Container>
-        <Img src={questionVector} />
-        <Title>당첨을 포기하시겠습니까?</Title>
-        <Short>해당 결정은 번복할 수 없습니다.</Short>
-        <Button onClick={onClose}>포기하기</Button>
+        <Img src={smileVector} />
+        <Title>당첨자를 뽑으시겠습니까?</Title>
+        <Short>해당 결정은 번복할 수 없습니다. </Short>
+        <Button onClick={handleClick}>당첨자 뽑기</Button>
       </Container>
     </Modal>
   );
@@ -68,4 +83,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default GiveUpModal;
+export default MakeDrawerModal;

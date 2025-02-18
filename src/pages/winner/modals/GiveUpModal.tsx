@@ -1,23 +1,34 @@
 import React from 'react';
+import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
-import Modal from '../Modal';
-import smileVector from '../../../assets/SmileVector.png';
+import questionVector from '../../../assets/questionVector.png';
 
 interface ModalProps {
   onClose: () => void;
 }
 
-const DeliverOkModal: React.FC<ModalProps> = ({ onClose }) => {
+const GiveUpModal: React.FC<ModalProps> = ({ onClose }) => {
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={smileVector} />
-        <Title>운송장 입력이 완료되었습니다</Title>
-        <Button onClick={onClose}>홈 화면으로 돌아가기</Button>
+        <Img src={questionVector} />
+        <Title>당첨을 포기하시겠습니까?</Title>
+        <Short>해당 결정은 번복할 수 없습니다.</Short>
+        <Button onClick={onClose}>포기하기</Button>
       </Container>
     </Modal>
   );
 };
+
+const Short = styled.div`
+  margin-bottom: 127px;
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+`;
 
 const Button = styled.button`
   width: 302px;
@@ -39,7 +50,7 @@ const Title = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  margin-bottom: 158px;
+  margin-bottom: 12px;
 `;
 
 const Img = styled.img`
@@ -56,4 +67,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default DeliverOkModal;
+export default GiveUpModal;

@@ -1,37 +1,76 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import icTicket from '../../../assets/ticket.svg';
-import { useModalContext } from '../context/ModalContext';
-import DrawOkModal from './DrawOkModal';
+import icTicket from '../../../../assets/ticket.svg';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import ApplyOkModal from './ApplyOkModal';
+import ApplyFailModal from './ApplyFailModal';
+import { useState } from 'react';
+import axiosInstance from '../../../../apis/axiosInstance';
+import { useParams, useLocation, data } from 'react-router-dom';
+import {
+  ApplyResponse,
+  ApplySuccessResult,
+  ApplyFailureMissingTickets,
+} from '../apis/applyResponseTypes';
+import { AxiosError } from 'axios';
 
 interface ModalProps {
   onClose: () => void;
-  handleRoleChange: () => void;
-  //countParticipant: () => void;
   image: string;
   name: string;
   ticket: number;
   resultTime: string;
+  shouldFetch: boolean;
+  setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DrawModal: React.FC<ModalProps> = ({
+const ApplyModal: React.FC<ModalProps> = ({
   onClose,
-  handleRoleChange,
-  //countParticipant,
   image,
   name,
   ticket,
   resultTime,
+  shouldFetch,
+  setShouldFetch,
 }) => {
   const { openModal } = useModalContext();
+  const { type } = useParams<{ type?: string }>();
+  const typeNumber = type ? parseInt(type, 10) : undefined;
 
-  const handleSubmit = () => {
-    openModal(({ onClose }) => (
-      <DrawOkModal onClose={onClose} resultTime={resultTime} image={image} />
-    ));
-    handleRoleChange();
-    //countParticipant();
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `/api/member/raffles/${typeNumber}/apply`,
+        {},
+      );
+
+      if (response.data.code === 'COMMON_200') {
+        console.log('응모성공');
+        setShouldFetch((prev: boolean) => !prev);
+        openModal(({ onClose }) => (
+          <ApplyOkModal
+            onClose={onClose}
+            resultTime={resultTime}
+            image={image}
+          />
+        ));
+      }
+      if (response.data.code === 'APPLY_4001') {
+        console.log('티켓부족');
+        openModal(({ onClose }) => (
+          <ApplyFailModal
+            onClose={onClose}
+            image={image}
+            name={name}
+            ticket={response.data.result.missingTickets}
+          />
+        ));
+      }
+    } catch (error) {
+      console.log('에러 : ', error);
+    }
+    onClose();
   };
 
   return (
@@ -124,5 +163,5 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-DrawModal.displayName = 'DrawModal';
-export default DrawModal;
+ApplyModal.displayName = 'ApplyModal';
+export default ApplyModal;

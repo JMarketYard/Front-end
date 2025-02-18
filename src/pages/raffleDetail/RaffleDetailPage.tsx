@@ -3,15 +3,35 @@ import styled from 'styled-components';
 import Item from './components/Item';
 import Market from './components/Market';
 import Probability from './components/Probability';
-import { raffleData } from '../../mocks/RaffleData';
 import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
-import RaffleDetailProps from '../../components/RaffleDetailProps';
+import RaffleDetailProps from '../../types/RaffleDetailProps';
+import { TRaffleDetail } from '../../types/raffleDetails';
 
-const RaffleDetailPage: React.FC<RaffleDetailProps> = () => {
+const RaffleDetailPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
-  // const [participant, setParticipant] = useState(raffle.participant);
-  const [raffleData, setRaffleData] = useState<RaffleDetailProps | null>(null);
+  const [raffleData, setRaffleData] = useState<RaffleDetailProps>({
+    imageUrls: [],
+    name: '',
+    category: '',
+    ticketNum: 0,
+    startAt: '',
+    endAt: '',
+    description: '',
+    minUser: 0,
+    view: 0,
+    likeCount: 0,
+    applyCount: 0,
+    nickname: '',
+    storeId: 0,
+    followCount: 0,
+    reviewCount: 0,
+    userStatus: '',
+    isWinner: '',
+    raffleStatus: 'UNOPENED',
+    deliveryId: 0,
+  });
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
@@ -19,7 +39,7 @@ const RaffleDetailPage: React.FC<RaffleDetailProps> = () => {
     console.log('래플 상세보기 useEffect');
     const fetchRaffleData = async () => {
       try {
-        const { data } = await axiosInstance.get(
+        const { data }: { data: TRaffleDetail } = await axiosInstance.get(
           `/api/permit/raffles/${typeNumber}`,
         );
 
@@ -31,13 +51,17 @@ const RaffleDetailPage: React.FC<RaffleDetailProps> = () => {
     };
 
     fetchRaffleData();
-  }, []);
+  }, [shouldFetch]);
 
   return (
     <Wrapper>
-      <Item {...raffleData} />
+      <Item
+        {...raffleData}
+        shouldFetch={shouldFetch}
+        setShouldFetch={setShouldFetch}
+      />
       <MoreInfoLayout>
-        <Market />
+        <Market {...raffleData} type={type} />
         <Probability {...raffleData} />
       </MoreInfoLayout>
     </Wrapper>
@@ -59,5 +83,6 @@ const MoreInfoLayout = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
-  gap: 157px;
+  justify-content: space-between;
+  width: 100%;
 `;
