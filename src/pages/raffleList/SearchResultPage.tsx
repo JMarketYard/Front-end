@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ProductCard from '../../components/ProductCard';
-import RaffleProps from '../../components/RaffleProps';
+import RaffleProps from '../../types/RaffleProps';
 import axiosInstance from '../../apis/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { useIsSearchCompleted } from '../../store/store';
@@ -15,15 +15,16 @@ const SearchResultPage: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const { isAuthenticated } = useAuth();
-  const setIsCompleted = useIsSearchCompleted(v=>v.setIsSearchCompleted);
+  const setIsCompleted = useIsSearchCompleted((v) => v.setIsSearchCompleted);
 
   const fetchMoreProducts = async () => {
     if (!hasMore || isLoading) return;
 
     setIsLoading(true);
     try {
-      const apirequest = isAuthenticated ? '/api/member/search/raffles'
-      : '/api/permit/search/raffles'
+      const apirequest = isAuthenticated
+        ? '/api/member/search/raffles'
+        : '/api/permit/search/raffles';
 
       const { data } = await axiosInstance.get(apirequest, {
         params: { keyword: type },
@@ -48,11 +49,17 @@ const SearchResultPage: React.FC = () => {
       setPage((prev) => prev + 1);
     } catch (error) {
       console.error('데이터 불러오기 실패:', error);
-    }
-     finally {
+    } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    setRaffles([]);
+    setPage(1);
+    setHasMore(true);
+    fetchMoreProducts();
+  }, [type]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

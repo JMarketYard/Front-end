@@ -10,7 +10,7 @@ import ProductCard from '../../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import media from '../../styles/media';
 import { Link } from 'react-router-dom';
-import RaffleProps from '../../components/RaffleProps';
+import RaffleProps from '../../types/RaffleProps';
 import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../apis/axiosInstance';
 

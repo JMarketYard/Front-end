@@ -11,6 +11,8 @@ import DeliverModal from './modal/DeliverModal';
 import CancleModal from './modal/CancelModal';
 import NewDrawerModal from './modal/NewDrawerModal';
 import MakeDrawerModal from './modal/MakeDrawerModal';
+import ConsiderModal from './modal/ConsiderModal';
+import WaitModal from './modal/WaitModal';
 
 interface RaffleResult {
   raffleId: number;
@@ -76,6 +78,7 @@ const ResultPage: React.FC = () => {
     fetchDelivery();
   }, [deliveryId, deliveryStatus]);
 
+
   //모달
   const { openModal } = useModalContext();
   const handleDelver = () => {
@@ -99,15 +102,14 @@ const ResultPage: React.FC = () => {
     ));
   };
   const handleWait = () => {
-    //새로운 모달 생성?
     openModal(({ onClose }) => (
-      <DeliverModal onClose={onClose} deliveryId={deliveryId} />
+      <WaitModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
   const handleConsider = () => {
     //새로운 모달 생성?
     openModal(({ onClose }) => (
-      <DeliverModal onClose={onClose} deliveryId={deliveryId} />
+      <ConsiderModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
 
