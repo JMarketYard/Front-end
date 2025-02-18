@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import moreList from '../../assets/homePage/moreList.svg';
 import axiosInstance from '../../apis/axiosInstance';
 import RaffleProps from '../../types/RaffleProps';
+import { useAuth } from '../../context/AuthContext';
 
 const RaffleListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,13 +17,19 @@ const RaffleListPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
 
   const fetchMoreProducts = async () => {
     if (!hasMore || isLoading) return;
 
     setIsLoading(true);
     try {
-      const { data } = await axiosInstance.get(`/api/permit/home/${type}`, {});
+      const { data } = await axiosInstance.get(
+        isAuthenticated
+          ? `/api/member/home/${type}`
+          : `/api/permit/home/${type}`,
+        {},
+      );
 
       const startIndex = (page - 1) * 16;
       const endIndex = startIndex + 16;
