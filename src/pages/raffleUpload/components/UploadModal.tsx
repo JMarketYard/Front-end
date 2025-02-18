@@ -6,7 +6,7 @@ import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
-  images: string[];
+  images: File[];
   name: string;
   formData: FormData;
 }
@@ -39,7 +39,7 @@ const UploadModal: React.FC<ModalProps> = ({
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={images[0]} />
+        <Img src={URL.createObjectURL(images[0])} />
         <Title>{name}</Title>
         <Short>해당 래플을 업로드하시겠습니까?</Short>
         <Button onClick={handleUpload}>업로드</Button>

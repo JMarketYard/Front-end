@@ -32,7 +32,7 @@ const RaffleUploadPage = () => {
     const [leastTicketNum, setLeastTicketNum] = useState<string>("");
     const [name, setName] = useState<string>("");
     const fileRef = useRef<HTMLInputElement>(null);
-    const [images, setImages] = useState<string[]>([]);
+    const [images, setImages] = useState<File[]>([]);
     const [category, setCategory] = useState<string>('');
 
     const handleImg = () => {
@@ -44,7 +44,7 @@ const RaffleUploadPage = () => {
         const selectedFiles:string[] = targetFilesArr.map((file) => {
             return URL.createObjectURL(file);
         });
-        setImages(selectedFiles);
+        setImages(targetFilesArr);
     };
 
     const handleCategory = (e:React.ChangeEvent<HTMLSelectElement>) => {
@@ -55,8 +55,9 @@ const RaffleUploadPage = () => {
         e.preventDefault();
         const description = (document.getElementById('upload-textarea') as HTMLInputElement).value;
         const formData = new FormData();
-        images.forEach((image, idx) => {
-            formData.append(`files[${idx}]`, image);
+        images.forEach((image) => {
+            console.log('images:',image);
+            formData.append(`files`, image);
         });
         formData.append("category", category);
         formData.append("name", name);
@@ -107,7 +108,7 @@ const RaffleUploadPage = () => {
                             <ImgFileLabel htmlFor="img-file">
                                 <ImgFileIcon src={imgUpload} />
                             </ImgFileLabel> :
-                            <SelectedImg src={images[0]} />
+                            <SelectedImg src={URL.createObjectURL(images[0])} />
                             }
                         </div>
                         <InputImgFile
