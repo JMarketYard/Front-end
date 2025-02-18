@@ -21,8 +21,8 @@ interface ModalProps {
   name: string;
   ticket: number;
   resultTime: string;
-  shouldFetch: boolean;
-  setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
+  // isApplying: boolean;
+  setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ApplyModal: React.FC<ModalProps> = ({
@@ -31,8 +31,8 @@ const ApplyModal: React.FC<ModalProps> = ({
   name,
   ticket,
   resultTime,
-  shouldFetch,
-  setShouldFetch,
+  // isApplying,
+  setIsApplying,
 }) => {
   const { openModal } = useModalContext();
   const { type } = useParams<{ type?: string }>();
@@ -47,7 +47,7 @@ const ApplyModal: React.FC<ModalProps> = ({
 
       if (response.data.code === 'COMMON_200') {
         console.log('응모성공');
-        setShouldFetch((prev: boolean) => !prev);
+        setIsApplying((prev: boolean) => !prev);
         openModal(({ onClose }) => (
           <ApplyOkModal
             onClose={onClose}

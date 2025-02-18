@@ -17,15 +17,10 @@ import { useAuth } from '../../../context/AuthContext';
 import SplashModal from '../../login/components/SplashModal';
 
 type ItemProps = RaffleDetailProps & {
-  shouldFetch: boolean;
-  setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Item: React.FC<ItemProps> = ({
-  shouldFetch,
-  setShouldFetch,
-  ...raffle
-}) => {
+const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
@@ -51,8 +46,7 @@ const Item: React.FC<ItemProps> = ({
         ticket={raffle.ticketNum}
         image={raffle.imageUrls[0]}
         resultTime={raffle.endAt}
-        shouldFetch={shouldFetch}
-        setShouldFetch={setShouldFetch}
+        setIsApplying={setIsApplying}
       />
     ));
   };

@@ -15,14 +15,24 @@ import GiveUpModal from './modals/GiveUpModal';
 import { Icon } from '@iconify/react';
 import CompletedModal from './modals/CompletedModal';
 
+export type TRaffleInfo = {
+  raffleName: string;
+  raffleImage: string;
+  drawAt: string;
+  extendableMinutes: number;
+};
+
 export type TWinner = {
   raffleId: number;
   winnerId: number;
-  deadline: string;
-  shippingFee: number;
   deliveryStatus: TDeliveryStatus;
-  isExtendShipping: boolean;
+  addressDeadline: string;
+  shippingDeadline: string;
+  shippingFee: number;
+  invoiceNumber: string;
   address: TAddress | null;
+  raffleInfo: TRaffleInfo;
+  shippingExtended: boolean;
 };
 
 const WinnerPage: React.FC = () => {
@@ -40,6 +50,7 @@ const WinnerPage: React.FC = () => {
     phoneNumber: '',
     isDefault: false,
   });
+  const [data, setData] = useState<TWinner>();
   const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
   const isShipped =
     deliveryStatus === 'SHIPPED' || deliveryStatus === 'COMPLETED';
@@ -49,7 +60,7 @@ const WinnerPage: React.FC = () => {
       const { data } = await axiosInstance.get(
         `/api/member/delivery/${deliveryId}/winner`,
       );
-
+      setData(data);
       setDeliveryStatus(data.result.deliveryStatus);
       setAddress(data.result.address);
       console.log(data.result.address);
