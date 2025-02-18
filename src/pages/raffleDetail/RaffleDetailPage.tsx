@@ -31,6 +31,7 @@ const RaffleDetailPage: React.FC = () => {
     raffleStatus: 'UNOPENED',
     deliveryId: 0,
   });
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
@@ -50,11 +51,15 @@ const RaffleDetailPage: React.FC = () => {
     };
 
     fetchRaffleData();
-  }, []);
+  }, [shouldFetch]);
 
   return (
     <Wrapper>
-      <Item {...raffleData} />
+      <Item
+        {...raffleData}
+        shouldFetch={shouldFetch}
+        setShouldFetch={setShouldFetch}
+      />
       <MoreInfoLayout>
         <Market {...raffleData} type={type} />
         <Probability {...raffleData} />

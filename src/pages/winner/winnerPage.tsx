@@ -13,6 +13,7 @@ import icWarning from '../../assets/icWarning.svg';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
 import GiveUpModal from './modals/GiveUpModal';
 import { Icon } from '@iconify/react';
+import CompletedModal from './modals/CompletedModal';
 
 export type TWinner = {
   raffleId: number;
@@ -58,8 +59,12 @@ const WinnerPage: React.FC = () => {
   };
   fetchAddress();
 
-  const handleOpenModal = () => {
+  const handleGiveUpModal = () => {
     openModal(({ onClose }) => <GiveUpModal onClose={onClose} />);
+  };
+
+  const handleCompletedModal = () => {
+    openModal(({ onClose }) => <CompletedModal onClose={onClose} />);
   };
 
   if (0) {
@@ -80,7 +85,7 @@ const WinnerPage: React.FC = () => {
         <InfoBox2>당첨을 포기하겠습니까?</InfoBox2>
 
         <ButtonLayout2>
-          <PurpleButton onClick={handleOpenModal}>당첨 포기하기</PurpleButton>
+          <PurpleButton onClick={handleGiveUpModal}>당첨 포기하기</PurpleButton>
           <WarningContainer>
             <img src={icWarning} />
             <WarningBox>
@@ -188,7 +193,9 @@ const WinnerPage: React.FC = () => {
           </InfoLayout>
 
           <ButtonLayout>
-            <PurpleButton>거래 완료</PurpleButton>
+            <PurpleButton onClick={handleCompletedModal}>
+              거래 완료
+            </PurpleButton>
             <PurpleButton
               onClick={() =>
                 navigate('/review', {

@@ -2,6 +2,8 @@ import React from 'react';
 import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
 import ticket from '../../../../assets/ticket.svg';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
@@ -20,6 +22,9 @@ const formatDate = (dateString: string): string => {
 
 const ApplyOkModal: React.FC<ModalProps> = ({ onClose, resultTime, image }) => {
   const time = formatDate(resultTime);
+  const navigate = useNavigate();
+  const { type } = useParams<{ type?: string }>();
+
   return (
     <Modal onClose={onClose}>
       <Container>
