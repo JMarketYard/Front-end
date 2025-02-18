@@ -1,11 +1,13 @@
-import { useNavigate } from 'react-router-dom';
+import { Category } from '@mui/icons-material';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const categories: { [key: string]: string } = {
   women: '여성의류',
   men: '남성의류',
   shoes: '신발',
-  accessories: '악세사리',
+  accessories: '악세서리',
   digital: '디지털',
   appliances: '가전제품',
   sports: '스포츠/레저',
@@ -27,10 +29,14 @@ const categories: { [key: string]: string } = {
 
 const CategoryMenu = () => {
   const navigate = useNavigate();
+  const [presentCategory, setPresentCategory] = useState<string>('');
 
-  const handleCategoryClick = (category: string) => {
+  const handleCategoryClick = (category: string, label:string) => {
+    setPresentCategory(label);
     navigate(`/categories/${category}`);
   };
+
+  console.log('???', presentCategory)
 
   return (
     <DropDownPosition>
@@ -39,7 +45,8 @@ const CategoryMenu = () => {
         {Object.entries(categories).map(([category, label]) => (
           <CategoryLi
             key={category}
-            onClick={() => handleCategoryClick(category)}
+            onClick={() => handleCategoryClick(category, label)}
+            color={presentCategory===label?'#C908FF':'#000'}
           >
             {label}
           </CategoryLi>
@@ -91,7 +98,7 @@ const CategoryName = styled.li`
   }
 `;
 
-const CategoryLi = styled.li`
+const CategoryLi = styled.li<{color:string}>`
   list-style: none;
   height: 36px;
   background: #fff;
@@ -100,7 +107,7 @@ const CategoryLi = styled.li`
   padding: 4px 0 0 15px;
   font-size: 14px;
   font-weight: 400;
-  color: #000;
+  color: ${props => props.color};
   font-family: Pretendard;
   font-style: normal;
   line-height: 45px; /* 204.545% */
