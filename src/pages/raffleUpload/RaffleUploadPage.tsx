@@ -19,11 +19,6 @@ const RaffleUploadPage = () => {
         {key: "LOW", text: "하"}];
     const [moreTicketText, setMoreTicketText] = useState<string>("직접 입력");
     const tickets = ["1개", "2개", "3개", moreTicketText];
-    //     { key: "1", text: "1개" },
-    //     { key: "2", text: "2개" },
-    //     { key: "3", text: "3개" },
-    //     { key: moreTicketText, text: moreTicketText },
-    // ];
     const care = [
         { key: "care", text: "사용" },
         { key: "no", text: "미사용" }
@@ -69,8 +64,8 @@ const RaffleUploadPage = () => {
         formData.append("description", description);
         formData.append("ticketNum", parseInt(ticketNum).toString());
         formData.append("minTicket", leastTicketNum);
-        formData.append("startAt", startDate.toISOString());
-        formData.append("endAt", endDate.toISOString());
+        formData.append("startAt", startDate.toISOString().replace('Z',''));
+        formData.append("endAt", endDate.toISOString().replace('Z',''));
         console.log('제출버튼클릭');
         // for (let [key, value] of formData.entries()) {
         //     console.log(`${key}: ${value}`);
@@ -131,27 +126,27 @@ const RaffleUploadPage = () => {
                             <ItemCategorySelect
                             onChange={handleCategory}>
                                 <option value="">- - 선택하세요 - -</option>
-                                <option value="women">여성의류</option>
-                                <option value="men">남성의류</option>
-                                <option value="shoes">신발</option>
-                                <option value="accessories">악세사리</option>
-                                <option value="digital">디지털</option>
-                                <option value="appliances">가전제품</option>
-                                <option value="sports">스포츠/레저</option>
-                                <option value="vehicle">차량/오토바이</option>
-                                <option value="md">굿즈</option>
-                                <option value="art">예술/희귀/수집품</option>
-                                <option value="music">음반/악기</option>
-                                <option value="stationery">도서/티켓/문구</option>
-                                <option value="beauty">뷰티</option>
-                                <option value="interior">인테리어</option>
-                                <option value="household">생활용품</option>
-                                <option value="tools">공구/산업용품</option>
-                                <option value="grocery">식품</option>
-                                <option value="infant">유아</option>
-                                <option value="pet">반려동물</option>
-                                <option value="others">기타</option>
-                                <option value="talent">재능</option>
+                                <option value="여성의류">여성의류</option>
+                                <option value="남성의류">남성의류</option>
+                                <option value="신발">신발</option>
+                                <option value="악세서리">악세사리</option>
+                                <option value="디지털">디지털</option>
+                                <option value="가전제품">가전제품</option>
+                                <option value="스포츠/레저">스포츠/레저</option>
+                                <option value="차량/오토바이">차량/오토바이</option>
+                                <option value="굿즈">굿즈</option>
+                                <option value="예술/희귀/수집품">예술/희귀/수집품</option>
+                                <option value="음반/악기">음반/악기</option>
+                                <option value="도서/티켓/문구">도서/티켓/문구</option>
+                                <option value="뷰티">뷰티</option>
+                                <option value="인테리어">인테리어</option>
+                                <option value="생활용품">생활용품</option>
+                                <option value="공구/산업용품">공구/산업용품</option>
+                                <option value="식품">식품</option>
+                                <option value="유아">유아</option>
+                                <option value="반려동물">반려동물</option>
+                                <option value="기타">기타</option>
+                                <option value="재능">재능</option>
                             </ItemCategorySelect>
                         </div>
                         <div>
