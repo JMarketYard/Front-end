@@ -4,7 +4,7 @@ import DonutChart from './DonutChart';
 import NpDonutChart from './NpDonutChart';
 import DonutText from './DonutText';
 import icMark from '../../../assets/raffleDetail/icon-mark.svg';
-import RaffleDetailProps from '../../../components/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetailProps';
 
 const Probability: React.FC<RaffleDetailProps> = (raffle) => {
   return (
@@ -86,8 +86,7 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
         </>
       )}
 
-      {(raffle.raffleStatus === 'CANCELLED' ||
-        raffle.raffleStatus === 'COMPLETED') && ( //완전 종료료
+      {raffle.raffleStatus === 'COMPLETED' && ( //완전 종료
         <>
           {(raffle.userStatus === 'nonParticipant' ||
             raffle.userStatus === 'host') && (

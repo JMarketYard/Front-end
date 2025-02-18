@@ -3,10 +3,9 @@ import styled from 'styled-components';
 import Item from './components/Item';
 import Market from './components/Market';
 import Probability from './components/Probability';
-import { raffleData } from '../../mocks/RaffleData';
 import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
-import RaffleDetailProps from '../../components/RaffleDetailProps';
+import RaffleDetailProps from '../../types/RaffleDetailProps';
 import { TRaffleDetail } from '../../types/raffleDetails';
 
 const RaffleDetailPage: React.FC = () => {
@@ -29,9 +28,10 @@ const RaffleDetailPage: React.FC = () => {
     reviewCount: 0,
     userStatus: '',
     isWinner: '',
-    raffleStatus: '',
+    raffleStatus: 'UNOPENED',
     deliveryId: 0,
   });
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
@@ -51,11 +51,15 @@ const RaffleDetailPage: React.FC = () => {
     };
 
     fetchRaffleData();
-  }, []);
+  }, [shouldFetch]);
 
   return (
     <Wrapper>
-      <Item {...raffleData} />
+      <Item
+        {...raffleData}
+        shouldFetch={shouldFetch}
+        setShouldFetch={setShouldFetch}
+      />
       <MoreInfoLayout>
         <Market {...raffleData} type={type} />
         <Probability {...raffleData} />

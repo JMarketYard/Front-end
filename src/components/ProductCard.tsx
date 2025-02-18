@@ -4,7 +4,7 @@ import ticket from '../assets/ProductCard/ticket.svg';
 import icLike from '../assets/ProductCard/like.svg';
 import icUnlike from '../assets/ProductCard/unlike.svg';
 import { Link } from 'react-router-dom';
-import RaffleProps from './RaffleProps';
+import RaffleProps from '../types/RaffleProps';
 
 const getFormatTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);

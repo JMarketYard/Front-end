@@ -1,0 +1,78 @@
+import React from 'react';
+import Modal from '../../../components/Modal/Modal';
+import styled from 'styled-components';
+import questionVector from '../../../assets/questionVector.png';
+import { useNavigate } from 'react-router-dom';
+
+interface ModalProps {
+  onClose: () => void;
+}
+
+const CompletedModal: React.FC<ModalProps> = ({ onClose }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    onClose(); // 모달 닫기 or 상태 변경
+    navigate(`/`); // 페이지 이동
+  };
+
+  return (
+    <Modal onClose={onClose}>
+      <Container>
+        <Img src={questionVector} />
+        <Title>거래를 완료하시겠습니까?</Title>
+        <Short>상품이 도착한 후 거래를 완료해주시기 바랍니다.</Short>
+        <Button onClick={handleClick}>거래 완료</Button>
+      </Container>
+    </Modal>
+  );
+};
+
+const Short = styled.div`
+  margin-bottom: 127px;
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+`;
+
+const Button = styled.button`
+  width: 302px;
+  height: 39px;
+  border-radius: 7px;
+  background-color: #c908ff;
+  border: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+`;
+
+const Title = styled.div`
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  margin-bottom: 12px;
+`;
+
+const Img = styled.img`
+  width: 67px;
+  height: 65px;
+  margin-top: 75px;
+  margin-bottom: 41px;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+export default CompletedModal;
