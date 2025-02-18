@@ -14,6 +14,9 @@ import { useModalContext } from '../../components/Modal/context/ModalContext';
 import GiveUpModal from './modals/GiveUpModal';
 import { Icon } from '@iconify/react';
 import CompletedModal from './modals/CompletedModal';
+import CircleChecked from '@mui/icons-material/CheckCircleOutline';
+import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
+import Checkbox from '@mui/material/Checkbox';
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -39,8 +42,11 @@ const WinnerPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const deliveryId = location.state?.deliveryId ?? '';
-  const image = location.state?.image ?? '';
   const { openModal } = useModalContext();
+  const [checked, setChecked] = useState(false);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -55,40 +61,67 @@ const WinnerPage: React.FC = () => {
   const isShipped =
     deliveryStatus === 'SHIPPED' || deliveryStatus === 'COMPLETED';
 
-  const fetchAddress = async () => {
-    try {
-      const { data } = await axiosInstance.get(
-        `/api/member/delivery/${deliveryId}/winner`,
-      );
-      setData(data);
-      setDeliveryStatus(data.result.deliveryStatus);
-      setAddress(data.result.address);
-      console.log(data.result.address);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  fetchAddress();
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/member/delivery/${deliveryId}/winner`,
+        );
+        setData(data);
+        setDeliveryStatus(data.result.deliveryStatus);
+        setAddress(data.result.address);
+        console.log(data.result);
+        console.log(data.result.address);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAddress();
+  }, [deliveryStatus]);
 
   const handleGiveUpModal = () => {
     openModal(({ onClose }) => <GiveUpModal onClose={onClose} />);
   };
 
   const handleCompletedModal = () => {
-    openModal(({ onClose }) => <CompletedModal onClose={onClose} />);
+    openModal(({ onClose }) => (
+      <CompletedModal onClose={onClose} deliveryId={deliveryId} />
+    ));
   };
 
-  if (0) {
+  const formatDate = (isoString: string) => {
+    return new Date(isoString).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const formatMinutesToHoursAndMinutes = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    if (hours > 0 && remainingMinutes > 0) {
+      return `${hours}시간 ${remainingMinutes}분`;
+    } else if (hours > 0) {
+      return `${hours}시간`;
+    } else {
+      return `${remainingMinutes}분`;
+    }
+  };
+
+  if (deliveryStatus === 'SHIPPING_EXPIRED') {
     // 운송장 입력기한 만료 (당첨자의 선택이 필요함)
-    // deliveryStatus === 'SHIPPING_EXPIRED'
     return (
       <Wrapper>
         <BigTitle>래플 결과</BigTitle>
         <RaffleLayout>
-          <Box src={image} alt="상품 이미지" />
+          <Box src={data?.raffleInfo.raffleImage} alt="상품 이미지" />
           <RaffleContainer>
-            <NameBox>로지텍 무소음 마우스</NameBox>
-            <DateBox>당첨 일시 : </DateBox>
+            <NameBox>{data?.raffleInfo.raffleName}</NameBox>
+            <DateBox>
+              당첨 일시 : {formatDate(data?.raffleInfo.drawAt ?? '')}
+            </DateBox>
           </RaffleContainer>
         </RaffleLayout>
         <Mark>!</Mark>
@@ -106,14 +139,20 @@ const WinnerPage: React.FC = () => {
           </WarningContainer>
 
           <PurpleButton onClick={() => navigate('/')}>
-            기다리기 (24시간)
+            기다리기 (
+            {formatMinutesToHoursAndMinutes(
+              data?.raffleInfo.extendableMinutes ?? 0,
+            )}
+            )
           </PurpleButton>
         </ButtonLayout2>
       </Wrapper>
     );
   } else {
-    if (0) {
-      //(deliveryStatus === 'WAITING_ADDRESS' || deliveryStatus === 'WAITING_PAYMENT')
+    if (
+      deliveryStatus === 'WAITING_ADDRESS' ||
+      deliveryStatus === 'WAITING_PAYMENT'
+    ) {
       return (
         <Wrapper>
           <BigTitle>
@@ -125,14 +164,11 @@ const WinnerPage: React.FC = () => {
           </BigTitle>
 
           <AddressLayout>
-            <Checkbox fill={'#C908FF'} />
+            {/*<Checkbox fill={'#C908FF'} />*/}
             <AddressContainer>
-              <TitleSpan>주소이름{address.addressName}</TitleSpan>
+              <TitleSpan>{address.addressName}</TitleSpan>
               <DefaultBox>기본 배송지</DefaultBox>
-              <AddressSpan>
-                서울특별시 마포구 와우산로 94 홍익대학교 제2기숙사
-                {address.addressDetail}
-              </AddressSpan>
+              <AddressSpan>{address.addressDetail}</AddressSpan>
             </AddressContainer>
           </AddressLayout>
 
@@ -152,10 +188,45 @@ const WinnerPage: React.FC = () => {
               <SmallGraySpan>-------</SmallGraySpan>
             </InfoContainer>
             <Hr />
-            <p>전체 동의</p>
+            <AgreeBox>
+              <Checkbox
+                style={{
+                  transform: 'translateY(0px)',
+                }}
+                sx={{
+                  '& .MuiSvgIcon-root': { fontSize: 25 },
+                  '&.Mui-checked': {
+                    color: '#C908FF',
+                  },
+                }}
+                checked={checked}
+                onChange={(event) => {
+                  event.stopPropagation();
+                  handleChange(event);
+                }}
+                icon={<CircleUnchecked />}
+                checkedIcon={<CircleChecked />}
+              />
+              <Consent>
+                <span style={{ color: '#C908FF' }}>[필수]</span> 전체동의
+              </Consent>
+            </AgreeBox>
+            <CheckBox2>
+              <Short>개인정보 제공</Short>
+              <Icon
+                icon="weui:arrow-outlined"
+                style={{
+                  width: '23px',
+                  height: '25px',
+                  cursor: 'pointer',
+                  color: '#8F8E94',
+                }}
+              />
+            </CheckBox2>
+
             <FeeContainer>
               <FeeTitleBox>배송비</FeeTitleBox>
-              <FeeAmountBox>4000 원</FeeAmountBox>
+              <FeeAmountBox>{data?.shippingFee} 원</FeeAmountBox>
             </FeeContainer>
           </InfoLayout>
 
@@ -165,7 +236,8 @@ const WinnerPage: React.FC = () => {
               <Kakao>카카오페이로 결제하기</Kakao>
             </KakaoButtons>
             <PurpleButton onClick={() => navigate('/')}>
-              나중에 결제하기(입력기한 : 1/12)
+              나중에 결제하기 (입력기한 :{' '}
+              {formatDate(data?.addressDeadline ?? '')})
             </PurpleButton>
           </ButtonLayout>
         </Wrapper>
@@ -194,12 +266,12 @@ const WinnerPage: React.FC = () => {
             <Hr />
             <InfoContainer>
               <SmallTitleSpan>운송장번호</SmallTitleSpan>
-              <SmallPurpleSpan>0000</SmallPurpleSpan>
+              <SmallPurpleSpan>{data?.invoiceNumber}</SmallPurpleSpan>
             </InfoContainer>
             <Hr />
             <FeeContainer>
               <FeeTitleBox>배송비</FeeTitleBox>
-              <FeeAmountBox>4000 원</FeeAmountBox>
+              <FeeAmountBox>{data?.shippingFee} 원</FeeAmountBox>
             </FeeContainer>
           </InfoLayout>
 
@@ -210,13 +282,12 @@ const WinnerPage: React.FC = () => {
             <PurpleButton
               onClick={() =>
                 navigate('/review', {
-                  state: { deliveryId: 1 },
+                  state: { deliveryId: { deliveryId } },
                 })
               }
             >
               후기 작성하기
             </PurpleButton>
-            {/*state 수정!!*/}
             <PurpleButton onClick={() => navigate('/')}>
               홈 화면으로 돌아가기
             </PurpleButton>
@@ -276,18 +347,18 @@ const AddressLayout = styled.div`
   margin: 46px 0 172px 0;
 `;
 
-const Checkbox = styled(checkbox)`
-  width: 27.2px;
-  height: 27.1px;
-  /* &:hover {
-    cursor: pointer;
-  } */
+// const Checkbox = styled(checkbox)`
+//   width: 27.2px;
+//   height: 27.1px;
+//   /* &:hover {
+//     cursor: pointer;
+//   } */
 
-  ${media.medium`
-    width: 21px;
-    height: 21px;
-  `}
-`;
+//   ${media.medium`
+//     width: 21px;
+//     height: 21px;
+//   `}
+// `;
 
 const AddressContainer = styled.div`
   display: flex;
@@ -402,7 +473,7 @@ const SmallBlackSpan = styled.span`
   line-height: 17.308px; /* 115.385% */
 `;
 
-const Hr = styled.hr`
+const Hr = styled.div`
   width: 100%;
   height: 1px;
   background: #8f8e94;
@@ -647,4 +718,40 @@ const ResponsiveIcon = styled(Icon)`
     width: 19px; 
     height: 15px;
   `}
+`;
+
+const AgreeBox = styled.div`
+  width: 100%;
+  height: 43px;
+  border-bottom: 1px solid #c1c1c1;
+  margin-top: 228px;
+  margin-bottom: 15px;
+  display: flex;
+  column-gap: 15px;
+  align-items: center;
+  padding-left: 10px;
+`;
+
+const CheckBox2 = styled.div`
+  display: flex;
+  margin-bottom: 48px;
+  column-gap: 300px;
+  align-items: center;
+  transform: translateX(70px);
+`;
+
+const Consent = styled.div`
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  transform: translateY(1px);
+`;
+
+const Short = styled.div`
+  color: #8f8e94;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 17.308px; /* 96.154% */
 `;

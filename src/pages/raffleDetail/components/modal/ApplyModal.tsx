@@ -13,7 +13,6 @@ import {
   ApplySuccessResult,
   ApplyFailureMissingTickets,
 } from '../apis/applyResponseTypes';
-import { AxiosError } from 'axios';
 
 interface ModalProps {
   onClose: () => void;
@@ -21,7 +20,6 @@ interface ModalProps {
   name: string;
   ticket: number;
   resultTime: string;
-  // isApplying: boolean;
   setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -31,7 +29,6 @@ const ApplyModal: React.FC<ModalProps> = ({
   name,
   ticket,
   resultTime,
-  // isApplying,
   setIsApplying,
 }) => {
   const { openModal } = useModalContext();
