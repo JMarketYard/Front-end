@@ -130,24 +130,6 @@ const ResponsiveHeader = () => {
           <SmallIconDiv
             onClick={() => {
               if (isAuthenticated) {
-                navigate('mypage/setting'); // 설정 페이지
-              } else {
-                handleOpenModal();
-              }
-            }}
-          >
-            <IcSetting
-              className="svg"
-              width={22}
-              height={24}
-              fill={'#8F8E94'}
-            />
-            <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
-          </SmallIconDiv>
-          <LineDiv height={'27px'} margin={'0 32px'} className="line-1" />
-          <SmallIconDiv
-            onClick={() => {
-              if (isAuthenticated) {
                 navigate('/notification'); // 알림 페이지
               } else {
                 handleOpenModal();
@@ -161,6 +143,24 @@ const ResponsiveHeader = () => {
               fill={'#8F8E94'}
             />
             <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
+          </SmallIconDiv>
+          <LineDiv height={'27px'} margin={'0 32px'} />
+          <SmallIconDiv
+            onClick={() => {
+              if (isAuthenticated) {
+                navigate('mypage/setting'); // 설정 페이지
+              } else {
+                handleOpenModal();
+              }
+            }}
+          >
+            <IcSetting
+              className="svg"
+              width={22}
+              height={24}
+              fill={'#8F8E94'}
+            />
+            <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
           </SmallIconDiv>
         </TopContainer>
         <SearchBoxContainer>
