@@ -12,19 +12,18 @@ import media from "../../styles/media";
 
 const RaffleUploadPage = () => {
     const itemStates = [
-        { key: "state-1", text: "미개봉" },
-        { key: "state-2", text: "새상품" },
-        { key: "state-3", text: "상" },
-        { key: "state-4", text: "중" },
-        { key: "state-5", text: "하" },
-    ];
+        {key: "UNOPENED", text: "미개봉"},
+        {key: "NEW", text:"새상품"},
+        {key: "HIGH", text: "상"},
+        {key: "MID", text: "중"},
+        {key: "LOW", text: "하"}];
     const [moreTicketText, setMoreTicketText] = useState<string>("직접 입력");
-    const tickets = [
-        { key: "one", text: "1개" },
-        { key: "two", text: "2개" },
-        { key: "three", text: "3개" },
-        { key: "more", text: moreTicketText },
-    ];
+    const tickets = ["1개", "2개", "3개", moreTicketText];
+    //     { key: "1", text: "1개" },
+    //     { key: "2", text: "2개" },
+    //     { key: "3", text: "3개" },
+    //     { key: moreTicketText, text: moreTicketText },
+    // ];
     const care = [
         { key: "care", text: "사용" },
         { key: "no", text: "미사용" }
@@ -39,6 +38,7 @@ const RaffleUploadPage = () => {
     const [name, setName] = useState<string>("");
     const fileRef = useRef<HTMLInputElement>(null);
     const [images, setImages] = useState<string[]>([]);
+    const [category, setCategory] = useState<string>('');
 
     const handleImg = () => {
         fileRef?.current?.click();
@@ -52,9 +52,31 @@ const RaffleUploadPage = () => {
         setImages(selectedFiles);
     };
 
+    const handleCategory = (e:React.ChangeEvent<HTMLSelectElement>) => {
+        setCategory(e.target.value);
+    };
+
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
-        openModal(({ onClose }) => <UploadModal onClose={onClose} name={name} images={images} />);
+        const description = (document.getElementById('upload-textarea') as HTMLInputElement).value;
+        const formData = new FormData();
+        images.forEach((image, idx) => {
+            formData.append(`files[${idx}]`, image);
+        });
+        formData.append("category", category);
+        formData.append("name", name);
+        formData.append("itemStatus", itemState);
+        formData.append("description", description);
+        formData.append("ticketNum", parseInt(ticketNum).toString());
+        formData.append("minTicket", leastTicketNum);
+        formData.append("startAt", startDate.toISOString());
+        formData.append("endAt", endDate.toISOString());
+        console.log('제출버튼클릭');
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(`${key}: ${value}`);
+        //   };
+        openModal(({ onClose }) => <UploadModal onClose={onClose}
+        images={images} name={name} formData={formData} />);
     };
 
     const handleItemState = (key:string) => {
@@ -94,6 +116,7 @@ const RaffleUploadPage = () => {
                             }
                         </div>
                         <InputImgFile
+                        name="files"
                         ref={fileRef}
                         type="file"
                         id="img-file"
@@ -105,7 +128,8 @@ const RaffleUploadPage = () => {
                     <ItemInfoRightContainer>
                         <div>
                             <TitleSpan>카테고리</TitleSpan>
-                            <ItemCategorySelect>
+                            <ItemCategorySelect
+                            onChange={handleCategory}>
                                 <option value="">- - 선택하세요 - -</option>
                                 <option value="women">여성의류</option>
                                 <option value="men">남성의류</option>
@@ -134,6 +158,7 @@ const RaffleUploadPage = () => {
                             <TitleSpan>상품명</TitleSpan>
                             <InputContainer width={635} >
                                 <InputBox type="text"
+                                name="itemStatus"
                                 value={name}
                                 onChange={(e)=>setName(e.target.value)}
                                 />
@@ -154,7 +179,7 @@ const RaffleUploadPage = () => {
                         </div>
                         <TextareaDiv>
                             <TitleSpan>설명</TitleSpan>
-                            <Textarea />
+                            <Textarea id="upload-textarea" />
                         </TextareaDiv>
                     </ItemInfoRightContainer>
                 </ItemInfoContainer>
@@ -167,11 +192,11 @@ const RaffleUploadPage = () => {
                         {tickets.map(t => (
                             <ConditionBtn
                             type="button"
-                            key={t.key}
-                            onClick={()=>handleTicketNum(t.key)}
-                            $clicked={String(t.key===ticketNum)}
+                            key={t}
+                            onClick={()=>handleTicketNum(t)}
+                            $clicked={String(t===ticketNum)}
                             >
-                                {t.text}
+                                {t}
                             </ConditionBtn>
                         ))}
                     </SetConditionBox>
@@ -192,6 +217,7 @@ const RaffleUploadPage = () => {
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
                         <InputContainer>
                             <InputBox type="text"
+                            name="minTicket"
                             value={leastTicketNum}
                             onChange={handleLeastTicketNum} />
                             <StyleP>예상 정산 금액: {Number(leastTicketNum)*100 || 0}원</StyleP>
