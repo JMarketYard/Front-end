@@ -162,7 +162,6 @@ const ProfileComponent: React.FC<ProfileProps> = ({
 
 export default ProfileComponent;
 
-/* ✅ 스타일 변경 */
 const FollowButton = styled.button<{ isFollowing: boolean }>`
   width: 138px;
   height: 39px;
@@ -197,9 +196,9 @@ const StyledReportButton = styled.button`
   height: 39px;
   font-size: 16px;
   border-radius: 9px;
-  border: 1px solid #ff4d4f;
+  border: 1px solid #8f8e94;
   background: #fff;
-  color: #ff4d4f;
+  color: #8f8e94;
   cursor: pointer;
 
   &:hover {
