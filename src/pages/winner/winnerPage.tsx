@@ -72,14 +72,25 @@ const WinnerPage: React.FC = () => {
 
   useEffect(() => {
     if (!approvedAt) return;
+    const sendPostRequest = async () => {
+      try {
+        const { data } = await axiosInstance.post(
+          `/api/member/delivery/${deliveryId}/winner/complete`,
+          {},
+        );
+        console.log('결제 완료');
 
-    if (approvedAt) {
-      const timer = setTimeout(() => {
-        openModal(({ onClose }) => <PayOkModal onClose={onClose} />);
-      }, 100);
+        const timer = setTimeout(() => {
+          openModal(({ onClose }) => <PayOkModal onClose={onClose} />);
+        }, 100);
 
-      return () => clearTimeout(timer);
-    }
+        return () => clearTimeout(timer);
+      } catch (error) {
+        console.error('결제 완료 POST 실패:', error);
+      }
+    };
+
+    sendPostRequest();
   }, [approvedAt]);
 
   //결제코드 시작
@@ -141,7 +152,17 @@ const WinnerPage: React.FC = () => {
     },
   });
 
-  const handleNextModal = () => {
+  const handleNextModal = async () => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/api/member/delivery/${deliveryId}/winner`,
+        {},
+      );
+      console.log('배송지 입력함');
+    } catch (error) {
+      console.error(error);
+    }
+
     if (checked) {
       postMutation({
         itemId: '배송비',
@@ -351,12 +372,22 @@ const WinnerPage: React.FC = () => {
             <Hr />
             <InfoContainer>
               <SmallTitleSpan>개최자 운송장번호 입력현황</SmallTitleSpan>
-              <SmallPurpleSpan>운송장번호 입력 완료</SmallPurpleSpan>
+              {deliveryStatus === 'SHIPPED' && (
+                <SmallPurpleSpan>운송장번호 입력 완료</SmallPurpleSpan>
+              )}
+              {deliveryStatus === 'READY' && (
+                <SmallPurpleSpan>운송장번호 입력 완료</SmallPurpleSpan>
+              )}
             </InfoContainer>
             <Hr />
             <InfoContainer>
               <SmallTitleSpan>운송장번호</SmallTitleSpan>
-              <SmallPurpleSpan>{winnerData?.invoiceNumber}</SmallPurpleSpan>
+              {deliveryStatus === 'SHIPPED' && (
+                <SmallPurpleSpan>{winnerData?.invoiceNumber}</SmallPurpleSpan>
+              )}
+              {deliveryStatus === 'READY' && (
+                <SmallGraySpan>운송장번호 입력 대기</SmallGraySpan>
+              )}
             </InfoContainer>
             <Hr />
             <FeeContainer>
