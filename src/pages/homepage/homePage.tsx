@@ -64,7 +64,7 @@ const HomePage: React.FC = () => {
             title="내가 찜한 래플"
             icon={likeIcon}
             apiKey="myLikeRaffles"
-            moreLink="raffles/list/myLikes"
+            moreLink="raffles/list/likes"
             products={homeData.myLikeRaffles || []}
           />
         ) : null}
@@ -73,7 +73,7 @@ const HomePage: React.FC = () => {
             title="내가 팔로우한 상점"
             icon={followIcon}
             apiKey="myFollowRaffles"
-            moreLink="raffles/list/myFollow"
+            moreLink="raffles/list/following"
             products={homeData.myFollowRaffles || []}
           />
         ) : null}
