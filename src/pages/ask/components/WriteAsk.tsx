@@ -29,16 +29,19 @@ const WriteAsk = ({type}:{type:string|undefined}) => {
       <TitleContainer>
         <Text>제목</Text>
         <TitleBox>
-          <Input value={title}
+          <Input value={title} maxLength={30}
           onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
           setTitle(e.target.value)} />
         </TitleBox>
       </TitleContainer>
       <ContentsContainer>
         <Text>내용</Text>
-        <Textarea value={content}
-        onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>
-          setContent(e.target.value)} />
+        <TextareaBox>
+          <Textarea value={content}
+          onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>
+            setContent(e.target.value)} maxLength={1000} />
+          <WordCountDiv>{content.length}/1000자</WordCountDiv>
+        </TextareaBox>
       </ContentsContainer>
       <Button onClick={handleAsk}>문의하기</Button>
     </Container>
@@ -76,6 +79,11 @@ const Text = styled.div`
   `}
 `;
 
+const TextareaBox = styled.div`
+  // display: flex;
+  // flex-direction: column;
+`
+
 const TitleBox = styled.div`
   width: 747px;
   height: 45px;
@@ -94,6 +102,7 @@ const Input = styled.input`
   border: none;
   outline: none;
   width: 100%;
+  padding-top: 3px;
 
   color: #000;
   font-family: Pretendard;
@@ -130,6 +139,20 @@ const Textarea = styled.textarea`
     width: 467px;
   `}
 `;
+const WordCountDiv = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 2px;
+  box-sizing: border-box;
+
+  color:rgb(101, 101, 101);
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 184.159%
+`
 
 const Button = styled.button`
   width: 424px;

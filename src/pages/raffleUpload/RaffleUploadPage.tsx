@@ -12,19 +12,13 @@ import media from "../../styles/media";
 
 const RaffleUploadPage = () => {
     const itemStates = [
-        { key: "state-1", text: "미개봉" },
-        { key: "state-2", text: "새상품" },
-        { key: "state-3", text: "상" },
-        { key: "state-4", text: "중" },
-        { key: "state-5", text: "하" },
-    ];
+        {key: "UNOPENED", text: "미개봉"},
+        {key: "NEW", text:"새상품"},
+        {key: "HIGH", text: "상"},
+        {key: "MID", text: "중"},
+        {key: "LOW", text: "하"}];
     const [moreTicketText, setMoreTicketText] = useState<string>("직접 입력");
-    const tickets = [
-        { key: "one", text: "1개" },
-        { key: "two", text: "2개" },
-        { key: "three", text: "3개" },
-        { key: "more", text: moreTicketText },
-    ];
+    const tickets = ["1개", "2개", "3개", moreTicketText];
     const care = [
         { key: "care", text: "사용" },
         { key: "no", text: "미사용" }
@@ -38,7 +32,8 @@ const RaffleUploadPage = () => {
     const [leastTicketNum, setLeastTicketNum] = useState<string>("");
     const [name, setName] = useState<string>("");
     const fileRef = useRef<HTMLInputElement>(null);
-    const [images, setImages] = useState<string[]>([]);
+    const [images, setImages] = useState<File[]>([]);
+    const [category, setCategory] = useState<string>('');
 
     const handleImg = () => {
         fileRef?.current?.click();
@@ -49,12 +44,35 @@ const RaffleUploadPage = () => {
         const selectedFiles:string[] = targetFilesArr.map((file) => {
             return URL.createObjectURL(file);
         });
-        setImages(selectedFiles);
+        setImages(targetFilesArr);
+    };
+
+    const handleCategory = (e:React.ChangeEvent<HTMLSelectElement>) => {
+        setCategory(e.target.value);
     };
 
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
-        openModal(({ onClose }) => <UploadModal onClose={onClose} name={name} images={images} />);
+        const description = (document.getElementById('upload-textarea') as HTMLInputElement).value;
+        const formData = new FormData();
+        images.forEach((image) => {
+            console.log('images:',image);
+            formData.append(`files`, image);
+        });
+        formData.append("category", category);
+        formData.append("name", name);
+        formData.append("itemStatus", itemState);
+        formData.append("description", description);
+        formData.append("ticketNum", parseInt(ticketNum).toString());
+        formData.append("minTicket", leastTicketNum);
+        formData.append("startAt", startDate.toISOString().replace('Z',''));
+        formData.append("endAt", endDate.toISOString().replace('Z',''));
+        console.log('제출버튼클릭');
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(`${key}: ${value}`);
+        //   };
+        openModal(({ onClose }) => <UploadModal onClose={onClose}
+        images={images} name={name} formData={formData} />);
     };
 
     const handleItemState = (key:string) => {
@@ -90,10 +108,11 @@ const RaffleUploadPage = () => {
                             <ImgFileLabel htmlFor="img-file">
                                 <ImgFileIcon src={imgUpload} />
                             </ImgFileLabel> :
-                            <SelectedImg src={images[0]} />
+                            <SelectedImg src={URL.createObjectURL(images[0])} />
                             }
                         </div>
                         <InputImgFile
+                        name="files"
                         ref={fileRef}
                         type="file"
                         id="img-file"
@@ -105,35 +124,37 @@ const RaffleUploadPage = () => {
                     <ItemInfoRightContainer>
                         <div>
                             <TitleSpan>카테고리</TitleSpan>
-                            <ItemCategorySelect>
+                            <ItemCategorySelect
+                            onChange={handleCategory}>
                                 <option value="">- - 선택하세요 - -</option>
-                                <option value="women">여성의류</option>
-                                <option value="men">남성의류</option>
-                                <option value="shoes">신발</option>
-                                <option value="accessories">악세사리</option>
-                                <option value="digital">디지털</option>
-                                <option value="appliances">가전제품</option>
-                                <option value="sports">스포츠/레저</option>
-                                <option value="vehicle">차량/오토바이</option>
-                                <option value="md">굿즈</option>
-                                <option value="art">예술/희귀/수집품</option>
-                                <option value="music">음반/악기</option>
-                                <option value="stationery">도서/티켓/문구</option>
-                                <option value="beauty">뷰티</option>
-                                <option value="interior">인테리어</option>
-                                <option value="household">생활용품</option>
-                                <option value="tools">공구/산업용품</option>
-                                <option value="grocery">식품</option>
-                                <option value="infant">유아</option>
-                                <option value="pet">반려동물</option>
-                                <option value="others">기타</option>
-                                <option value="talent">재능</option>
+                                <option value="여성의류">여성의류</option>
+                                <option value="남성의류">남성의류</option>
+                                <option value="신발">신발</option>
+                                <option value="악세서리">악세사리</option>
+                                <option value="디지털">디지털</option>
+                                <option value="가전제품">가전제품</option>
+                                <option value="스포츠/레저">스포츠/레저</option>
+                                <option value="차량/오토바이">차량/오토바이</option>
+                                <option value="굿즈">굿즈</option>
+                                <option value="예술/희귀/수집품">예술/희귀/수집품</option>
+                                <option value="음반/악기">음반/악기</option>
+                                <option value="도서/티켓/문구">도서/티켓/문구</option>
+                                <option value="뷰티">뷰티</option>
+                                <option value="인테리어">인테리어</option>
+                                <option value="생활용품">생활용품</option>
+                                <option value="공구/산업용품">공구/산업용품</option>
+                                <option value="식품">식품</option>
+                                <option value="유아">유아</option>
+                                <option value="반려동물">반려동물</option>
+                                <option value="기타">기타</option>
+                                <option value="재능">재능</option>
                             </ItemCategorySelect>
                         </div>
                         <div>
                             <TitleSpan>상품명</TitleSpan>
                             <InputContainer width={635} >
                                 <InputBox type="text"
+                                name="itemStatus"
                                 value={name}
                                 onChange={(e)=>setName(e.target.value)}
                                 />
@@ -154,7 +175,7 @@ const RaffleUploadPage = () => {
                         </div>
                         <TextareaDiv>
                             <TitleSpan>설명</TitleSpan>
-                            <Textarea />
+                            <Textarea id="upload-textarea" />
                         </TextareaDiv>
                     </ItemInfoRightContainer>
                 </ItemInfoContainer>
@@ -167,11 +188,11 @@ const RaffleUploadPage = () => {
                         {tickets.map(t => (
                             <ConditionBtn
                             type="button"
-                            key={t.key}
-                            onClick={()=>handleTicketNum(t.key)}
-                            $clicked={String(t.key===ticketNum)}
+                            key={t}
+                            onClick={()=>handleTicketNum(t)}
+                            $clicked={String(t===ticketNum)}
                             >
-                                {t.text}
+                                {t}
                             </ConditionBtn>
                         ))}
                     </SetConditionBox>
@@ -192,6 +213,7 @@ const RaffleUploadPage = () => {
                         <TitleSpan2>최소 마감 티켓 개수</TitleSpan2>
                         <InputContainer>
                             <InputBox type="text"
+                            name="minTicket"
                             value={leastTicketNum}
                             onChange={handleLeastTicketNum} />
                             <StyleP>예상 정산 금액: {Number(leastTicketNum)*100 || 0}원</StyleP>
