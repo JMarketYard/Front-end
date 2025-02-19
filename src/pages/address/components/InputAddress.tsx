@@ -1,25 +1,45 @@
 /// <reference types="vite-plugin-svgr/client" />
 import styled from "styled-components";
 import { ReactComponent as IcList } from "../../../assets/icList.svg";
+import { useEffect, useState } from "react";
 
 type TInputAddress = {
   listColor:string,
   title:string,
-  inputType?: 'tel',
   value:string,
   setValue:React.Dispatch<React.SetStateAction<string>>,
 }
 
-const InputAddress = ({listColor, title, inputType, value, setValue}:TInputAddress) => {
+const InputAddress = ({listColor, title, value, setValue}:TInputAddress) => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    if (title==="연락처" || title==="휴대폰") {
+      let rawValue = e.target.value.replace(/-/g, '');
+      const regex = /^[0-9]{0,13}$/
+      if (regex.test(rawValue) && rawValue.length<12) {
+        setValue(rawValue);
+      }
+    } else setValue(e.target.value);
+  };
+
+  useEffect(() => {
+    if (title!=="연락처" && title!=="휴대폰") return;
+    if (value.length === 10) {
+      setValue(value.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3'));
+    };
+    if (value.length === 11) {
+      setValue(value.replace(/-/g, '')
+      .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
+    };
+  }, [value]);
+
   return (
     <Container>
       <IcList fill={listColor} width={7} height={7} />
       <TitleBox>
         {title}
       </TitleBox>
-      <Input type={inputType||"text"} value={value} 
-      onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
-      setValue(e.target.value)} />
+      <Input type={"text"} value={value} 
+      onChange={handleChange} />
     </Container>
   );
 };
