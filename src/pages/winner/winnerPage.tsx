@@ -23,6 +23,7 @@ import { PostCharge } from './apis/payAPI'; //결제
 import { useMutation } from '@tanstack/react-query'; //결제
 import Cookies from 'js-cookie'; //결제
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
+import PayOkModal from './modals/PayOkModal';
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -65,6 +66,21 @@ const WinnerPage: React.FC = () => {
   });
   const [winnerData, setWinnerData] = useState<TWinner>();
   const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
+
+  const queryParams = new URLSearchParams(location.search);
+  const approvedAt = queryParams.get('approvedAt');
+
+  useEffect(() => {
+    if (!approvedAt) return;
+
+    if (approvedAt) {
+      const timer = setTimeout(() => {
+        openModal(({ onClose }) => <PayOkModal onClose={onClose} />);
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [approvedAt]);
 
   //결제코드 시작
   const { mutate: postMutation } = useMutation({
@@ -130,7 +146,7 @@ const WinnerPage: React.FC = () => {
       postMutation({
         itemId: '배송비',
         itemName: '배송비',
-        totalAmount: winnerData?.shippingFee ?? 4000,
+        totalAmount: winnerData?.shippingFee ?? 9999,
       });
     }
   };
