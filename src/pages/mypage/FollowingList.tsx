@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ 유저 프로필 페이지 이동을 위해 추가
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import FollowingItem from "../../components/FollowingItem";
@@ -6,6 +7,7 @@ import FollowNoModal from "../../components/Modal/modals/FollowNoModal";
 import axiosInstance from "../../apis/axiosInstance";
 
 const FollowingList: React.FC = () => {
+  const navigate = useNavigate(); // ✅ 네비게이션 훅 추가
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [checkedItems, setCheckedItems] = useState<{ [key: number]: boolean }>({});
   const [followingList, setFollowingList] = useState<any[]>([]);
@@ -21,7 +23,7 @@ const FollowingList: React.FC = () => {
         setFollowingList(
           data.result.map((store: any) => ({
             ...store,
-            username: store.storeName || `상점 ${store.storeId}`, 
+            username: store.storeName || `상점 ${store.storeId}`,
           }))
         );
       } else {
@@ -35,32 +37,39 @@ const FollowingList: React.FC = () => {
     }
   };
 
-  /* 팔로우 취소 */
+  /* ✅ 팔로잉한 사람 클릭하면 해당 유저 프로필로 이동 */
+  const handleProfileClick = (storeId: number) => {
+    if (!isDeleteMode) {
+      navigate(`/user/${storeId}`); // ✅ 유저 프로필 페이지 이동
+    }
+  };
+
+  /* ✅ 팔로우 취소 */
   const handleUnfollow = async () => {
     const storeIdsToUnfollow = Object.keys(checkedItems)
       .filter((key) => checkedItems[parseInt(key, 10)])
       .map((key) => parseInt(key, 10));
-  
+
     if (storeIdsToUnfollow.length === 0) {
       alert("선택된 팔로우가 없습니다.");
       return;
     }
-  
+
     try {
       for (const storeId of storeIdsToUnfollow) {
-        console.log(`언팔로우 요청: storeId=${storeId}`); // storeId 값 확인
-  
+        console.log(`언팔로우 요청: storeId=${storeId}`);
+
         const response = await axiosInstance.delete(
           `/api/member/follow/cancel?storeId=${storeId}`
         );
-  
+
         if (response.data.isSuccess) {
           console.log(`언팔로우 성공: ${storeId}`);
         } else {
           console.warn(`언팔로우 실패: ${response.data.message}`);
         }
       }
-  
+
       setModalMessage("팔로우가 취소되었습니다.");
       fetchFollowingList();
     } catch (error: any) {
@@ -71,7 +80,6 @@ const FollowingList: React.FC = () => {
       setIsDeleteMode(false);
     }
   };
-  
 
   const handleToggle = (storeId: number) => {
     setCheckedItems((prev) => ({
@@ -107,11 +115,13 @@ const FollowingList: React.FC = () => {
           followingList.map((store) => (
             <FollowingItem
               key={store.storeId}
-              username={store.username} // ✅ storeName을 기반으로 가져온 username을 전달
+              userId={store.storeId} // ✅ userId 추가 (유저 프로필 이동을 위해 필요)
+              username={store.username}
               profileImage={store.profileImg}
               isDeleteMode={isDeleteMode}
               isChecked={!!checkedItems[store.storeId]}
               onToggle={() => handleToggle(store.storeId)}
+              onProfileClick={() => handleProfileClick(store.storeId)} // ✅ 클릭하면 이동
             />
           ))
         ) : (
@@ -126,6 +136,7 @@ const FollowingList: React.FC = () => {
 
 export default FollowingList;
 
+/* ✅ 스타일 유지 */
 const Container = styled.div`
   background: white;
   width: 100%;
@@ -157,8 +168,6 @@ const SelectButton = styled.button`
   padding: 0px 14px;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
   border-radius: 11px;
   background: #c908ff;
   color: #fff;

@@ -3,28 +3,32 @@ import styled from "styled-components";
 
 interface FollowingItemProps {
   username: string;
+  userId: string;
   profileImage?: string;
   isDeleteMode: boolean;
   isChecked: boolean;
   onToggle: () => void;
+  onProfileClick: () => void; // ✅ 유저 프로필 이동을 위한 prop 추가
 }
 
 const FollowingItem: React.FC<FollowingItemProps> = ({
   username,
+  userId,
   profileImage,
   isDeleteMode,
   isChecked,
   onToggle,
+  onProfileClick, // ✅ Prop으로 받음
 }) => {
   return (
-    <ItemContainer onClick={isDeleteMode ? onToggle : undefined}>
+    <ItemContainer onClick={isDeleteMode ? onToggle : onProfileClick}> 
       {isDeleteMode && (
         <CheckCircle isChecked={isChecked}>{isChecked && <CheckMark>✔</CheckMark>}</CheckCircle>
       )}
       {profileImage ? (
         <ProfileImg src={profileImage} alt="Profile" />
       ) : (
-        <DefaultProfile /> // ✅ 프로필 없을 때 기본 회색 동그라미 div
+        <DefaultProfile />
       )}
       <Username>{username}</Username>
     </ItemContainer>
@@ -38,7 +42,7 @@ const ItemContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  cursor: ${({ onClick }) => (onClick ? "pointer" : "default")};
+  cursor: pointer;
   position: relative;
   padding: 10px 0;
 `;
@@ -70,7 +74,7 @@ const DefaultProfile = styled.div`
   width: 78px;
   height: 78px;
   border-radius: 50%;
-  background: #d3d3d3; // ✅ 기본 회색 동그라미
+  background: #d3d3d3;
   margin-right: 33px;
   margin-left: 35px;
 `;
@@ -79,7 +83,6 @@ const Username = styled.div`
   color: #000;
   font-family: Pretendard;
   font-size: 20px;
-  font-style: normal;
   font-weight: 500;
   line-height: 36.832px;
   white-space: nowrap;
