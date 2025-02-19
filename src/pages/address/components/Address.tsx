@@ -40,6 +40,8 @@ const Address = ({
       <List>
         {isSelect ? (
           <Checkbox
+            width={window.innerWidth>744?27:21}
+            height={window.innerWidth>744?27:21}
             onClick={handleCheckbox}
             fill={addressId === address.addressId ? '#C908FF' : 'none'}
           />
