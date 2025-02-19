@@ -46,8 +46,8 @@ const Address = ({
         ) : (
           <ListIcon />
         )}
-        <TitleSpan>{address.addressName}</TitleSpan>
-        <AddressSpan>{address.addressDetail}</AddressSpan>
+        <Title>{address.addressName}</Title>
+        <AddressText>{address.addressDetail}</AddressText>
         <SetBtn $default={address.isDefault} onClick={defaultAddress}>
           {address.isDefault
             ? '기본 배송지로 설정됨'
@@ -77,6 +77,7 @@ const List = styled.li`
 const Checkbox = styled(checkbox)`
   width: 27.2px;
   height: 27.1px;
+  flex-shrink: 0;
   &:hover {
     cursor: pointer;
   }
@@ -97,7 +98,8 @@ const ListIcon = styled.span`
   // margin-right: 78px;
 `;
 
-const TitleSpan = styled.div`
+const Title = styled.div`
+  width: 70px;
   color: #000;
   font-family: Pretendard;
   font-size: 20px;
@@ -107,10 +109,13 @@ const TitleSpan = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  // width: 100px;
+
+  ${media.medium`
+    width: 52px;
+  `}
 `;
 
-const AddressSpan = styled.span`
+const AddressText = styled.span`
   color: #000;
   font-family: Pretendard;
   font-size: 18px;
@@ -120,7 +125,7 @@ const AddressSpan = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 460px;
+  width: 383px;
   ${media.medium`
     width: 229px;
   `}
