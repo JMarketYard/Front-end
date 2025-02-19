@@ -7,6 +7,7 @@ interface ModalProps {
   onClose: () => void;
 }
 
+
 const PayOkModal: React.FC<ModalProps> = ({ onClose }) => {
   return (
     <Modal onClose={onClose}>
@@ -56,4 +57,6 @@ const Container = styled.div`
   justify-content: center;
 `;
 
+
 export default PayOkModal;
+
