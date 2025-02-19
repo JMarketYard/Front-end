@@ -4,7 +4,7 @@ import smallTicket from '../assets/smallProductCard/smallTicket.svg';
 import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
 import smallLike from '../assets/smallProductCard/smallLike.svg';
 import { Link } from 'react-router-dom';
-import RaffleProps from './RaffleProps';
+import RaffleProps from '../types/RaffleProps';
 import { useNavigate } from 'react-router-dom';
 
 const getFormatTime = (seconds: number): string => {

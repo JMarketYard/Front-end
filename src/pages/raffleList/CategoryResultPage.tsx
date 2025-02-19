@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import ProductCard from '../../components/ProductCard';
-import RaffleProps from '../../components/RaffleProps';
+import RaffleProps from '../../types/RaffleProps';
 import axiosInstance from '../../apis/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '../Modal';
+import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
 
@@ -10,7 +10,6 @@ interface ModalProps {
 const GiveUpModal: React.FC<ModalProps> = ({ onClose }) => {
   return (
     <Modal onClose={onClose}>
-      {' '}
       <Container>
         <Img src={questionVector} />
         <Title>당첨을 포기하시겠습니까?</Title>

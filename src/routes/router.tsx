@@ -20,8 +20,12 @@ import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
+<<<<<<< HEAD
 import MyReview from '../pages/mypage/MyReview';
 import Payment from '../pages/mypage/Payment';
+=======
+import WinnerPage from '../pages/winner/winnerPage';
+>>>>>>> 2da8c10d394e9f499a022062d8b9d1cbec20e687
 
 const router = createBrowserRouter([
   {
@@ -150,10 +154,10 @@ const router = createBrowserRouter([
         element: <Payment />,
       },
       {
-        path: 'ask',
+        path: 'ask/:type',
         element: <AskPage />,
       },
-      { path: 'winner-page' },
+      { path: 'winner-page', element: <WinnerPage /> },
     ],
   },
 ]);

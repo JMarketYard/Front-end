@@ -14,6 +14,7 @@ interface RandomModalProps {
   winnerNickname: string;
   win: boolean;
   deliveryId: number;
+  image: string;
 }
 
 export default function RandomModal({
@@ -24,6 +25,7 @@ export default function RandomModal({
   winnerNickname,
   win,
   deliveryId,
+  image,
 }: PropsWithChildren<RandomModalProps>) {
   const { clearModals } = useModalContext();
   const sliderRef = useRef<Slider | null>(null);
@@ -56,8 +58,9 @@ export default function RandomModal({
         openModal(({ onClose }) => (
           <RandomOkModal
             onClose={onClose}
-            delivery_id={deliveryId}
-            winner_nickname={winnerNickname}
+            deliveryId={deliveryId}
+            winnerNickname={winnerNickname}
+            image={image}
           />
         ));
 

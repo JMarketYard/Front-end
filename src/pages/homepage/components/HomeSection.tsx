@@ -5,7 +5,7 @@ import SmallProductCard from '../../../components/SmallProductCard';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import RaffleProps from '../../../components/RaffleProps';
+import RaffleProps from '../../../types/RaffleProps';
 
 interface HomeSectionProps {
   title: string;

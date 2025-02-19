@@ -7,7 +7,7 @@ import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
 import ApplyModal from './modal/ApplyModal';
-import RaffleDetailProps from '../../../components/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetailProps';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RandomModal from './modal/RandomModal';
@@ -16,7 +16,16 @@ import { useModalContext } from '../../../components/Modal/context/ModalContext'
 import { useAuth } from '../../../context/AuthContext';
 import SplashModal from '../../login/components/SplashModal';
 
-const Item: React.FC<RaffleDetailProps> = (raffle) => {
+type ItemProps = RaffleDetailProps & {
+  shouldFetch: boolean;
+  setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Item: React.FC<ItemProps> = ({
+  shouldFetch,
+  setShouldFetch,
+  ...raffle
+}) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
@@ -42,6 +51,8 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
         ticket={raffle.ticketNum}
         image={raffle.imageUrls[0]}
         resultTime={raffle.endAt}
+        shouldFetch={shouldFetch}
+        setShouldFetch={setShouldFetch}
       />
     ));
   };
@@ -52,7 +63,13 @@ const Item: React.FC<RaffleDetailProps> = (raffle) => {
     );
     const drawData = data.result;
     console.log('draw data:', drawData);
-    openModal(({ onClose }) => <RandomModal onClose={onClose} {...drawData} />);
+    openModal(({ onClose }) => (
+      <RandomModal
+        onClose={onClose}
+        image={raffle.imageUrls[0]}
+        {...drawData}
+      />
+    ));
   };
 
   const formatDate = (isoString: string) =>
@@ -540,3 +557,5 @@ const DescriptionBox2 = styled.div`
   font-weight: 400;
   line-height: 150%; /* 30px */
 `;
+
+const WarningContainer = styled.div``;

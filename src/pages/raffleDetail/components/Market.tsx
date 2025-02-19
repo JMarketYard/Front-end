@@ -3,7 +3,7 @@ import moreList from '../../../assets/homePage/moreList.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
-import RaffleDetailProps from '../../../components/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetailProps';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
@@ -69,7 +69,13 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
       <BigTitleBox>
         <TitleIcon />
         <div>상점 정보</div>
-        <MoreListBox onClick={() => navigate('/market')}>
+        <MoreListBox
+          onClick={() =>
+            navigate(`/market/${raffle.storeId}`, {
+              state: { storeId: raffle.storeId },
+            })
+          }
+        >
           프로필 보기
           <img src={moreList} alt="moreList" />
         </MoreListBox>
@@ -115,7 +121,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
         )}
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
-      <AskButton onClick={handleAsk}>상품 문의</AskButton>
+      <AskButton onClick={() => navigate(`/ask/${type}`)}>상품 문의</AskButton>
     </Wrapper>
   );
 };
