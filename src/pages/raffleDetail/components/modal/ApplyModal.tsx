@@ -68,7 +68,6 @@ const ApplyModal: React.FC<ModalProps> = ({
       console.log('에러 : ', error);
     }
     onClose();
-    onClose();
   };
 
   return (
