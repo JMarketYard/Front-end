@@ -123,7 +123,10 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
             raffle.raffleStatus === 'ENDED' ||
             raffle.raffleStatus === 'CANCELLED' ||
             raffle.raffleStatus === 'COMPLETED') && (
-            <RaffleClosingBox>응모 마감</RaffleClosingBox>
+            <>
+              <RaffleClosingBox>응모 마감</RaffleClosingBox>
+              <EndBox />
+            </>
           )}
         </ImgSlider>
         <DetailLayout>
@@ -307,6 +310,7 @@ const RaffleClosingBox = styled.div`
   border: 2px solid #c908ff;
 
   position: absolute;
+  z-index: 10;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -590,4 +594,14 @@ const DescriptionBox2 = styled.div`
   line-height: 150%; /* 30px */
 `;
 
-const WarningContainer = styled.div``;
+const EndBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 5px;
+  background: rgba(193, 193, 193, 0.8);
+  z-index: 5;
+`;

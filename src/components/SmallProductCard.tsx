@@ -43,7 +43,12 @@ const SmallProductCard: React.FC<RaffleProps> = ({
     <Wrapper>
       <StyledLink to={`/raffles/${raffleId}`}>
         <ImageContainer imageUrls={imageUrls}>
-          {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
+          {finish && (
+            <>
+              <RaffleClosingBox>응모 마감</RaffleClosingBox>
+              <EndBox />
+            </>
+          )}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
             <TextBox>마감임박</TextBox>
           )}
@@ -204,4 +209,13 @@ const TimeBox = styled.div`
   font-size: 11px;
   font-style: normal;
   font-weight: 400;
+`;
+
+const EndBox = styled.div`
+  width: 100%;
+  height: 100%;
+
+  border-radius: 5px;
+  background: rgba(193, 193, 193, 0.8);
+  z-index: 1;
 `;
