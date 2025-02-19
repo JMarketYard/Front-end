@@ -34,7 +34,9 @@ const ApplyOkModal: React.FC<ModalProps> = ({ onClose, resultTime, image }) => {
         </TicketBox>
         <Short>{time} 메일로 결과가 전송됩니다.</Short>
         <Box src={image} alt="상품 이미지" />
-        <Button onClick={onClose}>내가 응모한 게시물 보러가기</Button>
+        <Button onClick={() => navigate('/mypage')}>
+          내가 응모한 게시물 보러가기
+        </Button>
       </Container>
     </Modal>
   );

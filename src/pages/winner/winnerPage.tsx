@@ -19,7 +19,7 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
 import WaitShippingModal from './modals/WaitShippingModal';
 import useDeliveryStore from './store/deliveryStore';
-import { PostCharge } from '../charge/apis/chargeAPI'; //결제
+import { PostCharge } from './apis/payAPI'; //결제
 import { useMutation } from '@tanstack/react-query'; //결제
 import Cookies from 'js-cookie'; //결제
 

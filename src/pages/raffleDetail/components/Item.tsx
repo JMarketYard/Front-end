@@ -33,9 +33,40 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
     openModal(({ onClose }) => <SplashModal onClose={onClose} />);
   };
 
-  const toggleLike = () => {
-    setIsLiked((prevState) => !prevState);
-    setLikeCount((prevLike) => (isLiked ? prevLike - 1 : prevLike + 1));
+  const postLike = async (typeNumber: number) => {
+    try {
+      await axiosInstance.post(`/api/member/raffles/like`, null, {
+        params: { itemId: typeNumber }, // 그대로 number로 전달
+      });
+      console.log('찜하기 성공');
+    } catch (error) {
+      console.error('찜하기 실패:', error);
+    }
+  };
+
+  const deleteLike = async (typeNumber: number) => {
+    try {
+      await axiosInstance.delete(`/api/member/raffles/like`, {
+        params: { itemId: typeNumber }, // 그대로 number로 전달
+      });
+      console.log('찜하기 취소');
+    } catch (error) {
+      console.error('찜 취소 실패:', error);
+    }
+  };
+
+  const toggleLike = async () => {
+    if (typeNumber === undefined) return;
+
+    if (isLiked) {
+      await deleteLike(typeNumber);
+      setIsLiked(false);
+      setLikeCount((prev) => prev - 1);
+    } else {
+      await postLike(typeNumber);
+      setIsLiked(true);
+      setLikeCount((prev) => prev + 1);
+    }
   };
 
   const handleApply = async () => {
