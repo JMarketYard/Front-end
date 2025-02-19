@@ -6,9 +6,10 @@ import vector from '../../../assets/Vector.png';
 interface ModalProps {
   onClose: () => void;
   setMoreTicketText: React.Dispatch<React.SetStateAction<string>>;
+  setTicketNum: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TicketModal: React.FC<ModalProps> = ({ onClose, setMoreTicketText }) => {
+const TicketModal: React.FC<ModalProps> = ({ onClose, setMoreTicketText, setTicketNum }) => {
   const [myTicket, setMyTicket] = useState<string>("");
   const [value, setValue] = useState<string>("");
 
@@ -16,6 +17,7 @@ const TicketModal: React.FC<ModalProps> = ({ onClose, setMoreTicketText }) => {
     if (value==="" || parseInt(value)===0) alert("티켓 개수를 1개 이상 입력해주세요");
     else {
       setMoreTicketText(`${value}개`);
+      setTicketNum(`${value}개`);
       onClose();
     };
   }

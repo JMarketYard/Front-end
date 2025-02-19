@@ -2,7 +2,7 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import imgUpload from "../../assets/imgUpload.svg";
 import imgArrow from "../../assets/imgSelectArrow.png";
-import React, { FormEvent, ReactElement, useRef, useState } from "react";
+import React, { FormEvent, ReactElement, useEffect, useRef, useState } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
@@ -41,9 +41,9 @@ const RaffleUploadPage = () => {
     const handleChangeImgInput = (e:React.ChangeEvent) => {
         const targetFiles = (e.target as HTMLInputElement).files as FileList;
         const targetFilesArr = Array.from(targetFiles);
-        const selectedFiles:string[] = targetFilesArr.map((file) => {
-            return URL.createObjectURL(file);
-        });
+        // const selectedFiles:string[] = targetFilesArr.map((file) => {
+        //     return URL.createObjectURL(file);
+        // });
         setImages(targetFilesArr);
     };
 
@@ -80,7 +80,7 @@ const RaffleUploadPage = () => {
     };
     const handleTicketNum = (key:string) => {
         setTicketNum(key);
-        if (key==="more") handleTicketModal();
+        if (key===moreTicketText) handleTicketModal();
     };
     const handleJcare = (key:string) => {
         setJcare(key);
@@ -93,7 +93,8 @@ const RaffleUploadPage = () => {
     // 응모 티켓 개수 직접 입력 모달 open
     const handleTicketModal = () => {
         openModal(({ onClose }) => <TicketModal onClose={onClose}
-        setMoreTicketText={setMoreTicketText} />);
+        setMoreTicketText={setMoreTicketText}
+        setTicketNum={setTicketNum} />);
     };
 
     return (
