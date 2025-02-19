@@ -9,8 +9,8 @@ import axiosInstance from '../../../apis/axiosInstance';
 type TAddressProps = {
   isSelect: boolean;
   address: TAddress;
-  addressId: number | null;
-  setAddressId: React.Dispatch<React.SetStateAction<number | null>>;
+  addressId: number[];
+  setAddressId: React.Dispatch<React.SetStateAction<number[]>>;
   fetchAddresses: () => Promise<void>;
 };
 
@@ -33,7 +33,9 @@ const Address = ({
   };
 
   const handleCheckbox = () => {
-    setAddressId(address.addressId);
+    addressId.includes(address.addressId)
+    ? setAddressId(prev => prev.filter(v=>v!=address.addressId))
+    : setAddressId(prev => [...prev, address.addressId]);
   };
   return (
     <>
@@ -43,7 +45,8 @@ const Address = ({
             width={window.innerWidth>744?27:21}
             height={window.innerWidth>744?27:21}
             onClick={handleCheckbox}
-            fill={addressId === address.addressId ? '#C908FF' : 'none'}
+            fill={addressId.includes(address.addressId)
+              ? '#C908FF' : 'none'}
           />
         ) : (
           <ListIcon />
