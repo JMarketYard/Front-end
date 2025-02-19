@@ -20,12 +20,9 @@ import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
-<<<<<<< HEAD
-import MyReview from '../pages/mypage/MyReview';
-import Payment from '../pages/mypage/Payment';
-=======
-import WinnerPage from '../pages/winner/winnerPage';
->>>>>>> 2da8c10d394e9f499a022062d8b9d1cbec20e687
+import MyReview from '../pages/mypage/MyReview';  // ✅ 충돌 해결 - 유지
+import Payment from '../pages/mypage/Payment';  // ✅ 충돌 해결 - 유지
+import WinnerPage from '../pages/winner/winnerPage';  // ✅ 충돌 해결 - 유지
 
 const router = createBrowserRouter([
   {
@@ -61,7 +58,7 @@ const router = createBrowserRouter([
         element: <RaffleUploadPage />,
       },
       {
-        path: 'raffles/:type', //래플 상세보기
+        path: 'raffles/:type', // 래플 상세보기
         element: (
           <div>
             <RaffleDetailPage />
@@ -92,28 +89,15 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'review',
-        element: <WriteReview />,
-      },
-      {
-        path: 'address',
-        element: (
-          <>
-            <AddressSetPage />
-            <ModalProvider />
-          </>
-        ),
-      },
-      {
         path: 'set-open',
         element: <SetOpenInfoPage />,
       },
       {
-        path: '/raffles/list/:type', //더보기
+        path: '/raffles/list/:type', // 더보기
         element: <RaffleListPage />,
       },
       {
-        path: '/search/:type', //검색결과 조회
+        path: '/search/:type', // 검색결과 조회
         element: <SearchResultPage />,
       },
       {
@@ -157,7 +141,10 @@ const router = createBrowserRouter([
         path: 'ask/:type',
         element: <AskPage />,
       },
-      { path: 'winner-page', element: <WinnerPage /> },
+      {
+        path: 'winner-page',
+        element: <WinnerPage />,
+      },
     ],
   },
 ]);
