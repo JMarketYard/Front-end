@@ -11,14 +11,14 @@ interface ModalProps {
   deliveryId: number;
 }
 
-const GiveUpModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
+const WaitShippingModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
   const navigate = useNavigate();
   const { triggerRefetch } = useDeliveryStore();
 
   const handleClick = async () => {
     try {
       const response = await axiosInstance.post(
-        `/api/member/delivery/${deliveryId}/winner/cancel`,
+        `/api/member/delivery/${deliveryId}/winner/wait`,
         {},
       );
       triggerRefetch();
@@ -33,9 +33,9 @@ const GiveUpModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
-        <Title>당첨을 포기하시겠습니까?</Title>
-        <Short>해당 결정은 번복할 수 없습니다.</Short>
-        <Button onClick={handleClick}>포기하기</Button>
+        <Title>운송장을 기다리시겠습니까?</Title>
+        <Short>운송장 입력 시간을 최대 24시간 연장합니다.</Short>
+        <Button onClick={handleClick}>기다리기</Button>
       </Container>
     </Modal>
   );
@@ -88,4 +88,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default GiveUpModal;
+export default WaitShippingModal;

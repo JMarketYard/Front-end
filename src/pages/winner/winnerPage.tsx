@@ -17,6 +17,8 @@ import CompletedModal from './modals/CompletedModal';
 import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
+import WaitShippingModal from './modals/WaitShippingModal';
+import useDeliveryStore from './store/deliveryStore';
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -47,6 +49,7 @@ const WinnerPage: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
+  const { shouldRefetch, triggerRefetch } = useDeliveryStore();
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -58,8 +61,6 @@ const WinnerPage: React.FC = () => {
   });
   const [data, setData] = useState<TWinner>();
   const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
-  const isShipped =
-    deliveryStatus === 'SHIPPED' || deliveryStatus === 'COMPLETED';
 
   useEffect(() => {
     const fetchAddress = async () => {
@@ -77,15 +78,23 @@ const WinnerPage: React.FC = () => {
       }
     };
     fetchAddress();
-  }, [deliveryStatus]);
+  }, [shouldRefetch]);
 
   const handleGiveUpModal = () => {
-    openModal(({ onClose }) => <GiveUpModal onClose={onClose} />);
+    openModal(({ onClose }) => (
+      <GiveUpModal onClose={onClose} deliveryId={deliveryId} />
+    ));
   };
 
   const handleCompletedModal = () => {
     openModal(({ onClose }) => (
       <CompletedModal onClose={onClose} deliveryId={deliveryId} />
+    ));
+  };
+
+  const handleWaitdModal = () => {
+    openModal(({ onClose }) => (
+      <WaitShippingModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
 
