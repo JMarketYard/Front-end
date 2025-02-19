@@ -8,6 +8,7 @@ import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
 import ApplyModal from './modal/ApplyModal';
 import RaffleDetailProps from '../../../types/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetailProps';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RandomModal from './modal/RandomModal';
@@ -57,6 +58,13 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
     );
     const drawData = data.result;
     console.log('draw data:', drawData);
+    openModal(({ onClose }) => (
+      <RandomModal
+        onClose={onClose}
+        image={raffle.imageUrls[0]}
+        {...drawData}
+      />
+    ));
     openModal(({ onClose }) => (
       <RandomModal
         onClose={onClose}

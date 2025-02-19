@@ -146,7 +146,7 @@ const router = createBrowserRouter([
         element: <ReviewPage />,
       },
       {
-        path: 'ask',
+        path: 'ask/:type',
         element: <AskPage />,
       },
       { path: 'winner-page', element: <WinnerPage /> },

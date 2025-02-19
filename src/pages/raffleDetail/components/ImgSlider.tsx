@@ -7,6 +7,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import icRight from '../../../assets/raffleDetail/icon-right.svg';
 import icLeft from '../../../assets/raffleDetail/icon-left.svg';
+import media from '../../../styles/media';
 
 interface ItemProps {
   images: string[];
@@ -98,6 +99,9 @@ const CustomPrevArrow = (props: any) => {
 const Wrapper = styled.div`
   width: 390.582px;
   position: relative;
+  ${media.medium`
+    width: 307px;
+  `};
 `;
 
 const CustomDots = styled.ul`
@@ -123,6 +127,11 @@ const ImgContainer = styled.div`
   width: 390.582px;
   height: 390.582px;
   display: flex;
+
+  ${media.medium`
+    width: 307px;
+    height: 307px;
+  `}
 `;
 
 const ChildrenWrapper = styled.div`
@@ -144,6 +153,10 @@ const Img = styled.img.attrs((props) => ({
   align-items: center;
   position: relative;
   background-size: contain;
+  ${media.medium`
+    width: 307px;
+    height: 307px;
+  `}
 `;
 
 const ArrowRight = styled.button`
