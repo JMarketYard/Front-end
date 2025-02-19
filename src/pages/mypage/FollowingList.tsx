@@ -15,56 +15,64 @@ const FollowingList: React.FC = () => {
   const fetchFollowingList = async () => {
     setLoading(true);
     try {
-      const { data } = await axiosInstance.get("/api/member/follow/list", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}` // ✅ Authorization 헤더 추가
-        }
-      });
-  
+      const { data } = await axiosInstance.get("/api/member/follow/list");
+
       if (data.isSuccess) {
-        setFollowingList(data.result); // ✅ API 응답 값 반영
+        setFollowingList(
+          data.result.map((store: any) => ({
+            ...store,
+            username: store.storeName || `상점 ${store.storeId}`, 
+          }))
+        );
       } else {
-        setFollowingList([]); // ✅ 응답 실패 시 빈 배열 처리
+        setFollowingList([]);
       }
     } catch (error) {
       console.error("팔로잉 목록을 불러오는 중 오류 발생:", error);
-      setFollowingList([]); // ✅ 에러 발생 시 빈 리스트
+      setFollowingList([]);
     } finally {
       setLoading(false);
     }
   };
 
-  /** ✅ 팔로우 취소 */
+  /* 팔로우 취소 */
   const handleUnfollow = async () => {
     const storeIdsToUnfollow = Object.keys(checkedItems)
       .filter((key) => checkedItems[parseInt(key, 10)])
       .map((key) => parseInt(key, 10));
-
+  
     if (storeIdsToUnfollow.length === 0) {
       alert("선택된 팔로우가 없습니다.");
       return;
     }
-
+  
     try {
       for (const storeId of storeIdsToUnfollow) {
-        await axiosInstance.delete(`/api/following/unfollow?storeId=${storeId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-          }
-        });
+        console.log(`언팔로우 요청: storeId=${storeId}`); // storeId 값 확인
+  
+        const response = await axiosInstance.delete(
+          `/api/member/follow/cancel?storeId=${storeId}`
+        );
+  
+        if (response.data.isSuccess) {
+          console.log(`언팔로우 성공: ${storeId}`);
+        } else {
+          console.warn(`언팔로우 실패: ${response.data.message}`);
+        }
       }
+  
       setModalMessage("팔로우가 취소되었습니다.");
       fetchFollowingList();
-    } catch (error) {
-      console.error("팔로우 취소 중 오류 발생:", error);
+    } catch (error: any) {
+      console.error("팔로우 취소 중 오류 발생:", error.response?.data || error.message);
       setModalMessage("팔로우 취소에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setCheckedItems({});
       setIsDeleteMode(false);
     }
   };
+  
 
-  /** ✅ 체크 토글 */
   const handleToggle = (storeId: number) => {
     setCheckedItems((prev) => ({
       ...prev,
@@ -72,7 +80,6 @@ const FollowingList: React.FC = () => {
     }));
   };
 
-  /** ✅ 페이지 로드 시 팔로잉 목록 조회 */
   useEffect(() => {
     fetchFollowingList();
   }, []);
@@ -100,7 +107,7 @@ const FollowingList: React.FC = () => {
           followingList.map((store) => (
             <FollowingItem
               key={store.storeId}
-              username={`상점 ${store.storeId}`}
+              username={store.username} // ✅ storeName을 기반으로 가져온 username을 전달
               profileImage={store.profileImg}
               isDeleteMode={isDeleteMode}
               isChecked={!!checkedItems[store.storeId]}
@@ -112,16 +119,13 @@ const FollowingList: React.FC = () => {
         )}
       </ListContainer>
 
-      {modalMessage && (
-        <FollowNoModal onClose={() => setModalMessage(null)} message={modalMessage} />
-      )}
+      {modalMessage && <FollowNoModal onClose={() => setModalMessage(null)} message={modalMessage} />}
     </Container>
   );
 };
 
 export default FollowingList;
 
-/* ✅ 스타일 */
 const Container = styled.div`
   background: white;
   width: 100%;

@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 interface FollowingItemProps {
   username: string;
-  profileImage?: string; // 프로필 이미지 추가
+  profileImage?: string;
   isDeleteMode: boolean;
   isChecked: boolean;
   onToggle: () => void;
@@ -19,11 +19,13 @@ const FollowingItem: React.FC<FollowingItemProps> = ({
   return (
     <ItemContainer onClick={isDeleteMode ? onToggle : undefined}>
       {isDeleteMode && (
-        <CheckCircle isChecked={isChecked}>
-          {isChecked && <CheckMark>✔</CheckMark>}
-        </CheckCircle>
+        <CheckCircle isChecked={isChecked}>{isChecked && <CheckMark>✔</CheckMark>}</CheckCircle>
       )}
-      <ProfileImg src={profileImage || "https://via.placeholder.com/78"} alt="Profile" />
+      {profileImage ? (
+        <ProfileImg src={profileImage} alt="Profile" />
+      ) : (
+        <DefaultProfile /> // ✅ 프로필 없을 때 기본 회색 동그라미 div
+      )}
       <Username>{username}</Username>
     </ItemContainer>
   );
@@ -62,7 +64,15 @@ const ProfileImg = styled.img`
   object-fit: cover;
   margin-right: 33px;
   margin-left: 35px;
-  background: #d3d3d3;
+`;
+
+const DefaultProfile = styled.div`
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: #d3d3d3; // ✅ 기본 회색 동그라미
+  margin-right: 33px;
+  margin-left: 35px;
 `;
 
 const Username = styled.div`
