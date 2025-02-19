@@ -19,6 +19,9 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
 import WaitShippingModal from './modals/WaitShippingModal';
 import useDeliveryStore from './store/deliveryStore';
+import { PostCharge } from '../charge/apis/chargeAPI'; //결제
+import { useMutation } from '@tanstack/react-query'; //결제
+import Cookies from 'js-cookie'; //결제
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -59,8 +62,78 @@ const WinnerPage: React.FC = () => {
     phoneNumber: '',
     isDefault: false,
   });
-  const [data, setData] = useState<TWinner>();
+  const [winnerData, setWinnerData] = useState<TWinner>();
   const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
+
+  //결제코드 시작
+  const { mutate: postMutation } = useMutation({
+    mutationFn: PostCharge,
+    onSuccess: (data) => {
+      if (!data?.redirectUrl) {
+        console.error('🚨 redirectUrl이 존재하지 않습니다.');
+        return;
+      }
+
+      console.log('🔍 원본 redirectUrl:', data.redirectUrl);
+
+      try {
+        let fullRedirectUrl = data.redirectUrl;
+
+        // 만약 상대경로라면 절대경로로 변환
+        if (!fullRedirectUrl.startsWith('http')) {
+          fullRedirectUrl = `${window.location.origin}${fullRedirectUrl}`;
+        }
+
+        console.log('🌍 변환된 URL:', fullRedirectUrl);
+
+        const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
+        const actualUrl = urlParams.get('url');
+
+        let tid = urlParams.get('tid'); // tid 추출
+
+        if (!tid) {
+          console.warn('⚠️ TID가 없어서 "tid"라는 기본 값을 사용합니다.');
+          tid = 'tid'; // tid가 없을 경우 기본값 설정
+        }
+
+        console.log('🔄 now tid:', tid); // tid 로그 출력
+
+        // 쿠키를 '/api/payment/approve' 경로에 설정
+        Cookies.set('tid', tid, {
+          expires: 1,
+          path: '/', // 전체 경로에서 쿠키 유효
+          domain: 'jangmadang.site', // www.jangmadang.site와 api.jangmadang.site에서 쿠키 공유
+          secure: true, // HTTPS에서만 쿠키 유효
+          sameSite: 'Lax', // SameSite 설정 변경 (보안을 위해 Lax로 설정)
+        });
+
+        console.log('쿠키 설정:', document.cookie); // 쿠키가 제대로 설정되었는지 확인
+
+        if (actualUrl && actualUrl.startsWith('https://')) {
+          console.log('🔄 Redirecting to:', actualUrl);
+          window.location.href = actualUrl;
+        } else {
+          console.error('🚨 URL parameter "url" not found or invalid.');
+        }
+      } catch (error) {
+        console.error('🚨 Error processing redirect URL:', error);
+      }
+    },
+    onError: (error) => {
+      console.log('충전 요청 실패 : ', error);
+    },
+  });
+
+  const handleNextModal = () => {
+    if (checked) {
+      postMutation({
+        itemId: '배송비',
+        itemName: '배송비',
+        totalAmount: winnerData?.shippingFee ?? 4000,
+      });
+    }
+  };
+  //결제코드 끝
 
   useEffect(() => {
     const fetchAddress = async () => {
@@ -68,7 +141,7 @@ const WinnerPage: React.FC = () => {
         const { data } = await axiosInstance.get(
           `/api/member/delivery/${deliveryId}/winner`,
         );
-        setData(data);
+        setWinnerData(data.result);
         setDeliveryStatus(data.result.deliveryStatus);
         setAddress(data.result.address);
         console.log(data.result);
@@ -99,7 +172,14 @@ const WinnerPage: React.FC = () => {
   };
 
   const formatDate = (isoString: string) => {
-    return new Date(isoString).toLocaleDateString('ko-KR', {
+    if (!isoString) {
+      return isoString; // ✅ 유효하지 않은 값이면 기본 메시지 반환
+    }
+
+    // ✅ ISO 8601 형식 보장: "2025-02-20T21:52:39" → "2025-02-20T21:52:39Z"
+    const formattedDate = isoString.endsWith('Z') ? isoString : isoString + 'Z';
+
+    return new Date(formattedDate).toLocaleDateString('ko-KR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -125,11 +205,11 @@ const WinnerPage: React.FC = () => {
       <Wrapper>
         <BigTitle>래플 결과</BigTitle>
         <RaffleLayout>
-          <Box src={data?.raffleInfo.raffleImage} alt="상품 이미지" />
+          <Box src={winnerData?.raffleInfo.raffleImage} alt="상품 이미지" />
           <RaffleContainer>
-            <NameBox>{data?.raffleInfo.raffleName}</NameBox>
+            <NameBox>{winnerData?.raffleInfo.raffleName}</NameBox>
             <DateBox>
-              당첨 일시 : {formatDate(data?.raffleInfo.drawAt ?? '')}
+              당첨 일시 : {formatDate(winnerData?.raffleInfo.drawAt ?? '')}
             </DateBox>
           </RaffleContainer>
         </RaffleLayout>
@@ -150,7 +230,7 @@ const WinnerPage: React.FC = () => {
           <PurpleButton onClick={() => navigate('/')}>
             기다리기 (
             {formatMinutesToHoursAndMinutes(
-              data?.raffleInfo.extendableMinutes ?? 0,
+              winnerData?.raffleInfo.extendableMinutes ?? 0,
             )}
             )
           </PurpleButton>
@@ -235,18 +315,18 @@ const WinnerPage: React.FC = () => {
 
             <FeeContainer>
               <FeeTitleBox>배송비</FeeTitleBox>
-              <FeeAmountBox>{data?.shippingFee} 원</FeeAmountBox>
+              <FeeAmountBox>{winnerData?.shippingFee} 원</FeeAmountBox>
             </FeeContainer>
           </InfoLayout>
 
           <ButtonLayout>
-            <KakaoButtons>
+            <KakaoButtons onClick={handleNextModal}>
               <ResponsiveIcon icon="raphael:bubble" />
               <Kakao>카카오페이로 결제하기</Kakao>
             </KakaoButtons>
             <PurpleButton onClick={() => navigate('/')}>
               나중에 결제하기 (입력기한 :{' '}
-              {formatDate(data?.addressDeadline ?? '')})
+              {formatDate(winnerData?.addressDeadline ?? '')})
             </PurpleButton>
           </ButtonLayout>
         </Wrapper>
@@ -275,12 +355,12 @@ const WinnerPage: React.FC = () => {
             <Hr />
             <InfoContainer>
               <SmallTitleSpan>운송장번호</SmallTitleSpan>
-              <SmallPurpleSpan>{data?.invoiceNumber}</SmallPurpleSpan>
+              <SmallPurpleSpan>{winnerData?.invoiceNumber}</SmallPurpleSpan>
             </InfoContainer>
             <Hr />
             <FeeContainer>
               <FeeTitleBox>배송비</FeeTitleBox>
-              <FeeAmountBox>{data?.shippingFee} 원</FeeAmountBox>
+              <FeeAmountBox>{winnerData?.shippingFee} 원</FeeAmountBox>
             </FeeContainer>
           </InfoLayout>
 
