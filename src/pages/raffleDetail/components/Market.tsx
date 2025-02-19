@@ -76,7 +76,7 @@ const Market: React.FC<MarketProps> = ({
         </MoreListBox>
       </BigTitleBox>
       <MarketLayout>
-        <ImageBox />
+        <ImageBox imageUrl={raffle.storeImageUrl} />
         <MarketContainer>
           <NicknameBox>
             <img src={icLevel} alt="레벨" />
@@ -193,13 +193,16 @@ const MarketLayout = styled.div`
   align-items: center;
 `;
 
-const ImageBox = styled.div`
+const ImageBox = styled.div<{ imageUrl: string }>`
   width: 78px;
   height: 78px;
   background-color: #d9d9d9;
   border: 1px solid #8f8e94;
   margin-right: 30px;
   border-radius: 50%;
+
+  background-image: url(${(props) => props.imageUrl});
+  background-size: cover;
 `;
 
 const MarketContainer = styled.div`
