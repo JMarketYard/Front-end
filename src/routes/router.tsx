@@ -18,10 +18,11 @@ import MyProfilePage from '../pages/mypage/mypage';
 import FollowingList from '../pages/mypage/FollowingList';
 import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
-import ReviewPage from '../components/ReviewPage';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
-import WinnerPage from '../pages/winner/winnerPage';
+import MyReview from '../pages/mypage/MyReview';  // ✅ 충돌 해결 - 유지
+import Payment from '../pages/mypage/Payment';  // ✅ 충돌 해결 - 유지
+import WinnerPage from '../pages/winner/winnerPage';  // ✅ 충돌 해결 - 유지
 
 const router = createBrowserRouter([
   {
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
         element: <RaffleUploadPage />,
       },
       {
-        path: 'raffles/:type', //래플 상세보기
+        path: 'raffles/:type', // 래플 상세보기
         element: (
           <div>
             <RaffleDetailPage />
@@ -105,7 +106,7 @@ const router = createBrowserRouter([
         element: <RaffleListPage />,
       },
       {
-        path: '/search/:type', //검색결과 조회
+        path: '/search/:type', // 검색결과 조회
         element: <SearchResultPage />,
       },
       {
@@ -139,13 +140,20 @@ const router = createBrowserRouter([
       },
       {
         path: 'mypage/my-review',
-        element: <ReviewPage />,
+        element: <MyReview />,
+      },
+      {
+        path: 'mypage/payment',
+        element: <Payment />,
       },
       {
         path: 'ask/:type',
         element: <AskPage />,
       },
-      { path: 'winner-page', element: <WinnerPage /> },
+      {
+        path: 'winner-page',
+        element: <WinnerPage />,
+      },
     ],
   },
 ]);
