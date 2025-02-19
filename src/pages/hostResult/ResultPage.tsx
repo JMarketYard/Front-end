@@ -109,7 +109,6 @@ const ResultPage: React.FC = () => {
     ));
   };
   const handleConsider = () => {
-    //새로운 모달 생성?
     openModal(({ onClose }) => (
       <ConsiderModal onClose={onClose} deliveryId={deliveryId} />
     ));
