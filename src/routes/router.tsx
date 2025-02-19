@@ -9,7 +9,7 @@ import RaffleUploadPage from '../pages/raffleUpload/RaffleUploadPage';
 import WriteReview from '../pages/writeReview/writeReview';
 import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
-import SetOpenInfoPage from '../pages/setOpenInfo/setOpenInfoPage';
+import SetOpenInfoPage from '../pages/mypage/setOpenInfoPage';
 import RaffleListPage from '../pages/raffleList/RaffleListPage';
 import ResultPage from '../pages/hostResult/ResultPage';
 import SearchResultPage from '../pages/raffleList/SearchResultPage';
@@ -89,11 +89,20 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'set-open',
-        element: <SetOpenInfoPage />,
+        path: 'review',
+        element: <WriteReview />,
       },
       {
-        path: '/raffles/list/:type', // 더보기
+        path: 'mypage/address',
+        element: (
+          <>
+            <AddressSetPage />
+            <ModalProvider />
+          </>
+        ),
+      },
+      {
+        path: '/raffles/list/:type', //더보기
         element: <RaffleListPage />,
       },
       {
@@ -127,7 +136,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'mypage/public-information-set',
-        element: <PublicInformationSet />,
+        element: <SetOpenInfoPage />,
       },
       {
         path: 'mypage/my-review',
