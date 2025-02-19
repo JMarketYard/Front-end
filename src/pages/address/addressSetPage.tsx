@@ -20,7 +20,7 @@ const AddressSetPage = () => {
   const [isSelect, setIsSelect] = useState(false);
   const { openModal } = useModalContext();
   const [addressList, setAddressList] = useState<TAddress[]|undefined>([]);
-  const [addressId, setAddressId] = useState<number|null>(null);
+  const [addressId, setAddressId] = useState<number[]>([]);
 
   const handleModal = () => {
     openModal(({ onClose }) => 
@@ -41,16 +41,27 @@ const AddressSetPage = () => {
     const deleteAddress = async () => {
       const { data } = await axiosInstance.delete(
         '/api/member/mypage/setting/addresses', {
-          data: { addressId }
+          data: { addressIdList: addressId }
         });
       await fetchAddresses();
     };
-    if (addressId!==-1) {
-      deleteAddress();
-      setAddressId(null);
-      setIsSelect(false);
-    }
+    if (addressId.length>0) {
+      // 기본 배송지 삭제 막기 위한 조치
+      let canDelete = true;
+      addressList?.map(address => {
+        if (addressId.includes(address.addressId) && address.isDefault)
+          canDelete = false;
+      });
+      canDelete ? deleteAddress() : alert("기본 배송지는 삭제할 수 없습니다");
+    };
+    setAddressId([]);
+    setIsSelect(false);
   };
+
+  const handleCancel = () => {
+    setIsSelect(false);
+    setAddressId([]);
+  }
 
   useEffect(() => {
     fetchAddresses();
@@ -69,7 +80,7 @@ const AddressSetPage = () => {
         <SelectBtn
         $background={'rgba(201, 8, 255, 0.20)'}
         color={'#C908FF'}
-        onClick={()=>setIsSelect(false)}
+        onClick={handleCancel}
         >선택 취소</SelectBtn>
         </>
         : <SelectBtn onClick={()=>setIsSelect(true)}>선택</SelectBtn>
