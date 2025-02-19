@@ -40,6 +40,7 @@ const StarRating: React.FC<StarRatingProps> = ({
   onRatingChange,
 }) => {
   const [rating, setRating] = useState(initialRating);
+  console.log('rating:',rating);
 
   const handleRating = (index: number) => {
     let newRating = rating;

@@ -2,22 +2,47 @@ import React from 'react';
 import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../apis/axiosInstance';
 
 interface ModalProps {
   onClose: () => void;
+  images: File[];
   name: string;
-  images: string[];
+  formData: FormData;
 }
 
-const UploadModal: React.FC<ModalProps> = ({ onClose, name, images }) => {
+const UploadModal: React.FC<ModalProps> = ({
+  onClose,
+  images,
+  name,
+  formData
+ }) => {
   const navigate = useNavigate();
+
+  const handleUpload = () => {
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    };
+    const postRaffle = async () => {
+      await axiosInstance.post('/api/member/raffles', 
+        formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+      }).then(_=>console.log('업로드 완료'))
+      .then(_=>navigate('/'))
+      .catch((error) => console.error('Error:', error));
+    };
+    postRaffle();
+  };
+  
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={images[0]} />
+        <Img src={URL.createObjectURL(images[0])} />
         <Title>{name}</Title>
         <Short>해당 래플을 업로드하시겠습니까?</Short>
-        <Button onClick={()=>navigate('/')}>업로드</Button>
+        <Button onClick={handleUpload}>업로드</Button>
       </Container>
     </Modal>
   );

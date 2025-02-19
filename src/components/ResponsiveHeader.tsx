@@ -11,8 +11,8 @@ import icHeart from '../assets/header/icon-heart.svg';
 import icMyPage from '../assets/header/icon-mypage.svg';
 import icUpload from '../assets/header/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
-import { useNavigate } from 'react-router-dom';
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import CategoryMenu from './CategoryMenu';
 import { useModalContext } from './Modal/context/ModalContext';
 import SplashModal from '../pages/login/components/SplashModal';
@@ -23,6 +23,7 @@ import axiosInstance from '../apis/axiosInstance';
 import { TSearch } from '../types/searchKeywords';
 import { useAuth } from '../context/AuthContext';
 import { useIsSearchCompleted } from '../store/store';
+import { WysiwygOutlined } from '@mui/icons-material';
 
 const ResponsiveHeader = () => {
   const navigate = useNavigate();
@@ -50,6 +51,10 @@ const ResponsiveHeader = () => {
   const delSearch = async (keyword: string) =>
     await axiosInstance.delete(`/api/member/search?keyword=${keyword}`);
 
+  const handleClickLogo = () => {
+    navigate('/');
+    setSearchText('');
+  }
   const handleCategoryOut = (e: MouseEvent) => {
     const currentCategoryRef = categoryRef.current;
     if (currentCategoryRef && !currentCategoryRef.contains(e.target as Node)) {
@@ -78,6 +83,13 @@ const ResponsiveHeader = () => {
   const handleDelKeyword = (keyword: string) => {
     // delSearch(): 해당 키워드 서버에서 삭제
     delSearch(keyword).then((_) => getSearch());
+  };
+
+  const clickKeyword = (v:string) => {
+    setSearchText(v);
+    // console.log('searchText:', searchText, v);
+    navigate(`/search/${v}`);
+    setIsSearchClicked(false);
   };
 
   const handleOpenModal = () => {
@@ -118,24 +130,6 @@ const ResponsiveHeader = () => {
           <SmallIconDiv
             onClick={() => {
               if (isAuthenticated) {
-                navigate('mypage/setting'); // 설정 페이지
-              } else {
-                handleOpenModal();
-              }
-            }}
-          >
-            <IcSetting
-              className="svg"
-              width={22}
-              height={24}
-              fill={'#8F8E94'}
-            />
-            <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
-          </SmallIconDiv>
-          <LineDiv height={'27px'} margin={'0 32px'} className="line-1" />
-          <SmallIconDiv
-            onClick={() => {
-              if (isAuthenticated) {
                 navigate('/notification'); // 알림 페이지
               } else {
                 handleOpenModal();
@@ -150,9 +144,27 @@ const ResponsiveHeader = () => {
             />
             <IconTextDiv fontSize={'14px'}>알림</IconTextDiv>
           </SmallIconDiv>
+          <LineDiv height={'27px'} margin={'0 32px'} />
+          <SmallIconDiv
+            onClick={() => {
+              if (isAuthenticated) {
+                navigate('mypage/setting'); // 설정 페이지
+              } else {
+                handleOpenModal();
+              }
+            }}
+          >
+            <IcSetting
+              className="svg"
+              width={22}
+              height={24}
+              fill={'#8F8E94'}
+            />
+            <IconTextDiv fontSize={'14px'}>설정</IconTextDiv>
+          </SmallIconDiv>
         </TopContainer>
         <SearchBoxContainer>
-          <LogoImg src={icLogo} onClick={() => navigate('/')} />
+          <LogoImg src={icLogo} onClick={handleClickLogo} />
           <CategoryContainer ref={categoryRef}>
             <IconHamburgerDiv
               onMouseDown={() => {
@@ -184,8 +196,9 @@ const ResponsiveHeader = () => {
                   <RecentKeywordsBox>
                     {recentKeywords.length !== 0 ? (
                       recentKeywords.map((v, _) => (
-                        <RecentKeyword key={_}>
-                          {v}
+                        <RecentKeyword key={_}
+                        onClick={()=>clickKeyword(v)}>
+                          <Keyword>{v}</Keyword>
                           <DelImg
                             src={icDel}
                             width={9.096}
@@ -195,7 +208,7 @@ const ResponsiveHeader = () => {
                         </RecentKeyword>
                       ))
                     ) : (
-                      <KeywordSpan>최근 검색 내역이 없습니다.</KeywordSpan>
+                      <NoRecentKeywords>최근 검색 내역이 없습니다.</NoRecentKeywords>
                     )}
                   </RecentKeywordsBox>
                 </KeywordBox>
@@ -209,7 +222,8 @@ const ResponsiveHeader = () => {
                 </KeywordTitle>
                 <HotKeywordsBox>
                   {hotKeywords.map((v, _) => (
-                    <HotKeyword key={_}>
+                    <HotKeyword key={_}
+                    onClick={()=>clickKeyword(v)}>
                       <IcList
                         width={9}
                         height={9}
@@ -472,11 +486,11 @@ const RecentKeyword = styled.div`
   width: 81px;
   height: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
   gap: 9px;
-  padding: 3px 7px;
+  padding: 3px 7px 3px 15px;
   border-radius: 12px;
   background: #e4e4e4;
   box-sizing: border-box;
@@ -493,7 +507,13 @@ const RecentKeyword = styled.div`
     cursor: default;
   }
 `;
-const KeywordSpan = styled.span`
+const Keyword = styled.span`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+`
+
+const NoRecentKeywords = styled.span`
   color: #8f8e94;
   font-family: Pretendard;
   font-size: 14px;
