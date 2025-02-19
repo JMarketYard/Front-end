@@ -22,6 +22,7 @@ import useDeliveryStore from './store/deliveryStore';
 import { PostCharge } from './apis/payAPI'; //결제
 import { useMutation } from '@tanstack/react-query'; //결제
 import Cookies from 'js-cookie'; //결제
+import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -176,27 +177,11 @@ const WinnerPage: React.FC = () => {
       return isoString; // ✅ 유효하지 않은 값이면 기본 메시지 반환
     }
 
-    // ✅ ISO 8601 형식 보장: "2025-02-20T21:52:39" → "2025-02-20T21:52:39Z"
-    const formattedDate = isoString.endsWith('Z') ? isoString : isoString + 'Z';
-
-    return new Date(formattedDate).toLocaleDateString('ko-KR', {
+    return new Date(isoString).toLocaleDateString('ko-KR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
-  };
-
-  const formatMinutesToHoursAndMinutes = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-
-    if (hours > 0 && remainingMinutes > 0) {
-      return `${hours}시간 ${remainingMinutes}분`;
-    } else if (hours > 0) {
-      return `${hours}시간`;
-    } else {
-      return `${remainingMinutes}분`;
-    }
   };
 
   if (deliveryStatus === 'SHIPPING_EXPIRED') {

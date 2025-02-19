@@ -63,25 +63,29 @@ const Probability: React.FC<RaffleDetailProps> = (raffle) => {
               </InfoContainer>
             </CenteredContainer>
           )}
-          {raffle.isWinner === 'hope' && (
-            <CenteredContainer>
-              <TitleBox>지금 당신이 당첨될 확률은?</TitleBox>
-              <DonutChart participant={raffle.applyCount} />
-              <InfoContainer>
-                <ParticipantBox>
-                  현재 참여자 수 : {raffle.applyCount}명
-                </ParticipantBox>
-                <ParticipantBox>
-                  판매자 희망 최소 참여자 : {raffle.minUser}명
-                </ParticipantBox>
-              </InfoContainer>
-            </CenteredContainer>
-          )}
-          {(raffle.isWinner === 'yes' || raffle.isWinner === 'no') && (
-            <CenteredContainer>
-              <TitleBox>해당 래플은 종료되었습니다</TitleBox>
-              <DonutText text="래플 종료" />
-            </CenteredContainer>
+          {raffle.userStatus === 'participant' && (
+            <>
+              {raffle.isWinner === 'hope' && (
+                <CenteredContainer>
+                  <TitleBox>지금 당신이 당첨될 확률은?</TitleBox>
+                  <DonutChart participant={raffle.applyCount} />
+                  <InfoContainer>
+                    <ParticipantBox>
+                      현재 참여자 수 : {raffle.applyCount}명
+                    </ParticipantBox>
+                    <ParticipantBox>
+                      판매자 희망 최소 참여자 : {raffle.minUser}명
+                    </ParticipantBox>
+                  </InfoContainer>
+                </CenteredContainer>
+              )}
+              {(raffle.isWinner === 'yes' || raffle.isWinner === 'no') && (
+                <CenteredContainer>
+                  <TitleBox>해당 래플은 종료되었습니다</TitleBox>
+                  <DonutText text="래플 종료" />
+                </CenteredContainer>
+              )}
+            </>
           )}
         </>
       )}

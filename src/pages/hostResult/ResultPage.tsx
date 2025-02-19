@@ -13,12 +13,14 @@ import NewDrawerModal from './modal/NewDrawerModal';
 import MakeDrawerModal from './modal/MakeDrawerModal';
 import ConsiderModal from './modal/ConsiderModal';
 import WaitModal from './modal/WaitModal';
+import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 
 interface RaffleResult {
   raffleId: number;
   minTicket: number;
   applyTicket: number;
   totalAmount: number;
+  remainedMinutes: number;
 }
 
 const ResultPage: React.FC = () => {
@@ -39,6 +41,7 @@ const ResultPage: React.FC = () => {
     minTicket: 0,
     applyTicket: 0,
     totalAmount: 0,
+    remainedMinutes: 0,
   });
   const [deliveryStatus, setDeliveryStatus] = useState<string>('');
 
@@ -77,7 +80,6 @@ const ResultPage: React.FC = () => {
     };
     fetchDelivery();
   }, [deliveryId, deliveryStatus]);
-
 
   //모달
   const { openModal } = useModalContext();
@@ -215,7 +217,8 @@ const ResultPage: React.FC = () => {
                   새로운 당첨자 뽑기
                 </PurpleButtonBox>
                 <PurpleButtonBox onClick={handleWait}>
-                  기다리기(24시간)
+                  기다리기(
+                  {formatMinutesToHoursAndMinutes(raffle.remainedMinutes)})
                 </PurpleButtonBox>
               </>
             )}
@@ -228,7 +231,8 @@ const ResultPage: React.FC = () => {
               당첨자 추첨 진행
             </PurpleButtonBox>
             <PurpleButtonBox onClick={handleConsider}>
-              나중에 선택하기(24시간)
+              나중에 선택하기(
+              {formatMinutesToHoursAndMinutes(raffle.remainedMinutes)})
             </PurpleButtonBox>
           </>
         )}

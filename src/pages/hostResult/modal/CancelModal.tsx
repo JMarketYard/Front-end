@@ -17,9 +17,9 @@ const CancleModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
       const { data } = await axiosInstance.post(
         `/api/member/raffles/${raffleId}/cancel`,
       );
-      console.log(data);
+      console.log('강제종료함:', data);
       onClose();
-      navigate(`/raffles//${raffleId}`);
+      navigate(`/raffles/${raffleId}`);
     } catch (error) {
       console.error('POST 요청 실패', error);
     }
