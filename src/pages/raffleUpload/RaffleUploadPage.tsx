@@ -34,6 +34,7 @@ const RaffleUploadPage = () => {
     const fileRef = useRef<HTMLInputElement>(null);
     const [images, setImages] = useState<File[]>([]);
     const [category, setCategory] = useState<string>('');
+    const [deliveryFee, setDeliveryFee] = useState<string>("");
 
     const handleImg = () => {
         fileRef?.current?.click();
@@ -54,6 +55,17 @@ const RaffleUploadPage = () => {
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
         const description = (document.getElementById('upload-textarea') as HTMLInputElement).value;
+        // 모두 입력했는지 확인
+        if (images.length===0) return alert("상품 이미지를 추가해주세요");
+        if (category==='' || name==='' ||
+            itemState==="" || description.length===0)
+            return alert("상품 정보를 모두 입력해주세요");
+        if (ticketNum==="" || jcare==="" || deliveryFee==="")
+            return alert("거래 설정을 모두 입력해주세요");
+        if (startDate>=endDate) return alert("개최 기간이 올바르지 않습니다");
+        if (parseInt(deliveryFee)>10000)
+            return alert("배송비는 최대 1만원까지 입력 가능합니다");
+
         const formData = new FormData();
         images.forEach((image) => {
             console.log('images:',image);
@@ -87,8 +99,12 @@ const RaffleUploadPage = () => {
     };
     
     const handleLeastTicketNum = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setLeastTicketNum(e.target.value);
+        setLeastTicketNum(e.target.value.replace(/[^0-9]/g, ''));
     };
+
+    const handleDeliveryFee = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setDeliveryFee(e.target.value.replace(/[^0-9]/g, ''));
+    }
 
     // 응모 티켓 개수 직접 입력 모달 open
     const handleTicketModal = () => {
@@ -247,7 +263,9 @@ const RaffleUploadPage = () => {
                     <SetConditionBox>
                         <TitleSpan2>배송비</TitleSpan2>
                         <InputContainer>
-                            <InputBox type="text" />
+                            <InputBox type="text"
+                            value={deliveryFee}
+                            onChange={handleDeliveryFee} />
                             <StyleP>최대 1만원까지 입력가능</StyleP>
                         </InputContainer>
                     </SetConditionBox>

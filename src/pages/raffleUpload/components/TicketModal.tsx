@@ -10,14 +10,13 @@ interface ModalProps {
 }
 
 const TicketModal: React.FC<ModalProps> = ({ onClose, setMoreTicketText, setTicketNum }) => {
-  const [myTicket, setMyTicket] = useState<string>("");
   const [value, setValue] = useState<string>("");
 
   const onCloseBtn = (value:string) => {
     if (value==="" || parseInt(value)===0) alert("티켓 개수를 1개 이상 입력해주세요");
     else {
-      setMoreTicketText(`${value}개`);
-      setTicketNum(`${value}개`);
+      setMoreTicketText(`${value.replace(/^0+/, '')}개`);
+      setTicketNum(`${value.replace(/^0+/, '')}개`);
       onClose();
     };
   }
@@ -29,7 +28,7 @@ const TicketModal: React.FC<ModalProps> = ({ onClose, setMoreTicketText, setTick
         <Title>티켓 개수 직접 입력하기</Title>
         <Input placeholder="개"
         value={value}
-        onChange={e=>setValue(e.target.value)}
+        onChange={e=>setValue(e.target.value.replace(/[^0-9]/g, ''))}
         />
         <Button onClick={()=>onCloseBtn(value)}>설정하기</Button>
       </Container>
