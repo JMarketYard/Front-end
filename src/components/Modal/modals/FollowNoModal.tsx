@@ -1,19 +1,28 @@
 import React from 'react';
 import Modal from '../Modal';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom'; // ✅ useNavigate import
 import sadVector from '../../../assets/sadVector.png';
 
 interface ModalProps {
   onClose: () => void;
+  message: string;
 }
 
-const FollowNoModal: React.FC<ModalProps> = ({ onClose }) => {
+const FollowNoModal: React.FC<ModalProps> = ({ onClose, message }) => {
+  const navigate = useNavigate(); // ✅ useNavigate 사용
+
+  const handleNavigateToProfile = () => {
+    onClose(); // ✅ 모달 종료
+    navigate('/mypage'); // ✅ /mypage로 이동
+  };
+
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={sadVector} />
-        <Title>팔로우가 취소되었습니다.</Title>
-        <Button onClick={onClose}>문의하기</Button>
+        <Title>{message}</Title>
+        <Button onClick={handleNavigateToProfile}>내 프로필로 이동하기</Button>
       </Container>
     </Modal>
   );
@@ -32,6 +41,7 @@ const Button = styled.button`
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
+  cursor: pointer;
 `;
 
 const Title = styled.div`
@@ -40,6 +50,7 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 600;
   margin-bottom: 158px;
+  text-align: center;
 `;
 
 const Img = styled.img`

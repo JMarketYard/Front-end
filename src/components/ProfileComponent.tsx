@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ 추가
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import platinum3 from "../assets/mypages/platinum3.svg";
 import profileDefault from "../assets/mypages/profileDefault.svg";
 import editProfile from "../assets/mypages/editProfile.svg";
- 
+import NameEditModal from "./Modal/modals/NameEditModal"; 
+import axiosInstance from "../apis/axiosInstance";
+
 interface ProfileProps {
   username: string;
   followers: number;
@@ -19,20 +21,59 @@ const ProfileComponent: React.FC<ProfileProps> = ({
   onEditProfile,
 }) => {
   const [profileImage, setProfileImage] = useState<string>(profileDefault);
-  const navigate = useNavigate(); // ✅ 네비게이션 훅 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // ✅ DB에서 프로필 정보 가져오기
+  const fetchProfileData = async () => {
+    try {
+      const response = await axiosInstance.get("/api/member/mypage");
+      if (response.data.isSuccess) {
+        const profileData = response.data.result;
+        setProfileImage(profileData.profileImageUrl || profileDefault);
+      } else {
+        console.error("프로필 정보를 불러오는 데 실패했습니다:", response.data.message);
+      }
+    } catch (error) {
+      console.error("프로필 데이터를 불러오는 중 오류 발생:", error);
+    }
+  };
+
+  // ✅ 컴포넌트 마운트 시 프로필 데이터 가져오기
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profile", file);
+
+    try {
+      const response = await axiosInstance.patch("/api/member/mypage/profile-image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+      });
+
+      console.log("프로필 변경 응답:", response.data);
+
+      if (response.data.isSuccess) {
+        setProfileImage(response.data.result); // ✅ 변경된 이미지 업데이트
+      } else {
+        alert(response.data.message || "프로필 변경에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("프로필 변경 중 오류 발생:", error);
+      alert("프로필 변경 중 오류가 발생했습니다.");
     }
   };
 
   return (
     <ProfileWrapper>
       <ProfileContent>
-        {/* ✅ 프로필 이미지 */}
         <ProfileImageWrapper>
           <ProfileImage src={profileImage} alt="Profile" />
           <EditIcon htmlFor="profile-upload">
@@ -46,15 +87,13 @@ const ProfileComponent: React.FC<ProfileProps> = ({
           />
         </ProfileImageWrapper>
 
-        {/* ✅ 사용자 정보 */}
         <UserDetails>
           <UserInfo>
             <RankIcon src={platinum3} alt="Platinum Rank" />
             <Username>{username}</Username>
-            <EditButton onClick={onEditProfile}>닉네임 변경하기</EditButton>
+            <EditButton onClick={() => setIsModalOpen(true)}>닉네임 변경하기</EditButton>
           </UserInfo>
 
-          {/* ✅ 팔로워 & 후기 프레임 */}
           <StatsContainer>
             <StatItem>
               팔로워 <StatNumber>{followers}</StatNumber>
@@ -69,17 +108,31 @@ const ProfileComponent: React.FC<ProfileProps> = ({
             <StyledButton onClick={() => navigate("/mypage/following-list")}>
               팔로잉 목록
             </StyledButton>
-            <StyledButton onClick={() => navigate("/mypage/my-review")}>상점 후기</StyledButton> 
+            <StyledButton onClick={() => navigate("/mypage/my-review")}>
+              상점 후기
+            </StyledButton>
           </ButtonContainer>
         </UserDetails>
       </ProfileContent>
+
+      {isModalOpen && (
+      <NameEditModal
+          currentNickname={username}  // ✅ 현재 닉네임 전달
+          onClose={() => setIsModalOpen(false)}
+          onNicknameChange={(newNickname) => {
+            setIsModalOpen(false); // ✅ 모달 닫기
+            // ✅ 변경된 닉네임을 부모 컴포넌트에서 반영할 수 있도록 전달
+            navigate(0); // 또는 상태를 업데이트하여 반영
+          }}
+        />
+      )}
     </ProfileWrapper>
   );
 };
 
 export default ProfileComponent;
 
-/* ✅ 전체 컴포넌트 */
+
 const ProfileWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -89,7 +142,6 @@ const ProfileWrapper = styled.div`
   margin-bottom: 117px;
 `;
 
-/* ✅ 프로필 이미지 + 정보 담는 프레임 */
 const ProfileContent = styled.div`
   display: flex;
   width: 555px;
@@ -98,7 +150,6 @@ const ProfileContent = styled.div`
   flex-shrink: 0;
 `;
 
-/* ✅ 프로필 이미지 */
 const ProfileImageWrapper = styled.div`
   position: relative;
   width: 222px;
@@ -112,12 +163,10 @@ const ProfileImage = styled.img`
   object-fit: cover;
 `;
 
-/* ✅ 파일 선택 숨기기 */
 const HiddenFileInput = styled.input`
   display: none;
 `;
 
-/* ✅ 편집 아이콘 */
 const EditIcon = styled.label`
   position: absolute;
   bottom: 8px;
@@ -135,7 +184,6 @@ const EditIcon = styled.label`
   }
 `;
 
-/* ✅ 사용자 정보 (오른쪽) */
 const UserDetails = styled.div`
   display: flex;
   flex-direction: column;
@@ -143,7 +191,6 @@ const UserDetails = styled.div`
   gap: 12px;
 `;
 
-/* ✅ 닉네임 + 랭크 */
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
@@ -165,7 +212,6 @@ const Username = styled.div`
   line-height: 36px;
 `;
 
-/* ✅ 닉네임 변경 버튼 */
 const EditButton = styled.button`
   font-size: 13px;
   padding: 5px 10px;
@@ -181,7 +227,6 @@ const EditButton = styled.button`
   }
 `;
 
-/* ✅ 팔로워 & 후기 프레임 */
 const StatsContainer = styled.div`
   display: flex;
   width: 238px;
@@ -189,7 +234,6 @@ const StatsContainer = styled.div`
   align-items: center;
 `;
 
-/* ✅ 팔로워 & 후기 개수 */
 const StatItem = styled.div`
   font-size: 20px;
   font-weight: 500;
@@ -197,28 +241,24 @@ const StatItem = styled.div`
   color: #000;
 `;
 
-/* ✅ 팔로워 & 후기 숫자 색상 */
 const StatNumber = styled.span`
   color: #c908ff;
   font-size: 20px;
   font-weight: 500;
 `;
 
-/* ✅ 팔로워 & 후기 사이 구분 바 */
 const Divider = styled.div`
   width: 1px;
   height: 43px;
   background-color: #000;
 `;
 
-/* ✅ 버튼 컨테이너 */
 const ButtonContainer = styled.div`
   display: flex;
   gap: 16px;
   justify-content: center;
 `;
 
-/* ✅ 버튼 (팔로잉 목록 & 상점 후기) */
 const StyledButton = styled.button`
   width: 138px;
   height: 39px;

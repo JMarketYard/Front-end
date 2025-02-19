@@ -32,7 +32,7 @@ const Setting: React.FC = () => {
         <BigTitle>설정</BigTitle>
       </BigTitleWrapper>
       <SmallTitleBox>
-        <SmallTitle onClick={() => handleNavigation("/mypage/address")}>
+        <SmallTitle onClick={() => handleNavigation("/address")}>
           배송지 설정
         </SmallTitle>
         <SmallTitle onClick={() => handleNavigation("/mypage/payment")}>

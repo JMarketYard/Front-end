@@ -4,6 +4,9 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import media from '../../../styles/media';
+import promotion1 from '../../../assets/homePage/promotion1.svg';
+import promotion2 from '../../../assets/homePage/promotion2.svg';
+import promotion3 from '../../../assets/homePage/promotion3.svg';
 
 function AdBanner() {
   const settings = {
@@ -23,14 +26,21 @@ function AdBanner() {
     <Wrapper>
       <Slider {...settings}>
         <div>
-          <AdBox>래플로 즐기는 중고거래</AdBox>
+          <AdBox>
+            <AdImage src={promotion3} alt="프로모션 3" />
+          </AdBox>
         </div>
         <div>
-          <AdBox>장마당과 함께 해요!</AdBox>
+          <AdBox>
+            <AdImage src={promotion1} alt="프로모션 1" />
+          </AdBox>
         </div>
         <div>
-          <AdBox>가벼운 응모, 커다란 행복</AdBox>
+          <AdBox>
+            <AdImage src={promotion2} alt="프로모션 2" />
+          </AdBox>
         </div>
+
       </Slider>
     </Wrapper>
   );
@@ -47,7 +57,6 @@ const Wrapper = styled.div`
   background-color: white;
 
   .slick-slide {
-    width: 1440px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -72,24 +81,24 @@ const Wrapper = styled.div`
   }
   ${media.medium`
       margin-top: 26px;
-    `}
+  `}
 `;
 
-const AdBox = styled.a`
+const AdBox = styled.div`
   width: 825px;
   height: 369px;
   flex-shrink: 0;
   margin: 0 23px;
   border-radius: 31px;
-  background: rgba(201, 8, 255, 0.8);
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #e4e4e4;
+`;
 
-  color: white;
-  font-family: Pretendard;
-  font-size: 80px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 150%; /* 42px */
+const AdImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
