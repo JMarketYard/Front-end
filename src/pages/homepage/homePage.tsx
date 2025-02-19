@@ -32,7 +32,7 @@ const HomePage: React.FC = () => {
         const { data } = await axiosInstance.get(
           isAuthenticated ? '/api/member/home' : '/api/permit/home',
         );
-        console.log('API Response:', data.result.raffles);
+        console.log('API Response:', data.result);
         setHomeData(data.result);
       } catch (error) {
         console.error('데이터 가져오기 실패', error);
@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchHomeData();
-  }, []);
+  }, [isAuthenticated]);
 
   if (!homeData) return <div>Loading...</div>;
 
@@ -64,7 +64,7 @@ const HomePage: React.FC = () => {
             title="내가 찜한 래플"
             icon={likeIcon}
             apiKey="myLikeRaffles"
-            moreLink="raffles/list/myLikes"
+            moreLink="raffles/list/likes"
             products={homeData.myLikeRaffles || []}
           />
         ) : null}
@@ -73,7 +73,7 @@ const HomePage: React.FC = () => {
             title="내가 팔로우한 상점"
             icon={followIcon}
             apiKey="myFollowRaffles"
-            moreLink="raffles/list/myFollow"
+            moreLink="raffles/list/following"
             products={homeData.myFollowRaffles || []}
           />
         ) : null}

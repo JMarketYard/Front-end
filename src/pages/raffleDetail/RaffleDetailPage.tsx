@@ -30,8 +30,11 @@ const RaffleDetailPage: React.FC = () => {
     isWinner: '',
     raffleStatus: 'UNOPENED',
     deliveryId: 0,
+    followStatus: false,
+    storeImageUrl: '',
   });
-  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
+  const [isApplying, setIsApplying] = useState<boolean>(false);
+  const [followingState, setFollowingState] = useState<boolean>(false);
 
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
@@ -51,17 +54,17 @@ const RaffleDetailPage: React.FC = () => {
     };
 
     fetchRaffleData();
-  }, [shouldFetch]);
+  }, [isApplying, followingState]);
 
   return (
     <Wrapper>
-      <Item
-        {...raffleData}
-        shouldFetch={shouldFetch}
-        setShouldFetch={setShouldFetch}
-      />
+      <Item {...raffleData} setIsApplying={setIsApplying} />
       <MoreInfoLayout>
-        <Market {...raffleData} type={type} />
+        <Market
+          {...raffleData}
+          type={type}
+          setFollowingState={setFollowingState}
+        />
         <Probability {...raffleData} />
       </MoreInfoLayout>
     </Wrapper>

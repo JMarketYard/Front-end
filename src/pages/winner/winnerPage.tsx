@@ -14,23 +14,46 @@ import { useModalContext } from '../../components/Modal/context/ModalContext';
 import GiveUpModal from './modals/GiveUpModal';
 import { Icon } from '@iconify/react';
 import CompletedModal from './modals/CompletedModal';
+import CircleChecked from '@mui/icons-material/CheckCircleOutline';
+import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
+import Checkbox from '@mui/material/Checkbox';
+import WaitShippingModal from './modals/WaitShippingModal';
+import useDeliveryStore from './store/deliveryStore';
+import { PostCharge } from './apis/payAPI'; //결제
+import { useMutation } from '@tanstack/react-query'; //결제
+import Cookies from 'js-cookie'; //결제
+import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
+
+export type TRaffleInfo = {
+  raffleName: string;
+  raffleImage: string;
+  drawAt: string;
+  extendableMinutes: number;
+};
 
 export type TWinner = {
   raffleId: number;
   winnerId: number;
-  deadline: string;
-  shippingFee: number;
   deliveryStatus: TDeliveryStatus;
-  isExtendShipping: boolean;
+  addressDeadline: string;
+  shippingDeadline: string;
+  shippingFee: number;
+  invoiceNumber: string;
   address: TAddress | null;
+  raffleInfo: TRaffleInfo;
+  shippingExtended: boolean;
 };
 
 const WinnerPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const deliveryId = location.state?.deliveryId ?? '';
-  const image = location.state?.image ?? '';
   const { openModal } = useModalContext();
+  const [checked, setChecked] = useState(false);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+  const { shouldRefetch, triggerRefetch } = useDeliveryStore();
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -40,44 +63,139 @@ const WinnerPage: React.FC = () => {
     phoneNumber: '',
     isDefault: false,
   });
+  const [winnerData, setWinnerData] = useState<TWinner>();
   const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
-  const isShipped =
-    deliveryStatus === 'SHIPPED' || deliveryStatus === 'COMPLETED';
 
-  const fetchAddress = async () => {
-    try {
-      const { data } = await axiosInstance.get(
-        `/api/member/delivery/${deliveryId}/winner`,
-      );
+  //결제코드 시작
+  const { mutate: postMutation } = useMutation({
+    mutationFn: PostCharge,
+    onSuccess: (data) => {
+      if (!data?.redirectUrl) {
+        console.error('🚨 redirectUrl이 존재하지 않습니다.');
+        return;
+      }
 
-      setDeliveryStatus(data.result.deliveryStatus);
-      setAddress(data.result.address);
-      console.log(data.result.address);
-    } catch (error) {
-      console.error(error);
+      console.log('🔍 원본 redirectUrl:', data.redirectUrl);
+
+      try {
+        let fullRedirectUrl = data.redirectUrl;
+
+        // 만약 상대경로라면 절대경로로 변환
+        if (!fullRedirectUrl.startsWith('http')) {
+          fullRedirectUrl = `${window.location.origin}${fullRedirectUrl}`;
+        }
+
+        console.log('🌍 변환된 URL:', fullRedirectUrl);
+
+        const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
+        const actualUrl = urlParams.get('url');
+
+        let tid = urlParams.get('tid'); // tid 추출
+
+        if (!tid) {
+          console.warn('⚠️ TID가 없어서 "tid"라는 기본 값을 사용합니다.');
+          tid = 'tid'; // tid가 없을 경우 기본값 설정
+        }
+
+        console.log('🔄 now tid:', tid); // tid 로그 출력
+
+        // 쿠키를 '/api/payment/approve' 경로에 설정
+        Cookies.set('tid', tid, {
+          expires: 1,
+          path: '/', // 전체 경로에서 쿠키 유효
+          domain: 'jangmadang.site', // www.jangmadang.site와 api.jangmadang.site에서 쿠키 공유
+          secure: true, // HTTPS에서만 쿠키 유효
+          sameSite: 'Lax', // SameSite 설정 변경 (보안을 위해 Lax로 설정)
+        });
+
+        console.log('쿠키 설정:', document.cookie); // 쿠키가 제대로 설정되었는지 확인
+
+        if (actualUrl && actualUrl.startsWith('https://')) {
+          console.log('🔄 Redirecting to:', actualUrl);
+          window.location.href = actualUrl;
+        } else {
+          console.error('🚨 URL parameter "url" not found or invalid.');
+        }
+      } catch (error) {
+        console.error('🚨 Error processing redirect URL:', error);
+      }
+    },
+    onError: (error) => {
+      console.log('충전 요청 실패 : ', error);
+    },
+  });
+
+  const handleNextModal = () => {
+    if (checked) {
+      postMutation({
+        itemId: '배송비',
+        itemName: '배송비',
+        totalAmount: winnerData?.shippingFee ?? 4000,
+      });
     }
   };
-  fetchAddress();
+  //결제코드 끝
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/member/delivery/${deliveryId}/winner`,
+        );
+        setWinnerData(data.result);
+        setDeliveryStatus(data.result.deliveryStatus);
+        setAddress(data.result.address);
+        console.log(data.result);
+        console.log(data.result.address);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAddress();
+  }, [shouldRefetch]);
 
   const handleGiveUpModal = () => {
-    openModal(({ onClose }) => <GiveUpModal onClose={onClose} />);
+    openModal(({ onClose }) => (
+      <GiveUpModal onClose={onClose} deliveryId={deliveryId} />
+    ));
   };
 
   const handleCompletedModal = () => {
-    openModal(({ onClose }) => <CompletedModal onClose={onClose} />);
+    openModal(({ onClose }) => (
+      <CompletedModal onClose={onClose} deliveryId={deliveryId} />
+    ));
   };
 
-  if (0) {
+  const handleWaitdModal = () => {
+    openModal(({ onClose }) => (
+      <WaitShippingModal onClose={onClose} deliveryId={deliveryId} />
+    ));
+  };
+
+  const formatDate = (isoString: string) => {
+    if (!isoString) {
+      return isoString; // ✅ 유효하지 않은 값이면 기본 메시지 반환
+    }
+
+    return new Date(isoString).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  if (deliveryStatus === 'SHIPPING_EXPIRED') {
     // 운송장 입력기한 만료 (당첨자의 선택이 필요함)
-    // deliveryStatus === 'SHIPPING_EXPIRED'
     return (
       <Wrapper>
         <BigTitle>래플 결과</BigTitle>
         <RaffleLayout>
-          <Box src={image} alt="상품 이미지" />
+          <Box src={winnerData?.raffleInfo.raffleImage} alt="상품 이미지" />
           <RaffleContainer>
-            <NameBox>로지텍 무소음 마우스</NameBox>
-            <DateBox>당첨 일시 : </DateBox>
+            <NameBox>{winnerData?.raffleInfo.raffleName}</NameBox>
+            <DateBox>
+              당첨 일시 : {formatDate(winnerData?.raffleInfo.drawAt ?? '')}
+            </DateBox>
           </RaffleContainer>
         </RaffleLayout>
         <Mark>!</Mark>
@@ -95,14 +213,20 @@ const WinnerPage: React.FC = () => {
           </WarningContainer>
 
           <PurpleButton onClick={() => navigate('/')}>
-            기다리기 (24시간)
+            기다리기 (
+            {formatMinutesToHoursAndMinutes(
+              winnerData?.raffleInfo.extendableMinutes ?? 0,
+            )}
+            )
           </PurpleButton>
         </ButtonLayout2>
       </Wrapper>
     );
   } else {
-    if (0) {
-      //(deliveryStatus === 'WAITING_ADDRESS' || deliveryStatus === 'WAITING_PAYMENT')
+    if (
+      deliveryStatus === 'WAITING_ADDRESS' ||
+      deliveryStatus === 'WAITING_PAYMENT'
+    ) {
       return (
         <Wrapper>
           <BigTitle>
@@ -114,14 +238,11 @@ const WinnerPage: React.FC = () => {
           </BigTitle>
 
           <AddressLayout>
-            <Checkbox fill={'#C908FF'} />
+            {/*<Checkbox fill={'#C908FF'} />*/}
             <AddressContainer>
-              <TitleSpan>주소이름{address.addressName}</TitleSpan>
+              <TitleSpan>{address.addressName}</TitleSpan>
               <DefaultBox>기본 배송지</DefaultBox>
-              <AddressSpan>
-                서울특별시 마포구 와우산로 94 홍익대학교 제2기숙사
-                {address.addressDetail}
-              </AddressSpan>
+              <AddressSpan>{address.addressDetail}</AddressSpan>
             </AddressContainer>
           </AddressLayout>
 
@@ -141,20 +262,56 @@ const WinnerPage: React.FC = () => {
               <SmallGraySpan>-------</SmallGraySpan>
             </InfoContainer>
             <Hr />
-            <p>전체 동의</p>
+            <AgreeBox>
+              <Checkbox
+                style={{
+                  transform: 'translateY(0px)',
+                }}
+                sx={{
+                  '& .MuiSvgIcon-root': { fontSize: 25 },
+                  '&.Mui-checked': {
+                    color: '#C908FF',
+                  },
+                }}
+                checked={checked}
+                onChange={(event) => {
+                  event.stopPropagation();
+                  handleChange(event);
+                }}
+                icon={<CircleUnchecked />}
+                checkedIcon={<CircleChecked />}
+              />
+              <Consent>
+                <span style={{ color: '#C908FF' }}>[필수]</span> 전체동의
+              </Consent>
+            </AgreeBox>
+            <CheckBox2>
+              <Short>개인정보 제공</Short>
+              <Icon
+                icon="weui:arrow-outlined"
+                style={{
+                  width: '23px',
+                  height: '25px',
+                  cursor: 'pointer',
+                  color: '#8F8E94',
+                }}
+              />
+            </CheckBox2>
+
             <FeeContainer>
               <FeeTitleBox>배송비</FeeTitleBox>
-              <FeeAmountBox>4000 원</FeeAmountBox>
+              <FeeAmountBox>{winnerData?.shippingFee} 원</FeeAmountBox>
             </FeeContainer>
           </InfoLayout>
 
           <ButtonLayout>
-            <KakaoButtons>
+            <KakaoButtons onClick={handleNextModal}>
               <ResponsiveIcon icon="raphael:bubble" />
               <Kakao>카카오페이로 결제하기</Kakao>
             </KakaoButtons>
             <PurpleButton onClick={() => navigate('/')}>
-              나중에 결제하기(입력기한 : 1/12)
+              나중에 결제하기 (입력기한 :{' '}
+              {formatDate(winnerData?.addressDeadline ?? '')})
             </PurpleButton>
           </ButtonLayout>
         </Wrapper>
@@ -183,12 +340,12 @@ const WinnerPage: React.FC = () => {
             <Hr />
             <InfoContainer>
               <SmallTitleSpan>운송장번호</SmallTitleSpan>
-              <SmallPurpleSpan>0000</SmallPurpleSpan>
+              <SmallPurpleSpan>{winnerData?.invoiceNumber}</SmallPurpleSpan>
             </InfoContainer>
             <Hr />
             <FeeContainer>
               <FeeTitleBox>배송비</FeeTitleBox>
-              <FeeAmountBox>4000 원</FeeAmountBox>
+              <FeeAmountBox>{winnerData?.shippingFee} 원</FeeAmountBox>
             </FeeContainer>
           </InfoLayout>
 
@@ -199,13 +356,12 @@ const WinnerPage: React.FC = () => {
             <PurpleButton
               onClick={() =>
                 navigate('/review', {
-                  state: { deliveryId: 1 },
+                  state: { deliveryId: { deliveryId } },
                 })
               }
             >
               후기 작성하기
             </PurpleButton>
-            {/*state 수정!!*/}
             <PurpleButton onClick={() => navigate('/')}>
               홈 화면으로 돌아가기
             </PurpleButton>
@@ -265,18 +421,18 @@ const AddressLayout = styled.div`
   margin: 46px 0 172px 0;
 `;
 
-const Checkbox = styled(checkbox)`
-  width: 27.2px;
-  height: 27.1px;
-  /* &:hover {
-    cursor: pointer;
-  } */
+// const Checkbox = styled(checkbox)`
+//   width: 27.2px;
+//   height: 27.1px;
+//   /* &:hover {
+//     cursor: pointer;
+//   } */
 
-  ${media.medium`
-    width: 21px;
-    height: 21px;
-  `}
-`;
+//   ${media.medium`
+//     width: 21px;
+//     height: 21px;
+//   `}
+// `;
 
 const AddressContainer = styled.div`
   display: flex;
@@ -391,7 +547,7 @@ const SmallBlackSpan = styled.span`
   line-height: 17.308px; /* 115.385% */
 `;
 
-const Hr = styled.hr`
+const Hr = styled.div`
   width: 100%;
   height: 1px;
   background: #8f8e94;
@@ -636,4 +792,40 @@ const ResponsiveIcon = styled(Icon)`
     width: 19px; 
     height: 15px;
   `}
+`;
+
+const AgreeBox = styled.div`
+  width: 100%;
+  height: 43px;
+  border-bottom: 1px solid #c1c1c1;
+  margin-top: 228px;
+  margin-bottom: 15px;
+  display: flex;
+  column-gap: 15px;
+  align-items: center;
+  padding-left: 10px;
+`;
+
+const CheckBox2 = styled.div`
+  display: flex;
+  margin-bottom: 48px;
+  column-gap: 300px;
+  align-items: center;
+  transform: translateX(70px);
+`;
+
+const Consent = styled.div`
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  transform: translateY(1px);
+`;
+
+const Short = styled.div`
+  color: #8f8e94;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 17.308px; /* 96.154% */
 `;

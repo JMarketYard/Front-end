@@ -2,19 +2,40 @@ import React from 'react';
 import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../apis/axiosInstance';
+import useDeliveryStore from '../store/deliveryStore';
 
 interface ModalProps {
   onClose: () => void;
+  deliveryId: number;
 }
 
-const GiveUpModal: React.FC<ModalProps> = ({ onClose }) => {
+const GiveUpModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
+  const navigate = useNavigate();
+  const { triggerRefetch } = useDeliveryStore();
+
+  const handleClick = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `/api/member/delivery/${deliveryId}/winner/cancel`,
+        {},
+      );
+      triggerRefetch();
+    } catch (error) {
+      console.error(error);
+    }
+    onClose();
+    navigate(`/`);
+  };
+
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
         <Title>당첨을 포기하시겠습니까?</Title>
         <Short>해당 결정은 번복할 수 없습니다.</Short>
-        <Button onClick={onClose}>포기하기</Button>
+        <Button onClick={handleClick}>포기하기</Button>
       </Container>
     </Modal>
   );
