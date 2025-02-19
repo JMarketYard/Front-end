@@ -76,13 +76,11 @@ const RaffleUploadPage = () => {
         formData.append("itemStatus", itemState);
         formData.append("description", description);
         formData.append("ticketNum", parseInt(ticketNum).toString());
-        formData.append("minTicket", leastTicketNum);
+        formData.append("minTicket", leastTicketNum.replace(',',''));
         formData.append("startAt", startDate.toISOString().replace('Z',''));
         formData.append("endAt", endDate.toISOString().replace('Z',''));
         console.log('제출버튼클릭');
-        // for (let [key, value] of formData.entries()) {
-        //     console.log(`${key}: ${value}`);
-        //   };
+        
         openModal(({ onClose }) => <UploadModal onClose={onClose}
         images={images} name={name} formData={formData} />);
     };
@@ -99,11 +97,11 @@ const RaffleUploadPage = () => {
     };
     
     const handleLeastTicketNum = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setLeastTicketNum(e.target.value.replace(/[^0-9]/g, ''));
+        setLeastTicketNum(e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     };
 
     const handleDeliveryFee = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setDeliveryFee(e.target.value.replace(/[^0-9]/g, ''));
+        setDeliveryFee(e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }
 
     // 응모 티켓 개수 직접 입력 모달 open
@@ -120,13 +118,14 @@ const RaffleUploadPage = () => {
                 <ItemInfoContainer>
                     <ImgContainer>
                         <ImgSpan>상품 이미지</ImgSpan>
-                        <div onClick={handleImg}>
+                        <div>
                             {images.length===0 ?
                             <ImgFileLabel htmlFor="img-file">
                                 <ImgFileIcon src={imgUpload} />
                             </ImgFileLabel> :
-                            <SelectedImg src={URL.createObjectURL(images[0])} />
-                            }
+                            <ImgFileLabel htmlFor="img-file">
+                                <SelectedImg src={URL.createObjectURL(images[0])} />
+                            </ImgFileLabel>}
                         </div>
                         <InputImgFile
                         name="files"
@@ -233,7 +232,7 @@ const RaffleUploadPage = () => {
                             name="minTicket"
                             value={leastTicketNum}
                             onChange={handleLeastTicketNum} />
-                            <StyleP>예상 정산 금액: {Number(leastTicketNum)*100 || 0}원</StyleP>
+                            <StyleP>예상 정산 금액: {(parseInt(leastTicketNum.replace(',',''))*100).toLocaleString() || 0}원</StyleP>
                         </InputContainer>
                     </SetConditionBox>
                     <SetConditionBox>
