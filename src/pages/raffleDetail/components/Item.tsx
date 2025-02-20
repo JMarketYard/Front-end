@@ -19,9 +19,14 @@ import { postLike, deleteLike } from '../../../services/likeService';
 
 type ItemProps = RaffleDetailProps & {
   setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
+const Item: React.FC<ItemProps> = ({
+  setIsApplying,
+  setIsChecked,
+  ...raffle
+}) => {
   const [isLiked, setIsLiked] = useState<boolean>(raffle.likeStatus);
   const [likeCount, setLikeCount] = useState<number>(raffle.likeCount);
   const navigate = useNavigate();
@@ -79,6 +84,7 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
         onClose={onClose}
         image={raffle.imageUrls[0]}
         {...drawData}
+        setIsChecked={setIsChecked}
       />
     ));
   };
