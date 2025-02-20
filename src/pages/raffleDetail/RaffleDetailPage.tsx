@@ -21,6 +21,7 @@ const RaffleDetailPage: React.FC = () => {
     minUser: 0,
     view: 0,
     likeCount: 0,
+    likeStatus: false,
     applyCount: 0,
     nickname: '',
     storeId: 0,
@@ -75,6 +76,7 @@ export default RaffleDetailPage;
 
 const Wrapper = styled.div`
   width: 1080px;
+  padding-bottom: 200px;
   display: flex;
   align-items: center;
   flex-direction: column;

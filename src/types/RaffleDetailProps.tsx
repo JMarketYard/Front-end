@@ -11,6 +11,7 @@ type RaffleDetailProps = {
   minUser: number;
   view: number;
   likeCount: number;
+  likeStatus: boolean;
   applyCount: number;
   nickname: string;
   storeId: number;
