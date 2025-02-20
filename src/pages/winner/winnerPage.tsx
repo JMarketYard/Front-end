@@ -72,7 +72,6 @@ const WinnerPage: React.FC = () => {
 
   useEffect(() => {
     if (!approvedAt) return;
-
     const sendPostRequest = async () => {
       try {
         const { data } = await axiosInstance.post(
@@ -92,7 +91,6 @@ const WinnerPage: React.FC = () => {
     };
 
     sendPostRequest();
-
   }, [approvedAt]);
 
   //결제코드 시작

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import BigTitle from '../../../components/BigTitle';
@@ -15,17 +15,18 @@ import { ApplyType } from './apis/raffleType';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { useAuth } from '../../../context/AuthContext';
 import SplashModal from '../../login/components/SplashModal';
+import { postLike, deleteLike } from '../../../services/likeService';
 
 type ItemProps = RaffleDetailProps & {
   setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(raffle.likeCount);
+  const [isLiked, setIsLiked] = useState<boolean>(raffle.likeStatus);
+  const [likeCount, setLikeCount] = useState<number>(raffle.likeCount);
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
-  const typeNumber = type ? parseInt(type, 10) : undefined;
+  const raffleId = type ? parseInt(type, 10) : 0;
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
 
@@ -33,37 +34,22 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
     openModal(({ onClose }) => <SplashModal onClose={onClose} />);
   };
 
-  const postLike = async (typeNumber: number) => {
-    try {
-      await axiosInstance.post(`/api/member/raffles/like`, null, {
-        params: { itemId: typeNumber }, // 그대로 number로 전달
-      });
-      console.log('찜하기 성공');
-    } catch (error) {
-      console.error('찜하기 실패:', error);
-    }
-  };
-
-  const deleteLike = async (typeNumber: number) => {
-    try {
-      await axiosInstance.delete(`/api/member/raffles/like`, {
-        params: { itemId: typeNumber }, // 그대로 number로 전달
-      });
-      console.log('찜하기 취소');
-    } catch (error) {
-      console.error('찜 취소 실패:', error);
-    }
-  };
+  useEffect(() => {
+    setIsLiked(raffle.likeStatus ?? false);
+    setLikeCount(raffle.likeCount ?? 0);
+  }, [raffle.likeStatus, raffle.likeCount]);
 
   const toggleLike = async () => {
-    if (typeNumber === undefined) return;
+    if (raffle.likeStatus === undefined) {
+      console.log('원래 좋아요:', isLiked);
+    }
 
     if (isLiked) {
-      await deleteLike(typeNumber);
+      await deleteLike(raffleId);
       setIsLiked(false);
       setLikeCount((prev) => prev - 1);
     } else {
-      await postLike(typeNumber);
+      await postLike(raffleId);
       setIsLiked(true);
       setLikeCount((prev) => prev + 1);
     }
@@ -84,7 +70,7 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
 
   const handleWinner = async () => {
     const { data } = await axiosInstance.get(
-      `/api/member/raffles/${typeNumber}/draw`,
+      `/api/member/raffles/${raffleId}/draw`,
     );
     const drawData = data.result;
     console.log('draw data:', drawData);
@@ -132,7 +118,7 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
         <DetailLayout>
           <ItemTitleBox>{raffle.name}</ItemTitleBox>
           <ViewBox>
-            조회 {raffle.view} · 찜 {raffle.likeCount}
+            조회 {raffle.view} · 찜 {likeCount}
           </ViewBox>
           <TicketBox>
             <img src={icTicket} alt="ticket" />
@@ -199,7 +185,7 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
                         state: {
                           deliveryId: raffle.deliveryId,
                           status: raffle.raffleStatus,
-                          raffleId: typeNumber,
+                          raffleId: raffleId,
                         },
                       })
                     }
