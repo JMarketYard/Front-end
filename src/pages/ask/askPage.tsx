@@ -36,6 +36,8 @@ const AskPage = () => {
   const [notAnswered, setNotAnswered] = useState<IAnswerItem[]>([]);
   const { state } = useLocation();
   const { type } = useParams();
+  const sRaffle = state.raffle;
+  console.log(sRaffle);
   const formatDate = (isoString: string) =>
     new Date(isoString).toLocaleString('ko-KR', {
       year: 'numeric',
@@ -81,38 +83,38 @@ const AskPage = () => {
     <Container>
       <BigTitle>문의 게시판</BigTitle>
       <TopLayout>
-        <ImgSlider images={state.imageUrls} name={state.name}>
-          {(state.raffleStatus === 'UNFULFILLED' ||
-            state.raffleStatus === 'ENDED' ||
-            state.raffleStatus === 'CANCELLED' ||
-            state.raffleStatus === 'COMPLETED') && (
+        <ImgSlider images={sRaffle.imageUrls} name={sRaffle.name}>
+          {(sRaffle.raffleStatus === 'UNFULFILLED' ||
+            sRaffle.raffleStatus === 'ENDED' ||
+            sRaffle.raffleStatus === 'CANCELLED' ||
+            sRaffle.raffleStatus === 'COMPLETED') && (
             <RaffleClosingBox>응모 마감</RaffleClosingBox>
           )}
         </ImgSlider>
         <DetailLayout>
-          <ItemTitleBox>{state.name}</ItemTitleBox>
+          <ItemTitleBox>{sRaffle.name}</ItemTitleBox>
           <ViewBox>
-            조회 {state.view} · 찜 {state.likeCount}
+            조회 {sRaffle.view} · 찜 {sRaffle.likeCount}
           </ViewBox>
           <TicketBox>
             <img src={icTicket} alt="ticket" width={34.61} height={22.023} />
-            {state.ticketNum}
+            {sRaffle.ticketNum}
           </TicketBox>
           <DetailContainer>
             <TitleBox>카테고리</TitleBox>
-            <DescriptionBox>{state.category}</DescriptionBox>
+            <DescriptionBox>{sRaffle.category}</DescriptionBox>
           </DetailContainer>
           <DetailContainer>
             <TitleBox>응모오픈</TitleBox>
-            <DescriptionBox>{formatDate(state.startAt)}</DescriptionBox>
+            <DescriptionBox>{formatDate(sRaffle.startAt)}</DescriptionBox>
           </DetailContainer>
           <DetailContainer className="last">
             <TitleBox>응모마감</TitleBox>
-            <DescriptionBox>{formatDate(state.endAt)}</DescriptionBox>
-            {(state.raffleStatus === 'UNFULFILLED' ||
-              state.raffleStatus === 'ENDED' ||
-              state.raffleStatus === 'CANCELLED' ||
-              state.raffleStatus === 'COMPLETED') && (
+            <DescriptionBox>{formatDate(sRaffle.endAt)}</DescriptionBox>
+            {(sRaffle.raffleStatus === 'UNFULFILLED' ||
+              sRaffle.raffleStatus === 'ENDED' ||
+              sRaffle.raffleStatus === 'CANCELLED' ||
+              sRaffle.raffleStatus === 'COMPLETED') && (
               <TextBox>응모마감</TextBox>
             )}
           </DetailContainer>
