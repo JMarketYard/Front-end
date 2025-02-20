@@ -14,8 +14,7 @@ import { GetMyTicket, PostCharge, PostExchange } from '../../apis/chargeAPI';
 import ChargeModal from '../modal/ChargeModal';
 import ChargeOkModal from '../modal/ChargeOkModal';
 import ChangeOkModal from '../modal/ChangeOkModal';
-import { useLocation } from 'react-router-dom';
-
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface TabTypeProps {
   type: number;
@@ -29,6 +28,7 @@ function TabPage({ type }: TabTypeProps) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!approvedAt) return;
@@ -42,7 +42,6 @@ function TabPage({ type }: TabTypeProps) {
     }
   }, [approvedAt]);
 
-
   const {
     data: Tickets,
     isPending,
@@ -51,14 +50,6 @@ function TabPage({ type }: TabTypeProps) {
     queryFn: GetMyTicket,
     queryKey: ['Tickets'],
   });
-
-  // if (isPending) {
-  //   return <p>로딩중...</p>;
-  // }
-  // if (isError) {
-  //   return <p>에러</p>;
-  // }
-
 
   useEffect(() => {
     console.log(ticket);
@@ -78,13 +69,11 @@ function TabPage({ type }: TabTypeProps) {
     openModal(({ onClose }) => <ChangeOkModal onClose={onClose} />);
   }, [openModal]);
 
-
   const { mutate: postExchanging } = useMutation({
     mutationFn: PostExchange,
     onSuccess: () => {
       console.log('환전 요청 성공');
       handleOpenChangeOkModal();
-
     },
     onError: (error) => {
       console.log('환전 요청 실패 : ', error);
@@ -133,7 +122,7 @@ function TabPage({ type }: TabTypeProps) {
   return (
     <Container>
       {!isLargeScreen && (
-        <HistoryContaienr>
+        <HistoryContaienr onClick={() => navigate('/mypage/payment')}>
           <History>충전/환전 내역 조회하기</History>
           <Arrow>&gt;</Arrow>
         </HistoryContaienr>
@@ -199,9 +188,18 @@ function TabPage({ type }: TabTypeProps) {
       <Options>
         <Option>
           <div>{type === 0 ? '충전 후 티켓' : '환전 후 티켓'}</div>
-          <div>
-            {Number(Tickets?.result?.ticket ?? 0) + (Number(ticket) || 0)}개
-          </div>{' '}
+
+          {type === 0 ? (
+            <div>
+              {Number(Tickets?.result?.ticket ?? 0) + (Number(ticket) || 0)}개
+            </div>
+          ) : Number(Tickets?.result?.ticket) < Number(ticket) ? (
+            <div style={{ color: '#FF008C' }}>티켓 부족</div>
+          ) : (
+            <div>
+              {Number(Tickets?.result?.ticket ?? 0) - (Number(ticket) || 0)}개
+            </div>
+          )}
         </Option>
         <Line />
         <Option>
