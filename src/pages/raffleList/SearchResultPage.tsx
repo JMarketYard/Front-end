@@ -6,6 +6,7 @@ import RaffleProps from '../../types/RaffleProps';
 import axiosInstance from '../../apis/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { useIsSearchCompleted } from '../../store/store';
+import media from '../../styles/media';
 
 const SearchResultPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
@@ -108,13 +109,15 @@ const SearchResultPage: React.FC = () => {
 export default SearchResultPage;
 
 const Wrapper = styled.div`
-  width: 1080px;
-  min-height: 1498px;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
   padding-top: 64px;
   gap: 45px;
+  ${media.notLarge`
+    padding:57px 0px 30px 0px;
+    width:100%
+  `}
 `;
 
 const SearchContainer = styled.div`
@@ -153,7 +156,15 @@ const ProductGrid = styled.div`
   gap: 44px;
   width: 100%;
   max-width: 1080px;
-  /* margin-top: 145px; */
+  ${media.medium`
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    max-width: 100%;
+  `}
+  ${media.small`
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  `}
 `;
 
 const Observer = styled.div`
