@@ -35,13 +35,21 @@ export default function RandomModal({
   const [isWin, setIsWin] = useState<boolean>(false);
   const { openModal } = useModalContext();
 
+  const handleAddName = () => {
+    setItems((prevItems) => {
+      const newItems = [...prevItems];
+      newItems.splice(1, 0, '닉네임');
+      return newItems;
+    });
+  };
+
   useEffect(() => {
-    console.log('nicknameSet:', nicknameSet);
     console.log('winner:', winner);
     setItems(nicknameSet);
+    handleAddName();
     setWinner(winnerNickname);
-    setIsWin(win);
   }, [deliveryId]);
+
 
   const handleClick = () => {
     if (!isRolling && winner && sliderRef.current) {
@@ -49,14 +57,15 @@ export default function RandomModal({
       sliderRef.current.slickPlay();
 
       setTimeout(() => {
-        //const winnerIndex = items.findIndex((item) => item.name === winner) - 1;
-        const winnerIndex = items.length - 1;
+        const winnerIndex = items.length - 2;
         if (winnerIndex !== -1) {
           sliderRef.current?.slickGoTo(winnerIndex);
           setTimeout(() => sliderRef.current?.slickPause(), 500);
         }
         setIsRolling(false);
+      }, 500);
 
+      setTimeout(() => {
         openModal(({ onClose }) => (
           <RandomOkModal
             onClose={onClose}
@@ -67,11 +76,7 @@ export default function RandomModal({
             raffleId={raffleId}
           />
         ));
-
-        console.log('새로운 모달 열기');
-        onClose();
-        console.log('기존 모달 닫기');
-      }, 500); //슬라이더 속도 조정하기
+      }, 1500);
     }
   };
 

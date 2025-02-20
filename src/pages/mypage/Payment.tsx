@@ -31,43 +31,72 @@ const Payment: React.FC = () => {
       fetchBankInfo(); // ✅ 페이지 로드 시 계좌 정보 조회
     }, []);
 
-  const fetchPaymentHistory = async () => {
-    setLoading(true);
-    try {
-      const [chargeRes, exchangeRes] = await Promise.all([
-        axiosInstance.get(`/api/member/payment/history/charge?period=${selectedTab}`),
-        axiosInstance.get(`/api/member/payment/history/exchange?period=${selectedTab}`),
-      ]);
-
-      let chargeData = chargeRes.data.isSuccess ? chargeRes.data.result : [];
-      let exchangeData = exchangeRes.data.isSuccess ? exchangeRes.data.result : [];
-
-      // ✅ 충전 데이터 가공
-      chargeData = chargeData.map((item: any) => ({
-        ...item,
-        date: item.purchaseDate.split("T")[0],
-        type: "충전",
-      }));
-
-      // ✅ 환전 데이터 가공
-      exchangeData = exchangeData.map((item: any) => ({
-        ...item,
-        date: item.exchangedDate.split("T")[0],
-        type: "환전",
-      }));
-
-      // ✅ 날짜 기준 정렬 (최신순)
-      const mergedData = [...chargeData, ...exchangeData].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-
-      setCombinedHistory(mergedData);
-    } catch (error) {
-      console.error("내역 조회 중 오류 발생:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchPaymentHistory = async () => {
+      setLoading(true);
+      try {
+        const [chargeRes, exchangeRes] = await Promise.all([
+          axiosInstance.get(`/api/member/payment/history/charge?period=${selectedTab}`),
+          axiosInstance.get(`/api/member/payment/history/exchange?period=${selectedTab}`),
+        ]);
+    
+        let chargeData = chargeRes.data.isSuccess ? chargeRes.data.result : [];
+        let exchangeData = exchangeRes.data.isSuccess ? exchangeRes.data.result : [];
+    
+        // ✅ 날짜 + 시간 변환 함수
+        const formatDateTime = (dateString: string) => {
+          const date = new Date(dateString);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          const hours = String(date.getHours()).padStart(2, "0");
+          const minutes = String(date.getMinutes()).padStart(2, "0");
+    
+          return {
+            formattedDate: `${year}-${month}-${day} ${hours}시 ${minutes}분`,
+            timestamp: date.getTime(), // ✅ 날짜를 숫자로 변환하여 정렬 기준으로 사용
+          };
+        };
+    
+        // ✅ 충전 데이터 가공
+        chargeData = chargeData.map((item: any) => {
+          const { formattedDate, timestamp } = formatDateTime(item.purchaseDate);
+          return {
+            ...item,
+            date: formattedDate, // ✅ 날짜 + 시간 표시
+            timestamp, // ✅ 정렬을 위한 timestamp 추가
+            type: "충전",
+            amount: item.amount * 100, // ✅ 금액 100배 변환
+            user_ticket: item.amount, // ✅ 충전한 티켓 수량
+          };
+        });
+    
+        // ✅ 환전 데이터 가공
+        exchangeData = exchangeData.map((item: any) => {
+          const { formattedDate, timestamp } = formatDateTime(item.exchangedDate);
+          return {
+            ...item,
+            date: formattedDate, // ✅ 날짜 + 시간 표시
+            timestamp, // ✅ 정렬을 위한 timestamp 추가
+            type: "환전",
+            amount: item.amount * 100, // ✅ 금액 100배 변환
+            user_ticket: item.amount, // ✅ 환전한 티켓 수량
+          };
+        });
+    
+        // ✅ 최신순 정렬 (timestamp 기준으로 내림차순 정렬)
+        const mergedData = [...chargeData, ...exchangeData].sort(
+          (a, b) => b.timestamp - a.timestamp // ✅ 최신순 정렬 유지
+        );
+    
+        setCombinedHistory(mergedData);
+      } catch (error) {
+        console.error("내역 조회 중 오류 발생:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    
 
   useEffect(() => {
     fetchPaymentHistory();
@@ -338,39 +367,39 @@ const TabInner = styled.button<{ isActive: boolean }>`
 `;
 
 const Table = styled.table`
-  width: 918px;
+  width: 100%; /* ✅ 너비를 100%로 설정하여 더 넉넉하게 */
+  max-width: 1080px; /* ✅ 최대 너비를 설정하여 가독성을 유지 */
   border-collapse: collapse;
   margin-top: 60px;
   text-align: center;
+  margin-bottom: 300px;
 `;
-
-const TableRow = styled.tr``;
 
 const TableHeader = styled.th`
   text-align: center;
-  padding: 12px;
+  padding: 16px; /* ✅ 패딩 증가 */
   color: #8f8e94;
   font-family: Pretendard;
   font-size: 24px;
-  font-style: normal;
   font-weight: 600;
-  line-height: 36.832px;
-  border-bottom: 1px solid #8f8e94;
-  width: 918px;
-  height: 2px;
+  line-height: 40px; /* ✅ 줄 높이 증가 */
+  border-bottom: 2px solid #8f8e94;
 `;
 
 const TableCell = styled.td`
   text-align: center;
-  padding: 12px;
+  padding: 16px; /* ✅ 패딩 증가 */
   color: #000;
   font-family: Pretendard;
   font-size: 20px;
-  font-style: normal;
   font-weight: 400;
-  line-height: 52.15px; /* 260.748% */
+  line-height: 40px; /* ✅ 줄 높이 증가 */
   border-bottom: 1px solid #e4e4e4;
-  width: 858px;
-  height: 1px;
+  white-space: nowrap; /* ✅ 텍스트가 줄 바꿈되지 않도록 설정 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* ✅ 너무 긴 경우 말줄임표(...) 추가 */
 `;
 
+const TableRow = styled.tr`
+  height: 60px; /* ✅ 행 높이를 증가시켜 더 넉넉하게 */
+`;

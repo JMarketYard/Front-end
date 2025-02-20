@@ -3,11 +3,28 @@ import BigTitle from '../../components/BigTitle';
 import styled from 'styled-components';
 import { useLocation, useParams } from 'react-router-dom';
 import ImgSlider from '../raffleDetail/components/ImgSlider';
-import icTicket from '../../assets/raffleDetail/icon-ticket.svg'
+import icTicket from '../../assets/raffleDetail/icon-ticket.svg';
 import NotAnswered from './components/NotAnswered';
 import Answered from './components/Answered';
 import WriteAsk from './components/WriteAsk';
 import media from '../../styles/media';
+import axiosInstance from '../../apis/axiosInstance';
+
+interface IReplay {
+  timestamp: string;
+  content: string;
+  title: string;
+}
+
+interface IAnswerItem {
+  nickname: string;
+  inquiryContent: string;
+  timestamp: string;
+  status: string;
+  inquiryId: number;
+  inquiryTitle: string;
+  comments: IReplay[];
+}
 
 const NOT_ANSWERED = 'NOT_ANSWERED';
 const ANSWERED = 'ANSWERED';
@@ -15,7 +32,9 @@ const ASK = 'ASK';
 
 const AskPage = () => {
   const [menu, setMenu] = useState(NOT_ANSWERED);
-  const {state} = useLocation();
+  const [answered, setAnswered] = useState<IAnswerItem[]>([]);
+  const [notAnswered, setNotAnswered] = useState<IAnswerItem[]>([]);
+  const { state } = useLocation();
   const { type } = useParams();
   const formatDate = (isoString: string) =>
     new Date(isoString).toLocaleString('ko-KR', {
@@ -26,7 +45,38 @@ const AskPage = () => {
       minute: '2-digit',
       hour12: false,
     });
-  
+
+  const GetInquiry = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/permit/inquiry/raffles/${type}`,
+      );
+
+      console.log(response);
+
+      const answeredList = response.data.result.filter(
+        (item: IAnswerItem) => item.status === ANSWERED,
+      );
+      const notAnsweredList = response.data.result.filter(
+        (item: IAnswerItem) => item.status === NOT_ANSWERED,
+      );
+
+      setAnswered(answeredList);
+      setNotAnswered(notAnsweredList);
+
+      console.log('✅ 답변 완료된 목록:', answeredList);
+      console.log('❌ 답변 대기 목록:', notAnsweredList);
+    } catch (error) {
+      console.log('문의 답변 가져오기 실패', error);
+    }
+  };
+
+  useEffect(() => {
+    if (type) {
+      GetInquiry();
+    }
+  }, [type]);
+
   return (
     <Container>
       <BigTitle>문의 게시판</BigTitle>
@@ -56,7 +106,7 @@ const AskPage = () => {
             <TitleBox>응모오픈</TitleBox>
             <DescriptionBox>{formatDate(state.startAt)}</DescriptionBox>
           </DetailContainer>
-          <DetailContainer className='last'>
+          <DetailContainer className="last">
             <TitleBox>응모마감</TitleBox>
             <DescriptionBox>{formatDate(state.endAt)}</DescriptionBox>
             {(state.raffleStatus === 'UNFULFILLED' ||
@@ -70,25 +120,35 @@ const AskPage = () => {
       </TopLayout>
       <AskLayout>
         <MenuTab>
-          <Menu onClick={()=>setMenu(NOT_ANSWERED)}
+          <Menu
+            onClick={() => setMenu(NOT_ANSWERED)}
             $myMenu={NOT_ANSWERED}
-            $menu={menu}>답변 미작성</Menu>
-          <Menu onClick={()=>setMenu(ANSWERED)}
+            $menu={menu}
+          >
+            답변 미작성
+          </Menu>
+          <Menu
+            onClick={() => setMenu(ANSWERED)}
             $myMenu={ANSWERED}
-            $menu={menu}>답변 작성 완료</Menu>
-          <Menu onClick={()=>setMenu(ASK)}
-            $myMenu={ASK}
-            $menu={menu}>문의하기</Menu>
+            $menu={menu}
+          >
+            답변 작성 완료
+          </Menu>
+          <Menu onClick={() => setMenu(ASK)} $myMenu={ASK} $menu={menu}>
+            문의하기
+          </Menu>
         </MenuTab>
-        {menu===NOT_ANSWERED
-        ? <NotAnswered />
-        : menu === ANSWERED
-        ? <Answered />
-        : <WriteAsk type={type} />}
+        {menu === NOT_ANSWERED ? (
+          <NotAnswered list={notAnswered} />
+        ) : menu === ANSWERED ? (
+          <Answered list={answered} />
+        ) : (
+          <WriteAsk type={type} />
+        )}
       </AskLayout>
     </Container>
   );
-}
+};
 
 export default AskPage;
 
@@ -210,7 +270,7 @@ const DetailContainer = styled.div`
 
   &.last {
     padding-bottom: 0;
-  };
+  }
 `;
 const TitleBox = styled.div`
   display: inline-block;
@@ -271,13 +331,13 @@ const AskLayout = styled.div`
     heigt: 47px;
     margin-top: 80px;
   `}
-`
+`;
 
 const MenuTab = styled.div`
   display: flex;
   margin-bottom: 40px;
-`
-const Menu = styled.div<{$myMenu:string, $menu: string}>`
+`;
+const Menu = styled.div<{ $myMenu: string; $menu: string }>`
   // width: 306px;
   flex: 1;
   text-align: center;
@@ -294,12 +354,12 @@ const Menu = styled.div<{$myMenu:string, $menu: string}>`
 
   &:hover {
     cursor: pointer;
-  };
+  }
 
-  ${props => props.$myMenu===props.$menu
-    ? `color: #C908FF;
+  ${(props) =>
+    props.$myMenu === props.$menu
+      ? `color: #C908FF;
     border-bottom: 3px solid #C908FF;`
-    : `color: #C1C1C1;
-    border-bottom: 3px solid #C1C1C1;`
-  };
-`
+      : `color: #C1C1C1;
+    border-bottom: 3px solid #C1C1C1;`};
+`;
