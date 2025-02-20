@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Icon } from '@iconify/react';
 import Tabs from '@mui/material/Tabs';
@@ -8,6 +8,8 @@ import TabPage from './components/tab/TabPage';
 import useScreenSize from '../../styles/useScreenSize';
 import media from '../../styles/media';
 import { useNavigate } from 'react-router-dom';
+import { useModalContext } from '../../components/Modal/context/ModalContext';
+import ChargeOkModal from './components/modal/ChargeOkModal';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -42,10 +44,25 @@ function ChargePage() {
   const [value, setValue] = React.useState(0);
   const { isSmallScreen, isMediumScreen, isLargeScreen } = useScreenSize();
   const navigate = useNavigate();
+  const { openModal } = useModalContext();
+  const queryParams = new URLSearchParams(location.search);
+  const approvedAt = queryParams.get('approvedAt');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (!approvedAt) return;
+
+    if (approvedAt) {
+      const timer = setTimeout(() => {
+        openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <Container>
