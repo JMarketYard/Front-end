@@ -11,7 +11,26 @@ const Payment: React.FC = () => {
   const [bankNumber, setBankNumber] = useState("");
   const [loading, setLoading] = useState(false);
 
-  /** ✅ 결제 및 환전 내역 조회 & 데이터 병합 */
+    const fetchBankInfo = async () => {
+      try {
+        const response = await axiosInstance.get("/api/member/payment/bankInfo");
+
+        if (response.data.isSuccess) {
+          const { bankName, bankNumber } = response.data.result;
+          setBankName(bankName || ""); // ✅ 기존 은행명 조회
+          setBankNumber(bankNumber || ""); // ✅ 기존 계좌번호 조회
+        } else {
+          console.warn("계좌 정보 조회 실패:", response.data.message);
+        }
+      } catch (error) {
+        console.error("계좌 정보 조회 중 오류 발생:", error);
+      }
+    };
+
+    useEffect(() => {
+      fetchBankInfo(); // ✅ 페이지 로드 시 계좌 정보 조회
+    }, []);
+
   const fetchPaymentHistory = async () => {
     setLoading(true);
     try {

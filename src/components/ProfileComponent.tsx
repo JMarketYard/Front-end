@@ -5,18 +5,19 @@ import platinum3 from "../assets/mypages/platinum3.svg";
 import profileDefault from "../assets/mypages/profileDefault.svg";
 import editProfile from "../assets/mypages/editProfile.svg";
 import axiosInstance from "../apis/axiosInstance";
-
 interface ProfileProps {
   username: string;
   followers: number;
   reviews: number;
   isUserProfilePage?: boolean;
   followStatus?: boolean;
+  onEditProfile?: () => void; 
+  profileImageUrl?: string | null;
 }
 
 const ProfileComponent: React.FC<ProfileProps> = ({
   username,
-  followers,
+  followers: initialFollowers,
   reviews,
   isUserProfilePage = false,
   followStatus,
@@ -25,6 +26,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({
   const { userId } = useParams<{ userId: string }>();
   const [profileImage, setProfileImage] = useState<string>(profileDefault);
   const [isFollowing, setIsFollowing] = useState<boolean>(followStatus ?? false);
+  const [followers, setFollowers] = useState<number>(initialFollowers); // ✅ 팔로워 개수 상태 추가
 
   /** ✅ 프로필 데이터 조회 */
   const fetchProfileData = async () => {
@@ -36,65 +38,79 @@ const ProfileComponent: React.FC<ProfileProps> = ({
       const response = await axiosInstance.get(endpoint);
 
       if (response.data.isSuccess) {
-        const { profileImageUrl, followStatus } = response.data.result;
+        const { profileImageUrl, followStatus, followerNum } = response.data.result;
 
         setProfileImage(profileImageUrl && profileImageUrl.startsWith("http") ? profileImageUrl : profileDefault);
         setIsFollowing(followStatus ?? false); 
+        setFollowers(followerNum); // ✅ 최신 팔로워 개수 반영
       } else {
-        console.warn("⚠️ 프로필 데이터 로드 실패:", response.data.message);
+        console.warn("프로필 데이터 로드 실패:", response.data.message);
       }
     } catch (error) {
-      console.error("❌ 프로필 데이터 불러오기 오류:", error);
+      console.error("프로필 데이터 불러오기 오류:", error);
     }
   };
-
 
   useEffect(() => {
     fetchProfileData();
   }, [userId]);
+/** ✅ 프로필 이미지 변경 */
+const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (isUserProfilePage) return;
 
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isUserProfilePage) return;
+  const file = event.target.files?.[0];
+  if (!file) return;
 
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const formData = new FormData();
+  formData.append("profileImage", file); // ✅ API에서 요구하는 키값이 `profileImage`인지 확인!
 
-    const formData = new FormData();
-    formData.append("profile", file);
+  try {
+    const response = await axiosInstance.patch("/api/member/mypage/profile-image", formData, {
+      headers: { "Content-Type": "multipart/form-data" }, // ✅ 필수
+    });
 
-    try {
-      const response = await axiosInstance.patch("/api/member/mypage/profile-image", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    console.log("✅ 프로필 이미지 변경 응답:", response);
 
-      if (response.data.isSuccess) {
-        const imageUrl = response.data.result;
-        setProfileImage(imageUrl && imageUrl.startsWith("http") ? imageUrl : profileDefault);
-      } else {
-        alert(response.data.message || "프로필 변경 실패");
-      }
-    } catch (error) {
-      console.error("❌ 프로필 변경 오류:", error);
-      alert("프로필 변경 중 오류 발생");
+    if (response.data && response.data.isSuccess) {
+      const imageUrl = response.data.result;
+      setProfileImage(imageUrl && imageUrl.startsWith("http") ? imageUrl : profileDefault);
+    } else {
+      alert(response.data.message || "프로필 변경 실패");
     }
-  };
+  } catch (error) {
+    console.error("❌ 프로필 변경 오류:", error);
+    alert("프로필 변경 중 오류 발생");
+  }
+};
 
-  /** ✅ 팔로우 / 언팔로우 토글 */
+  /** ✅ 팔로우/언팔로우 기능 */
   const handleFollowToggle = async () => {
     try {
-      const endpoint = isFollowing
-        ? `/api/member/follow/cancel?storeId=${userId}`
-        : `/api/member/follow?storeId=${userId}`;
+      let endpoint = "/api/member/follow/";
+      let method = "POST";
+      let requestConfig = { params: { storeId: userId } };
 
-      const response = await axiosInstance.post(endpoint);
+      if (isFollowing) {
+        endpoint = "/api/member/follow/cancel";
+        method = "DELETE";
+      }
+
+      let response;
+      if (method === "POST") {
+        response = await axiosInstance.post(endpoint, {}, requestConfig); // ✅ `body`는 빈 객체 `{}` 유지
+      } else {
+        response = await axiosInstance.delete(endpoint, requestConfig); // ✅ `params`는 그대로 유지
+      }
 
       if (response.data.isSuccess) {
         setIsFollowing(!isFollowing);
+        setFollowers((prev) => (isFollowing ? prev - 1 : prev + 1)); // ✅ 팔로우 개수 업데이트
+        console.log("팔로우 상태 변경 성공:", !isFollowing);
       } else {
         alert(response.data.message || "작업 수행 실패");
       }
     } catch (error) {
-      console.error("❌ 팔로우 변경 오류:", error);
+      console.error("팔로우 변경 오류:", error);
       alert("팔로우 변경 중 오류 발생");
     }
   };
@@ -127,7 +143,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({
 
           <StatsContainer>
             <StatItem>
-              팔로워 <StatNumber>{followers === -1 ? "비공개" : followers}</StatNumber>
+              팔로워 <StatNumber>{followers <= -1 ? "비공개" : followers}</StatNumber>
             </StatItem>
             <Divider />
             <StatItem>후기 <StatNumber>{reviews}</StatNumber></StatItem>
@@ -137,7 +153,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({
             {isUserProfilePage ? (
               <>
                 <FollowButton isFollowing={isFollowing} onClick={handleFollowToggle}>
-                  {isFollowing ? "팔로우 취소" : "팔로우하기"}
+                  {isFollowing ? "팔로우 취소" : "팔로우"}
                 </FollowButton>
                 <StyledReportButton onClick={() => alert("신고하기 기능 준비 중입니다.")}>
                   신고하기
@@ -161,6 +177,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({
 };
 
 export default ProfileComponent;
+
 
 const FollowButton = styled.button<{ isFollowing: boolean }>`
   width: 138px;
@@ -205,6 +222,7 @@ const StyledReportButton = styled.button`
     background: #ffebeb;
   }
 `;
+
 const ProfileContent = styled.div`
   display: flex;
   width: 555px;
@@ -289,3 +307,23 @@ const ButtonContainer = styled.div`
   gap: 16px;
 `;
 
+export {
+  FollowButton,
+  ProfileWrapper,
+  StyledButton,
+  StyledReportButton,
+  ProfileContent,
+  ProfileImageWrapper,
+  ProfileImage,
+  HiddenFileInput,
+  EditIcon,
+  UserDetails,
+  UserInfo,
+  RankIcon,
+  Username,
+  StatsContainer,
+  StatItem,
+  StatNumber,
+  Divider,
+  ButtonContainer,
+};
