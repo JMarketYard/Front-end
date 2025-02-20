@@ -40,7 +40,7 @@ function TabPage({ type }: TabTypeProps) {
 
       return () => clearTimeout(timer);
     }
-  }, [approvedAt]);
+  }, []);
 
   const {
     data: Tickets,
@@ -151,7 +151,7 @@ function TabPage({ type }: TabTypeProps) {
         개
       </TicketContainer>
       <TicketContainer
-        style={{ marginTop: '15px', transform: 'translateX(-25px)' }}
+        style={{ marginTop: '15px', transform: 'translateX(-15px)' }}
       >
         <Button
           onClick={() => {
