@@ -13,6 +13,8 @@ interface RandomOkModalProps {
   winnerNickname: string;
   deliveryId: number;
   image: string;
+  win: boolean;
+  raffleId: number;
 }
 
 export default function RandomOkModal({
@@ -20,6 +22,8 @@ export default function RandomOkModal({
   winnerNickname,
   deliveryId,
   image,
+  win,
+  raffleId,
 }: PropsWithChildren<RandomOkModalProps>) {
   const { clearModals } = useModalContext();
   const navigate = useNavigate();
@@ -42,9 +46,14 @@ export default function RandomOkModal({
     };
     postCheck();
     onClose(); // 모달 닫기
-    navigate(`/winner-page`, {
-      state: { deliveryId: deliveryId, image: image },
-    }); //state로 devliery_id 전달
+
+    if (win) {
+      navigate(`/winner-page`, {
+        state: { deliveryId: deliveryId, image: image },
+      }); //state로 devliery_id 전달
+    } else {
+      navigate(`/raffle/${raffleId}`);
+    }
   };
 
   return ReactDOM.createPortal(

@@ -81,13 +81,6 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
         {...drawData}
       />
     ));
-    openModal(({ onClose }) => (
-      <RandomModal
-        onClose={onClose}
-        image={raffle.imageUrls[0]}
-        {...drawData}
-      />
-    ));
   };
 
   const formatDate = (isoString: string) =>

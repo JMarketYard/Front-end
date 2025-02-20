@@ -32,6 +32,7 @@ export default function RandomModal({
   const [items, setItems] = useState<string[]>([]);
   const [winner, setWinner] = useState<string>('');
   const [isRolling, setIsRolling] = useState(false);
+  const [isWin, setIsWin] = useState<boolean>(false);
   const { openModal } = useModalContext();
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function RandomModal({
     console.log('winner:', winner);
     setItems(nicknameSet);
     setWinner(winnerNickname);
+    setIsWin(win);
   }, [nicknameSet, deliveryId]);
 
   const handleClick = () => {
@@ -61,6 +63,8 @@ export default function RandomModal({
             deliveryId={deliveryId}
             winnerNickname={winnerNickname}
             image={image}
+            win={win}
+            raffleId={raffleId}
           />
         ));
 
