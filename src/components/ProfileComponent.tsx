@@ -32,12 +32,10 @@ const ProfileComponent: React.FC<ProfileProps> = ({
   const [username, setUsername] = useState<string>(initialUsername); // ✅ 닉네임 상태 추가
   const [isNameEditModalOpen, setIsNameEditModalOpen] = useState<boolean>(false);
 
-  /** ✅ 닉네임 변경 모달 닫기 */
   const handleCloseModal = () => {
     setIsNameEditModalOpen(false);
   };
 
-  /** ✅ 닉네임 변경 시 업데이트 */
   const handleNicknameChange = (newNickname: string) => {
     setUsername(newNickname);
   };
@@ -67,8 +65,37 @@ const ProfileComponent: React.FC<ProfileProps> = ({
       console.error("프로필 이미지 변경 중 오류 발생:", error);
     }
   };
+  const handleFollowToggle = async () => {
+    try {
+      let endpoint = "/api/member/follow/";
+      let method = "POST";
+      let requestConfig = { params: { storeId: userId } };
   
-  /** ✅ 프로필 데이터 조회 */
+      if (isFollowing) {
+        endpoint = "/api/member/follow/cancel";
+        method = "DELETE";
+      }
+  
+      let response;
+      if (method === "POST") {
+        response = await axiosInstance.post(endpoint, {}, requestConfig);
+      } else {
+        response = await axiosInstance.delete(endpoint, requestConfig);
+      }
+  
+      if (response.data.isSuccess) {
+        setIsFollowing(!isFollowing);
+        setFollowers((prev) => (isFollowing ? prev - 1 : prev + 1));
+        console.log("팔로우 상태 변경 성공:", !isFollowing);
+      } else {
+        alert(response.data.message || "작업 수행 실패");
+      }
+    } catch (error) {
+      console.error("팔로우 변경 오류:", error);
+      alert("팔로우 변경 중 오류 발생");
+    }
+  };
+  
   const fetchProfileData = async () => {
     try {
       const endpoint = isUserProfilePage
@@ -138,7 +165,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({
           <ButtonContainer>
             {isUserProfilePage ? (
               <>
-                <FollowButton isFollowing={isFollowing}>
+                <FollowButton isFollowing={isFollowing} onClick={handleFollowToggle}>
                   {isFollowing ? "팔로우 취소" : "팔로우"}
                 </FollowButton>
                 <StyledReportButton onClick={() => alert("신고하기 기능 준비 중입니다.")}>
