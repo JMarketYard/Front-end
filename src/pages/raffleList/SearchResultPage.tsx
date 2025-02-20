@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ProductCard from '../../components/ProductCard';
 import RaffleProps from '../../types/RaffleProps';
@@ -50,8 +50,7 @@ const SearchResultPage: React.FC = () => {
       setPage((prev) => prev + 1);
     } catch (error) {
       console.error('데이터 불러오기 실패:', error);
-    }
-     finally {
+    } finally {
       setIsLoading(false);
     }
   };

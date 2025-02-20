@@ -19,9 +19,9 @@ import FollowingList from '../pages/mypage/FollowingList';
 import Setting from '../pages/mypage/Setting';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
-import MyReview from '../pages/mypage/MyReview';  
-import Payment from '../pages/mypage/Payment';  
-import WinnerPage from '../pages/winner/winnerPage';  
+import MyReview from '../pages/mypage/MyReview';
+import Payment from '../pages/mypage/Payment';
+import WinnerPage from '../pages/winner/winnerPage';
 import UserProfilePage from '../pages/mypage/UserProfilePage';
 
 const router = createBrowserRouter([
@@ -110,6 +110,15 @@ const router = createBrowserRouter([
         element: <SearchResultPage />,
       },
       {
+        path: '/search/', // 검색결과 조회
+        element: (
+          <div>
+            <HomePage />
+            <ModalProvider />
+          </div>
+        ),
+      },
+      {
         path: '/categories/:type',
         element: <CategoryResultPage />,
       },
@@ -146,9 +155,9 @@ const router = createBrowserRouter([
         path: 'mypage/payment',
         element: <Payment />,
       },
-      { 
-        path: "user/:userId", 
-        element: <UserProfilePage />
+      {
+        path: 'user/:userId',
+        element: <UserProfilePage />,
       },
       {
         path: 'ask/:type',

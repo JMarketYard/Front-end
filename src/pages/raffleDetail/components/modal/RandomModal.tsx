@@ -15,6 +15,7 @@ interface RandomModalProps {
   win: boolean;
   deliveryId: number;
   image: string;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function RandomModal({
@@ -26,20 +27,31 @@ export default function RandomModal({
   win,
   deliveryId,
   image,
+  setIsChecked,
 }: PropsWithChildren<RandomModalProps>) {
   const { clearModals } = useModalContext();
   const sliderRef = useRef<Slider | null>(null);
   const [items, setItems] = useState<string[]>([]);
   const [winner, setWinner] = useState<string>('');
   const [isRolling, setIsRolling] = useState(false);
+  const [isWin, setIsWin] = useState<boolean>(false);
   const { openModal } = useModalContext();
 
+  const handleAddName = () => {
+    setItems((prevItems) => {
+      const newItems = [...prevItems];
+      newItems.splice(1, 0, '닉네임');
+      return newItems;
+    });
+  };
+
   useEffect(() => {
-    console.log('nicknameSet:', nicknameSet);
     console.log('winner:', winner);
     setItems(nicknameSet);
+    handleAddName();
     setWinner(winnerNickname);
-  }, [nicknameSet, deliveryId]);
+    setIsWin(win);
+  }, [deliveryId]);
 
   const handleClick = () => {
     if (!isRolling && winner && sliderRef.current) {
@@ -47,27 +59,27 @@ export default function RandomModal({
       sliderRef.current.slickPlay();
 
       setTimeout(() => {
-        //const winnerIndex = items.findIndex((item) => item.name === winner) - 1;
-        const winnerIndex = items.length - 1;
+        const winnerIndex = items.length - 2;
         if (winnerIndex !== -1) {
           sliderRef.current?.slickGoTo(winnerIndex);
           setTimeout(() => sliderRef.current?.slickPause(), 500);
         }
         setIsRolling(false);
+      }, 500);
 
+      setTimeout(() => {
         openModal(({ onClose }) => (
           <RandomOkModal
             onClose={onClose}
             deliveryId={deliveryId}
             winnerNickname={winnerNickname}
             image={image}
+            win={isWin}
+            raffleId={raffleId}
+            setIsChecked={setIsChecked}
           />
         ));
-
-        console.log('새로운 모달 열기');
-        onClose();
-        console.log('기존 모달 닫기');
-      }, 500); //슬라이더 속도 조정하기
+      }, 1500);
     }
   };
 

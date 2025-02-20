@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Icon } from '@iconify/react';
 import Tabs from '@mui/material/Tabs';
@@ -7,6 +7,9 @@ import Box from '@mui/material/Box';
 import TabPage from './components/tab/TabPage';
 import useScreenSize from '../../styles/useScreenSize';
 import media from '../../styles/media';
+import { useNavigate } from 'react-router-dom';
+import { useModalContext } from '../../components/Modal/context/ModalContext';
+import ChargeOkModal from './components/modal/ChargeOkModal';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -40,11 +43,26 @@ function a11yProps(index: number) {
 function ChargePage() {
   const [value, setValue] = React.useState(0);
   const { isSmallScreen, isMediumScreen, isLargeScreen } = useScreenSize();
+  const navigate = useNavigate();
+  const { openModal } = useModalContext();
+  const queryParams = new URLSearchParams(location.search);
+  const approvedAt = queryParams.get('approvedAt');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
+  useEffect(() => {
+    if (!approvedAt) return;
+
+    if (approvedAt) {
+      const timer = setTimeout(() => {
+        openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <Container>
@@ -56,7 +74,9 @@ function ChargePage() {
               <Title>티켓 충전/환전</Title>
             </Titles>
             <CheckBox>
-              <Short>충전/ 환전 내역 조회하기</Short>
+              <Short onClick={() => navigate('/mypage/payment')}>
+                충전/ 환전 내역 조회하기
+              </Short>
               <Icon
                 icon="weui:arrow-outlined"
                 style={{
@@ -89,10 +109,11 @@ function ChargePage() {
                 '& .MuiTabs-flexContainer': {
                   justifyContent: 'space-between',
                 },
+                '& .MuiTabs-indicator': { backgroundColor: '#C908FF' },
               }}
               value={value}
               onChange={handleChange}
-              textColor="secondary"
+              textColor="inherit"
               indicatorColor="secondary"
               aria-label="basic tabs example"
             >
@@ -103,6 +124,8 @@ function ChargePage() {
                   fontSize: isSmallScreen ? '15px' : '20px',
                   fontWeight: '600',
                   lineHeight: '17.308px',
+                  color: '#C908FF',
+                  '&.Mui-selected': { color: '#C908FF' },
                 }}
                 label="티켓 충전"
                 {...a11yProps(0)}
@@ -114,6 +137,8 @@ function ChargePage() {
                   fontSize: isSmallScreen ? '15px' : '20px',
                   fontWeight: '600',
                   lineHeight: '17.308px',
+                  color: '#C908FF',
+                  '&.Mui-selected': { color: '#C908FF' },
                 }}
                 label="티켓 환전"
                 {...a11yProps(1)}

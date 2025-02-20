@@ -275,11 +275,13 @@ const WinnerPage: React.FC = () => {
           </BigTitle>
 
           <AddressLayout>
-            {/*<Checkbox fill={'#C908FF'} />*/}
             <AddressContainer>
-              <TitleSpan>{address.addressName}</TitleSpan>
+              <TitleSpan>{address?.addressName ?? '?'}</TitleSpan>
               <DefaultBox>기본 배송지</DefaultBox>
-              <AddressSpan>{address.addressDetail}</AddressSpan>
+              <AddressSpan>
+                {address?.addressDetail ??
+                  '배송지 설정 페이지에서 배송지를 입력하세요'}
+              </AddressSpan>
             </AddressContainer>
           </AddressLayout>
 

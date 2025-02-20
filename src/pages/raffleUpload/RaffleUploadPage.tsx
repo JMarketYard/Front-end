@@ -6,9 +6,10 @@ import React, { FormEvent, ReactElement, useEffect, useRef, useState } from "rea
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
-import DatePicker from 'react-datepicker'
+import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import media from "../../styles/media";
+import { ko } from "date-fns/locale/ko";
 
 const RaffleUploadPage = () => {
     const itemStates = [
@@ -24,7 +25,7 @@ const RaffleUploadPage = () => {
         { key: "no", text: "미사용" }
     ];
     const [itemState, setItemState] = useState<string>("");
-    const [ticketNum, setTicketNum] = useState<string>("");
+    const [ticketNum, setTicketNum] = useState<string>("1개");
     const [jcare, setJcare] = useState<string>("");
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
@@ -35,6 +36,8 @@ const RaffleUploadPage = () => {
     const [images, setImages] = useState<File[]>([]);
     const [category, setCategory] = useState<string>('');
     const [deliveryFee, setDeliveryFee] = useState<string>("");
+
+    registerLocale("ko", ko);
 
     const handleImg = () => {
         fileRef?.current?.click();
@@ -79,6 +82,7 @@ const RaffleUploadPage = () => {
         formData.append("minTicket", leastTicketNum.replace(',',''));
         formData.append("startAt", startDate.toISOString().replace('Z',''));
         formData.append("endAt", endDate.toISOString().replace('Z',''));
+        formData.append("deliveryFee", deliveryFee.replace(',',''));
         console.log('제출버튼클릭');
         
         openModal(({ onClose }) => <UploadModal onClose={onClose}
@@ -89,8 +93,8 @@ const RaffleUploadPage = () => {
         setItemState(key);
     };
     const handleTicketNum = (key:string) => {
-        setTicketNum(key);
         if (key===moreTicketText) handleTicketModal();
+        else setTicketNum(key);
     };
     const handleJcare = (key:string) => {
         setJcare(key);
@@ -232,7 +236,12 @@ const RaffleUploadPage = () => {
                             name="minTicket"
                             value={leastTicketNum}
                             onChange={handleLeastTicketNum} />
-                            <StyleP>예상 정산 금액: {(parseInt(leastTicketNum.replace(',',''))*100).toLocaleString() || 0}원</StyleP>
+                            <StyleP>예상 정산 금액:&nbsp;
+                                {(Number(leastTicketNum.replaceAll(',',''))*100
+                                *parseInt(ticketNum))
+                                .toLocaleString()
+                                }원
+                            </StyleP>
                         </InputContainer>
                     </SetConditionBox>
                     <SetConditionBox>
@@ -240,9 +249,11 @@ const RaffleUploadPage = () => {
                         <DatePickerBox>
                             <DatePicker
                                 onKeyDown={(e)=>{e.preventDefault()}}
-                                dateFormat="yyyy년 MM월 dd일"
+                                dateFormat="yyyy년 MM월 dd일 a hh:mm"
+                                locale="ko"
                                 dateFormatCalendar="yyyy년 MM월"
                                 selected={startDate}
+                                showTimeInput
                                 onChange={(date) => date && setStartDate(date)}
                             />
                         </DatePickerBox>
@@ -252,9 +263,11 @@ const RaffleUploadPage = () => {
                         <DatePickerBox>
                             <DatePicker
                                 onKeyDown={(e)=>{e.preventDefault()}}
-                                dateFormat="yyyy년 MM월 dd일"
+                                dateFormat="yyyy년 MM월 dd일 a hh:mm"
+                                locale="ko"
                                 dateFormatCalendar="yyyy년 MM월"
                                 selected={endDate}
+                                showTimeInput
                                 onChange={(date) => date && setEndDate(date)}
                             />
                         </DatePickerBox>

@@ -7,12 +7,16 @@ import yellow from '../../../../assets/yellowVector.svg';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
+import { useWinnerStatusChanged } from '../../../../store/storeWinnerStatus';
 
 interface RandomOkModalProps {
   onClose: () => void;
   winnerNickname: string;
   deliveryId: number;
   image: string;
+  win: boolean;
+  raffleId: number;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function RandomOkModal({
@@ -20,11 +24,16 @@ export default function RandomOkModal({
   winnerNickname,
   deliveryId,
   image,
+  win,
+  raffleId,
+  setIsChecked,
 }: PropsWithChildren<RandomOkModalProps>) {
   const { clearModals } = useModalContext();
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
   const typeNumber = type ? Number(type) : undefined;
+  const { isWinnerStatusChanged, toggleWinnerStatus } =
+    useWinnerStatusChanged();
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -35,16 +44,28 @@ export default function RandomOkModal({
   }, []);
 
   const handleClick = () => {
-    const postCheck = async () => {
-      const { data } = await axiosInstance.post(
-        `/api/member/raffles/${typeNumber}/check`,
-      );
-    };
-    postCheck();
-    onClose(); // 모달 닫기
-    navigate(`/winner-page`, {
-      state: { deliveryId: deliveryId, image: image },
-    }); //state로 devliery_id 전달
+    try {
+      const postCheck = async () => {
+        const { data } = await axiosInstance.post(
+          `/api/member/raffles/${typeNumber}/check`,
+        );
+      };
+      postCheck();
+      onClose(); // 모달 닫기
+
+      if (win) {
+        navigate(`/winner-page`, {
+          state: { deliveryId: deliveryId, image: image },
+        }); //state로 devliery_id 전달
+      } else {
+        console.log('win? : ', win);
+        setIsChecked((prev: boolean) => !prev);
+        console.log('래플 결과 확인 완료');
+        navigate(`/raffles/${raffleId}`);
+      }
+    } catch (error) {
+      console.log('에러 : ', error);
+    }
   };
 
   return ReactDOM.createPortal(

@@ -20,7 +20,7 @@ const SearchResultPage: React.FC = () => {
     women: '여성의류',
     men: '남성의류',
     shoes: '신발',
-    accessories: '악세사리',
+    accessories: '악세서리',
     digital: '디지털',
     appliances: '가전제품',
     sports: '스포츠/레저',
