@@ -24,7 +24,7 @@ const RaffleUploadPage = () => {
         { key: "no", text: "미사용" }
     ];
     const [itemState, setItemState] = useState<string>("");
-    const [ticketNum, setTicketNum] = useState<string>("");
+    const [ticketNum, setTicketNum] = useState<string>("1개");
     const [jcare, setJcare] = useState<string>("");
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
@@ -89,8 +89,8 @@ const RaffleUploadPage = () => {
         setItemState(key);
     };
     const handleTicketNum = (key:string) => {
-        setTicketNum(key);
         if (key===moreTicketText) handleTicketModal();
+        else setTicketNum(key);
     };
     const handleJcare = (key:string) => {
         setJcare(key);
@@ -232,7 +232,12 @@ const RaffleUploadPage = () => {
                             name="minTicket"
                             value={leastTicketNum}
                             onChange={handleLeastTicketNum} />
-                            <StyleP>예상 정산 금액: {(parseInt(leastTicketNum.replace(',',''))*100).toLocaleString() || 0}원</StyleP>
+                            <StyleP>예상 정산 금액:&nbsp;
+                                {(Number(leastTicketNum.replaceAll(',',''))*100
+                                *parseInt(ticketNum))
+                                .toLocaleString()
+                                }원
+                            </StyleP>
                         </InputContainer>
                     </SetConditionBox>
                     <SetConditionBox>
