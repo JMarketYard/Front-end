@@ -139,7 +139,7 @@ const ChildrenWrapper = styled.div`
   top: 180px;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10;
+  z-index: 8;
 `;
 
 const Img = styled.img.attrs((props) => ({

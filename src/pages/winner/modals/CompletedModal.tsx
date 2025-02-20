@@ -3,17 +3,30 @@ import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../apis/axiosInstance';
+import useDeliveryStore from '../store/deliveryStore';
 
 interface ModalProps {
   onClose: () => void;
+  deliveryId: number;
 }
 
-const CompletedModal: React.FC<ModalProps> = ({ onClose }) => {
+const CompletedModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
   const navigate = useNavigate();
+  const { triggerRefetch } = useDeliveryStore();
 
-  const handleClick = () => {
-    onClose(); // 모달 닫기 or 상태 변경
-    navigate(`/`); // 페이지 이동
+  const handleClick = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `/api/member/delivery/${deliveryId}/winner/success`,
+        {},
+      );
+      triggerRefetch();
+    } catch (error) {
+      console.error(error);
+    }
+    onClose();
+    navigate(`/`);
   };
 
   return (
