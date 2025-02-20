@@ -148,66 +148,131 @@ export default UserProfilePage;
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  width: 1440px;
+  width: 100%;
+  max-width: 1440px;
   background: white;
   margin-top: 64px;
+  padding: 0 20px;
+
+  @media (max-width: 768px) {
+    padding: 0 10px; /* ✅ 작은 화면에서 패딩 조정 */
+  }
 `;
 
 const InnerContainer = styled.div`
   width: 100%;
   max-width: 1080px;
   padding: 0 20px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 0 10px;
+  }
 `;
 
 const ToggleContainer = styled.div`
   position: relative;
-  width: 946px;
-  height: 58px;
+  width: 100%;
+  max-width: 500px; /* ✅ 최대 너비 설정 */
+  height: 58px; /* ✅ 높이 고정 */
   border-radius: 50px;
   background: #f5f5f5;
   margin: 50px auto 76px;
   display: flex;
   align-items: center;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    max-width: 400px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 300px;
+  }
 `;
 
 const ToggleIndicator = styled.div<{ selectedToggle: string }>`
   position: absolute;
-  width: 50%;
-  height: 100%;
+  width: calc(50% - 10px); /* ✅ 너비만 줄어들도록 설정 */
+  height: 100%; /* ✅ 높이 유지 */
   background: #c908ff;
   border-radius: 50px;
   top: 0;
-  left: ${({ selectedToggle }) => (selectedToggle === "주최한 래플" ? "0" : "50%")};
-  transition: left 0.3s ease;
+  left: ${({ selectedToggle }) => (selectedToggle === "주최한 래플" ? "5px" : "calc(50% + 5px)")}; 
+  transition: left 0.3s ease, width 0.3s ease;
+
+  @media (max-width: 768px) {
+    width: calc(50% - 8px);
+    left: ${({ selectedToggle }) => (selectedToggle === "주최한 래플" ? "4px" : "calc(50% + 4px)")};
+  }
+
+  @media (max-width: 480px) {
+    width: calc(50% - 6px);
+    left: ${({ selectedToggle }) => (selectedToggle === "주최한 래플" ? "3px" : "calc(50% + 3px)")};
+  }
 `;
 
 const ToggleOption = styled.div<{ selectedToggle: string; value: string }>`
   flex: 1;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 20px; /* ✅ 글자 크기 고정 */
+  height: 100%; /* ✅ 높이 유지 */
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
   color: ${({ selectedToggle, value }) => (selectedToggle === value ? "#fff" : "#c908ff")};
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 20px; /* ✅ 768px 이하에서도 글자 크기 유지 */
+  }
+
+  @media (max-width: 480px) {
+    font-size: 20px; /* ✅ 480px 이하에서도 글자 크기 유지 */
+  }
 `;
+
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   place-items: center;
   gap: 44px;
+
+  @media (max-width: 768px) {
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  @media (max-width: 480px) {
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
 `;
 
 const ReviewList = styled.ul`
   margin-top: 20px;
   padding: 0;
+
+  @media (max-width: 768px) {
+    margin-top: 15px;
+  }
 `;
 
 const ReviewItem = styled.li`
   font-size: 18px;
   margin-bottom: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;
 
 const LoadingMessage = styled.div`
@@ -215,6 +280,14 @@ const LoadingMessage = styled.div`
   font-size: 19.2px;
   color: #666;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;
 
 const NoProductsMessage = styled.div`
@@ -222,4 +295,12 @@ const NoProductsMessage = styled.div`
   font-size: 19.2px;
   color: #999;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;

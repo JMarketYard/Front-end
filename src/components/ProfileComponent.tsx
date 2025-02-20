@@ -5,18 +5,20 @@ import platinum3 from "../assets/mypages/platinum3.svg";
 import profileDefault from "../assets/mypages/profileDefault.svg";
 import editProfile from "../assets/mypages/editProfile.svg";
 import axiosInstance from "../apis/axiosInstance";
+import NameEditModal from "./Modal/modals/NameEditModal";
+
 interface ProfileProps {
   username: string;
   followers: number;
   reviews: number;
   isUserProfilePage?: boolean;
   followStatus?: boolean;
-  onEditProfile?: () => void; 
+  onEditProfile?: () => void;
   profileImageUrl?: string | null;
 }
 
 const ProfileComponent: React.FC<ProfileProps> = ({
-  username,
+  username: initialUsername,
   followers: initialFollowers,
   reviews,
   isUserProfilePage = false,
@@ -26,8 +28,46 @@ const ProfileComponent: React.FC<ProfileProps> = ({
   const { userId } = useParams<{ userId: string }>();
   const [profileImage, setProfileImage] = useState<string>(profileDefault);
   const [isFollowing, setIsFollowing] = useState<boolean>(followStatus ?? false);
-  const [followers, setFollowers] = useState<number>(initialFollowers); // ✅ 팔로워 개수 상태 추가
+  const [followers, setFollowers] = useState<number>(initialFollowers);
+  const [username, setUsername] = useState<string>(initialUsername); // ✅ 닉네임 상태 추가
+  const [isNameEditModalOpen, setIsNameEditModalOpen] = useState<boolean>(false);
 
+  /** ✅ 닉네임 변경 모달 닫기 */
+  const handleCloseModal = () => {
+    setIsNameEditModalOpen(false);
+  };
+
+  /** ✅ 닉네임 변경 시 업데이트 */
+  const handleNicknameChange = (newNickname: string) => {
+    setUsername(newNickname);
+  };
+
+  const handleProfileImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("profile", file);
+  
+    try {
+      const response = await axiosInstance.patch("/api/member/mypage/profile-image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      if (response.data) {
+        alert("프로필 이미지가 변경되었습니다!");
+        setProfileImage(response.data); // ✅ 이미지 URL을 즉시 업데이트
+        await fetchProfileData(); // ✅ 프로필 데이터 다시 불러와서 최신화
+      } else {
+        console.error("프로필 이미지 변경 실패:", response);
+      }
+    } catch (error) {
+      console.error("프로필 이미지 변경 중 오류 발생:", error);
+    }
+  };
+  
   /** ✅ 프로필 데이터 조회 */
   const fetchProfileData = async () => {
     try {
@@ -38,11 +78,12 @@ const ProfileComponent: React.FC<ProfileProps> = ({
       const response = await axiosInstance.get(endpoint);
 
       if (response.data.isSuccess) {
-        const { profileImageUrl, followStatus, followerNum } = response.data.result;
+        const { profileImageUrl, followStatus, followerNum, nickname } = response.data.result;
 
         setProfileImage(profileImageUrl && profileImageUrl.startsWith("http") ? profileImageUrl : profileDefault);
-        setIsFollowing(followStatus ?? false); 
-        setFollowers(followerNum); // ✅ 최신 팔로워 개수 반영
+        setIsFollowing(followStatus ?? false);
+        setFollowers(followerNum);
+        setUsername(nickname); // ✅ 서버에서 닉네임 업데이트
       } else {
         console.warn("프로필 데이터 로드 실패:", response.data.message);
       }
@@ -54,66 +95,6 @@ const ProfileComponent: React.FC<ProfileProps> = ({
   useEffect(() => {
     fetchProfileData();
   }, [userId]);
-/** ✅ 프로필 이미지 변경 */
-const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  if (isUserProfilePage) return;
-
-  const file = event.target.files?.[0];
-  if (!file) return;
-
-  const formData = new FormData();
-  formData.append("profileImage", file); // ✅ API에서 요구하는 키값이 `profileImage`인지 확인!
-
-  try {
-    const response = await axiosInstance.patch("/api/member/mypage/profile-image", formData, {
-      headers: { "Content-Type": "multipart/form-data" }, // ✅ 필수
-    });
-
-    console.log("✅ 프로필 이미지 변경 응답:", response);
-
-    if (response.data && response.data.isSuccess) {
-      const imageUrl = response.data.result;
-      setProfileImage(imageUrl && imageUrl.startsWith("http") ? imageUrl : profileDefault);
-    } else {
-      alert(response.data.message || "프로필 변경 실패");
-    }
-  } catch (error) {
-    console.error("❌ 프로필 변경 오류:", error);
-    alert("프로필 변경 중 오류 발생");
-  }
-};
-
-  /** ✅ 팔로우/언팔로우 기능 */
-  const handleFollowToggle = async () => {
-    try {
-      let endpoint = "/api/member/follow/";
-      let method = "POST";
-      let requestConfig = { params: { storeId: userId } };
-
-      if (isFollowing) {
-        endpoint = "/api/member/follow/cancel";
-        method = "DELETE";
-      }
-
-      let response;
-      if (method === "POST") {
-        response = await axiosInstance.post(endpoint, {}, requestConfig); // ✅ `body`는 빈 객체 `{}` 유지
-      } else {
-        response = await axiosInstance.delete(endpoint, requestConfig); // ✅ `params`는 그대로 유지
-      }
-
-      if (response.data.isSuccess) {
-        setIsFollowing(!isFollowing);
-        setFollowers((prev) => (isFollowing ? prev - 1 : prev + 1)); // ✅ 팔로우 개수 업데이트
-        console.log("팔로우 상태 변경 성공:", !isFollowing);
-      } else {
-        alert(response.data.message || "작업 수행 실패");
-      }
-    } catch (error) {
-      console.error("팔로우 변경 오류:", error);
-      alert("팔로우 변경 중 오류 발생");
-    }
-  };
 
   return (
     <ProfileWrapper>
@@ -125,11 +106,11 @@ const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => 
               <EditIcon htmlFor="profile-upload">
                 <img src={editProfile} alt="Edit Profile" />
               </EditIcon>
-              <HiddenFileInput
+              <HiddenFileInput 
                 id="profile-upload"
                 type="file"
                 accept="image/*"
-                onChange={handleImageChange}
+                onChange={handleProfileImageChange}
               />
             </>
           )}
@@ -139,6 +120,11 @@ const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => 
           <UserInfo>
             <RankIcon src={platinum3} alt="Platinum Rank" />
             <Username>{username}</Username>
+            {!isUserProfilePage && (
+              <NicknameEditButton onClick={() => setIsNameEditModalOpen(true)}>
+                닉네임 변경
+              </NicknameEditButton>
+            )}
           </UserInfo>
 
           <StatsContainer>
@@ -152,7 +138,7 @@ const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => 
           <ButtonContainer>
             {isUserProfilePage ? (
               <>
-                <FollowButton isFollowing={isFollowing} onClick={handleFollowToggle}>
+                <FollowButton isFollowing={isFollowing}>
                   {isFollowing ? "팔로우 취소" : "팔로우"}
                 </FollowButton>
                 <StyledReportButton onClick={() => alert("신고하기 기능 준비 중입니다.")}>
@@ -172,15 +158,62 @@ const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => 
           </ButtonContainer>
         </UserDetails>
       </ProfileContent>
+
+      {isNameEditModalOpen && (
+        <NameEditModal
+          currentNickname={username} // ✅ 현재 닉네임 전달
+          onClose={handleCloseModal} // ✅ 닫기 이벤트 연결
+          onNicknameChange={handleNicknameChange} // ✅ 닉네임 변경 핸들러 전달
+        />
+      )}
     </ProfileWrapper>
   );
 };
 
 export default ProfileComponent;
 
+const NicknameEditButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #8f8e94;
+  background: #fff;
+  color: #8f8e94;
+  cursor: pointer;
+  margin-left: 8px;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+
+  @media (max-width: 390px) {
+    height: 24px;
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+`;
+
+/** ✅ 기존 스타일 유지 */
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @media (max-width: 390px) {
+    gap: 8px;
+  }
+`;
+
 
 const FollowButton = styled.button<{ isFollowing: boolean }>`
-  width: 138px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: max-content; /* ✅ 버튼 너비가 텍스트 크기에 맞춰 자동 조정 */
   height: 39px;
   font-size: 16px;
   border-radius: 9px;
@@ -188,7 +221,15 @@ const FollowButton = styled.button<{ isFollowing: boolean }>`
   background: ${({ isFollowing }) => (isFollowing ? "#fff" : "#c908ff")};
   color: ${({ isFollowing }) => (isFollowing ? "#c908ff" : "#fff")};
   cursor: pointer;
+  padding: 10px 16px;
+  white-space: nowrap; /* ✅ 줄 바꿈 방지 */
+  flex-shrink: 0; /* ✅ 버튼 크기가 줄어들어도 내용이 줄 바뀌지 않도록 설정 */
+
+  @media (max-width: 390px) {
+    width: auto; /* ✅ 자동 너비 조정 */
+  }
 `;
+
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -196,19 +237,18 @@ const ProfileWrapper = styled.div`
   align-items: center;
   width: 100%;
   margin-top: 50px;
+
+  @media (max-width: 390px) {
+    flex-direction: column;
+    margin-top: 30px;
+  }
 `;
 
-const StyledButton = styled.button`
-  width: 138px;
-  height: 39px;
-  font-size: 16px;
-  border-radius: 9px;
-  border: 1px solid #8f8e94;
-  background: #fff;
-  cursor: pointer;
-`;
-
+/* ✅ 신고하기 버튼 스타일 조정 */
 const StyledReportButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 138px;
   height: 39px;
   font-size: 16px;
@@ -217,9 +257,15 @@ const StyledReportButton = styled.button`
   background: #fff;
   color: #8f8e94;
   cursor: pointer;
+  padding: 10px 16px;
 
   &:hover {
     background: #ffebeb;
+  }
+
+  @media (max-width: 390px) {
+    width: 100%;
+    padding: 10px 16px; /* ✅ 작은 화면에서도 패딩 유지 */
   }
 `;
 
@@ -229,12 +275,23 @@ const ProfileContent = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+
+  @media (max-width: 390px) {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const ProfileImageWrapper = styled.div`
   position: relative;
   width: 222px;
   height: 222px;
+
+  @media (max-width: 390px) {
+    width: 140px;
+    height: 140px;
+  }
 `;
 
 const ProfileImage = styled.img`
@@ -250,35 +307,58 @@ const HiddenFileInput = styled.input`
 
 const EditIcon = styled.label`
   position: absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 40px;
-  height: 40px;
+  bottom: 20px; /* ✅ 기존보다 더 위로 올려서 프로필 사진과 깊이 겹치게 조정 */
+  right: 20px; /* ✅ 안쪽으로 더 밀어넣음 */
+  width: 34px; /* ✅ 아이콘 크기 조정 */
+  height: 34px;
   cursor: pointer;
+  background: rgba(0, 0, 0, 0.15); /* ✅ 반투명 배경 추가 */
+  border-radius: 50%; /* ✅ 원형 유지 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 390px) {
+    width: 26px;
+    height: 26px;
+    bottom: 15px; /* ✅ 작은 화면에서도 더 깊이 겹치도록 조정 */
+    right: 15px;
+  }
 `;
+
+
+
 
 const UserDetails = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-`;
+  text-align: center;
 
-const UserInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 23px;
+  @media (max-width: 390px) {
+    gap: 8px;
+  }
 `;
 
 const RankIcon = styled.img`
   width: 42px;
   height: 39px;
   flex-shrink: 0;
+
+  @media (max-width: 390px) {
+    width: 42px; /* ✅ 크기 고정 */
+    height: 39px;
+  }
 `;
 
 const Username = styled.div`
   font-size: 24px;
   font-weight: 700;
+
+  @media (max-width: 390px) {
+    font-size: 24px; /* ✅ 글자 크기 고정 */
+  }
 `;
 
 const StatsContainer = styled.div`
@@ -286,10 +366,20 @@ const StatsContainer = styled.div`
   width: 238px;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 390px) {
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+  }
 `;
 
 const StatItem = styled.div`
   font-size: 20px;
+
+  @media (max-width: 390px) {
+    font-size: 20px; /* ✅ 글자 크기 고정 */
+  }
 `;
 
 const StatNumber = styled.span`
@@ -300,18 +390,53 @@ const Divider = styled.div`
   width: 1px;
   height: 43px;
   background-color: #000;
+
+  @media (max-width: 390px) {
+    height: 43px; /* ✅ 크기 유지 */
+  }
 `;
 
+/* ✅ 버튼 공백 유지 + 항상 같은 크기 */
 const ButtonContainer = styled.div`
   display: flex;
+  justify-content: center;
   gap: 16px;
+  width: 100%;
+
+  @media (max-width: 390px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+`;
+
+/* ✅ 버튼 공백 유지 + 크기 고정 */
+const StyledButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 138px; /* ✅ 버튼 최소 크기 유지 */
+  height: 39px;
+  font-size: 16px;
+  border-radius: 9px;
+  border: 1px solid #8f8e94;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  padding: 10px 16px;
+
+  @media (max-width: 390px) {
+    min-width: 138px;
+    padding: 10px 16px; /* ✅ 공백 유지 */
+  }
 `;
 
 export {
   FollowButton,
   ProfileWrapper,
   StyledButton,
-  StyledReportButton,
+  StyledReportButton, // ✅ StyledReportButton 추가
   ProfileContent,
   ProfileImageWrapper,
   ProfileImage,
