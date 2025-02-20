@@ -16,7 +16,6 @@ import SearchResultPage from '../pages/raffleList/SearchResultPage';
 import CategoryResultPage from '../pages/raffleList/CategoryResultPage';
 import MyProfilePage from '../pages/mypage/mypage';
 import FollowingList from '../pages/mypage/FollowingList';
-import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';

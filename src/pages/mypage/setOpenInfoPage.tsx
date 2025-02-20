@@ -1,10 +1,42 @@
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import media from "../../styles/media";
+import axiosInstance from "../../apis/axiosInstance";
 
 const SetOpenInfoPage = () => {
   const [toggle, setToggle] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const getInfo = async () => {
+    const { data } = await axiosInstance.get('/api/member/mypage/secretInfo');
+    console.log('GET:',data.result);
+    setToggle(data.result);
+    // if (!isLoaded) setIsLoaded(true);
+  };
+
+  const handleToggle = () => {
+    const patchInfo = async () => {
+      await axiosInstance.patch('/api/member/mypage/secretInfo', !toggle,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+      .then(_=>getInfo())
+    };
+    patchInfo();
+  };
+
+  useEffect(() => {
+    getInfo();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded) setIsLoaded(true);
+  }, [toggle]);
+
   return (
     <Wrapper>
     <BigTitle>공개 정보 설정</BigTitle>
@@ -12,14 +44,15 @@ const SetOpenInfoPage = () => {
       <Box>
         <ToggleBox>
           <RoundDiv />
-          <Span>팔로우 목록 공개</Span>
+          <Span>팔로워 수 공개</Span>
         </ToggleBox>
         <div>
           <Input type="checkbox" id="toggle" />
           <ToggleLabel
           htmlFor="toggle"
           $checked={toggle}
-          onClick={()=>setToggle(!toggle)}
+          $loaded={isLoaded}
+          onClick={handleToggle}
           />
         </div>
       </Box>
@@ -81,7 +114,7 @@ const Input = styled.input`
   display: none;
 `
 
-const ToggleLabel = styled.label<{$checked:boolean}>`
+const ToggleLabel = styled.label<{$checked:boolean, $loaded:boolean}>`
   display: flex;
   align-items: center;
   position: relative;
@@ -100,11 +133,9 @@ const ToggleLabel = styled.label<{$checked:boolean}>`
     height: 20px;
     background-color: #FFF;
     border-radius: 100%;
-    transition: transform 0.3s ease;
-    ${props => props.$checked
-      ? 'transform: translateX(-28px)'
-      : 'transform: translateX(0)'
-    };
+    left: ${(props) => (props.$checked ? "2px" : "calc(100% - 22px)")};
+    // transition: left 0.3s ease;
+    // transition: ${(props) => (props.$loaded ? 'left 0.3s ease' : 'none')};
   };
   &::after {
     ${props => props.$checked
