@@ -1,13 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import SmallTitle from "../../components/SmallTitle";
+import axiosInstance from "../../apis/axiosInstance";
 
 const Payment: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState("1주일");
+  const [selectedTab, setSelectedTab] = useState("7d");
+  const [combinedHistory, setCombinedHistory] = useState<any[]>([]);
+  const [bankName, setBankName] = useState("");
+  const [bankNumber, setBankNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleTabClick = (tab: string) => {
-    setSelectedTab(tab);
+  /** ✅ 결제 및 환전 내역 조회 & 데이터 병합 */
+  const fetchPaymentHistory = async () => {
+    setLoading(true);
+    try {
+      const [chargeRes, exchangeRes] = await Promise.all([
+        axiosInstance.get(`/api/member/payment/history/charge?period=${selectedTab}`),
+        axiosInstance.get(`/api/member/payment/history/exchange?period=${selectedTab}`),
+      ]);
+
+      let chargeData = chargeRes.data.isSuccess ? chargeRes.data.result : [];
+      let exchangeData = exchangeRes.data.isSuccess ? exchangeRes.data.result : [];
+
+      // ✅ 충전 데이터 가공
+      chargeData = chargeData.map((item: any) => ({
+        ...item,
+        date: item.purchaseDate.split("T")[0],
+        type: "충전",
+      }));
+
+      // ✅ 환전 데이터 가공
+      exchangeData = exchangeData.map((item: any) => ({
+        ...item,
+        date: item.exchangedDate.split("T")[0],
+        type: "환전",
+      }));
+
+      // ✅ 날짜 기준 정렬 (최신순)
+      const mergedData = [...chargeData, ...exchangeData].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      setCombinedHistory(mergedData);
+    } catch (error) {
+      console.error("내역 조회 중 오류 발생:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPaymentHistory();
+  }, [selectedTab]);
+
+  /** ✅ 계좌 정보 등록 */
+  const handleBankInfoSubmit = async () => {
+    if (!bankName || !bankNumber) {
+      alert("은행명과 계좌번호를 입력하세요.");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post("/api/member/payment/bankInfo", {
+        bankName,
+        bankNumber,
+      });
+
+      if (response.data.isSuccess) {
+        alert("계좌 정보가 등록되었습니다!");
+      } else {
+        alert(response.data.message || "계좌 정보 등록에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("계좌 정보 등록 중 오류 발생:", error);
+      alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -22,8 +90,21 @@ const Payment: React.FC = () => {
           <AccountText>환전 시 해당 계좌로 정산됩니다.</AccountText>
         </Row>
         <AccountInfo>
-          <AccountNumber>1122189896208 부산은행</AccountNumber>
-          <ChangeButton>계좌 변경하기</ChangeButton>
+          <AccountNumberWrapper>
+            <AccountInput
+              type="text"
+              placeholder="은행명"
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value)}
+            />
+            <AccountInput2
+              type="text"
+              placeholder="계좌번호"
+              value={bankNumber}
+              onChange={(e) => setBankNumber(e.target.value)}
+            />
+          </AccountNumberWrapper>
+          <ChangeButton onClick={handleBankInfoSubmit}>계좌 변경하기</ChangeButton>
         </AccountInfo>
       </Section>
 
@@ -33,37 +114,52 @@ const Payment: React.FC = () => {
 
       <Section2>
         <TabContainer>
-          {["1주일", "한 달", "3개월", "6개월"].map((tab) => (
+          {["7d", "1m", "3m", "6m"].map((tab) => (
             <Tab key={tab}>
               <TabInner
                 isActive={selectedTab === tab}
-                onClick={() => handleTabClick(tab)}
+                onClick={() => setSelectedTab(tab)}
               >
-                {tab}
+                {tab === "7d" ? "1주일" : tab === "1m" ? "한 달" : tab === "3m" ? "3개월" : "6개월"}
               </TabInner>
             </Tab>
           ))}
         </TabContainer>
-        <Table>
-          <thead>
-            <TableRow>
-              <TableHeader>구매일자</TableHeader>
-              <TableHeader>구매수량</TableHeader>
-              <TableHeader>결제수단</TableHeader>
-              <TableHeader>금액</TableHeader>
-            </TableRow>
-          </thead>
-          <tbody>
-            {Array.from({ length: 10 }).map((_, index) => (
-              <TableRow key={index}>
-                <TableCell>2024.12.26</TableCell>
-                <TableCell>100개</TableCell>
-                <TableCell>무통장입금</TableCell>
-                <TableCell>10,000원</TableCell>
-              </TableRow>
-            ))}
-          </tbody>
-        </Table>
+
+        {loading ? (
+          <LoadingMessage>내역을 불러오는 중...</LoadingMessage>
+        ) : (
+          <>
+            <Table>
+              <thead>
+                <TableRow>
+                  <TableHeader>구분</TableHeader>
+                  <TableHeader>일자</TableHeader>
+                  <TableHeader>수량</TableHeader>
+                  <TableHeader>수단</TableHeader>
+                  <TableHeader>금액</TableHeader>
+                </TableRow>
+              </thead>
+              <tbody>
+                {combinedHistory.length > 0 ? (
+                  combinedHistory.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{item.type}</TableCell>
+                      <TableCell>{item.date}</TableCell>
+                      <TableCell>{item.user_ticket}개</TableCell>
+                      <TableCell>{item.paymentMethod || item.exchangeMethod}</TableCell>
+                      <TableCell>{item.amount}원</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5}>내역이 없습니다.</TableCell>
+                  </TableRow>
+                )}
+              </tbody>
+            </Table>
+          </>
+        )}
       </Section2>
     </Container>
   );
@@ -71,7 +167,60 @@ const Payment: React.FC = () => {
 
 export default Payment;
 
-/* 스타일 */
+const AccountNumberWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const AccountInput = styled.input`
+  padding: 9px 18px;
+  width: 140px;
+  border: none;
+  border-radius: 3px;
+  background: #f5f5f5;
+  font-size: 20px;
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+`;
+
+const AccountInput2 = styled.input`
+  padding: 9px 18px;
+  width: 220px;
+  border: none;
+  border-radius: 3px;
+  background: #f5f5f5;
+  font-size: 20px;
+  color: #c908ff;
+  text-align: center;
+  font-family: Pretendard;
+`;
+
+const ChangeButton = styled.button`
+  border-radius: 6px;
+  background-color: white;
+  border: 1px solid #8f8e94;
+  color: #8f8e94;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  height: 26px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f9f9f9;
+  }
+`;
+
+const LoadingMessage = styled.div`
+  font-size: 18px;
+  margin-top: 20px;
+`;
+
+
 const Container = styled.div`
   width: 100%;
   max-width: 1080px;
@@ -129,42 +278,7 @@ const AccountText = styled.div`
   line-height: 30px;
 `;
 
-const AccountNumber = styled.div`
-  display: flex;
-  padding: 9px 18px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 3px;
-  background: #f5f5f5;
-  color: #c908ff;
-  font-family: Pretendard;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 30px;
-`;
 
-const ChangeButton = styled.button`
-  display: flex;
-  height: 26px;
-  padding: 0px 10px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 6px;
-  background-color: white;
-  border: 1px solid #8f8e94;
-  color: #8f8e94;
-  font-family: Pretendard;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 36.832px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f9f9f9;
-  }
-`;
 
 const TabContainer = styled.div`
   display: flex;

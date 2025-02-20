@@ -17,15 +17,10 @@ import { useAuth } from '../../../context/AuthContext';
 import SplashModal from '../../login/components/SplashModal';
 
 type ItemProps = RaffleDetailProps & {
-  shouldFetch: boolean;
-  setShouldFetch: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Item: React.FC<ItemProps> = ({
-  shouldFetch,
-  setShouldFetch,
-  ...raffle
-}) => {
+const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
@@ -38,9 +33,40 @@ const Item: React.FC<ItemProps> = ({
     openModal(({ onClose }) => <SplashModal onClose={onClose} />);
   };
 
-  const toggleLike = () => {
-    setIsLiked((prevState) => !prevState);
-    setLikeCount((prevLike) => (isLiked ? prevLike - 1 : prevLike + 1));
+  const postLike = async (typeNumber: number) => {
+    try {
+      await axiosInstance.post(`/api/member/raffles/like`, null, {
+        params: { itemId: typeNumber }, // 그대로 number로 전달
+      });
+      console.log('찜하기 성공');
+    } catch (error) {
+      console.error('찜하기 실패:', error);
+    }
+  };
+
+  const deleteLike = async (typeNumber: number) => {
+    try {
+      await axiosInstance.delete(`/api/member/raffles/like`, {
+        params: { itemId: typeNumber }, // 그대로 number로 전달
+      });
+      console.log('찜하기 취소');
+    } catch (error) {
+      console.error('찜 취소 실패:', error);
+    }
+  };
+
+  const toggleLike = async () => {
+    if (typeNumber === undefined) return;
+
+    if (isLiked) {
+      await deleteLike(typeNumber);
+      setIsLiked(false);
+      setLikeCount((prev) => prev - 1);
+    } else {
+      await postLike(typeNumber);
+      setIsLiked(true);
+      setLikeCount((prev) => prev + 1);
+    }
   };
 
   const handleApply = async () => {
@@ -51,8 +77,7 @@ const Item: React.FC<ItemProps> = ({
         ticket={raffle.ticketNum}
         image={raffle.imageUrls[0]}
         resultTime={raffle.endAt}
-        shouldFetch={shouldFetch}
-        setShouldFetch={setShouldFetch}
+        setIsApplying={setIsApplying}
       />
     ));
   };
@@ -63,6 +88,13 @@ const Item: React.FC<ItemProps> = ({
     );
     const drawData = data.result;
     console.log('draw data:', drawData);
+    openModal(({ onClose }) => (
+      <RandomModal
+        onClose={onClose}
+        image={raffle.imageUrls[0]}
+        {...drawData}
+      />
+    ));
     openModal(({ onClose }) => (
       <RandomModal
         onClose={onClose}
@@ -91,7 +123,10 @@ const Item: React.FC<ItemProps> = ({
             raffle.raffleStatus === 'ENDED' ||
             raffle.raffleStatus === 'CANCELLED' ||
             raffle.raffleStatus === 'COMPLETED') && (
-            <RaffleClosingBox>응모 마감</RaffleClosingBox>
+            <>
+              <RaffleClosingBox>응모 마감</RaffleClosingBox>
+              <EndBox />
+            </>
           )}
         </ImgSlider>
         <DetailLayout>
@@ -275,6 +310,7 @@ const RaffleClosingBox = styled.div`
   border: 2px solid #c908ff;
 
   position: absolute;
+  z-index: 10;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -558,4 +594,14 @@ const DescriptionBox2 = styled.div`
   line-height: 150%; /* 30px */
 `;
 
-const WarningContainer = styled.div``;
+const EndBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 5px;
+  background: rgba(193, 193, 193, 0.8);
+  z-index: 5;
+`;

@@ -16,13 +16,13 @@ import SearchResultPage from '../pages/raffleList/SearchResultPage';
 import CategoryResultPage from '../pages/raffleList/CategoryResultPage';
 import MyProfilePage from '../pages/mypage/mypage';
 import FollowingList from '../pages/mypage/FollowingList';
-import PublicInformationSet from '../pages/mypage/PublicInformationSet';
 import Setting from '../pages/mypage/Setting';
 import ScrollToTop from '../components/ScrollTop';
 import AskPage from '../pages/ask/askPage';
-import MyReview from '../pages/mypage/MyReview';  // ✅ 충돌 해결 - 유지
-import Payment from '../pages/mypage/Payment';  // ✅ 충돌 해결 - 유지
-import WinnerPage from '../pages/winner/winnerPage';  // ✅ 충돌 해결 - 유지
+import MyReview from '../pages/mypage/MyReview';  
+import Payment from '../pages/mypage/Payment';  
+import WinnerPage from '../pages/winner/winnerPage';  
+import UserProfilePage from '../pages/mypage/UserProfilePage';
 
 const router = createBrowserRouter([
   {
@@ -145,6 +145,10 @@ const router = createBrowserRouter([
       {
         path: 'mypage/payment',
         element: <Payment />,
+      },
+      { 
+        path: "user/:userId", 
+        element: <UserProfilePage />
       },
       {
         path: 'ask/:type',

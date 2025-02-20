@@ -12,18 +12,17 @@ import FollowFailModal from './modal/FollowFailModal';
 
 interface MarketProps extends RaffleDetailProps {
   type?: string;
+  setFollowingState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
+const Market: React.FC<MarketProps> = ({
+  type,
+  setFollowingState,
+  ...raffle
+}) => {
   const navigate = useNavigate();
-  const [isFollowing, setIsFollowing] = useState(false); // 팔로우 상태
-  const [followCount, setFollowCount] = useState<number>(raffle.followCount);
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
-
-  const handleAsk = () => {
-    navigate(`/ask/${type}`, { state: raffle });
-  };
 
   const handleOpenModal = () => {
     openModal(({ onClose }) => <SplashModal onClose={onClose} />);
@@ -34,18 +33,16 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
   };
 
   const handleFollow = async () => {
-    if (isFollowing) {
+    if (raffle.followStatus) {
       try {
         const { data } = await axiosInstance.delete(
           '/api/member/follow/cancel',
           { params: { storeId: raffle.storeId } },
         );
         console.log('상점 언팔로우 : ', data.message);
-        setIsFollowing(false);
-        setFollowCount((prev) => prev - 1); // 팔로워 수 증가
+        setFollowingState((prev) => !prev);
       } catch (error) {
         console.error('에러 : 팔로우 상태가 아님', error);
-        setIsFollowing(false);
       }
     } else {
       try {
@@ -55,11 +52,9 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
           { params: { storeId: raffle.storeId } },
         );
         console.log('상점 팔로우 : ', data.message);
-        setIsFollowing(true);
-        setFollowCount((prev) => prev + 1); // 팔로워 수 증가
+        setFollowingState((prev) => !prev);
       } catch (error) {
         console.error('에러 : 이미 팔로잉 중', error);
-        setIsFollowing(true);
       }
     }
   };
@@ -81,7 +76,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
         </MoreListBox>
       </BigTitleBox>
       <MarketLayout>
-        <ImageBox />
+        <ImageBox imageUrl={raffle.storeImageUrl} />
         <MarketContainer>
           <NicknameBox>
             <img src={icLevel} alt="레벨" />
@@ -89,7 +84,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
           </NicknameBox>
           <MarketInfo>
             <KeyBox>팔로워</KeyBox>
-            <ValueBox>{followCount}</ValueBox>
+            <ValueBox>{raffle.followCount}</ValueBox>
             <VerticalDivider />
             <KeyBox>후기 </KeyBox>
             <ValueBox>{raffle.reviewCount}</ValueBox>
@@ -116,7 +111,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
               }
             }}
           >
-            {isFollowing ? '팔로잉 취소' : '팔로우하기'}
+            {raffle.followStatus ? '팔로잉 취소' : '팔로우하기'}
           </FollowButton>
         )}
         <ReviewButton>상점 후기</ReviewButton>
@@ -198,19 +193,24 @@ const MarketLayout = styled.div`
   align-items: center;
 `;
 
-const ImageBox = styled.div`
+const ImageBox = styled.div<{ imageUrl: string }>`
   width: 78px;
   height: 78px;
   background-color: #d9d9d9;
   border: 1px solid #8f8e94;
   margin-right: 30px;
   border-radius: 50%;
+
+  background-image: url(${(props) => props.imageUrl});
+  background-size: cover;
 `;
 
 const MarketContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 211px;
+  align-items: flex-start;
 `;
 
 const NicknameBox = styled.div`

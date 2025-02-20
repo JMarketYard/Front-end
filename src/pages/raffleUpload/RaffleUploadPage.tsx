@@ -2,7 +2,7 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import imgUpload from "../../assets/imgUpload.svg";
 import imgArrow from "../../assets/imgSelectArrow.png";
-import React, { FormEvent, ReactElement, useRef, useState } from "react";
+import React, { FormEvent, ReactElement, useEffect, useRef, useState } from "react";
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
@@ -34,6 +34,7 @@ const RaffleUploadPage = () => {
     const fileRef = useRef<HTMLInputElement>(null);
     const [images, setImages] = useState<File[]>([]);
     const [category, setCategory] = useState<string>('');
+    const [deliveryFee, setDeliveryFee] = useState<string>("");
 
     const handleImg = () => {
         fileRef?.current?.click();
@@ -41,9 +42,9 @@ const RaffleUploadPage = () => {
     const handleChangeImgInput = (e:React.ChangeEvent) => {
         const targetFiles = (e.target as HTMLInputElement).files as FileList;
         const targetFilesArr = Array.from(targetFiles);
-        const selectedFiles:string[] = targetFilesArr.map((file) => {
-            return URL.createObjectURL(file);
-        });
+        // const selectedFiles:string[] = targetFilesArr.map((file) => {
+        //     return URL.createObjectURL(file);
+        // });
         setImages(targetFilesArr);
     };
 
@@ -54,6 +55,17 @@ const RaffleUploadPage = () => {
     const handleSubmit = (e:React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
         const description = (document.getElementById('upload-textarea') as HTMLInputElement).value;
+        // 모두 입력했는지 확인
+        if (images.length===0) return alert("상품 이미지를 추가해주세요");
+        if (category==='' || name==='' ||
+            itemState==="" || description.length===0)
+            return alert("상품 정보를 모두 입력해주세요");
+        if (ticketNum==="" || jcare==="" || deliveryFee==="")
+            return alert("거래 설정을 모두 입력해주세요");
+        if (startDate>=endDate) return alert("개최 기간이 올바르지 않습니다");
+        if (parseInt(deliveryFee)>10000)
+            return alert("배송비는 최대 1만원까지 입력 가능합니다");
+
         const formData = new FormData();
         images.forEach((image) => {
             console.log('images:',image);
@@ -64,13 +76,11 @@ const RaffleUploadPage = () => {
         formData.append("itemStatus", itemState);
         formData.append("description", description);
         formData.append("ticketNum", parseInt(ticketNum).toString());
-        formData.append("minTicket", leastTicketNum);
+        formData.append("minTicket", leastTicketNum.replace(',',''));
         formData.append("startAt", startDate.toISOString().replace('Z',''));
         formData.append("endAt", endDate.toISOString().replace('Z',''));
         console.log('제출버튼클릭');
-        // for (let [key, value] of formData.entries()) {
-        //     console.log(`${key}: ${value}`);
-        //   };
+        
         openModal(({ onClose }) => <UploadModal onClose={onClose}
         images={images} name={name} formData={formData} />);
     };
@@ -80,20 +90,25 @@ const RaffleUploadPage = () => {
     };
     const handleTicketNum = (key:string) => {
         setTicketNum(key);
-        if (key==="more") handleTicketModal();
+        if (key===moreTicketText) handleTicketModal();
     };
     const handleJcare = (key:string) => {
         setJcare(key);
     };
     
     const handleLeastTicketNum = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setLeastTicketNum(e.target.value);
+        setLeastTicketNum(e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     };
+
+    const handleDeliveryFee = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setDeliveryFee(e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    }
 
     // 응모 티켓 개수 직접 입력 모달 open
     const handleTicketModal = () => {
         openModal(({ onClose }) => <TicketModal onClose={onClose}
-        setMoreTicketText={setMoreTicketText} />);
+        setMoreTicketText={setMoreTicketText}
+        setTicketNum={setTicketNum} />);
     };
 
     return (
@@ -103,13 +118,14 @@ const RaffleUploadPage = () => {
                 <ItemInfoContainer>
                     <ImgContainer>
                         <ImgSpan>상품 이미지</ImgSpan>
-                        <div onClick={handleImg}>
+                        <div>
                             {images.length===0 ?
                             <ImgFileLabel htmlFor="img-file">
                                 <ImgFileIcon src={imgUpload} />
                             </ImgFileLabel> :
-                            <SelectedImg src={URL.createObjectURL(images[0])} />
-                            }
+                            <ImgFileLabel htmlFor="img-file">
+                                <SelectedImg src={URL.createObjectURL(images[0])} />
+                            </ImgFileLabel>}
                         </div>
                         <InputImgFile
                         name="files"
@@ -216,7 +232,7 @@ const RaffleUploadPage = () => {
                             name="minTicket"
                             value={leastTicketNum}
                             onChange={handleLeastTicketNum} />
-                            <StyleP>예상 정산 금액: {Number(leastTicketNum)*100 || 0}원</StyleP>
+                            <StyleP>예상 정산 금액: {(parseInt(leastTicketNum.replace(',',''))*100).toLocaleString() || 0}원</StyleP>
                         </InputContainer>
                     </SetConditionBox>
                     <SetConditionBox>
@@ -246,7 +262,9 @@ const RaffleUploadPage = () => {
                     <SetConditionBox>
                         <TitleSpan2>배송비</TitleSpan2>
                         <InputContainer>
-                            <InputBox type="text" />
+                            <InputBox type="text"
+                            value={deliveryFee}
+                            onChange={handleDeliveryFee} />
                             <StyleP>최대 1만원까지 입력가능</StyleP>
                         </InputContainer>
                     </SetConditionBox>

@@ -1,42 +1,45 @@
 import React from 'react';
-import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
+import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
+import useDeliveryStore from '../store/deliveryStore';
 
 interface ModalProps {
   onClose: () => void;
-  raffleId: number;
+  deliveryId: number;
 }
 
-const CancleModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
+const WaitShippingModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
   const navigate = useNavigate();
+  const { triggerRefetch } = useDeliveryStore();
+
   const handleClick = async () => {
     try {
-      const { data } = await axiosInstance.post(
-        `/api/member/raffles/${raffleId}/cancel`,
+      const response = await axiosInstance.post(
+        `/api/member/delivery/${deliveryId}/winner/wait`,
+        {},
       );
-      console.log('강제종료함:', data);
-      onClose();
-      navigate(`/raffles/${raffleId}`);
+      triggerRefetch();
     } catch (error) {
-      console.error('POST 요청 실패', error);
+      console.error(error);
     }
+    onClose();
+    navigate(`/`);
   };
+
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
-        <Title>해당 래플을 강제종료 하겠습니까?</Title>
-        <Short>종료한 래플은 재개할 수 없습니다.</Short>
-        <Button onClick={handleClick}>강제종료하기</Button>
+        <Title>운송장을 기다리시겠습니까?</Title>
+        <Short>운송장 입력 시간을 최대 24시간 연장합니다.</Short>
+        <Button onClick={handleClick}>기다리기</Button>
       </Container>
     </Modal>
   );
 };
-
-export default CancleModal;
 
 const Short = styled.div`
   margin-bottom: 127px;
@@ -84,3 +87,5 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export default WaitShippingModal;

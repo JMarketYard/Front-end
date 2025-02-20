@@ -41,7 +41,12 @@ const ProductCard: React.FC<RaffleProps> = ({
     <Wrapper>
       <StyledLink to={`/raffles/${raffleId}`}>
         <ImageContainer imageUrls={imageUrls}>
-          {finish && <RaffleClosingBox>응모 마감</RaffleClosingBox>}
+          {finish && (
+            <>
+              <RaffleClosingBox>응모 마감</RaffleClosingBox>
+              <EndBox />
+            </>
+          )}
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
             <TextBox>마감임박</TextBox>
           )}
@@ -186,7 +191,7 @@ const TitleBox = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px; /* ✅ 글자 수 제한 */
+  max-width: 120px; /* 글자 수 제한 */
 `;
 
 const ParticipantsBox = styled.div`
@@ -229,4 +234,13 @@ const TimeBox = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 130%; /* 18.2px */
+`;
+
+const EndBox = styled.div`
+  width: 100%;
+  height: 100%;
+
+  border-radius: 3px;
+  background: rgba(193, 193, 193, 0.8);
+  z-index: 1;
 `;

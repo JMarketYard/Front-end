@@ -3,6 +3,7 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import SmallTitle from "../../components/SmallTitle";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../apis/axiosInstance";
 
 const Setting: React.FC = () => {
   const navigate = useNavigate();
@@ -11,9 +12,21 @@ const Setting: React.FC = () => {
     navigate(path);
   };
 
-  const handleLogout = () => {
-    alert("로그아웃 되었습니다.");
-    navigate("/login"); // 로그인 페이지로 이동
+  /** ✅ 로그아웃 처리 API */
+  const handleLogout = async () => {
+    try {
+      const response = await axiosInstance.post("/api/permit/logout");
+
+      if (response.data.isSuccess) {
+        alert("로그아웃 되었습니다.");
+        navigate("/login"); // 로그인 페이지로 이동
+      } else {
+        alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("로그아웃 중 오류 발생:", error);
+      alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   const handleAccountDeletion = () => {
@@ -50,6 +63,7 @@ const Setting: React.FC = () => {
 
 export default Setting;
 
+/* ✅ 기존 스타일 유지 */
 const Container = styled.div`
   background: white;
   width: 100%;
@@ -68,12 +82,12 @@ const BigTitleWrapper = styled.div`
 `;
 
 const SmallTitleBox = styled.div`
-  display: flex; /* Flex 컨테이너 */
-  flex-direction: column; /* 세로 방향 정렬 */
-  align-items: flex-start; /* 왼쪽 정렬 */
-  justify-content: flex-start; /* 상단 정렬 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   margin-top: 66px;
   margin-left: 112px;
-  gap: 78px; /* 요소 간 간격 78px 유지 */
+  gap: 78px;
   cursor: pointer;
 `;

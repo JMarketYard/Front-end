@@ -20,6 +20,8 @@ type RaffleDetailProps = {
   isWinner: string;
   raffleStatus: TRaffleStatus;
   deliveryId: number;
+  followStatus: boolean;
+  storeImageUrl: string;
   children?: React.ReactNode;
 };
 
