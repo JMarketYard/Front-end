@@ -147,7 +147,8 @@ const ToggleContainer = styled.div`
   height: 58px;
   border-radius: 50px;
   background: #f5f5f5;
-  margin: 50px auto 76px;
+  margin-bottom: 45px;
+  margin: 45px auto 76px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -184,9 +185,11 @@ const ToggleOption = styled.div<{ selectedToggle: string; value: string }>`
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-gap: 24px; 
   padding: 20px;
+  place-items: center; 
+  grid-template-columns: repeat(4, minmax(250px, 1fr));
+
   ${media.medium`
     grid-template-columns: repeat(3, 1fr);
     gap: 9px;
@@ -194,10 +197,12 @@ const ProductGrid = styled.div`
     padding-left:0px
   `}
   ${media.small`
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 9px;
   `}
 `;
+
+
 
 const LoadingMessage = styled.div`
   text-align: center;
@@ -235,7 +240,7 @@ const SettingsLink = styled(Link)`
     text-decoration: underline;
   }
 
-  @media (max-width: 390px) {
+  @media (max-width: 700px) {
     display: none; /* ✅ 390px 이하에서 버튼 숨김 */
   }
 `;

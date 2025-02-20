@@ -199,6 +199,148 @@ const ProfileComponent: React.FC<ProfileProps> = ({
 
 export default ProfileComponent;
 
+
+const StatsContainer = styled.div`
+  display: flex;
+  width: 238px;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 744px) { /* 모바일 가로, 태블릿 세로 */
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+  }
+
+`;
+
+const ProfileWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 50px;
+
+  @media (max-width: 1024px) { /* 태블릿 가로 & 소형 노트북 */
+    flex-direction: column;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 768px) { /* 스마트폰 가로 & 태블릿 세로 */
+    flex-direction: column;
+    margin-top: 30px;
+  }
+`;
+
+const ProfileContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 555px;
+  gap: 20px; /* ✅ 기본 가로 정렬일 때 간격 20px 유지 */
+
+  @media (max-width: 768px) { /* 스마트폰 가로 & 태블릿 세로 */
+    flex-direction: column;
+    gap: 45px; /* ✅ 세로 정렬 시 프로필 & 줄 간격 45px 유지 */
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* ✅ 버튼 간격 항상 20px 유지 */
+  width: 100%;
+  max-width: 300px; /* ✅ 최대 너비 설정 */
+  flex-wrap: nowrap; /* ✅ 버튼이 줄 바뀌지 않도록 설정 */
+
+  @media (max-width: 1024px) { /* 태블릿 가로 & 소형 노트북 */
+    max-width: 280px;
+  }
+
+  @media (max-width: 768px) { /* 스마트폰 가로 & 태블릿 세로 */
+    max-width: 260px;
+  }
+
+  @media (max-width: 480px) { /* 스마트폰 세로 */
+    max-width: 240px;
+  }
+`;
+
+const StyledButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 138px; /* ✅ 버튼 최소 너비 유지 */
+  height: 38.5px;
+  font-size: 16px;
+  border-radius: 9px;
+  border: 1px solid #8F8E94;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  padding: 10px 16px;
+  flex-shrink: 0; /* ✅ 크기 줄어들지 않도록 설정 */
+
+  @media (max-width: 1024px) { /* 태블릿 가로 & 소형 노트북 */
+    min-width: 130px;
+    height: 42px;
+  }
+
+  @media (max-width: 768px) { /* 스마트폰 가로 & 태블릿 세로 */
+    min-width: 125px;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) { /* 스마트폰 세로 */
+    min-width: 120px;
+    height: 38px;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+`;
+
+
+const ProfileImageWrapper = styled.div`
+  position: relative;
+  width: 222px;
+  height: 222px;
+
+  @media (max-width: 1024px) { /* 태블릿 가로 & 소형 노트북 */
+    width: 200px;
+    height: 200px;
+  }
+
+  @media (max-width: 768px) { /* 스마트폰 가로 & 태블릿 세로 */
+    width: 180px;
+    height: 180px;
+  }
+
+  @media (max-width: 480px) { /* 스마트폰 세로 (일반 모바일) */
+    width: 140px;
+    height: 140px;
+  }
+`;
+
+const Username = styled.div`
+  font-size: 24px;
+  font-weight: 700;
+
+  @media (max-width: 1024px) { /* 태블릿 가로 & 소형 노트북 */
+    font-size: 22px;
+  }
+
+  @media (max-width: 768px) { /* 스마트폰 가로 & 태블릿 세로 */
+    font-size: 20px;
+  }
+
+  @media (max-width: 480px) { /* 스마트폰 세로 (일반 모바일) */
+    font-size: 18px;
+  }
+`;
+
+
 const NicknameEditButton = styled.button`
   display: flex;
   align-items: center;
@@ -224,7 +366,6 @@ const NicknameEditButton = styled.button`
   }
 `;
 
-/** ✅ 기존 스타일 유지 */
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
@@ -258,20 +399,7 @@ const FollowButton = styled.button<{ isFollowing: boolean }>`
 `;
 
 
-const ProfileWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 50px;
 
-  @media (max-width: 390px) {
-    flex-direction: column;
-    margin-top: 30px;
-  }
-`;
-
-/* ✅ 신고하기 버튼 스타일 조정 */
 const StyledReportButton = styled.button`
   display: flex;
   align-items: center;
@@ -296,30 +424,6 @@ const StyledReportButton = styled.button`
   }
 `;
 
-const ProfileContent = styled.div`
-  display: flex;
-  width: 555px;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-
-  @media (max-width: 390px) {
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
-const ProfileImageWrapper = styled.div`
-  position: relative;
-  width: 222px;
-  height: 222px;
-
-  @media (max-width: 390px) {
-    width: 140px;
-    height: 140px;
-  }
-`;
 
 const ProfileImage = styled.img`
   width: 100%;
@@ -379,27 +483,7 @@ const RankIcon = styled.img`
   }
 `;
 
-const Username = styled.div`
-  font-size: 24px;
-  font-weight: 700;
 
-  @media (max-width: 390px) {
-    font-size: 24px; /* ✅ 글자 크기 고정 */
-  }
-`;
-
-const StatsContainer = styled.div`
-  display: flex;
-  width: 238px;
-  justify-content: space-between;
-  align-items: center;
-
-  @media (max-width: 390px) {
-    width: 100%;
-    justify-content: center;
-    gap: 16px;
-  }
-`;
 
 const StatItem = styled.div`
   font-size: 20px;
@@ -423,41 +507,6 @@ const Divider = styled.div`
   }
 `;
 
-/* ✅ 버튼 공백 유지 + 항상 같은 크기 */
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  width: 100%;
-
-  @media (max-width: 390px) {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-  }
-`;
-
-/* ✅ 버튼 공백 유지 + 크기 고정 */
-const StyledButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 138px; /* ✅ 버튼 최소 크기 유지 */
-  height: 39px;
-  font-size: 16px;
-  border-radius: 9px;
-  border: 1px solid #8f8e94;
-  background: #fff;
-  cursor: pointer;
-  text-align: center;
-  padding: 10px 16px;
-
-  @media (max-width: 390px) {
-    min-width: 138px;
-    padding: 10px 16px; /* ✅ 공백 유지 */
-  }
-`;
 
 export {
   FollowButton,

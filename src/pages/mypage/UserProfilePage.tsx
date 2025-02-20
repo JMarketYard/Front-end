@@ -177,7 +177,7 @@ const ToggleContainer = styled.div`
   height: 58px; /* ✅ 높이 고정 */
   border-radius: 50px;
   background: #f5f5f5;
-  margin: 50px auto 76px;
+  margin: 45px auto 45px; /* ✅ 바닥 여백(아래 마진)을 45px 고정 */
   display: flex;
   align-items: center;
   cursor: pointer;

@@ -16,6 +16,7 @@ interface RandomOkModalProps {
   image: string;
   win: boolean;
   raffleId: number;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function RandomOkModal({
@@ -25,6 +26,7 @@ export default function RandomOkModal({
   image,
   win,
   raffleId,
+  setIsChecked,
 }: PropsWithChildren<RandomOkModalProps>) {
   const { clearModals } = useModalContext();
   const navigate = useNavigate();
@@ -42,24 +44,27 @@ export default function RandomOkModal({
   }, []);
 
   const handleClick = () => {
-    const postCheck = async () => {
-      const { data } = await axiosInstance.post(
-        `/api/member/raffles/${typeNumber}/check`,
-      );
-    };
-    postCheck();
-    // onClose(); // 모달 닫기
+    try {
+      const postCheck = async () => {
+        const { data } = await axiosInstance.post(
+          `/api/member/raffles/${typeNumber}/check`,
+        );
+      };
+      postCheck();
+      onClose(); // 모달 닫기
 
-    if (win) {
-      navigate(`/winner-page`, {
-        state: { deliveryId: deliveryId, image: image },
-      }); //state로 devliery_id 전달
-    } else {
-      console.log('전:', isWinnerStatusChanged);
-      toggleWinnerStatus();
-      console.log('후', isWinnerStatusChanged);
-      console.log('당첨 안됨');
-      navigate(`/raffles/${raffleId}`);
+      if (win) {
+        navigate(`/winner-page`, {
+          state: { deliveryId: deliveryId, image: image },
+        }); //state로 devliery_id 전달
+      } else {
+        console.log('win? : ', win);
+        setIsChecked((prev: boolean) => !prev);
+        console.log('래플 결과 확인 완료');
+        navigate(`/raffles/${raffleId}`);
+      }
+    } catch (error) {
+      console.log('에러 : ', error);
     }
   };
 
