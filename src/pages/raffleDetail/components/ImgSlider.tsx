@@ -152,7 +152,7 @@ const Img = styled.img.attrs((props) => ({
   justify-content: center;
   align-items: center;
   position: relative;
-  background-size: contain;
+  object-fit: contain;
   ${media.medium`
     width: 307px;
     height: 307px;

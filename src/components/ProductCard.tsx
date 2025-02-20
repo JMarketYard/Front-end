@@ -5,20 +5,8 @@ import icLike from '../assets/ProductCard/like.svg';
 import icUnlike from '../assets/ProductCard/unlike.svg';
 import { Link } from 'react-router-dom';
 import RaffleProps from '../types/RaffleProps';
-
-const getFormatTime = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-
-  if (hours > 0) {
-    return `${hours}시간 ${minutes}분 ${remainingSeconds}초`;
-  }
-  if (minutes > 0) {
-    return `${minutes}분 ${remainingSeconds}초`;
-  }
-  return `${remainingSeconds}초`;
-};
+import { postLike, deleteLike } from '../services/likeService';
+import { getFormatTime } from '../utils/formateTime';
 
 const ProductCard: React.FC<RaffleProps> = ({
   raffleId,
@@ -30,11 +18,17 @@ const ProductCard: React.FC<RaffleProps> = ({
   participantNum,
   like,
 }) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const toggleLike = (event: React.MouseEvent<HTMLDivElement>) => {
+  const [isLiked, setIsLiked] = useState(like);
+  const toggleLike = async (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation(); //Wrapper로 이벤트 전달 방지
     event.preventDefault(); // 기본 동작 (Link 이동) 방지
-    setIsLiked((prevState) => !prevState);
+    if (like) {
+      await deleteLike(raffleId);
+      setIsLiked(false);
+    } else {
+      await postLike(raffleId);
+      setIsLiked(true);
+    }
   };
 
   return (

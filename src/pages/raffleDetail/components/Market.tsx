@@ -64,13 +64,7 @@ const Market: React.FC<MarketProps> = ({
       <BigTitleBox>
         <TitleIcon />
         <div>상점 정보</div>
-        <MoreListBox
-          onClick={() =>
-            navigate(`/market/${raffle.storeId}`, {
-              state: { storeId: raffle.storeId },
-            })
-          }
-        >
+        <MoreListBox onClick={() => navigate(`/user/${raffle.storeId}`)}>
           프로필 보기
           <img src={moreList} alt="moreList" />
         </MoreListBox>
