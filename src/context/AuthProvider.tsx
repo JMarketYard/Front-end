@@ -60,8 +60,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         {},
         { withCredentials: true },
       );
-      console.log('로그아웃 성공:', response.data);
-      setIsAuthenticated(false);
+      if (response.status===200) {
+        console.log('로그아웃 성공:', response);
+        setIsAuthenticated(false);
+        window.location.replace('/');
+      }
     } catch (error: any) {
       if (error.response) {
         console.error('로그아웃 중 에러 발생:', {
@@ -72,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         console.error('로그아웃 중 에러 발생:', error);
       }
-    }
+    };
   };
 
   // 리프레시 토큰 요청 함수
