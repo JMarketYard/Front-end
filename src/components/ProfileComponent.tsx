@@ -199,44 +199,7 @@ const ProfileComponent: React.FC<ProfileProps> = ({
 
 export default ProfileComponent;
 
-const NicknameEditButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  font-size: 14px;
-  padding: 5px 10px;
-  border-radius: 8px;
-  border: 1px solid #8f8e94;
-  background: #fff;
-  color: #8f8e94;
-  cursor: pointer;
-  margin-left: 8px;
 
-  &:hover {
-    background: #f5f5f5;
-  }
-
-  @media (max-width: 390px) {
-    height: 24px;
-    font-size: 12px;
-    padding: 4px 8px;
-  }
-`;
-
-/** ✅ 기존 스타일 유지 */
-const UserInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  @media (max-width: 390px) {
-    gap: 8px;
-  }
-`;
-
-
-<<<<<<< HEAD
 const StatsContainer = styled.div`
   display: flex;
   width: 238px;
@@ -249,29 +212,7 @@ const StatsContainer = styled.div`
     gap: 16px;
   }
 
-=======
-const FollowButton = styled.button<{ isFollowing: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: max-content; /* ✅ 버튼 너비가 텍스트 크기에 맞춰 자동 조정 */
-  height: 39px;
-  font-size: 16px;
-  border-radius: 9px;
-  border: 1px solid #c908ff;
-  background: ${({ isFollowing }) => (isFollowing ? "#fff" : "#c908ff")};
-  color: ${({ isFollowing }) => (isFollowing ? "#c908ff" : "#fff")};
-  cursor: pointer;
-  padding: 10px 16px;
-  white-space: nowrap; /* ✅ 줄 바꿈 방지 */
-  flex-shrink: 0; /* ✅ 버튼 크기가 줄어들어도 내용이 줄 바뀌지 않도록 설정 */
-
-  @media (max-width: 390px) {
-    width: auto; /* ✅ 자동 너비 조정 */
-  }
->>>>>>> 7031c02ad3c01ff63f9361c5564f5240b892a4cc
 `;
-
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -280,7 +221,6 @@ const ProfileWrapper = styled.div`
   width: 100%;
   margin-top: 50px;
 
-<<<<<<< HEAD
   @media (max-width: 1024px) { /* 태블릿 가로 & 소형 노트북 */
     flex-direction: column;
     margin-top: 40px;
@@ -471,15 +411,6 @@ const FollowButton = styled.button<{ isFollowing: boolean }>`
 
 
 
-=======
-  @media (max-width: 390px) {
-    flex-direction: column;
-    margin-top: 30px;
-  }
-`;
-
-/* ✅ 신고하기 버튼 스타일 조정 */
->>>>>>> 7031c02ad3c01ff63f9361c5564f5240b892a4cc
 const StyledReportButton = styled.button`
   display: flex;
   align-items: center;
@@ -504,33 +435,6 @@ const StyledReportButton = styled.button`
   }
 `;
 
-<<<<<<< HEAD
-=======
-const ProfileContent = styled.div`
-  display: flex;
-  width: 555px;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-
-  @media (max-width: 390px) {
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
-const ProfileImageWrapper = styled.div`
-  position: relative;
-  width: 222px;
-  height: 222px;
-
-  @media (max-width: 390px) {
-    width: 140px;
-    height: 140px;
-  }
-`;
->>>>>>> 7031c02ad3c01ff63f9361c5564f5240b892a4cc
 
 const ProfileImage = styled.img`
   width: 100%;
@@ -590,31 +494,7 @@ const RankIcon = styled.img`
   }
 `;
 
-<<<<<<< HEAD
 
-=======
-const Username = styled.div`
-  font-size: 24px;
-  font-weight: 700;
-
-  @media (max-width: 390px) {
-    font-size: 24px; /* ✅ 글자 크기 고정 */
-  }
-`;
-
-const StatsContainer = styled.div`
-  display: flex;
-  width: 238px;
-  justify-content: space-between;
-  align-items: center;
-
-  @media (max-width: 390px) {
-    width: 100%;
-    justify-content: center;
-    gap: 16px;
-  }
-`;
->>>>>>> 7031c02ad3c01ff63f9361c5564f5240b892a4cc
 
 const StatItem = styled.div`
   font-size: 20px;
@@ -638,44 +518,6 @@ const Divider = styled.div`
   }
 `;
 
-<<<<<<< HEAD
-=======
-/* ✅ 버튼 공백 유지 + 항상 같은 크기 */
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  width: 100%;
-
-  @media (max-width: 390px) {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-  }
-`;
-
-/* ✅ 버튼 공백 유지 + 크기 고정 */
-const StyledButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 138px; /* ✅ 버튼 최소 크기 유지 */
-  height: 39px;
-  font-size: 16px;
-  border-radius: 9px;
-  border: 1px solid #8f8e94;
-  background: #fff;
-  cursor: pointer;
-  text-align: center;
-  padding: 10px 16px;
-
-  @media (max-width: 390px) {
-    min-width: 138px;
-    padding: 10px 16px; /* ✅ 공백 유지 */
-  }
-`;
->>>>>>> 7031c02ad3c01ff63f9361c5564f5240b892a4cc
 
 export {
   FollowButton,
