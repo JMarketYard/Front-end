@@ -17,18 +17,18 @@ const Payment: React.FC = () => {
 
         if (response.data.isSuccess) {
           const { bankName, bankNumber } = response.data.result;
-          setBankName(bankName || ""); // ✅ 기존 은행명 조회
-          setBankNumber(bankNumber || ""); // ✅ 기존 계좌번호 조회
+          setBankName(bankName || ""); 
+          setBankNumber(bankNumber || ""); 
         } else {
           console.warn("계좌 정보 조회 실패:", response.data.message);
         }
       } catch (error) {
-        console.error("계좌 정보 조회 중 오류 발생:", error);
+        console.error("계좌 정보 조회 중 오류 발생:", error); 
       }
     };
 
     useEffect(() => {
-      fetchBankInfo(); // ✅ 페이지 로드 시 계좌 정보 조회
+      fetchBankInfo();
     }, []);
 
     const fetchPaymentHistory = async () => {
