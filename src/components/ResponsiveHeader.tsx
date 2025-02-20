@@ -38,6 +38,7 @@ const ResponsiveHeader = () => {
   const [recentKeywords, setRecentKeywords] = useState<string[]>([]);
   const { isAuthenticated, logout } = useAuth();
   const isSearchCompleted = useIsSearchCompleted((v) => v.isSearchCompleted);
+  const [searchClicked, setSearchClicked] = useState<boolean>(false);
 
   const getSearch = async () => {
     const { data }: { data: TSearch } = await axiosInstance.get(
@@ -79,6 +80,10 @@ const ResponsiveHeader = () => {
       setIsSearchClicked(false);
     }
   };
+  const clickSearchIcon = () => {
+    navigate(`/search/${searchText}`);
+    setIsSearchClicked(false);
+  }
 
   const handleDelKeyword = (keyword: string) => {
     // delSearch(): 해당 키워드 서버에서 삭제
@@ -185,7 +190,7 @@ const ResponsiveHeader = () => {
               onChange={handleSearchInput}
               onKeyUp={handleSearchEnter}
             />
-            <SearchIcon src={icSearch} />
+            <SearchIcon src={icSearch} onClick={clickSearchIcon} />
             <KeywordContainer ref={searchRef} $show={String(isSearchClicked)}>
               {isLoggedIn === false ? (
                 <KeywordBox>
@@ -196,9 +201,8 @@ const ResponsiveHeader = () => {
                   <RecentKeywordsBox>
                     {recentKeywords.length !== 0 ? (
                       recentKeywords.map((v, _) => (
-                        <RecentKeyword key={_}
-                        onClick={()=>clickKeyword(v)}>
-                          <Keyword>{v}</Keyword>
+                        <RecentKeyword key={_}>
+                          <Keyword onClick={()=>clickKeyword(v)}>{v}</Keyword>
                           <DelImg
                             src={icDel}
                             width={9.096}
@@ -508,6 +512,9 @@ const RecentKeyword = styled.div`
   }
 `;
 const Keyword = styled.span`
+  display: inline-block;
+  width: 41.01px;
+  text-align: start;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
