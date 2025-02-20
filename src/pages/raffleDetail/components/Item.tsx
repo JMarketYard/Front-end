@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import BigTitle from '../../../components/BigTitle';
@@ -33,6 +33,11 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
   const handleOpenModal = () => {
     openModal(({ onClose }) => <SplashModal onClose={onClose} />);
   };
+
+  useEffect(() => {
+    setIsLiked(raffle.likeStatus ?? false);
+    setLikeCount(raffle.likeCount ?? 0);
+  }, [raffle.likeStatus, raffle.likeCount]);
 
   const toggleLike = async () => {
     if (raffle.likeStatus === undefined) {

@@ -110,7 +110,11 @@ const Market: React.FC<MarketProps> = ({
         )}
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
-      <AskButton onClick={() => navigate(`/ask/${type}`)}>상품 문의</AskButton>
+      <AskButton
+        onClick={() => navigate(`/ask/${type}`, { state: { raffle } })}
+      >
+        상품 문의
+      </AskButton>
     </Wrapper>
   );
 };

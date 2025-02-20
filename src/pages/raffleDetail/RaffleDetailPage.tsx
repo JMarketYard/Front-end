@@ -76,6 +76,7 @@ export default RaffleDetailPage;
 
 const Wrapper = styled.div`
   width: 1080px;
+  padding-bottom: 200px;
   display: flex;
   align-items: center;
   flex-direction: column;
