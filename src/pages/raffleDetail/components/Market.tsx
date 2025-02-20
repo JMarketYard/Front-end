@@ -64,10 +64,19 @@ const Market: React.FC<MarketProps> = ({
       <BigTitleBox>
         <TitleIcon />
         <div>상점 정보</div>
-        <MoreListBox onClick={() => navigate(`/user/${raffle.storeId}`)}>
-          프로필 보기
-          <img src={moreList} alt="moreList" />
-        </MoreListBox>
+        {raffle.userStatus === 'host' && (
+          <MoreListBox onClick={() => navigate(`/mypage`)}>
+            프로필 보기
+            <img src={moreList} alt="moreList" />
+          </MoreListBox>
+        )}
+        {(raffle.userStatus === 'participant' ||
+          raffle.userStatus === 'nonParticipant') && (
+          <MoreListBox onClick={() => navigate(`/user/${raffle.storeId}`)}>
+            프로필 보기
+            <img src={moreList} alt="moreList" />
+          </MoreListBox>
+        )}
       </BigTitleBox>
       <MarketLayout>
         <ImageBox imageUrl={raffle.storeImageUrl} />
