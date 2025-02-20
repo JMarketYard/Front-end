@@ -86,7 +86,12 @@ const WinnerPage: React.FC = () => {
 
         return () => clearTimeout(timer);
       } catch (error) {
-        console.error('결제 완료 POST 실패:', error);
+        console.error(
+          '결제 완료 POST 실패:',
+          'deliveryId는 : ',
+          deliveryId,
+          error,
+        );
       }
     };
 
