@@ -48,14 +48,17 @@ export default function RandomOkModal({
       );
     };
     postCheck();
-    onClose(); // 모달 닫기
+    // onClose(); // 모달 닫기
 
     if (win) {
       navigate(`/winner-page`, {
         state: { deliveryId: deliveryId, image: image },
       }); //state로 devliery_id 전달
     } else {
+      console.log('전:', isWinnerStatusChanged);
       toggleWinnerStatus();
+      console.log('후', isWinnerStatusChanged);
+      console.log('당첨 안됨');
       navigate(`/raffles/${raffleId}`);
     }
   };
