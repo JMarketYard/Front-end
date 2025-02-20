@@ -320,11 +320,12 @@ const DetailLayout = styled.div`
 
 const ItemTitleBox = styled.p`
   display: flex;
-  width: 209px;
+  width: 100%;
   height: 29px;
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
+  margin-bottom: 15px;
 
   color: #000;
   font-family: Pretendard;
