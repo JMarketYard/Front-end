@@ -230,7 +230,9 @@ const NicknameBox = styled.div`
 const MarketInfo = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
+  width: 230px;
 `;
 
 const KeyBox = styled.div`
