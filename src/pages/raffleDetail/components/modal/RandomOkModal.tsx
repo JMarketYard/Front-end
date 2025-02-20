@@ -7,12 +7,15 @@ import yellow from '../../../../assets/yellowVector.svg';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
+import { useWinnerStatusChanged } from '../../../../store/storeWinnerStatus';
 
 interface RandomOkModalProps {
   onClose: () => void;
   winnerNickname: string;
   deliveryId: number;
   image: string;
+  win: boolean;
+  raffleId: number;
 }
 
 export default function RandomOkModal({
@@ -20,11 +23,15 @@ export default function RandomOkModal({
   winnerNickname,
   deliveryId,
   image,
+  win,
+  raffleId,
 }: PropsWithChildren<RandomOkModalProps>) {
   const { clearModals } = useModalContext();
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
   const typeNumber = type ? Number(type) : undefined;
+  const { isWinnerStatusChanged, toggleWinnerStatus } =
+    useWinnerStatusChanged();
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -41,10 +48,19 @@ export default function RandomOkModal({
       );
     };
     postCheck();
-    onClose(); // 모달 닫기
-    navigate(`/winner-page`, {
-      state: { deliveryId: deliveryId, image: image },
-    }); //state로 devliery_id 전달
+    // onClose(); // 모달 닫기
+
+    if (win) {
+      navigate(`/winner-page`, {
+        state: { deliveryId: deliveryId, image: image },
+      }); //state로 devliery_id 전달
+    } else {
+      console.log('전:', isWinnerStatusChanged);
+      toggleWinnerStatus();
+      console.log('후', isWinnerStatusChanged);
+      console.log('당첨 안됨');
+      navigate(`/raffles/${raffleId}`);
+    }
   };
 
   return ReactDOM.createPortal(

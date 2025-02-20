@@ -32,6 +32,7 @@ export default function RandomModal({
   const [items, setItems] = useState<string[]>([]);
   const [winner, setWinner] = useState<string>('');
   const [isRolling, setIsRolling] = useState(false);
+  const [isWin, setIsWin] = useState<boolean>(false);
   const { openModal } = useModalContext();
 
   const handleAddName = () => {
@@ -49,7 +50,6 @@ export default function RandomModal({
     setWinner(winnerNickname);
   }, [deliveryId]);
 
-  console.log('참여자 목록', items);
 
   const handleClick = () => {
     if (!isRolling && winner && sliderRef.current) {
@@ -72,6 +72,8 @@ export default function RandomModal({
             deliveryId={deliveryId}
             winnerNickname={winnerNickname}
             image={image}
+            win={win}
+            raffleId={raffleId}
           />
         ));
       }, 1500);

@@ -7,6 +7,7 @@ import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RaffleDetailProps from '../../types/RaffleDetailProps';
 import { TRaffleDetail } from '../../types/raffleDetails';
+import { useWinnerStatusChanged } from '../../store/storeWinnerStatus';
 
 const RaffleDetailPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
@@ -36,6 +37,8 @@ const RaffleDetailPage: React.FC = () => {
   });
   const [isApplying, setIsApplying] = useState<boolean>(false);
   const [followingState, setFollowingState] = useState<boolean>(false);
+  const { isWinnerStatusChanged, toggleWinnerStatus } =
+    useWinnerStatusChanged();
 
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
@@ -55,7 +58,7 @@ const RaffleDetailPage: React.FC = () => {
     };
 
     fetchRaffleData();
-  }, [isApplying, followingState]);
+  }, [isApplying, followingState, isWinnerStatusChanged]);
 
   return (
     <Wrapper>
