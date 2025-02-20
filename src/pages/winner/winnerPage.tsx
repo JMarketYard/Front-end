@@ -55,6 +55,7 @@ const WinnerPage: React.FC = () => {
     setChecked(event.target.checked);
   };
   const { shouldRefetch, triggerRefetch } = useDeliveryStore();
+  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -417,21 +418,42 @@ const WinnerPage: React.FC = () => {
           </InfoLayout>
 
           <ButtonLayout>
-            <PurpleButton onClick={handleCompletedModal}>
-              거래 완료
-            </PurpleButton>
-            <PurpleButton
-              onClick={() =>
-                navigate('/review', {
-                  state: { deliveryId: { deliveryId } },
-                })
-              }
-            >
-              후기 작성하기
-            </PurpleButton>
-            <PurpleButton onClick={() => navigate('/')}>
-              홈 화면으로 돌아가기
-            </PurpleButton>
+            {deliveryStatus === 'SHIPPED' && (
+              <>
+                <PurpleButton onClick={handleCompletedModal}>
+                  거래 완료
+                </PurpleButton>
+                <PurpleButton
+                  onClick={() =>
+                    navigate('/review', {
+                      state: { deliveryId: { deliveryId } },
+                    })
+                  }
+                >
+                  후기 작성하기
+                </PurpleButton>
+                <PurpleButton onClick={() => navigate('/')}>
+                  홈 화면으로 돌아가기
+                </PurpleButton>
+              </>
+            )}
+            {deliveryStatus === 'READY' && (
+              <>
+                <GrayButton>거래 완료</GrayButton>
+                <GrayButton
+                  onClick={() =>
+                    navigate('/review', {
+                      state: { deliveryId: { deliveryId } },
+                    })
+                  }
+                >
+                  후기 작성하기
+                </GrayButton>
+                <PurpleButton onClick={() => navigate('/')}>
+                  홈 화면으로 돌아가기
+                </PurpleButton>
+              </>
+            )}
           </ButtonLayout>
         </Wrapper>
       );
@@ -646,6 +668,27 @@ const PurpleButton = styled.button`
   line-height: normal;
 
   cursor: pointer;
+`;
+
+const GrayButton = styled.div`
+  width: 474px;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+  border: 1px solid #8f8e94;
+  background: #e4e4e4;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px; /* 100% */
+  letter-spacing: -0.165px;
 `;
 
 const Box = styled.img`

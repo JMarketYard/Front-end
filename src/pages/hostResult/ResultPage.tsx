@@ -53,7 +53,7 @@ const ResultPage: React.FC = () => {
   const [minTicket, setMinTicket] = useState<number>(0);
   const [applyTicket, setApplyTicket] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-
+  const [isChecked, setIsChecked] = useState<boolean>(false);
   useEffect(() => {
     console.log('개최자 결과 페이지 useEffect');
 
@@ -64,9 +64,9 @@ const ResultPage: React.FC = () => {
         );
         console.log('fetchResult 결과:', data);
         setRaffle(data.result);
-        setMinTicket(raffle.minTicket);
-        setApplyTicket(raffle.applyTicket);
-        setTotalAmount(raffle.totalAmount);
+        setMinTicket(data.result.minTicket);
+        setApplyTicket(data.result.applyTicket);
+        setTotalAmount(data.result.totalAmount);
       } catch (error) {
         console.log('fetchResult, 래플 결과 안옴', error);
       }
@@ -82,15 +82,15 @@ const ResultPage: React.FC = () => {
 
         setDelivery(data.result);
         setDeliveryStatus(data.result.deliveryStatus);
-        setMinTicket(delivery.minTicket);
-        setApplyTicket(delivery.applyTicket);
-        setTotalAmount(delivery.finalAmount);
+        setMinTicket(data.result.minTicket);
+        setApplyTicket(data.result.applyTicket);
+        setTotalAmount(data.result.finalAmount);
       } catch (error) {
         console.log('fetchDelivery, 아직 배송지 안 줬음', error);
       }
     };
     fetchDelivery();
-  }, [deliveryId, deliveryStatus]);
+  }, [deliveryId, deliveryStatus, isChecked]);
 
   //모달
   const { openModal } = useModalContext();
@@ -112,7 +112,11 @@ const ResultPage: React.FC = () => {
   };
   const handleMake = () => {
     openModal(({ onClose }) => (
-      <MakeDrawerModal onClose={onClose} raffleId={raffle?.raffleId ?? 0} />
+      <MakeDrawerModal
+        onClose={onClose}
+        raffleId={raffle?.raffleId ?? 0}
+        setIsChecked={setIsChecked}
+      />
     ));
   };
   const handleWait = () => {
@@ -125,7 +129,7 @@ const ResultPage: React.FC = () => {
       <ConsiderModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
-
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <BigTitle>래플 결과</BigTitle>
@@ -158,7 +162,7 @@ const ResultPage: React.FC = () => {
                   <DeliveryWaitBox>배송지 입력 대기</DeliveryWaitBox>
                 </>
               )}
-              {deliveryStatus === 'READY' && (
+              {(deliveryStatus === 'READY' || deliveryStatus === 'SHIPPED') && (
                 <>
                   <DeliveryDoneBox>배송 가능</DeliveryDoneBox>
                 </>
@@ -215,9 +219,21 @@ const ResultPage: React.FC = () => {
                 <PurpleButtonBox onClick={handleDelver}>
                   운송장 입력하기
                 </PurpleButtonBox>
-                <PurpleButtonBox>
+                <PurpleButtonBox
+                  onClick={() => navigate(`/raffles/${raffleId}`)}
+                >
                   나중에 입력하기 (입력기한 :{' '}
                   {formatDate(delivery?.shippingDeadline)})
+                </PurpleButtonBox>
+              </>
+            )}
+            {deliveryStatus === 'SHIPPED' && (
+              <>
+                <GrayButtonBox>운송장 입력완료</GrayButtonBox>
+                <PurpleButtonBox
+                  onClick={() => navigate(`/raffles/${raffleId}`)}
+                >
+                  래플 보러가기
                 </PurpleButtonBox>
               </>
             )}
