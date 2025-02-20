@@ -143,11 +143,13 @@ const ToggleContainer = styled.div`
   height: 58px; /* ✅ 높이 고정 */
   border-radius: 50px;
   background: #f5f5f5;
-  margin: 45px auto 45px; /* ✅ 바닥 여백(아래 마진)을 45px 고정 */
+  margin-bottom: 45px;
+  margin: 45px auto 76px;
   display: flex;
   align-items: center;
   cursor: pointer;
 `;
+
 const ToggleIndicator = styled.div<{ selectedToggle: string }>`
   position: absolute;
   width: 50%;
@@ -179,10 +181,26 @@ const ToggleOption = styled.div<{ selectedToggle: string; value: string }>`
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-gap: 24px; 
   padding: 20px;
+  place-items: center; 
+
+  grid-template-columns: repeat(4, minmax(250px, 1fr));
+
+  @media (max-width: 1280px) { /* 넓은 태블릿 */
+    grid-template-columns: repeat(3, minmax(250px, 1fr)); 
+  }
+
+  @media (max-width: 960px) { /* 태블릿 */
+    grid-template-columns: repeat(2, minmax(250px, 1fr)); 
+  }
+
+  @media (max-width: 580px) { /* 스마트폰 */
+    grid-template-columns: repeat(1, minmax(250px, 1fr)); 
+  }
 `;
+
+
 
 const LoadingMessage = styled.div`
   text-align: center;
@@ -220,7 +238,7 @@ const SettingsLink = styled(Link)`
     text-decoration: underline;
   }
 
-  @media (max-width: 390px) {
+  @media (max-width: 700px) {
     display: none; /* ✅ 390px 이하에서 버튼 숨김 */
   }
 `;

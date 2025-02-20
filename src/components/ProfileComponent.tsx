@@ -230,11 +230,6 @@ const ProfileWrapper = styled.div`
     flex-direction: column;
     margin-top: 30px;
   }
-
-  @media (max-width: 480px) { /* 스마트폰 세로 (일반 모바일) */
-    flex-direction: column;
-    margin-top: 20px;
-  }
 `;
 
 const ProfileContent = styled.div`
@@ -247,12 +242,6 @@ const ProfileContent = styled.div`
   @media (max-width: 768px) { /* 스마트폰 가로 & 태블릿 세로 */
     flex-direction: column;
     gap: 45px; /* ✅ 세로 정렬 시 프로필 & 줄 간격 45px 유지 */
-  }
-
-  @media (max-width: 480px) { /* 스마트폰 세로 */
-    width: 100%;
-    flex-direction: column;
-    gap: 45px; /* ✅ 세로 정렬 시 간격 45px 유지 */
   }
 `;
 
