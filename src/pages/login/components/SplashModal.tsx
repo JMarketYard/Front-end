@@ -146,6 +146,7 @@ const Kakao = styled.div`
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
+  font-family: Pretendard;
 `;
 
 const LoginButtons = styled.button`

@@ -5,6 +5,7 @@ import ProductCard from '../../components/ProductCard';
 import RaffleProps from '../../types/RaffleProps';
 import axiosInstance from '../../apis/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import media from '../../styles/media';
 
 const SearchResultPage: React.FC = () => {
   const navigate = useNavigate();
@@ -124,12 +125,14 @@ const SearchResultPage: React.FC = () => {
 export default SearchResultPage;
 
 const Wrapper = styled.div`
-  width: 1080px;
-  min-height: 1498px;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding-top: 64px;
+  ${media.notLarge`
+    padding:57px 0px 30px 0px;
+    width:100%
+  `}
 `;
 
 const LookAroundBox = styled.div`
@@ -155,7 +158,15 @@ const ProductGrid = styled.div`
   gap: 44px;
   width: 100%;
   max-width: 1080px;
-  /* margin-top: 145px; */
+  ${media.medium`
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    max-width: 100%;
+  `}
+  ${media.small`
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  `}
 `;
 
 const Observer = styled.div`
