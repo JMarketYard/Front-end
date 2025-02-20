@@ -2,9 +2,27 @@ import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
 import { useState } from "react";
 import media from "../../styles/media";
+import axiosInstance from "../../apis/axiosInstance";
 
 const SetOpenInfoPage = () => {
   const [toggle, setToggle] = useState(false);
+
+  const handleToggle = () => {
+    const patchInfo = async () => {
+      await axiosInstance.patch('/api/member/mypage/secretInfo', toggle,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+      .then(_=>console.log("setToggle 전:", toggle))
+      .then(_=>setToggle(!toggle))
+      .then(_=>console.log("PATCH 성공, 현재 toggle 상태:", toggle))
+      .catch(error=>console.error(error));
+    };
+    patchInfo();
+  };
   return (
     <Wrapper>
     <BigTitle>공개 정보 설정</BigTitle>
@@ -12,14 +30,14 @@ const SetOpenInfoPage = () => {
       <Box>
         <ToggleBox>
           <RoundDiv />
-          <Span>팔로우 목록 공개</Span>
+          <Span>팔로워 수 공개</Span>
         </ToggleBox>
         <div>
           <Input type="checkbox" id="toggle" />
           <ToggleLabel
           htmlFor="toggle"
           $checked={toggle}
-          onClick={()=>setToggle(!toggle)}
+          onClick={handleToggle}
           />
         </div>
       </Box>
@@ -100,11 +118,8 @@ const ToggleLabel = styled.label<{$checked:boolean}>`
     height: 20px;
     background-color: #FFF;
     border-radius: 100%;
-    transition: transform 0.3s ease;
-    ${props => props.$checked
-      ? 'transform: translateX(-28px)'
-      : 'transform: translateX(0)'
-    };
+    left: ${(props) => (props.$checked ? "2px" : "calc(100% - 22px)")};
+    transition: left 0.3s ease;
   };
   &::after {
     ${props => props.$checked
