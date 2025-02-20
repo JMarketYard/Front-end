@@ -21,11 +21,11 @@ type ItemProps = RaffleDetailProps & {
 };
 
 const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(raffle.likeStatus);
   const [likeCount, setLikeCount] = useState(raffle.likeCount);
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
-  const typeNumber = type ? parseInt(type, 10) : undefined;
+  const typeNumber = type ? parseInt(type, 10) : 0;
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
 
@@ -36,7 +36,7 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
   const postLike = async (typeNumber: number) => {
     try {
       await axiosInstance.post(`/api/member/raffles/like`, null, {
-        params: { itemId: typeNumber }, // 그대로 number로 전달
+        params: { raffleId: typeNumber }, // 그대로 number로 전달
       });
       console.log('찜하기 성공');
     } catch (error) {
@@ -47,7 +47,7 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
   const deleteLike = async (typeNumber: number) => {
     try {
       await axiosInstance.delete(`/api/member/raffles/like`, {
-        params: { itemId: typeNumber }, // 그대로 number로 전달
+        params: { raffleId: typeNumber }, // 그대로 number로 전달
       });
       console.log('찜하기 취소');
     } catch (error) {
@@ -56,9 +56,11 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
   };
 
   const toggleLike = async () => {
-    if (typeNumber === undefined) return;
+    if (typeNumber === undefined) {
+      console.log(typeNumber);
+    }
 
-    if (isLiked) {
+    if (raffle.likeStatus) {
       await deleteLike(typeNumber);
       setIsLiked(false);
       setLikeCount((prev) => prev - 1);
@@ -132,7 +134,7 @@ const Item: React.FC<ItemProps> = ({ setIsApplying, ...raffle }) => {
         <DetailLayout>
           <ItemTitleBox>{raffle.name}</ItemTitleBox>
           <ViewBox>
-            조회 {raffle.view} · 찜 {raffle.likeCount}
+            조회 {raffle.view} · 찜 {likeCount}
           </ViewBox>
           <TicketBox>
             <img src={icTicket} alt="ticket" />
