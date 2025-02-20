@@ -78,7 +78,9 @@ const Market: React.FC<MarketProps> = ({
           </NicknameBox>
           <MarketInfo>
             <KeyBox>팔로워</KeyBox>
-            <ValueBox>{raffle.followCount}</ValueBox>
+            <ValueBox>
+              {raffle.followCount <= -1 ? '비공개' : raffle.followCount}
+            </ValueBox>
             <VerticalDivider />
             <KeyBox>후기 </KeyBox>
             <ValueBox>{raffle.reviewCount}</ValueBox>
