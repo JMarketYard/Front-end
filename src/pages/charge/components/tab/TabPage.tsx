@@ -14,7 +14,7 @@ import { GetMyTicket, PostCharge, PostExchange } from '../../apis/chargeAPI';
 import ChargeModal from '../modal/ChargeModal';
 import ChargeOkModal from '../modal/ChargeOkModal';
 import ChangeOkModal from '../modal/ChangeOkModal';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface TabTypeProps {
   type: number;
@@ -25,7 +25,6 @@ function TabPage({ type }: TabTypeProps) {
   const [checked, setChecked] = useState(false);
   const { openModal } = useModalContext();
   const { isSmallScreen, isLargeScreen } = useScreenSize();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const {

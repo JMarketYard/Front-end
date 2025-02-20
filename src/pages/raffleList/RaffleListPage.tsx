@@ -7,6 +7,7 @@ import moreList from '../../assets/homePage/moreList.svg';
 import axiosInstance from '../../apis/axiosInstance';
 import RaffleProps from '../../types/RaffleProps';
 import { useAuth } from '../../context/AuthContext';
+import media from '../../styles/media';
 
 const RaffleListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -98,8 +99,7 @@ const RaffleListPage: React.FC = () => {
       default:
         setTitle('래플 둘러보기');
     }
-  }, [type]); // `type` 또는 `search`가 변경될 때마다 실행
-
+  }, [type]);
   return (
     <Wrapper>
       <LookAroundContainer>
@@ -128,12 +128,14 @@ const RaffleListPage: React.FC = () => {
 export default RaffleListPage;
 
 const Wrapper = styled.div`
-  width: 1080px;
-  min-height: 1498px;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding-top: 63px;
+  ${media.notLarge`
+    padding:57px 0px 30px 0px;
+    width:100%
+  `}
 `;
 
 const LookAroundContainer = styled.div`
@@ -201,6 +203,15 @@ const ProductGrid = styled.div`
   gap: 44px;
   width: 100%;
   max-width: 1080px;
+  ${media.medium`
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    max-width: 100%;
+  `}
+  ${media.small`
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  `}
 `;
 
 const Observer = styled.div`
