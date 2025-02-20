@@ -61,7 +61,7 @@ const ResultPage: React.FC = () => {
         console.log('래플 결과:', data);
         setRaffle(data.result);
       } catch (error) {
-        console.error(error);
+        console.log('fetchResult, 래플 결과 안옴', error);
       }
     };
     fetchResult();
@@ -75,7 +75,7 @@ const ResultPage: React.FC = () => {
         setDelivery(data.result);
         setDeliveryStatus(data.result.deliveryStatus);
       } catch (error) {
-        console.error(error);
+        console.log('fetchDelibery, 아직 배송지 안 줬음', error);
       }
     };
     fetchDelivery();
@@ -406,14 +406,15 @@ const DeliveryTimeoverBox = styled.div`
 const WhiteAddressBox = styled.div`
   width: 636px;
   height: 59px;
+  box-sizing: border-box;
   border-radius: 10px;
   border: 1px solid #8f8e94;
   margin-top: 45px;
-  padding: 0 22px 0 27.5px;
+  padding: 0 2px 0 27.5px;
 
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 `;
 
@@ -431,6 +432,7 @@ const VerticalBox = styled.div`
   width: 1px;
   height: 47px;
   background: #8f8e94;
+  margin: 0 27.5px;
 `;
 const AddressBox = styled.div`
   display: flex;

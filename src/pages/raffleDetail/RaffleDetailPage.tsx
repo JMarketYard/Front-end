@@ -63,7 +63,11 @@ const RaffleDetailPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <Item {...raffleData} setIsApplying={setIsApplying} />
+      <Item
+        {...raffleData}
+        setIsApplying={setIsApplying}
+        setIsChecked={setIsChecked}
+      />
       <MoreInfoLayout>
         <Market
           {...raffleData}
