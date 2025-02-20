@@ -82,6 +82,7 @@ const RaffleUploadPage = () => {
         formData.append("minTicket", leastTicketNum.replace(',',''));
         formData.append("startAt", startDate.toISOString().replace('Z',''));
         formData.append("endAt", endDate.toISOString().replace('Z',''));
+        formData.append("deliveryFee", deliveryFee.replace(',',''));
         console.log('제출버튼클릭');
         
         openModal(({ onClose }) => <UploadModal onClose={onClose}
