@@ -89,8 +89,9 @@ const ResultPage: React.FC = () => {
     ));
   };
   const handleEnd = () => {
+    console.log('래플 아이디는:', raffle?.raffleId);
     openModal(({ onClose }) => (
-      <CancleModal onClose={onClose} raffleId={delivery?.raffleId ?? 0} />
+      <CancleModal onClose={onClose} raffleId={raffle?.raffleId ?? 0} />
     ));
   };
   const handleNew = () => {

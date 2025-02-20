@@ -13,6 +13,7 @@ interface ModalProps {
 const CancleModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   const navigate = useNavigate();
   const handleClick = async () => {
+    console.log('래플 아이디:', raffleId);
     try {
       const { data } = await axiosInstance.post(
         `/api/member/raffles/${raffleId}/cancel`,
