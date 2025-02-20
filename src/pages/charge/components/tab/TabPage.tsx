@@ -26,21 +26,21 @@ function TabPage({ type }: TabTypeProps) {
   const { openModal } = useModalContext();
   const { isSmallScreen, isLargeScreen } = useScreenSize();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const approvedAt = queryParams.get('approvedAt');
+  // const queryParams = new URLSearchParams(location.search);
+  // const approvedAt = queryParams.get('approvedAt');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!approvedAt) return;
+  // useEffect(() => {
+  //   if (!approvedAt) return;
 
-    if (approvedAt) {
-      const timer = setTimeout(() => {
-        openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
-      }, 100);
+  //   if (approvedAt) {
+  //     const timer = setTimeout(() => {
+  //       openModal(({ onClose }) => <ChargeOkModal onClose={onClose} />);
+  //     }, 100);
 
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, []);
 
   const {
     data: Tickets,
