@@ -14,6 +14,7 @@ import MakeDrawerModal from './modal/MakeDrawerModal';
 import ConsiderModal from './modal/ConsiderModal';
 import WaitModal from './modal/WaitModal';
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
+import { formatDate } from '../../utils/formatDate';
 
 interface RaffleResult {
   raffleId: number;
@@ -49,6 +50,9 @@ const ResultPage: React.FC = () => {
   const deliveryId = location.state?.deliveryId;
   const raffleStatus = location.state?.status;
   const raffleId = location.state?.raffleId;
+  const [minTicket, setMinTicket] = useState<number>(0);
+  const [applyTicket, setApplyTicket] = useState<number>(0);
+  const [totalAmount, setTotalAmount] = useState<number>(0);
 
   useEffect(() => {
     console.log('개최자 결과 페이지 useEffect');
@@ -58,8 +62,11 @@ const ResultPage: React.FC = () => {
         const { data } = await axiosInstance.get(
           `/api/member/raffles/${raffleId}/result`,
         );
-        console.log('래플 결과:', data);
+        console.log('fetchResult 결과:', data);
         setRaffle(data.result);
+        setMinTicket(raffle.minTicket);
+        setApplyTicket(raffle.applyTicket);
+        setTotalAmount(raffle.totalAmount);
       } catch (error) {
         console.log('fetchResult, 래플 결과 안옴', error);
       }
@@ -71,11 +78,15 @@ const ResultPage: React.FC = () => {
         const { data } = await axiosInstance.get(
           `/api/member/delivery/${deliveryId}/owner`,
         );
-        console.log('API Response:', data);
+        console.log('fetchDelivery 결과:', data);
+
         setDelivery(data.result);
         setDeliveryStatus(data.result.deliveryStatus);
+        setMinTicket(delivery.minTicket);
+        setApplyTicket(delivery.applyTicket);
+        setTotalAmount(delivery.finalAmount);
       } catch (error) {
-        console.log('fetchDelibery, 아직 배송지 안 줬음', error);
+        console.log('fetchDelivery, 아직 배송지 안 줬음', error);
       }
     };
     fetchDelivery();
@@ -121,21 +132,21 @@ const ResultPage: React.FC = () => {
       <ResultLayout>
         <ResultContainer>
           <TextBox>최소 마감 티켓</TextBox>
-          <TextBox>{raffle.minTicket} 개</TextBox>
+          <TextBox>{minTicket} 개</TextBox>
         </ResultContainer>
         <ResultContainer>
           <TextBox>현재 티켓</TextBox>
-          {raffle.applyTicket >= raffle.minTicket && (
-            <PurpleTextBox>{raffle.applyTicket} 개</PurpleTextBox>
+          {applyTicket >= minTicket && (
+            <PurpleTextBox>{applyTicket} 개</PurpleTextBox>
           )}
-          {raffle.applyTicket < raffle.minTicket && (
-            <GrayTextBox>{raffle.applyTicket} 개</GrayTextBox>
+          {applyTicket < minTicket && (
+            <GrayTextBox>{applyTicket} 개</GrayTextBox>
           )}
         </ResultContainer>
         <HorizonBox />
         <ResultContainer>
           <TextBox>배송 후 정산금액</TextBox>
-          <PurpleTextBox>{raffle.totalAmount} 원</PurpleTextBox>
+          <PurpleTextBox>{totalAmount} 원</PurpleTextBox>
         </ResultContainer>
         <ResultContainer>
           {raffleStatus === 'ENDED' && (
@@ -194,7 +205,8 @@ const ResultPage: React.FC = () => {
               <>
                 <GrayButtonBox>운송장 입력하기</GrayButtonBox>
                 <GrayButtonBox>
-                  나중에 입력하기 (입력기한 : {delivery.shippingDeadline})
+                  나중에 입력하기 (입력기한 :{' '}
+                  {formatDate(delivery?.shippingDeadline)})
                 </GrayButtonBox>
               </>
             )}
@@ -204,7 +216,8 @@ const ResultPage: React.FC = () => {
                   운송장 입력하기
                 </PurpleButtonBox>
                 <PurpleButtonBox>
-                  나중에 입력하기 (입력기한 : {delivery.shippingDeadline})
+                  나중에 입력하기 (입력기한 :{' '}
+                  {formatDate(delivery?.shippingDeadline)})
                 </PurpleButtonBox>
               </>
             )}

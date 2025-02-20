@@ -9,9 +9,14 @@ import useDeliveryStore from '../store/deliveryStore';
 interface ModalProps {
   onClose: () => void;
   deliveryId: number;
+  raffleId: number;
 }
 
-const GiveUpModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
+const GiveUpModal: React.FC<ModalProps> = ({
+  onClose,
+  deliveryId,
+  raffleId,
+}) => {
   const navigate = useNavigate();
   const { triggerRefetch } = useDeliveryStore();
 
@@ -21,12 +26,11 @@ const GiveUpModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
         `/api/member/delivery/${deliveryId}/winner/cancel`,
         {},
       );
-      triggerRefetch();
+      console.log('당첨포기!!');
+      navigate(`/raffles/${raffleId}`);
     } catch (error) {
       console.error(error);
     }
-    onClose();
-    navigate(`/`);
   };
 
   return (

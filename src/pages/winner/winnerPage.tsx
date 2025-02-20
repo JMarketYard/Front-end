@@ -66,7 +66,7 @@ const WinnerPage: React.FC = () => {
   });
   const [winnerData, setWinnerData] = useState<TWinner>();
   const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
-
+  const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
 
@@ -182,6 +182,7 @@ const WinnerPage: React.FC = () => {
         setWinnerData(data.result);
         setDeliveryStatus(data.result.deliveryStatus);
         setAddress(data.result.address);
+        setRaffleId(data.result.raffleId);
         console.log(data.result);
         console.log(data.result.address);
       } catch (error) {
@@ -193,7 +194,11 @@ const WinnerPage: React.FC = () => {
 
   const handleGiveUpModal = () => {
     openModal(({ onClose }) => (
-      <GiveUpModal onClose={onClose} deliveryId={deliveryId} />
+      <GiveUpModal
+        onClose={onClose}
+        deliveryId={deliveryId}
+        raffleId={raffleId}
+      />
     ));
   };
 
