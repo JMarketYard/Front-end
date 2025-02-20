@@ -148,7 +148,7 @@ const Img = styled.img.attrs((props) => ({
   width: 390.582px;
   height: 390.582px;
   border-radius: 5px;
-  background: rgba(228, 228, 228, 0.75);
+  background: #f7f7f7;
   justify-content: center;
   align-items: center;
   position: relative;
