@@ -12,6 +12,7 @@ interface ProfileData {
   followerNum: number;
   reviewNum: number;
   raffles: any[];
+
 }
 
 const MyProfilePage: React.FC = () => {
