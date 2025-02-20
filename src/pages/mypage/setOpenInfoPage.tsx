@@ -1,28 +1,42 @@
 import styled from "styled-components";
 import BigTitle from "../../components/BigTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import media from "../../styles/media";
 import axiosInstance from "../../apis/axiosInstance";
 
 const SetOpenInfoPage = () => {
   const [toggle, setToggle] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const getInfo = async () => {
+    const { data } = await axiosInstance.get('/api/member/mypage/secretInfo');
+    console.log('GET:',data.result);
+    setToggle(data.result);
+    // if (!isLoaded) setIsLoaded(true);
+  };
 
   const handleToggle = () => {
     const patchInfo = async () => {
-      await axiosInstance.patch('/api/member/mypage/secretInfo', toggle,
+      await axiosInstance.patch('/api/member/mypage/secretInfo', !toggle,
         {
           headers: {
             'Content-Type': 'application/json',
           }
         }
       )
-      .then(_=>console.log("setToggle 전:", toggle))
-      .then(_=>setToggle(!toggle))
-      .then(_=>console.log("PATCH 성공, 현재 toggle 상태:", toggle))
-      .catch(error=>console.error(error));
+      .then(_=>getInfo())
     };
     patchInfo();
   };
+
+  useEffect(() => {
+    getInfo();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded) setIsLoaded(true);
+  }, [toggle]);
+
   return (
     <Wrapper>
     <BigTitle>공개 정보 설정</BigTitle>
@@ -37,6 +51,7 @@ const SetOpenInfoPage = () => {
           <ToggleLabel
           htmlFor="toggle"
           $checked={toggle}
+          $loaded={isLoaded}
           onClick={handleToggle}
           />
         </div>
@@ -99,7 +114,7 @@ const Input = styled.input`
   display: none;
 `
 
-const ToggleLabel = styled.label<{$checked:boolean}>`
+const ToggleLabel = styled.label<{$checked:boolean, $loaded:boolean}>`
   display: flex;
   align-items: center;
   position: relative;
@@ -119,7 +134,8 @@ const ToggleLabel = styled.label<{$checked:boolean}>`
     background-color: #FFF;
     border-radius: 100%;
     left: ${(props) => (props.$checked ? "2px" : "calc(100% - 22px)")};
-    transition: left 0.3s ease;
+    // transition: left 0.3s ease;
+    // transition: ${(props) => (props.$loaded ? 'left 0.3s ease' : 'none')};
   };
   &::after {
     ${props => props.$checked
