@@ -73,10 +73,8 @@ function ChargePage() {
               <Dot />
               <Title>티켓 충전/환전</Title>
             </Titles>
-            <CheckBox>
-              <Short onClick={() => navigate('/mypage/payment')}>
-                충전/ 환전 내역 조회하기
-              </Short>
+            <CheckBox onClick={() => navigate('/mypage/payment')}>
+              <Short>충전/ 환전 내역 조회하기</Short>
               <Icon
                 icon="weui:arrow-outlined"
                 style={{
@@ -197,6 +195,7 @@ const CheckBox = styled.div`
   display: flex;
   column-gap: 30px;
   align-items: center;
+  cursor: pointer;
 `;
 
 const Short = styled.div`

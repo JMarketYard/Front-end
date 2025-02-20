@@ -317,6 +317,7 @@ const HistoryContaienr = styled.div`
   position: absolute;
   top: 7px;
   right: 7px;
+  cursor: pointer;
   ${media.small`
       top: -4px;
       right: -5px;

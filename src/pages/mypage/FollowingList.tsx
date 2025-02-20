@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ 유저 프로필 페이지 이동을 위해 추가
-import styled from "styled-components";
-import BigTitle from "../../components/BigTitle";
-import FollowingItem from "../../components/FollowingItem";
-import FollowNoModal from "../../components/Modal/modals/FollowNoModal";
-import axiosInstance from "../../apis/axiosInstance";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ 유저 프로필 페이지 이동을 위해 추가
+import styled from 'styled-components';
+import BigTitle from '../../components/BigTitle';
+import FollowingItem from '../../components/FollowingItem';
+import FollowNoModal from '../../components/Modal/modals/FollowNoModal';
+import axiosInstance from '../../apis/axiosInstance';
+import media from '../../styles/media';
 
 const FollowingList: React.FC = () => {
   const navigate = useNavigate(); // ✅ 네비게이션 훅 추가
   const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const [checkedItems, setCheckedItems] = useState<{ [key: number]: boolean }>({});
+  const [checkedItems, setCheckedItems] = useState<{ [key: number]: boolean }>(
+    {},
+  );
   const [followingList, setFollowingList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalMessage, setModalMessage] = useState<string | null>(null);
@@ -17,20 +20,20 @@ const FollowingList: React.FC = () => {
   const fetchFollowingList = async () => {
     setLoading(true);
     try {
-      const { data } = await axiosInstance.get("/api/member/follow/list");
+      const { data } = await axiosInstance.get('/api/member/follow/list');
 
       if (data.isSuccess) {
         setFollowingList(
           data.result.map((store: any) => ({
             ...store,
             username: store.storeName || `상점 ${store.storeId}`,
-          }))
+          })),
         );
       } else {
         setFollowingList([]);
       }
     } catch (error) {
-      console.error("팔로잉 목록을 불러오는 중 오류 발생:", error);
+      console.error('팔로잉 목록을 불러오는 중 오류 발생:', error);
       setFollowingList([]);
     } finally {
       setLoading(false);
@@ -51,7 +54,7 @@ const FollowingList: React.FC = () => {
       .map((key) => parseInt(key, 10));
 
     if (storeIdsToUnfollow.length === 0) {
-      alert("선택된 팔로우가 없습니다.");
+      alert('선택된 팔로우가 없습니다.');
       return;
     }
 
@@ -60,7 +63,7 @@ const FollowingList: React.FC = () => {
         console.log(`언팔로우 요청: storeId=${storeId}`);
 
         const response = await axiosInstance.delete(
-          `/api/member/follow/cancel?storeId=${storeId}`
+          `/api/member/follow/cancel?storeId=${storeId}`,
         );
 
         if (response.data.isSuccess) {
@@ -70,11 +73,14 @@ const FollowingList: React.FC = () => {
         }
       }
 
-      setModalMessage("팔로우가 취소되었습니다.");
+      setModalMessage('팔로우가 취소되었습니다.');
       fetchFollowingList();
     } catch (error: any) {
-      console.error("팔로우 취소 중 오류 발생:", error.response?.data || error.message);
-      setModalMessage("팔로우 취소에 실패했습니다. 다시 시도해주세요.");
+      console.error(
+        '팔로우 취소 중 오류 발생:',
+        error.response?.data || error.message,
+      );
+      setModalMessage('팔로우 취소에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setCheckedItems({});
       setIsDeleteMode(false);
@@ -100,10 +106,14 @@ const FollowingList: React.FC = () => {
           {isDeleteMode ? (
             <>
               <DeleteButton onClick={handleUnfollow}>팔로우 취소</DeleteButton>
-              <CancelButton onClick={() => setIsDeleteMode(false)}>선택 취소</CancelButton>
+              <CancelButton onClick={() => setIsDeleteMode(false)}>
+                선택 취소
+              </CancelButton>
             </>
           ) : (
-            <SelectButton onClick={() => setIsDeleteMode(true)}>선택</SelectButton>
+            <SelectButton onClick={() => setIsDeleteMode(true)}>
+              선택
+            </SelectButton>
           )}
         </ButtonWrapper>
       </BigTitleWrapper>
@@ -129,7 +139,12 @@ const FollowingList: React.FC = () => {
         )}
       </ListContainer>
 
-      {modalMessage && <FollowNoModal onClose={() => setModalMessage(null)} message={modalMessage} />}
+      {modalMessage && (
+        <FollowNoModal
+          onClose={() => setModalMessage(null)}
+          message={modalMessage}
+        />
+      )}
     </Container>
   );
 };
@@ -160,6 +175,9 @@ const ButtonWrapper = styled.div`
   right: 0;
   display: flex;
   gap: 10px;
+  ${media.notLarge`
+    right:45px
+  `}
 `;
 
 const SelectButton = styled.button`

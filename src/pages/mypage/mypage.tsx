@@ -6,6 +6,7 @@ import BigTitle from '../../components/BigTitle';
 import ProfileComponent from '../../components/ProfileComponent';
 import NameEditModal from '../../components/Modal/modals/NameEditModal';
 import axiosInstance from '../../apis/axiosInstance';
+import media from '../../styles/media';
 
 interface ProfileData {
   nickname: string;
@@ -25,7 +26,9 @@ const MyProfilePage: React.FC = () => {
     setLoading(true);
     try {
       const endpoint =
-        selectedToggle === '응모한 래플' ? '/api/member/mypage' : '/api/member/mypage/myRaffles';
+        selectedToggle === '응모한 래플'
+          ? '/api/member/mypage'
+          : '/api/member/mypage/myRaffles';
       const { data } = await axiosInstance.get(endpoint);
 
       if (data.isSuccess) {
@@ -53,11 +56,12 @@ const MyProfilePage: React.FC = () => {
   return (
     <Container>
       <InnerContainer>
-      <TitleContainer>
-        <StyledBigTitle>장마당 주최자</StyledBigTitle>
-        <SettingsLink to='/mypage/setting'>설정 및 내 정보 수정하기 &gt;</SettingsLink>
-      </TitleContainer>
-
+        <TitleContainer>
+          <StyledBigTitle>장마당 주최자</StyledBigTitle>
+          <SettingsLink to="/mypage/setting">
+            설정 및 내 정보 수정하기 &gt;
+          </SettingsLink>
+        </TitleContainer>
 
         {profileData && (
           <ProfileComponent
@@ -71,14 +75,14 @@ const MyProfilePage: React.FC = () => {
           <ToggleIndicator selectedToggle={selectedToggle} />
           <ToggleOption
             selectedToggle={selectedToggle}
-            value='응모한 래플'
+            value="응모한 래플"
             onClick={() => setSelectedToggle('응모한 래플')}
           >
             응모한 래플
           </ToggleOption>
           <ToggleOption
             selectedToggle={selectedToggle}
-            value='주최하는 래플'
+            value="주최하는 래플"
             onClick={() => setSelectedToggle('주최하는 래플')}
           >
             주최하는 래플
@@ -139,8 +143,8 @@ const InnerContainer = styled.div`
 const ToggleContainer = styled.div`
   position: relative;
   width: 100%;
-  max-width: 500px; /* ✅ 최대 너비 설정 */
-  height: 58px; /* ✅ 높이 고정 */
+  max-width: 500px;
+  height: 58px;
   border-radius: 50px;
   background: #f5f5f5;
   margin: 50px auto 76px;
@@ -157,7 +161,8 @@ const ToggleIndicator = styled.div<{ selectedToggle: string }>`
   border-radius: 50px;
   top: 0;
   transition: left 0.3s ease;
-  left: ${({ selectedToggle }) => (selectedToggle === '응모한 래플' ? '0' : '50%')};
+  left: ${({ selectedToggle }) =>
+    selectedToggle === '응모한 래플' ? '0' : '50%'};
 `;
 
 const ToggleOption = styled.div<{ selectedToggle: string; value: string }>`
@@ -166,23 +171,32 @@ const ToggleOption = styled.div<{ selectedToggle: string; value: string }>`
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 16px; 
-  height: 100%; 
+  font-size: 16px;
+  height: 100%;
   cursor: pointer;
   position: relative;
-  z-index: 2; 
+  z-index: 2;
 
-  color: ${({ selectedToggle, value }) => (selectedToggle === value ? '#fff' : '#c908ff')};
-  transition: color 0.3s ease; 
+  color: ${({ selectedToggle, value }) =>
+    selectedToggle === value ? '#fff' : '#c908ff'};
+  transition: color 0.3s ease;
 `;
-
-
 
 const ProductGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   padding: 20px;
+  ${media.medium`
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    max-width: 100%;
+    padding-left:0px
+  `}
+  ${media.small`
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  `}
 `;
 
 const LoadingMessage = styled.div`
