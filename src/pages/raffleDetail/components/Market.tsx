@@ -59,6 +59,10 @@ const Market: React.FC<MarketProps> = ({
     }
   };
 
+  const ColoredAskButton = styled(AskButton)<{ isActive: boolean }>`
+    background: ${({ isActive }) => (isActive ? '#ffffff' : '#e4e4e4')};
+  `;
+
   return (
     <Wrapper>
       <BigTitleBox>
@@ -121,11 +125,12 @@ const Market: React.FC<MarketProps> = ({
         )}
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
-      <AskButton
+      <ColoredAskButton
+        isActive={raffle.raffleStatus === 'ACTIVE'}
         onClick={() => navigate(`/ask/${type}`, { state: { raffle } })}
       >
         상품 문의
-      </AskButton>
+      </ColoredAskButton>
     </Wrapper>
   );
 };
@@ -356,7 +361,7 @@ const AskButton = styled.button`
   border: 1px solid #8f8e94;
   background: #e4e4e4;
 
-  color: #8f8e94;
+  color: black;
   text-align: center;
   font-family: Pretendard;
   font-size: 15px;
