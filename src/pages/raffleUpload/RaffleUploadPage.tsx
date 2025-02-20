@@ -6,9 +6,10 @@ import React, { FormEvent, ReactElement, useEffect, useRef, useState } from "rea
 import { useModalContext } from "../../components/Modal/context/ModalContext";
 import UploadModal from "./components/UploadModal";
 import TicketModal from "./components/TicketModal";
-import DatePicker from 'react-datepicker'
+import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import media from "../../styles/media";
+import { ko } from "date-fns/locale/ko";
 
 const RaffleUploadPage = () => {
     const itemStates = [
@@ -35,6 +36,8 @@ const RaffleUploadPage = () => {
     const [images, setImages] = useState<File[]>([]);
     const [category, setCategory] = useState<string>('');
     const [deliveryFee, setDeliveryFee] = useState<string>("");
+
+    registerLocale("ko", ko);
 
     const handleImg = () => {
         fileRef?.current?.click();
@@ -245,9 +248,11 @@ const RaffleUploadPage = () => {
                         <DatePickerBox>
                             <DatePicker
                                 onKeyDown={(e)=>{e.preventDefault()}}
-                                dateFormat="yyyy년 MM월 dd일"
+                                dateFormat="yyyy년 MM월 dd일 a hh:mm"
+                                locale="ko"
                                 dateFormatCalendar="yyyy년 MM월"
                                 selected={startDate}
+                                showTimeInput
                                 onChange={(date) => date && setStartDate(date)}
                             />
                         </DatePickerBox>
@@ -257,9 +262,11 @@ const RaffleUploadPage = () => {
                         <DatePickerBox>
                             <DatePicker
                                 onKeyDown={(e)=>{e.preventDefault()}}
-                                dateFormat="yyyy년 MM월 dd일"
+                                dateFormat="yyyy년 MM월 dd일 a hh:mm"
+                                locale="ko"
                                 dateFormatCalendar="yyyy년 MM월"
                                 selected={endDate}
+                                showTimeInput
                                 onChange={(date) => date && setEndDate(date)}
                             />
                         </DatePickerBox>
