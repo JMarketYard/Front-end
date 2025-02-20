@@ -14,7 +14,7 @@ const SearchResultPage: React.FC = () => {
   const [raffles, setRaffles] = useState<RaffleProps[]>([]);
   const [page, setPage] = useState<number>(0);
   const [hasMore, setHasMore] = useState(true);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
   const isSearchCompleted = useIsSearchCompleted((v) => v.isSearchCompleted);
   const setIsCompleted = useIsSearchCompleted((v) => v.setIsSearchCompleted);
@@ -105,13 +105,16 @@ const SearchResultPage: React.FC = () => {
       params: {keyword: type}
     });
     setAllRaffles(data.result.searchedRaffles);
-    console.log("fetchProducts 결과:", data.result.searchedRaffles);
+    setIsCompleted(!isSearchCompleted); // Zustand 상태 업데이트
+    setIsLoading(false);
+    // console.log("fetchProducts 결과:", data.result.searchedRaffles);
   };
 
   console.log("allRaffles:", allRaffles);
 
   // 화면 최하단 ref에 스크롤이 도달하면 16개씩 데이터를 보여준다
   const showProducts = () => {
+    if (isLoading) return;
     console.log("showProducts 실행");
     console.log(allRaffles);
     const newRaffles = allRaffles.slice(page, page+16);
@@ -133,12 +136,17 @@ const SearchResultPage: React.FC = () => {
       }
     );
 
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
     return () => {
       if (observerRef.current) observer.unobserve(observerRef.current);
     }
   }, [raffles, allRaffles]);
 
   useEffect(() => {
+    setAllRaffles([]);
     setRaffles([]);
     setPage(0);
     setHasMore(true);
@@ -224,5 +232,5 @@ const ProductGrid = styled.div`
 const Observer = styled.div`
   width: 100%;
   height: 50px;
-  background-color: yellow;
+  // background-color: yellow;
 `;
