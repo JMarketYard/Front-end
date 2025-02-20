@@ -50,8 +50,7 @@ const SearchResultPage: React.FC = () => {
       setPage((prev) => prev + 1);
     } catch (error) {
       console.error('데이터 불러오기 실패:', error);
-    }
-     finally {
+    } finally {
       setIsLoading(false);
     }
   };
