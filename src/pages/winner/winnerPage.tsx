@@ -167,6 +167,14 @@ const WinnerPage: React.FC = () => {
     } catch (error) {
       console.error(error);
     }
+    try {
+      const { data } = await axiosInstance.post(
+        `/api/member/delivery/${deliveryId}/winner/complete`,
+        {},
+      );
+    } catch (error) {
+      console.error(error);
+    }
 
     if (checked) {
       postMutation({
