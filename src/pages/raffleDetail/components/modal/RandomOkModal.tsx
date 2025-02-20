@@ -7,6 +7,7 @@ import yellow from '../../../../assets/yellowVector.svg';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
+import { useWinnerStatusChanged } from '../../../../store/storeWinnerStatus';
 
 interface RandomOkModalProps {
   onClose: () => void;
@@ -29,6 +30,8 @@ export default function RandomOkModal({
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
   const typeNumber = type ? Number(type) : undefined;
+  const { isWinnerStatusChanged, toggleWinnerStatus } =
+    useWinnerStatusChanged();
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -52,7 +55,8 @@ export default function RandomOkModal({
         state: { deliveryId: deliveryId, image: image },
       }); //state로 devliery_id 전달
     } else {
-      navigate(`/raffle/${raffleId}`);
+      toggleWinnerStatus();
+      navigate(`/raffles/${raffleId}`);
     }
   };
 

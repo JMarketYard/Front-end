@@ -41,7 +41,7 @@ export default function RandomModal({
     setItems(nicknameSet);
     setWinner(winnerNickname);
     setIsWin(win);
-  }, [nicknameSet, deliveryId]);
+  }, [deliveryId]);
 
   const handleClick = () => {
     if (!isRolling && winner && sliderRef.current) {
