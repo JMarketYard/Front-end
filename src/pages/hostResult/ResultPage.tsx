@@ -117,6 +117,7 @@ const ResultPage: React.FC = () => {
         raffleId={raffle?.raffleId ?? 0}
         setIsChecked={setIsChecked}
         deliveryId={deliveryId}
+
       />
     ));
   };

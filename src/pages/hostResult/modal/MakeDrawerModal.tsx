@@ -27,10 +27,9 @@ const MakeDrawerModal: React.FC<ModalProps> = ({
         );
       };
       postCheck();
-
-      setIsChecked((prev: boolean) => !prev);
-      // navigate(`/host-result`);
       onClose();
+      setIsChecked((prev: boolean) => !prev);
+      navigate(`/host-result`);
     } catch (error) {
       console.error('POST 요청 실패', error);
     }
