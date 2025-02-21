@@ -116,6 +116,8 @@ const ResultPage: React.FC = () => {
         onClose={onClose}
         raffleId={raffle?.raffleId ?? 0}
         setIsChecked={setIsChecked}
+        deliveryId={deliveryId}
+
       />
     ));
   };
@@ -259,7 +261,7 @@ const ResultPage: React.FC = () => {
             <PurpleButtonBox onClick={handleMake}>
               당첨자 추첨 진행
             </PurpleButtonBox>
-            <PurpleButtonBox onClick={handleConsider}>
+            <PurpleButtonBox onClick={() => navigate(`/raffles/${raffleId}`)}>
               나중에 선택하기(
               {formatMinutesToHoursAndMinutes(raffle.remainedMinutes)})
             </PurpleButtonBox>

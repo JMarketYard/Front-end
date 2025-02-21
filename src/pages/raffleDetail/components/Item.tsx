@@ -244,8 +244,15 @@ const Item: React.FC<ItemProps> = ({
                 )}
               </>
             )}
-
-            <LikeBox onClick={toggleLike}>
+            <LikeBox
+              onClick={() => {
+                if (isAuthenticated) {
+                  toggleLike();
+                } else {
+                  handleOpenModal();
+                }
+              }}
+            >
               <img
                 src={isLiked ? icLike : icUnlike}
                 alt={isLiked ? 'Liked' : 'Unliked'}

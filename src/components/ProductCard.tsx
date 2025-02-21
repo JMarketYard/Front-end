@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom';
 import RaffleProps from '../types/RaffleProps';
 import { postLike, deleteLike } from '../services/likeService';
 import { getFormatTime } from '../utils/formateTime';
+import { useAuth } from '../context/AuthContext';
+import { useModalContext } from './Modal/context/ModalContext';
+import SplashModal from '../pages/login/components/SplashModal';
 
 const ProductCard: React.FC<RaffleProps> = ({
   raffleId,
@@ -30,6 +33,11 @@ const ProductCard: React.FC<RaffleProps> = ({
       setIsLiked(true);
     }
   };
+  const { isAuthenticated, logout } = useAuth();
+  const { openModal } = useModalContext();
+  const handleOpenModal = () => {
+    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
+  };
 
   return (
     <Wrapper>
@@ -44,7 +52,17 @@ const ProductCard: React.FC<RaffleProps> = ({
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
             <TextBox>마감임박</TextBox>
           )}
-          <LikeBox onClick={toggleLike}>
+          <LikeBox
+            onClick={(event) => {
+              event.stopPropagation(); // 이벤트 전파 막기
+              event.preventDefault(); // 기본 동작 막기
+              if (isAuthenticated) {
+                toggleLike(event);
+              } else {
+                handleOpenModal();
+              }
+            }}
+          >
             <img
               src={isLiked ? icLike : icUnlike}
               alt={isLiked ? 'Liked' : 'Unliked'}
