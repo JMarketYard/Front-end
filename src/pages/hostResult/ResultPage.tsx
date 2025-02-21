@@ -112,7 +112,12 @@ const ResultPage: React.FC = () => {
   };
   const handleMake = () => {
     openModal(({ onClose }) => (
-      <MakeDrawerModal onClose={onClose} raffleId={raffle?.raffleId ?? 0} />
+      <MakeDrawerModal
+        onClose={onClose}
+        raffleId={raffle?.raffleId ?? 0}
+        setIsChecked={setIsChecked}
+        deliveryId={deliveryId}
+      />
     ));
   };
   const handleWait = () => {
