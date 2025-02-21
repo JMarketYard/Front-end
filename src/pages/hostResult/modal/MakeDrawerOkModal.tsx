@@ -4,6 +4,8 @@ import Modal from '../../../components/Modal/Modal';
 import smileVector from '../../../assets/SmileVector.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
+import { DeliverySuccessResult } from '../apis/deliveryResponseTypes';
+import { useEffect, useState } from 'react';
 
 interface ModalProps {
   onClose: () => void;
@@ -11,29 +13,43 @@ interface ModalProps {
   setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   deliveryId: number;
 }
-//미추첨 당첨자 뽑기
-const MakeDrawerModal: React.FC<ModalProps> = ({
+//미추첨 당첨자 뽑기 완료
+const MakeDrawerOkModal: React.FC<ModalProps> = ({
   onClose,
   raffleId,
   setIsChecked,
   deliveryId,
 }) => {
   const navigate = useNavigate();
-  const handleClick = () => {
+  const [delivery, setDelivery] = useState<DeliverySuccessResult>({
+    raffleId: 0,
+    winnerId: 0,
+    deliveryId: 0,
+    minTicket: 0,
+    applyTicket: 0,
+    finalAmount: 0,
+    deliveryStatus: '',
+    shippingDeadline: null,
+    isExtendShipping: null,
+    address: null,
+  });
+  const handleClick = async () => {
     try {
-      const postCheck = async () => {
-        const { data } = await axiosInstance.post(
-          `/api/member/raffles/${raffleId}/draw`,
-        );
-      };
-      postCheck();
-
-      setIsChecked((prev: boolean) => !prev);
-      // navigate(`/host-result`);
-      onClose();
+      const { data } = await axiosInstance.post(
+        `/api/member/raffles/${raffleId}/draw`,
+      );
+      setDelivery(data.result);
+      console.log('수동 추첨함 : ', data.result);
     } catch (error) {
-      console.error('POST 요청 실패', error);
+      error;
     }
+    onClose();
+    setIsChecked((prev: boolean) => !prev);
+    navigate(`/host-result`, {
+      state: {
+        deliveryId: delivery.deliveryId,
+      },
+    });
   };
   return (
     <Modal onClose={onClose}>
@@ -41,7 +57,7 @@ const MakeDrawerModal: React.FC<ModalProps> = ({
         <Img src={smileVector} />
         <Title>당첨자를 뽑으시겠습니까?</Title>
         <Short>해당 결정은 번복할 수 없습니다. </Short>
-        <Button onClick={handleClick}>당첨자 뽑기</Button>
+        <Button onClick={handleClick}>닫기</Button>
       </Container>
     </Modal>
   );
@@ -94,4 +110,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default MakeDrawerModal;
+export default MakeDrawerOkModal;
