@@ -4,29 +4,32 @@ import BigTitle from "../../components/BigTitle";
 import SmallTitle from "../../components/SmallTitle";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../apis/axiosInstance";
+import { useAuth } from "../../context/AuthContext";
 
 const Setting: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleNavigation = (path: string) => {
     navigate(path);
   };
 
   /** ✅ 로그아웃 처리 API */
-  const handleLogout = async () => {
-    try {
-      const response = await axiosInstance.post("/api/permit/logout");
+  const handleLogout = async () => { 
+    logout();
+    // try {
+    //   const response = await axiosInstance.post("/api/permit/logout");
 
-      if (response.data.isSuccess) {
-        alert("로그아웃 되었습니다.");
-        navigate("/login"); // 로그인 페이지로 이동
-      } else {
-        alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
-      }
-    } catch (error) {
-      console.error("로그아웃 중 오류 발생:", error);
-      alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
-    }
+    //   if (response.data.isSuccess) {
+    //     alert("로그아웃 되었습니다.");
+    //     navigate("/login"); // 로그인 페이지로 이동
+    //   } else {
+    //     alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+    //   }
+    // } catch (error) {
+    //   console.error("로그아웃 중 오류 발생:", error);
+    //   alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+    // }
   };
 
   const handleAccountDeletion = () => {
