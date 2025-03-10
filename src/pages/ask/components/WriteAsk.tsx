@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 const WriteAsk = ({type}:{type:string|undefined}) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const navigate = useNavigate();
 
   const handleAsk = () => {
     const postAsk = async () => {
