@@ -2,10 +2,12 @@ import styled from "styled-components";
 import axiosInstance from "../../../apis/axiosInstance";
 import { useState } from "react";
 import media from "../../../styles/media";
+import { useNavigate } from "react-router-dom";
 
 const WriteAsk = ({type}:{type:string|undefined}) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleAsk = () => {
     const postAsk = async () => {
@@ -17,7 +19,8 @@ const WriteAsk = ({type}:{type:string|undefined}) => {
         setTitle('');
         setContent('');
         console.log('postAsk OK');
-      });
+        alert("문의글이 등록되었습니다!");
+      }).then(_ => location.reload());
     }
     if (title==='') alert('제목을 입력해주세요');
     else if (content==='') alert('내용을 입력해주세요');
