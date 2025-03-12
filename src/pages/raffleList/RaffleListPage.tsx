@@ -79,12 +79,11 @@ const RaffleListPage: React.FC = () => {
   //   fetchMoreProducts();
   // }, [page]);
 
-
-  console.log('???', hasMore)
+  console.log('???', hasMore);
   const fetchProducts = async () => {
     const apiurl = isAuthenticated
-    ? `/api/member/home/${type}`
-    : `/api/permit/home/${type}`
+      ? `/api/member/home/${type}`
+      : `/api/permit/home/${type}`;
     const { data } = await axiosInstance.get(apiurl);
     setAllRaffles(data.result.raffles);
     setIsLoading(false);
@@ -97,17 +96,15 @@ const RaffleListPage: React.FC = () => {
   // 화면 최하단 ref에 스크롤이 도달하면 16개씩 데이터를 보여준다
   const showProducts = () => {
     if (isLoading) return;
-    console.log("showProducts 실행");
+    console.log('showProducts 실행');
     // console.log(allRaffles);
-    const newRaffles = allRaffles.slice(page, page+16);
-    setRaffles(prev => [...prev, ...newRaffles]);
-    console.log('allRaffles.length?',allRaffles.length);
-    allRaffles.length>page+16
-    ? setPage(page+16)
-    : setHasMore(false);
+    const newRaffles = allRaffles.slice(page, page + 16);
+    setRaffles((prev) => [...prev, ...newRaffles]);
+    console.log('allRaffles.length?', allRaffles.length);
+    allRaffles.length > page + 16 ? setPage(page + 16) : setHasMore(false);
   };
   useEffect(() => {
-    console.log("raffles 변경 감지", raffles);
+    console.log('raffles 변경 감지', raffles);
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore) showProducts();
@@ -116,7 +113,7 @@ const RaffleListPage: React.FC = () => {
         root: null,
         rootMargin: '0px',
         threshold: 1.0,
-      }
+      },
     );
 
     if (observerRef.current) {
@@ -125,7 +122,7 @@ const RaffleListPage: React.FC = () => {
 
     return () => {
       if (observerRef.current) observer.unobserve(observerRef.current);
-    }
+    };
   }, [raffles]);
 
   useEffect(() => {
@@ -137,9 +134,6 @@ const RaffleListPage: React.FC = () => {
   useEffect(() => {
     showProducts();
   }, [allRaffles]);
-
-
-
 
   useEffect(() => {
     // 페이지 제목 설정
@@ -220,6 +214,7 @@ const LookAroundBox = styled.p`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  min-width: 1080px;
 `;
 
 const MoreListBox = styled.a`

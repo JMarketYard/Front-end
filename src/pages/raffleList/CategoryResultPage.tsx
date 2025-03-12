@@ -143,6 +143,7 @@ const LookAroundBox = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  min-width: 1080px;
 `;
 
 const Horizon = styled.hr`
