@@ -27,7 +27,7 @@ const SmallProductCard: React.FC<RaffleProps> = ({
   return (
     <Wrapper>
       <StyledLink to={`/raffles/${raffleId}`}>
-        <ImageContainer imageUrls={imageUrls}>
+        <ImageContainer $backgroundImage={imageUrls[0] || ''}>
           {finish && (
             <>
               <RaffleClosingBox>응모 마감</RaffleClosingBox>
@@ -81,18 +81,17 @@ const StyledLink = styled(Link)`
   color: inherit; /* 기본 색상 유지 */
 `;
 
-const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
-  ({ imageUrls }) => ({
-    style: { backgroundImage: `url(${imageUrls[0]})` },
+const ImageContainer = styled.div.attrs<{ $backgroundImage: string }>(
+  ({ $backgroundImage }) => ({
+    style: { backgroundImage: `url(${$backgroundImage})` },
   }),
-)<Pick<RaffleProps, 'imageUrls'>>`
-  width: 192px;
-  height: 192px;
-  flex-shrink: 0;
-  border-radius: 3px;
+)`
+  width: 228px;
+  height: 227px;
+  border-radius: 5px;
   background-color: #f7f7f7;
   position: relative;
-  margin-top: 14px;
+  margin-top: 6px;
 
   background-size: contain;
   background-position: center;
