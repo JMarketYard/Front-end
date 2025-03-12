@@ -69,8 +69,15 @@ const AddAddress = ({ onClose, fetchAddresses }:PropsWithChildren<{
       await fetchAddresses();
       console.log('Success POST');
     };
-    postAddress();
-    onCloseModal();
+    if (addressName===''
+      || recipientName===''
+      || apiAddress===''
+      || addressDetail===''
+      || phoneNumber==='') alert('필수 입력사항을 모두 입력해주세요');
+    else {
+      postAddress();
+      onCloseModal();
+    }
   }
 
   return ReactDOM.createPortal(
