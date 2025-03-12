@@ -14,7 +14,7 @@ import RandomModal from './modal/RandomModal';
 import { ApplyType } from './apis/raffleType';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { useAuth } from '../../../context/AuthContext';
-import SplashModal from '../../login/components/SplashModal';
+import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
 
 type ItemProps = RaffleDetailProps & {
@@ -34,10 +34,7 @@ const Item: React.FC<ItemProps> = ({
   const raffleId = type ? parseInt(type, 10) : 0;
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
-
-  const handleOpenModal = () => {
-    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
-  };
+  const handleOpenModal = OpenLogInModal();
 
   useEffect(() => {
     setIsLiked(raffle.likeStatus ?? false);

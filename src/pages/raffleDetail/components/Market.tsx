@@ -7,7 +7,7 @@ import RaffleDetailProps from '../../../types/RaffleDetailProps';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
-import SplashModal from '../../login/components/SplashModal';
+import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import FollowFailModal from './modal/FollowFailModal';
 
 interface MarketProps extends RaffleDetailProps {
@@ -23,10 +23,7 @@ const Market: React.FC<MarketProps> = ({
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
-
-  const handleOpenModal = () => {
-    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
-  };
+  const handleOpenModal = OpenLogInModal();
 
   const handleFollowFail = () => {
     openModal(({ onClose }) => <FollowFailModal onClose={onClose} />);
