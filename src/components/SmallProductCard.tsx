@@ -86,12 +86,13 @@ const ImageContainer = styled.div.attrs<{ $backgroundImage: string }>(
     style: { backgroundImage: `url(${$backgroundImage})` },
   }),
 )`
-  width: 228px;
-  height: 227px;
-  border-radius: 5px;
+  width: 192px;
+  height: 192px;
+  flex-shrink: 0;
+  border-radius: 3px;
   background-color: #f7f7f7;
   position: relative;
-  margin-top: 6px;
+  margin-top: 14px;
 
   background-size: contain;
   background-position: center;

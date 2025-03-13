@@ -8,7 +8,7 @@ import axiosInstance from '../../../apis/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
-import FollowFailModal from './modal/FollowFailModal';
+import FollowFailModal from './modals/FollowFailModal';
 
 interface MarketProps extends RaffleDetailProps {
   type?: string;

@@ -4,7 +4,7 @@ import Modal from '../../../components/Modal/Modal';
 import smileVector from '../../../assets/SmileVector.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import { DeliverySuccessResult } from '../apis/deliveryResponseTypes';
+import { DeliverySuccessResult } from '../types/deliveryResponseTypes';
 import { useEffect, useState } from 'react';
 
 interface ModalProps {
