@@ -6,13 +6,13 @@ import grayDelivery from '../../assets/hostResult/grayDelivery.svg';
 import icMark from '../../assets/hostResult/icMark.svg';
 import axiosInstance from '../../apis/axiosInstance';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
-import { DeliverySuccessResult } from './apis/deliveryResponseTypes';
-import DeliverModal from './modal/DeliverModal';
-import CancleModal from './modal/CancelModal';
-import NewDrawerModal from './modal/NewDrawerModal';
-import MakeDrawerModal from './modal/MakeDrawerModal';
-import ConsiderModal from './modal/ConsiderModal';
-import WaitModal from './modal/WaitModal';
+import { DeliverySuccessResult } from './types/deliveryResponseTypes';
+import DeliverModal from './modals/DeliverModal';
+import CancleModal from './modals/CancelModal';
+import NewDrawerModal from './modals/NewDrawerModal';
+import MakeDrawerModal from './modals/MakeDrawerModal';
+import ConsiderModal from './modals/ConsiderModal';
+import WaitModal from './modals/WaitModal';
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import { formatDate } from '../../utils/formatDate';
 
@@ -55,21 +55,16 @@ const ResultPage: React.FC = () => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   useEffect(() => {
-    console.log('개최자 결과 페이지 useEffect');
-
     const fetchResult = async () => {
       try {
         const { data } = await axiosInstance.get(
           `/api/member/raffles/${raffleId}/result`,
         );
-        console.log('fetchResult 결과:', data);
         setRaffle(data.result);
         setMinTicket(data.result.minTicket);
         setApplyTicket(data.result.applyTicket);
         setTotalAmount(data.result.totalAmount);
-      } catch (error) {
-        console.log('fetchResult, 래플 결과 안옴', error);
-      }
+      } catch (error) {}
     };
     fetchResult();
 
@@ -117,7 +112,6 @@ const ResultPage: React.FC = () => {
         raffleId={raffle?.raffleId ?? 0}
         setIsChecked={setIsChecked}
         deliveryId={deliveryId}
-
       />
     ));
   };

@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BigTitle from '../../components/BigTitle';
-import RaffleDetailProps from '../../types/RaffleDetailProps';
 import axiosInstance from '../../apis/axiosInstance';
 import { useNavigate, useLocation } from 'react-router-dom';
 import moreList from '../../assets/homePage/moreList.svg';
 import media from '../../styles/media';
 import { TAddress } from '../address/addressSetPage';
 import { TDeliveryStatus } from '../../types/deliveryStatus';
-import { ReactComponent as checkbox } from '../../assets/imgCheckbox.svg';
 import icWarning from '../../assets/icWarning.svg';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
 import GiveUpModal from './modals/GiveUpModal';
@@ -19,11 +17,9 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
 import WaitShippingModal from './modals/WaitShippingModal';
 import useDeliveryStore from './store/deliveryStore';
-import { PostCharge } from './apis/payAPI'; //결제
-import { useMutation } from '@tanstack/react-query'; //결제
-import Cookies from 'js-cookie'; //결제
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import PayOkModal from './modals/PayOkModal';
+import usePay from '../../hooks/usePay';
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -55,7 +51,6 @@ const WinnerPage: React.FC = () => {
     setChecked(event.target.checked);
   };
   const { shouldRefetch, triggerRefetch } = useDeliveryStore();
-  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -72,6 +67,7 @@ const WinnerPage: React.FC = () => {
   const approvedAt = queryParams.get('approvedAt');
 
   useEffect(() => {
+    //배송비 결제 이후
     if (!approvedAt) return;
     const sendPostRequest = async () => {
       try {
@@ -99,65 +95,7 @@ const WinnerPage: React.FC = () => {
     sendPostRequest();
   }, [approvedAt]);
 
-  //결제코드 시작
-  const { mutate: postMutation } = useMutation({
-    mutationFn: PostCharge,
-    onSuccess: (data) => {
-      if (!data?.redirectUrl) {
-        console.error('🚨 redirectUrl이 존재하지 않습니다.');
-        return;
-      }
-
-      console.log('🔍 원본 redirectUrl:', data.redirectUrl);
-
-      try {
-        let fullRedirectUrl = data.redirectUrl;
-
-        // 만약 상대경로라면 절대경로로 변환
-        if (!fullRedirectUrl.startsWith('http')) {
-          fullRedirectUrl = `${window.location.origin}${fullRedirectUrl}`;
-        }
-
-        console.log('🌍 변환된 URL:', fullRedirectUrl);
-
-        const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
-        const actualUrl = urlParams.get('url');
-
-        let tid = urlParams.get('tid'); // tid 추출
-
-        if (!tid) {
-          console.warn('⚠️ TID가 없어서 "tid"라는 기본 값을 사용합니다.');
-          tid = 'tid'; // tid가 없을 경우 기본값 설정
-        }
-
-        console.log('🔄 now tid:', tid); // tid 로그 출력
-
-        // 쿠키를 '/api/payment/approve' 경로에 설정
-        Cookies.set('tid', tid, {
-          expires: 1,
-          path: '/', // 전체 경로에서 쿠키 유효
-          domain: 'jangmadang.site', // www.jangmadang.site와 api.jangmadang.site에서 쿠키 공유
-          secure: true, // HTTPS에서만 쿠키 유효
-          sameSite: 'Lax', // SameSite 설정 변경 (보안을 위해 Lax로 설정)
-        });
-
-        console.log('쿠키 설정:', document.cookie); // 쿠키가 제대로 설정되었는지 확인
-
-        if (actualUrl && actualUrl.startsWith('https://')) {
-          console.log('🔄 Redirecting to:', actualUrl);
-          window.location.href = actualUrl;
-        } else {
-          console.error('🚨 URL parameter "url" not found or invalid.');
-        }
-      } catch (error) {
-        console.error('🚨 Error processing redirect URL:', error);
-      }
-    },
-    onError: (error) => {
-      console.log('충전 요청 실패 : ', error);
-    },
-  });
-
+  const { postMutation } = usePay();
   const handleNextModal = async () => {
     try {
       const { data } = await axiosInstance.post(
@@ -230,7 +168,7 @@ const WinnerPage: React.FC = () => {
 
   const formatDate = (isoString: string) => {
     if (!isoString) {
-      return isoString; // ✅ 유효하지 않은 값이면 기본 메시지 반환
+      return isoString; //유효하지 않은 값이면 기본 메시지 반환
     }
 
     return new Date(isoString).toLocaleDateString('ko-KR', {
@@ -279,6 +217,7 @@ const WinnerPage: React.FC = () => {
       </Wrapper>
     );
   } else {
+    //배송지 설정 및 결제 필요
     if (
       deliveryStatus === 'WAITING_ADDRESS' ||
       deliveryStatus === 'WAITING_PAYMENT'
@@ -375,6 +314,7 @@ const WinnerPage: React.FC = () => {
         </Wrapper>
       );
     } else {
+      //배송비 결제 이후 상품 운송 기다리는 중
       return (
         <Wrapper>
           <BigTitle>
@@ -510,19 +450,6 @@ const AddressLayout = styled.div`
   margin: 46px 0 172px 0;
 `;
 
-// const Checkbox = styled(checkbox)`
-//   width: 27.2px;
-//   height: 27.1px;
-//   /* &:hover {
-//     cursor: pointer;
-//   } */
-
-//   ${media.medium`
-//     width: 21px;
-//     height: 21px;
-//   `}
-// `;
-
 const AddressContainer = styled.div`
   display: flex;
   box-sizing: content-box;
@@ -618,16 +545,6 @@ const SmallGraySpan = styled.span`
 
 const SmallPurpleSpan = styled.span`
   color: #c908ff;
-  text-align: right;
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 17.308px; /* 115.385% */
-`;
-
-const SmallBlackSpan = styled.span`
-  color: #000;
   text-align: right;
   font-family: Pretendard;
   font-size: 15px;

@@ -9,7 +9,7 @@ interface ModalProps {
   onClose: () => void;
 }
 
-const SplashModal: React.FC<ModalProps> = ({ onClose }) => {
+const LogInModal: React.FC<ModalProps> = ({ onClose }) => {
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth >= 745 : false,
   );
@@ -206,4 +206,4 @@ const Title = styled.div`
   `}
 `;
 
-export default SplashModal;
+export default LogInModal;

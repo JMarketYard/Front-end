@@ -128,7 +128,7 @@ const LookAroundBox = styled.p`
   line-height: normal;
 `;
 
-const MoreListBox = styled.a`
+const MoreListBox = styled.div`
   width: 250px;
   height: 34px;
   display: flex;

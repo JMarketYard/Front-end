@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ticket from '../assets/ProductCard/ticket.svg';
 import icLike from '../assets/ProductCard/like.svg';
 import icUnlike from '../assets/ProductCard/unlike.svg';
 import { Link } from 'react-router-dom';
 import RaffleProps from '../types/RaffleProps';
-import { postLike, deleteLike } from '../services/likeService';
 import { getFormatTime } from '../utils/formateTime';
 import { useAuth } from '../context/AuthContext';
-import { useModalContext } from './Modal/context/ModalContext';
-import SplashModal from '../pages/login/components/SplashModal';
+import useLike from '../hooks/useLike';
+import { OpenLogInModal } from '../utils/OpenLogInModal';
 
 const ProductCard: React.FC<RaffleProps> = ({
   raffleId,
@@ -21,28 +20,14 @@ const ProductCard: React.FC<RaffleProps> = ({
   participantNum,
   like,
 }) => {
-  const [isLiked, setIsLiked] = useState(like);
-  const toggleLike = async (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation(); //Wrapper로 이벤트 전달 방지
-    event.preventDefault(); // 기본 동작 (Link 이동) 방지
-    if (like) {
-      await deleteLike(raffleId);
-      setIsLiked(false);
-    } else {
-      await postLike(raffleId);
-      setIsLiked(true);
-    }
-  };
+  const { isLiked, toggleLike, isProcessing } = useLike(like, raffleId);
   const { isAuthenticated, logout } = useAuth();
-  const { openModal } = useModalContext();
-  const handleOpenModal = () => {
-    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
-  };
+  const handleOpenModal = OpenLogInModal();
 
   return (
     <Wrapper>
       <StyledLink to={`/raffles/${raffleId}`}>
-        <ImageContainer imageUrls={imageUrls}>
+        <ImageContainer $backgroundImage={imageUrls[0] || ''}>
           {finish && (
             <>
               <RaffleClosingBox>응모 마감</RaffleClosingBox>
@@ -102,11 +87,11 @@ const StyledLink = styled(Link)`
   color: inherit; /* 기본 색상 유지 */
 `;
 
-const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
-  ({ imageUrls }) => ({
-    style: { backgroundImage: `url(${imageUrls[0]})` },
+const ImageContainer = styled.div.attrs<{ $backgroundImage: string }>(
+  ({ $backgroundImage }) => ({
+    style: { backgroundImage: `url(${$backgroundImage})` },
   }),
-)<Pick<RaffleProps, 'imageUrls'>>`
+)`
   width: 228px;
   height: 227px;
   border-radius: 5px;
