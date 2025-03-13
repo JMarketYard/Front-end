@@ -3,7 +3,7 @@ import moreList from '../../../assets/homePage/moreList.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
-import RaffleDetailProps from '../../../types/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetail';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';

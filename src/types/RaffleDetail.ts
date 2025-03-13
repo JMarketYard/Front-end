@@ -1,6 +1,19 @@
-import { TRaffleStatus } from './raffleStatus';
+export type TRaffleStatus =
+  | 'UNOPENED'
+  | 'ACTIVE'
+  | 'UNFULFILLED'
+  | 'ENDED'
+  | 'CANCELLED'
+  | 'COMPLETED';
 
-type RaffleDetailProps = {
+export type TRaffleDetail = {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: RaffleDetailProps;
+};
+
+export type RaffleDetailProps = {
   imageUrls: string[];
   name: string;
   category: string;
@@ -25,5 +38,3 @@ type RaffleDetailProps = {
   storeImageUrl: string;
   children?: React.ReactNode;
 };
-
-export default RaffleDetailProps;

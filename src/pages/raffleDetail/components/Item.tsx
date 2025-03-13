@@ -7,7 +7,7 @@ import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
 import ApplyModal from './modal/ApplyModal';
-import RaffleDetailProps from '../../../types/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetail';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RandomModal from './modal/RandomModal';
