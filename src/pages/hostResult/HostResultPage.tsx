@@ -39,7 +39,7 @@ const ResultPage: React.FC = () => {
     } else {
       fetchDelivery();
     }
-  }, [raffleStatus, deliveryId]);
+  }, [deliveryId, deliveryStatus]);
 
   const fetchResult = async () => {
     try {
@@ -85,11 +85,7 @@ const ResultPage: React.FC = () => {
 
   const handleMake = () => {
     openModal(({ onClose }) => (
-      <MakeDrawerModal
-        onClose={onClose}
-        raffleId={raffleId}
-        deliveryId={deliveryId}
-      />
+      <MakeDrawerModal onClose={onClose} raffleId={raffleId} />
     ));
   };
 

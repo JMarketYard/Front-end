@@ -4,8 +4,8 @@ interface RaffleData {
   raffleId: number;
   minTicket: number;
   applyTicket: number;
-  totalAmount?: number;
-  remainedMinutes?: number;
+  totalAmount: number;
+  remainedMinutes: number;
 }
 
 interface Address {
@@ -39,8 +39,9 @@ const defaultAddress: Address = {
 interface HostResultState {
   raffleData: RaffleData;
   deliveryData: DeliveryData;
-  setRaffleData: (data: RaffleData) => void;
+  setRaffleData: (data: Partial<RaffleData>) => void;
   setDeliveryData: (data: Partial<DeliveryData>) => void;
+  setDeliveryId: (deliveryId: number) => void; // ✅ 추가
 }
 
 const useHostResultStore = create<HostResultState>((set) => ({
@@ -60,15 +61,25 @@ const useHostResultStore = create<HostResultState>((set) => ({
     totalAmount: 0,
     deliveryStatus: 'N/A',
     shippingDeadline: null,
-    address: defaultAddress, // ✅ 초기값 설정
+    address: defaultAddress,
   },
-  setRaffleData: (data) => set({ raffleData: data }),
+  setRaffleData: (data) =>
+    set((state) => ({
+      raffleData: { ...state.raffleData, ...data },
+    })),
   setDeliveryData: (data) =>
     set((state) => ({
       deliveryData: {
         ...state.deliveryData,
         ...data,
-        address: data.address ?? state.deliveryData.address, // ✅ 기본값 유지
+        address: data.address ?? state.deliveryData.address,
+      },
+    })),
+  setDeliveryId: (deliveryId) =>
+    set((state) => ({
+      deliveryData: {
+        ...state.deliveryData,
+        deliveryId,
       },
     })),
 }));
