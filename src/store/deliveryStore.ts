@@ -1,3 +1,4 @@
+//winnerPage와 HostResultPage 모두 쓰이는 deliveryState
 import { create } from 'zustand';
 import { TDeliveryStatus } from '../types/deliveryStatus';
 

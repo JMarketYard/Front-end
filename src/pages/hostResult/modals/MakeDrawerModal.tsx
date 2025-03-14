@@ -8,14 +8,12 @@ import axiosInstance from '../../../apis/axiosInstance';
 interface ModalProps {
   onClose: () => void;
   raffleId: number;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   deliveryId: number;
 }
 //미추첨 당첨자 뽑기
 const MakeDrawerModal: React.FC<ModalProps> = ({
   onClose,
   raffleId,
-  setIsChecked,
   deliveryId,
 }) => {
   const navigate = useNavigate();
@@ -28,7 +26,6 @@ const MakeDrawerModal: React.FC<ModalProps> = ({
       };
       postCheck();
       onClose();
-      setIsChecked((prev: boolean) => !prev);
       navigate(`/host-result`);
     } catch (error) {
       console.error('POST 요청 실패', error);
