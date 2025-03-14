@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import useDeliveryStore from '../store/deliveryStore';
+import useDeliveryStore from '../../../store/deliveryStore';
 
 interface ModalProps {
   onClose: () => void;

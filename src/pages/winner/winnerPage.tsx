@@ -16,7 +16,7 @@ import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
 import WaitShippingModal from './modals/WaitShippingModal';
-import useDeliveryStore from './store/deliveryStore';
+import useDeliveryStore from '../../store/deliveryStore';
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import PayOkModal from './modals/PayOkModal';
 import usePay from '../../hooks/usePay';
@@ -50,7 +50,6 @@ const WinnerPage: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
-  const { shouldRefetch, triggerRefetch } = useDeliveryStore();
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -91,7 +90,6 @@ const WinnerPage: React.FC = () => {
         );
       }
     };
-
     sendPostRequest();
   }, [approvedAt]);
 
@@ -142,7 +140,7 @@ const WinnerPage: React.FC = () => {
       }
     };
     fetchAddress();
-  }, [shouldRefetch]);
+  }, []);
 
   const handleGiveUpModal = () => {
     openModal(({ onClose }) => (
