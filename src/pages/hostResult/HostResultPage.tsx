@@ -56,6 +56,7 @@ const ResultPage: React.FC = () => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   useEffect(() => {
     const fetchResult = async () => {
+      //미충족래플 결과확인 (UNFULLFILED)
       try {
         const { data } = await axiosInstance.get(
           `/api/member/raffles/${raffleId}/result`,
@@ -64,11 +65,12 @@ const ResultPage: React.FC = () => {
         setMinTicket(data.result.minTicket);
         setApplyTicket(data.result.applyTicket);
         setTotalAmount(data.result.totalAmount);
-      } catch (error) {}
+      } catch (error) {} //UNFULLFILED 아님
     };
     fetchResult();
 
     const fetchDelivery = async () => {
+      //ENDED(당첨자 뽑힌 래플)
       try {
         const { data } = await axiosInstance.get(
           `/api/member/delivery/${deliveryId}/owner`,
