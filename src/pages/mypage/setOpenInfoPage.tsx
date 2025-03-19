@@ -5,14 +5,13 @@ import media from "../../styles/media";
 import axiosInstance from "../../apis/axiosInstance";
 
 const SetOpenInfoPage = () => {
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const getInfo = async () => {
     const { data } = await axiosInstance.get('/api/member/mypage/secretInfo');
     console.log('GET:',data.result);
     setToggle(data.result);
-    // if (!isLoaded) setIsLoaded(true);
   };
 
   const handleToggle = () => {
@@ -24,18 +23,15 @@ const SetOpenInfoPage = () => {
           }
         }
       )
-      .then(_=>getInfo())
+      .then(_=>getInfo());
     };
+    if (!isLoaded) setIsLoaded(true);
     patchInfo();
   };
 
   useEffect(() => {
     getInfo();
   }, []);
-
-  useEffect(() => {
-    if (!isLoaded) setIsLoaded(true);
-  }, [toggle]);
 
   return (
     <Wrapper>
@@ -114,7 +110,7 @@ const Input = styled.input`
   display: none;
 `
 
-const ToggleLabel = styled.label<{$checked:boolean, $loaded:boolean}>`
+const ToggleLabel = styled.label<{$checked:boolean|null, $loaded:boolean}>`
   display: flex;
   align-items: center;
   position: relative;
@@ -124,10 +120,13 @@ const ToggleLabel = styled.label<{$checked:boolean, $loaded:boolean}>`
   background-color: ${props => props.$checked ? '#C908FF' : '#C1C1C1'};
   box-sizing: border-box;
   cursor: pointer;
+  opacity: ${props => props.$checked===null ? 0 : 1};
+  transition: "opacity 0.3s ease-in-out";
+
   &::before {
     content: "";
     position: absolute;
-    top: 2.7px;
+    top: 2.5px;
     right: 3px;
     width: 20px;
     height: 20px;
@@ -135,7 +134,7 @@ const ToggleLabel = styled.label<{$checked:boolean, $loaded:boolean}>`
     border-radius: 100%;
     left: ${(props) => (props.$checked ? "2px" : "calc(100% - 22px)")};
     // transition: left 0.3s ease;
-    // transition: ${(props) => (props.$loaded ? 'left 0.3s ease' : 'none')};
+    transition: ${(props) => (props.$loaded ? 'left 0.3s ease' : 'none')};
   };
   &::after {
     ${props => props.$checked
