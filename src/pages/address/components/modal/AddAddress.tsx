@@ -18,7 +18,6 @@ const AddAddress = ({ onClose, fetchAddresses }:PropsWithChildren<{
   const [addressName, setAddressName] = useState<string>('');
   const [recipientName, setRecipientName] = useState<string>('');
   const [addressDetail, setAddressDetail] = useState<string>('');
-  const [telephone, setTelephone] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
@@ -106,9 +105,7 @@ const AddAddress = ({ onClose, fetchAddresses }:PropsWithChildren<{
               setAddressDetail(e.target.value)}/>
             </FindAddressBox>
           </AddressBox>
-          <InputAddress listColor="#C908FF" title="연락처"
-          value={telephone} setValue={setTelephone} />
-          <InputAddress listColor="#E4E4E4" title="휴대폰"
+          <InputAddress listColor="#C908FF" title="휴대폰"
           value={phoneNumber} setValue={setPhoneNumber}/>
           <InputAddress listColor="#E4E4E4" title="주문 메시지"
           value={message} setValue={setMessage} />
