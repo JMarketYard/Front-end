@@ -1,11 +1,15 @@
 import styled from 'styled-components';
-import React from 'react';
 import DonutChart from './DonutChart';
 import NpDonutChart from './NpDonutChart';
 import DonutText from './DonutText';
 import { RaffleDetailProps } from '../../../types/RaffleDetail';
+import useRaffleStore from '../../../store/raffleStore';
+import React, { useEffect, useState } from 'react';
 
 const Probability: React.FC<RaffleDetailProps> = (raffle) => {
+  const { isApplying, isChecked } = useRaffleStore();
+  useEffect(() => {}, [isApplying, isChecked]);
+
   return (
     <Wrapper>
       {raffle.raffleStatus === 'UNOPENED' && (
