@@ -5,14 +5,9 @@ import icTicket from '../../../../assets/ticket.svg';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import ApplyOkModal from './ApplyOkModal';
 import ApplyFailModal from './ApplyFailModal';
-import { useState } from 'react';
 import axiosInstance from '../../../../apis/axiosInstance';
-import { useParams, useLocation, data } from 'react-router-dom';
-import {
-  ApplyResponse,
-  ApplySuccessResult,
-  ApplyFailureMissingTickets,
-} from '../apis/applyResponseTypes';
+import { useParams } from 'react-router-dom';
+import useRaffleStore from '../../../../store/raffleStore';
 
 interface ModalProps {
   onClose: () => void;
@@ -20,7 +15,6 @@ interface ModalProps {
   name: string;
   ticket: number;
   resultTime: string;
-  setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ApplyModal: React.FC<ModalProps> = ({
@@ -29,8 +23,8 @@ const ApplyModal: React.FC<ModalProps> = ({
   name,
   ticket,
   resultTime,
-  setIsApplying,
 }) => {
+  const { isApplying, setIsApplying } = useRaffleStore();
   const { openModal } = useModalContext();
   const { type } = useParams<{ type?: string }>();
   const typeNumber = type ? parseInt(type, 10) : undefined;
@@ -44,7 +38,7 @@ const ApplyModal: React.FC<ModalProps> = ({
 
       if (response.data.code === 'COMMON_200') {
         console.log('응모성공');
-        setIsApplying((prev: boolean) => !prev);
+        setIsApplying(!isApplying);
         openModal(({ onClose }) => (
           <ApplyOkModal
             onClose={onClose}
