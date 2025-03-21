@@ -1,6 +1,5 @@
 export type TDeliveryStatus =
   | 'WAITING_ADDRESS'
-  | 'WAITING_PAYMENT'
   | 'ADDRESS_EXPIRED'
   | 'WAITING_ADDRESS'
   | 'READY'

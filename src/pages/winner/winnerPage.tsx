@@ -218,10 +218,7 @@ const WinnerPage: React.FC = () => {
     );
   } else {
     //배송지 설정 및 결제 필요
-    if (
-      deliveryStatus === 'WAITING_ADDRESS' ||
-      deliveryStatus === 'WAITING_PAYMENT'
-    ) {
+    if (deliveryStatus === 'WAITING_ADDRESS') {
       return (
         <Wrapper>
           <BigTitle>

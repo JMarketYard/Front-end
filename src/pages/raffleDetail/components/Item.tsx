@@ -7,11 +7,10 @@ import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
 import ApplyModal from './modals/ApplyModal';
-import RaffleDetailProps from '../../../types/RaffleDetail';
+import { RaffleDetailProps } from '../../../types/RaffleDetail';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import RandomModal from './modals/RandomModal';
-import { ApplyType } from './apis/raffleType';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { useAuth } from '../../../context/AuthContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
@@ -65,7 +64,6 @@ const Item: React.FC<ItemProps> = ({
         ticket={raffle.ticketNum}
         image={raffle.imageUrls[0]}
         resultTime={raffle.endAt}
-        setIsApplying={setIsApplying}
       />
     ));
   };

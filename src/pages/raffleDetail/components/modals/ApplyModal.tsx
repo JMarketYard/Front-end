@@ -5,14 +5,10 @@ import icTicket from '../../../../assets/ticket.svg';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';
 import ApplyOkModal from './ApplyOkModal';
 import ApplyFailModal from './ApplyFailModal';
-import { useState } from 'react';
 import axiosInstance from '../../../../apis/axiosInstance';
-import { useParams, useLocation, data } from 'react-router-dom';
-import {
-  ApplyResponse,
-  ApplySuccessResult,
-  ApplyFailureMissingTickets,
-} from '../apis/applyResponseTypes';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { ApplyResponse, ApplyFailResponse } from '../tyoes/applyType';
 
 interface ModalProps {
   onClose: () => void;
@@ -20,7 +16,6 @@ interface ModalProps {
   name: string;
   ticket: number;
   resultTime: string;
-  setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ApplyModal: React.FC<ModalProps> = ({
@@ -29,7 +24,6 @@ const ApplyModal: React.FC<ModalProps> = ({
   name,
   ticket,
   resultTime,
-  setIsApplying,
 }) => {
   const { openModal } = useModalContext();
   const { type } = useParams<{ type?: string }>();
@@ -37,37 +31,37 @@ const ApplyModal: React.FC<ModalProps> = ({
 
   const handleSubmit = async () => {
     try {
-      const response = await axiosInstance.post(
+      const response = await axiosInstance.post<ApplyResponse>(
         `/api/member/raffles/${typeNumber}/apply`,
         {},
       );
-
-      if (response.data.code === 'COMMON_200') {
-        console.log('응모성공');
-        setIsApplying((prev: boolean) => !prev);
-        openModal(({ onClose }) => (
-          <ApplyOkModal
-            onClose={onClose}
-            resultTime={resultTime}
-            image={image}
-          />
-        ));
-      }
-      if (response.data.code === 'APPLY_4001') {
-        console.log('티켓부족');
-        openModal(({ onClose }) => (
-          <ApplyFailModal
-            onClose={onClose}
-            image={image}
-            name={name}
-            ticket={response.data.result.missingTickets}
-          />
-        ));
-      }
+      console.log('응모성공');
+      openModal(({ onClose }) => (
+        <ApplyOkModal onClose={onClose} resultTime={resultTime} image={image} />
+      ));
     } catch (error) {
-      console.log('에러 : ', error);
+      if (axios.isAxiosError<ApplyResponse>(error)) {
+        const data = error.response?.data as ApplyFailResponse;
+        const missingTickets = data.result?.missingTickets;
+
+        if (data.code === 'APPLY_4001' && typeof missingTickets === 'number') {
+          openModal(({ onClose }) => (
+            <ApplyFailModal
+              onClose={onClose}
+              image={image}
+              name={name}
+              ticket={missingTickets}
+            />
+          ));
+        } else {
+          console.log('응모 실패:', data.message);
+        }
+      } else {
+        console.error('예상치 못한 에러', error);
+      }
+    } finally {
+      onClose();
     }
-    onClose();
   };
 
   return (
