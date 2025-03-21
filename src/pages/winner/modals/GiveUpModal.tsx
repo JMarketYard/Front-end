@@ -18,18 +18,20 @@ const GiveUpModal: React.FC<ModalProps> = ({
   raffleId,
 }) => {
   const navigate = useNavigate();
-  const { triggerRefetch } = useDeliveryStore();
+  const { setDeliveryStatus } = useDeliveryStore();
 
   const handleClick = async () => {
     try {
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         `/api/member/delivery/${deliveryId}/winner/cancel`,
         {},
       );
-      console.log('당첨포기!!');
+      setDeliveryStatus('CANCELLED');
       navigate(`/raffles/${raffleId}`);
     } catch (error) {
       console.error(error);
+    } finally {
+      onClose();
     }
   };
 

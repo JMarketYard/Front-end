@@ -13,20 +13,20 @@ interface ModalProps {
 
 const CompletedModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
   const navigate = useNavigate();
-  const { triggerRefetch } = useDeliveryStore();
+  const { setDeliveryStatus } = useDeliveryStore();
 
   const handleClick = async () => {
     try {
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         `/api/member/delivery/${deliveryId}/winner/success`,
         {},
       );
-      triggerRefetch();
+      setDeliveryStatus('COMPLETED');
     } catch (error) {
       console.error(error);
+    } finally {
+      onClose();
     }
-    onClose();
-    navigate(`/`);
   };
 
   return (

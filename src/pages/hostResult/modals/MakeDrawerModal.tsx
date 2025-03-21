@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
 import smileVector from '../../../assets/SmileVector.png';
-import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
 import useHostResultStore from '../store/hostResultStore';
 
@@ -12,23 +11,18 @@ interface ModalProps {
 }
 //미추첨 당첨자 뽑기
 const MakeDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
-  const navigate = useNavigate();
   const { setDeliveryId } = useHostResultStore();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     try {
-      const postCheck = async () => {
-        const { data } = await axiosInstance.post(
-          `/api/member/raffles/${raffleId}/draw`,
-        );
-        setDeliveryId(data.result.deliveryId);
-      };
-      postCheck();
-
-      onClose();
-      //navigate(`/host-result`);
+      const { data } = await axiosInstance.post(
+        `/api/member/raffles/${raffleId}/draw`,
+      );
+      setDeliveryId(data.result.deliveryId);
     } catch (error) {
       console.error('POST 요청 실패', error);
+    } finally {
+      onClose();
     }
   };
   return (
