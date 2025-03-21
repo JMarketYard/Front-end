@@ -16,7 +16,7 @@ import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
 import WaitShippingModal from './modals/WaitShippingModal';
-import useDeliveryStore from './store/deliveryStore';
+import useDeliveryStore from '../../store/deliveryStore';
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import PayOkModal from './modals/PayOkModal';
 import usePay from '../../hooks/usePay';
@@ -50,7 +50,7 @@ const WinnerPage: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
-  const { shouldRefetch, triggerRefetch } = useDeliveryStore();
+  const { deliveryStatus, setDeliveryStatus } = useDeliveryStore();
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -61,7 +61,6 @@ const WinnerPage: React.FC = () => {
     isDefault: false,
   });
   const [winnerData, setWinnerData] = useState<TWinner>();
-  const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
   const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
@@ -69,52 +68,25 @@ const WinnerPage: React.FC = () => {
   useEffect(() => {
     //배송비 결제 이후
     if (!approvedAt) return;
-    const sendPostRequest = async () => {
+    const handleDelivery = async () => {
       try {
-        const { data } = await axiosInstance.post(
-          `/api/member/delivery/${deliveryId}/winner/complete`,
+        await axiosInstance.post(
+          `/api/member/delivery/${deliveryId}/winner`,
           {},
         );
-        console.log('결제 완료');
-
-        const timer = setTimeout(() => {
-          openModal(({ onClose }) => <PayOkModal onClose={onClose} />);
-        }, 100);
-
-        return () => clearTimeout(timer);
+        console.log('배송지 입력함');
       } catch (error) {
-        console.error(
-          '결제 완료 POST 실패:',
-          'deliveryId는 : ',
-          deliveryId,
-          error,
-        );
+        console.error(error);
       }
     };
-
-    sendPostRequest();
+    const timer = setTimeout(() => {
+      openModal(({ onClose }) => <PayOkModal onClose={onClose} />);
+    }, 100);
+    return () => clearTimeout(timer);
   }, [approvedAt]);
 
   const { postMutation } = usePay();
   const handleNextModal = async () => {
-    try {
-      const { data } = await axiosInstance.post(
-        `/api/member/delivery/${deliveryId}/winner`,
-        {},
-      );
-      console.log('배송지 입력함');
-    } catch (error) {
-      console.error(error);
-    }
-    try {
-      const { data } = await axiosInstance.post(
-        `/api/member/delivery/${deliveryId}/winner/complete`,
-        {},
-      );
-    } catch (error) {
-      console.error(error);
-    }
-
     if (checked) {
       postMutation({
         itemId: '배송비',
@@ -142,7 +114,7 @@ const WinnerPage: React.FC = () => {
       }
     };
     fetchAddress();
-  }, [shouldRefetch]);
+  }, [deliveryStatus]);
 
   const handleGiveUpModal = () => {
     openModal(({ onClose }) => (
@@ -206,7 +178,7 @@ const WinnerPage: React.FC = () => {
             </WarningBox>
           </WarningContainer>
 
-          <PurpleButton onClick={() => navigate('/')}>
+          <PurpleButton onClick={handleWaitdModal}>
             기다리기 (
             {formatMinutesToHoursAndMinutes(
               winnerData?.raffleInfo.extendableMinutes ?? 0,
@@ -218,10 +190,7 @@ const WinnerPage: React.FC = () => {
     );
   } else {
     //배송지 설정 및 결제 필요
-    if (
-      deliveryStatus === 'WAITING_ADDRESS' ||
-      deliveryStatus === 'WAITING_PAYMENT'
-    ) {
+    if (deliveryStatus === 'WAITING_ADDRESS') {
       return (
         <Wrapper>
           <BigTitle>

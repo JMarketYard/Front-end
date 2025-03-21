@@ -15,7 +15,6 @@ interface RandomModalProps {
   win: boolean;
   deliveryId: number;
   image: string;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function RandomModal({
@@ -27,7 +26,6 @@ export default function RandomModal({
   win,
   deliveryId,
   image,
-  setIsChecked,
 }: PropsWithChildren<RandomModalProps>) {
   const { clearModals } = useModalContext();
   const sliderRef = useRef<Slider | null>(null);
@@ -76,7 +74,6 @@ export default function RandomModal({
             image={image}
             win={isWin}
             raffleId={raffleId}
-            setIsChecked={setIsChecked}
           />
         ));
       }, 1500);
