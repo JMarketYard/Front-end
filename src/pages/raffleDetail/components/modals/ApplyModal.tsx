@@ -6,9 +6,10 @@ import { useModalContext } from '../../../../components/Modal/context/ModalConte
 import ApplyOkModal from './ApplyOkModal';
 import ApplyFailModal from './ApplyFailModal';
 import axiosInstance from '../../../../apis/axiosInstance';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { ApplyResponse, ApplyFailResponse } from '../tyoes/applyType';
+import { useParams } from 'react-router-dom';
+import useRaffleStore from '../../../../store/raffleStore';
 
 interface ModalProps {
   onClose: () => void;
@@ -25,6 +26,7 @@ const ApplyModal: React.FC<ModalProps> = ({
   ticket,
   resultTime,
 }) => {
+  const { isApplying, setIsApplying } = useRaffleStore();
   const { openModal } = useModalContext();
   const { type } = useParams<{ type?: string }>();
   const typeNumber = type ? parseInt(type, 10) : undefined;
@@ -36,6 +38,8 @@ const ApplyModal: React.FC<ModalProps> = ({
         {},
       );
       console.log('응모성공');
+
+      setIsApplying(!isApplying);
       openModal(({ onClose }) => (
         <ApplyOkModal onClose={onClose} resultTime={resultTime} image={image} />
       ));

@@ -15,17 +15,10 @@ import { useModalContext } from '../../../components/Modal/context/ModalContext'
 import { useAuth } from '../../../context/AuthContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
+import useRaffleStore from '../../../store/raffleStore';
 
-type ItemProps = RaffleDetailProps & {
-  setIsApplying: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const Item: React.FC<ItemProps> = ({
-  setIsApplying,
-  setIsChecked,
-  ...raffle
-}) => {
+const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
+  const { isApplying, isChecked } = useRaffleStore();
   const [isLiked, setIsLiked] = useState<boolean>(raffle.likeStatus);
   const [likeCount, setLikeCount] = useState<number>(raffle.likeCount);
   const navigate = useNavigate();
@@ -38,7 +31,7 @@ const Item: React.FC<ItemProps> = ({
   useEffect(() => {
     setIsLiked(raffle.likeStatus ?? false);
     setLikeCount(raffle.likeCount ?? 0);
-  }, [raffle.likeStatus, raffle.likeCount]);
+  }, [raffle.likeStatus, raffle.likeCount, isApplying, isChecked]);
 
   const toggleLike = async () => {
     if (raffle.likeStatus === undefined) {
@@ -79,7 +72,6 @@ const Item: React.FC<ItemProps> = ({
         onClose={onClose}
         image={raffle.imageUrls[0]}
         {...drawData}
-        setIsChecked={setIsChecked}
       />
     ));
   };

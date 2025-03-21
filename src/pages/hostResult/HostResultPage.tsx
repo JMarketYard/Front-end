@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BigTitle from '../../components/BigTitle';
@@ -6,7 +6,6 @@ import grayDelivery from '../../assets/hostResult/grayDelivery.svg';
 import icMark from '../../assets/hostResult/icMark.svg';
 import axiosInstance from '../../apis/axiosInstance';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
-import { DeliverySuccessResult } from './types/deliveryResponseTypes';
 import DeliverModal from './modals/DeliverModal';
 import CancleModal from './modals/CancelModal';
 import NewDrawerModal from './modals/NewDrawerModal';
@@ -15,117 +14,93 @@ import ConsiderModal from './modals/ConsiderModal';
 import WaitModal from './modals/WaitModal';
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import { formatDate } from '../../utils/formatDate';
-
-interface RaffleResult {
-  raffleId: number;
-  minTicket: number;
-  applyTicket: number;
-  totalAmount: number;
-  remainedMinutes: number;
-}
+import useHostResultStore from './store/hostResultStore';
 
 const ResultPage: React.FC = () => {
-  const [delivery, setDelivery] = useState<DeliverySuccessResult>({
-    raffleId: 0,
-    winnerId: 0,
-    deliveryId: 0,
-    minTicket: 0,
-    applyTicket: 0,
-    finalAmount: 0,
-    deliveryStatus: '',
-    shippingDeadline: null,
-    isExtendShipping: null,
-    address: null,
-  });
-  const [raffle, setRaffle] = useState<RaffleResult>({
-    raffleId: 0,
-    minTicket: 0,
-    applyTicket: 0,
-    totalAmount: 0,
-    remainedMinutes: 0,
-  });
-  const [deliveryStatus, setDeliveryStatus] = useState<string>('');
-
+  const { raffleData, deliveryData, setRaffleData, setDeliveryData } =
+    useHostResultStore();
   const location = useLocation();
-  const deliveryId = location.state?.deliveryId;
-  const raffleStatus = location.state?.status;
-  const raffleId = location.state?.raffleId;
-  const [minTicket, setMinTicket] = useState<number>(0);
-  const [applyTicket, setApplyTicket] = useState<number>(0);
-  const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [isChecked, setIsChecked] = useState<boolean>(false);
-  useEffect(() => {
-    const fetchResult = async () => {
-      try {
-        const { data } = await axiosInstance.get(
-          `/api/member/raffles/${raffleId}/result`,
-        );
-        setRaffle(data.result);
-        setMinTicket(data.result.minTicket);
-        setApplyTicket(data.result.applyTicket);
-        setTotalAmount(data.result.totalAmount);
-      } catch (error) {}
-    };
-    fetchResult();
-
-    const fetchDelivery = async () => {
-      try {
-        const { data } = await axiosInstance.get(
-          `/api/member/delivery/${deliveryId}/owner`,
-        );
-        console.log('fetchDelivery 결과:', data);
-
-        setDelivery(data.result);
-        setDeliveryStatus(data.result.deliveryStatus);
-        setMinTicket(data.result.minTicket);
-        setApplyTicket(data.result.applyTicket);
-        setTotalAmount(data.result.finalAmount);
-      } catch (error) {
-        console.log('fetchDelivery, 아직 배송지 안 줬음', error);
-      }
-    };
-    fetchDelivery();
-  }, [deliveryId, deliveryStatus, isChecked]);
-
-  //모달
+  const navigate = useNavigate();
   const { openModal } = useModalContext();
+
+  const raffleStatus = location.state?.status;
+  const raffleId =
+    location.state?.raffleId ?? deliveryData?.raffleId ?? raffleData?.raffleId;
+  const deliveryId = location.state?.deliveryId ?? deliveryData?.deliveryId;
+  const minTicket = deliveryData?.minTicket ?? raffleData?.minTicket ?? 0;
+  const applyTicket = deliveryData?.applyTicket ?? raffleData?.applyTicket ?? 0;
+  const totalAmount = deliveryData?.totalAmount ?? raffleData?.totalAmount ?? 0;
+  const deliveryStatus = deliveryData?.deliveryStatus;
+  const address = deliveryData?.address;
+
+  useEffect(() => {
+    if (raffleStatus === 'UNFULFILLED') {
+      fetchResult();
+    } else {
+      fetchDelivery();
+    }
+  }, [deliveryId, deliveryStatus]);
+
+  const fetchResult = async () => {
+    try {
+      const { data } = await axiosInstance.get(
+        `/api/member/raffles/${raffleId}/result`,
+      );
+      setRaffleData(data.result);
+    } catch (error) {
+      console.error('미충족 래플 결과 조회 실패', error);
+    }
+  };
+
+  const fetchDelivery = async () => {
+    if (!deliveryId) return;
+
+    try {
+      const { data } = await axiosInstance.get(
+        `/api/member/delivery/${deliveryId}/owner`,
+      );
+      setDeliveryData(data.result);
+    } catch (error) {
+      console.error('배송 정보 조회 실패', error);
+    }
+  };
+
   const handleDelver = () => {
     openModal(({ onClose }) => (
       <DeliverModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
+
   const handleEnd = () => {
-    console.log('래플 아이디는:', raffle?.raffleId);
     openModal(({ onClose }) => (
-      <CancleModal onClose={onClose} raffleId={raffle?.raffleId ?? 0} />
+      <CancleModal onClose={onClose} raffleId={raffleId} />
     ));
   };
+
   const handleNew = () => {
     openModal(({ onClose }) => (
-      <NewDrawerModal onClose={onClose} raffleId={delivery?.raffleId ?? 0} />
+      <NewDrawerModal onClose={onClose} raffleId={raffleId} />
     ));
   };
+
   const handleMake = () => {
     openModal(({ onClose }) => (
-      <MakeDrawerModal
-        onClose={onClose}
-        raffleId={raffle?.raffleId ?? 0}
-        setIsChecked={setIsChecked}
-        deliveryId={deliveryId}
-      />
+      <MakeDrawerModal onClose={onClose} raffleId={raffleId} />
     ));
   };
+
   const handleWait = () => {
     openModal(({ onClose }) => (
       <WaitModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
+
   const handleConsider = () => {
     openModal(({ onClose }) => (
       <ConsiderModal onClose={onClose} deliveryId={deliveryId} />
     ));
   };
-  const navigate = useNavigate();
+
   return (
     <Wrapper>
       <BigTitle>래플 결과</BigTitle>
@@ -184,12 +159,11 @@ const ResultPage: React.FC = () => {
             )}
             {deliveryStatus === 'READY' && (
               <WhiteAddressBox>
-                <NameBox>{delivery.address?.recipientName}</NameBox>
+                <NameBox>{address.recipientName}</NameBox>
                 <VerticalBox />
                 <AddressBox>
-                  ({delivery.address?.addressId})
-                  {delivery.address?.addressDetail}(
-                  {delivery.address?.phoneNumber})
+                  ({address.addressId}){address.addressDetail}(
+                  {address.phoneNumber})
                 </AddressBox>{' '}
               </WhiteAddressBox>
             )}
@@ -206,7 +180,7 @@ const ResultPage: React.FC = () => {
                 <GrayButtonBox>운송장 입력하기</GrayButtonBox>
                 <GrayButtonBox>
                   나중에 입력하기 (입력기한 :{' '}
-                  {formatDate(delivery?.shippingDeadline)})
+                  {formatDate(deliveryData?.shippingDeadline)})
                 </GrayButtonBox>
               </>
             )}
@@ -219,7 +193,7 @@ const ResultPage: React.FC = () => {
                   onClick={() => navigate(`/raffles/${raffleId}`)}
                 >
                   나중에 입력하기 (입력기한 :{' '}
-                  {formatDate(delivery?.shippingDeadline)})
+                  {formatDate(deliveryData?.shippingDeadline)})
                 </PurpleButtonBox>
               </>
             )}
@@ -243,7 +217,10 @@ const ResultPage: React.FC = () => {
                 </PurpleButtonBox>
                 <PurpleButtonBox onClick={handleWait}>
                   기다리기(
-                  {formatMinutesToHoursAndMinutes(raffle.remainedMinutes)})
+                  {formatMinutesToHoursAndMinutes(
+                    raffleData.remainedMinutes ?? 0,
+                  )}
+                  )
                 </PurpleButtonBox>
               </>
             )}
@@ -257,7 +234,7 @@ const ResultPage: React.FC = () => {
             </PurpleButtonBox>
             <PurpleButtonBox onClick={() => navigate(`/raffles/${raffleId}`)}>
               나중에 선택하기(
-              {formatMinutesToHoursAndMinutes(raffle.remainedMinutes)})
+              {formatMinutesToHoursAndMinutes(raffleData.remainedMinutes ?? 0)})
             </PurpleButtonBox>
           </>
         )}
