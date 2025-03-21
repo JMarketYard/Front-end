@@ -16,7 +16,7 @@ import CircleChecked from '@mui/icons-material/CheckCircleOutline';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
 import WaitShippingModal from './modals/WaitShippingModal';
-import useDeliveryStore from './store/deliveryStore';
+import useDeliveryStore from '../../store/deliveryStore';
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import PayOkModal from './modals/PayOkModal';
 import usePay from '../../hooks/usePay';
@@ -50,7 +50,7 @@ const WinnerPage: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
-  const { shouldRefetch, triggerRefetch } = useDeliveryStore();
+  const { deliveryStatus, setDeliveryStatus } = useDeliveryStore();
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
@@ -61,7 +61,6 @@ const WinnerPage: React.FC = () => {
     isDefault: false,
   });
   const [winnerData, setWinnerData] = useState<TWinner>();
-  const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
   const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
@@ -113,7 +112,7 @@ const WinnerPage: React.FC = () => {
       }
     };
     fetchAddress();
-  }, [shouldRefetch]);
+  }, [deliveryStatus]);
 
   const handleGiveUpModal = () => {
     openModal(({ onClose }) => (
@@ -177,7 +176,7 @@ const WinnerPage: React.FC = () => {
             </WarningBox>
           </WarningContainer>
 
-          <PurpleButton onClick={() => navigate('/')}>
+          <PurpleButton onClick={handleWaitdModal}>
             기다리기 (
             {formatMinutesToHoursAndMinutes(
               winnerData?.raffleInfo.extendableMinutes ?? 0,

@@ -13,15 +13,15 @@ interface ModalProps {
 
 const WaitShippingModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
   const navigate = useNavigate();
-  const { triggerRefetch } = useDeliveryStore();
+  const { setDeliveryStatus } = useDeliveryStore();
 
   const handleClick = async () => {
     try {
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         `/api/member/delivery/${deliveryId}/winner/wait`,
         {},
       );
-      triggerRefetch();
+      setDeliveryStatus('READY');
     } catch (error) {
       console.error(error);
     }
