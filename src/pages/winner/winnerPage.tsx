@@ -68,23 +68,25 @@ const WinnerPage: React.FC = () => {
   useEffect(() => {
     //배송비 결제 이후
     if (!approvedAt) return;
-
+    const handleDelivery = async () => {
+      try {
+        await axiosInstance.post(
+          `/api/member/delivery/${deliveryId}/winner`,
+          {},
+        );
+        console.log('배송지 입력함');
+      } catch (error) {
+        console.error(error);
+      }
+    };
     const timer = setTimeout(() => {
       openModal(({ onClose }) => <PayOkModal onClose={onClose} />);
     }, 100);
-
     return () => clearTimeout(timer);
   }, [approvedAt]);
 
   const { postMutation } = usePay();
   const handleNextModal = async () => {
-    try {
-      await axiosInstance.post(`/api/member/delivery/${deliveryId}/winner`, {});
-      console.log('배송지 입력함');
-    } catch (error) {
-      console.error(error);
-    }
-
     if (checked) {
       postMutation({
         itemId: '배송비',
