@@ -79,6 +79,8 @@ const WinnerPage: React.FC = () => {
         console.error(error);
       }
     };
+    handleDelivery();
+
     const timer = setTimeout(() => {
       openModal(({ onClose }) => <PayOkModal onClose={onClose} />);
     }, 100);
