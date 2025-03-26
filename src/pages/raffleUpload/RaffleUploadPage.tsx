@@ -44,10 +44,8 @@ const RaffleUploadPage = () => {
     };
     const handleChangeImgInput = (e:React.ChangeEvent) => {
         const targetFiles = (e.target as HTMLInputElement).files as FileList;
-        const targetFilesArr = Array.from(targetFiles);
-        // const selectedFiles:string[] = targetFilesArr.map((file) => {
-        //     return URL.createObjectURL(file);
-        // });
+        const targetFilesArr = Array.from(targetFiles).slice(0,10);
+        console.log(targetFilesArr);
         setImages(targetFilesArr);
     };
 
