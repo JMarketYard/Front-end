@@ -54,11 +54,11 @@ const WinnerPage: React.FC = () => {
 
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
-    addressName: '',
-    recipientName: '',
-    addressDetail: '',
-    phoneNumber: '',
-    isDefault: false,
+    addressName: '장마당',
+    recipientName: '장마당',
+    addressDetail: '서울특별시 와우산로 94 홍익대학교 제2기숙사',
+    phoneNumber: '010-1234-5678',
+    isDefault: true,
   });
   const [winnerData, setWinnerData] = useState<TWinner>();
   const [raffleId, setRaffleId] = useState<number>(0);
@@ -216,13 +216,13 @@ const WinnerPage: React.FC = () => {
 
           <InfoLayout>
             <InfoContainer>
-              <SmallTitleSpan>당첨자 배송비 결제현황</SmallTitleSpan>
-              <SmallGraySpan>배송지 입력 대기</SmallGraySpan>
+              <SmallTitleSpan>당첨자 배송비 입력현황</SmallTitleSpan>
+              <SmallGraySpan>입력 대기</SmallGraySpan>
             </InfoContainer>
             <Hr />
             <InfoContainer>
               <SmallTitleSpan>개최자 운송장번호 입력현황</SmallTitleSpan>
-              <SmallGraySpan>운송장번호 입력 대기</SmallGraySpan>
+              <SmallGraySpan>입력 대기</SmallGraySpan>
             </InfoContainer>
             <Hr />
             <InfoContainer>
@@ -298,17 +298,17 @@ const WinnerPage: React.FC = () => {
 
           <InfoLayout>
             <InfoContainer>
-              <SmallTitleSpan>당첨자 배송비 결제현황</SmallTitleSpan>
-              <SmallPurpleSpan>결제 완료</SmallPurpleSpan>
+              <SmallTitleSpan>당첨자 배송비 입력현황</SmallTitleSpan>
+              <SmallPurpleSpan>입력 완료</SmallPurpleSpan>
             </InfoContainer>
             <Hr />
             <InfoContainer>
               <SmallTitleSpan>개최자 운송장번호 입력현황</SmallTitleSpan>
               {deliveryStatus === 'SHIPPED' && (
-                <SmallPurpleSpan>운송장번호 입력 완료</SmallPurpleSpan>
+                <SmallPurpleSpan>입력 완료</SmallPurpleSpan>
               )}
               {deliveryStatus === 'READY' && (
-                <SmallPurpleSpan>운송장번호 입력 완료</SmallPurpleSpan>
+                <SmallPurpleSpan>입력 완료</SmallPurpleSpan>
               )}
             </InfoContainer>
             <Hr />
@@ -318,7 +318,7 @@ const WinnerPage: React.FC = () => {
                 <SmallPurpleSpan>{winnerData?.invoiceNumber}</SmallPurpleSpan>
               )}
               {deliveryStatus === 'READY' && (
-                <SmallGraySpan>운송장번호 입력 대기</SmallGraySpan>
+                <SmallGraySpan>입력 대기</SmallGraySpan>
               )}
             </InfoContainer>
             <Hr />
