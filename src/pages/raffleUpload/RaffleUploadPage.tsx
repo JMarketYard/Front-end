@@ -10,13 +10,14 @@ import React, {
   useState,
 } from 'react';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
-import UploadModal from './components/UploadModal';
-import TicketModal from './components/TicketModal';
+import UploadModal from './modals/UploadModal';
+import TicketModal from './modals/TicketModal';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import media from '../../styles/media';
 import { ko } from 'date-fns/locale/ko';
 import Slider from 'react-slick';
+import ImgSlider from './components/imageSlider';
 
 const RaffleUploadPage = () => {
   const itemStates = [
@@ -167,11 +168,11 @@ const RaffleUploadPage = () => {
                   <ImgFileIcon src={imgUpload} />
                 </ImgFileLabel>
               ) : (
-                <Slider {...settings}>
-                  <ImgFileLabel htmlFor="img-file">
-                    <SelectedImg src={URL.createObjectURL(images[0])} />
-                  </ImgFileLabel>
-                </Slider>
+                <ImgSlider
+                  images={images.map((image) => URL.createObjectURL(image))}
+                >
+                  <ImgFileLabel htmlFor="img-file" />
+                </ImgSlider>
               )}
             </div>
             <InputImgFile
@@ -374,6 +375,12 @@ const ImgSpan = styled.span`
   line-height: 36.832px; /* 184.159% */
 `;
 
+const ImgFileIcon = styled.img`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
 const ImgFileLabel = styled.label`
   display: inline-block;
   position: relative;
@@ -385,12 +392,6 @@ const ImgFileLabel = styled.label`
   &:hover {
     cursor: pointer;
   }
-`;
-const ImgFileIcon = styled.img`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 `;
 const SelectedImg = styled.img`
   display: inline-block;
