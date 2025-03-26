@@ -2,9 +2,10 @@ import React from 'react';
 import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
-import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
 import useDeliveryStore from '../../../store/deliveryStore';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import CompletedOkModal from './CompletedOkModal';
 
 interface ModalProps {
   onClose: () => void;
@@ -12,9 +13,8 @@ interface ModalProps {
 }
 
 const CompletedModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
-  const navigate = useNavigate();
   const { setDeliveryStatus } = useDeliveryStore();
-
+  const { openModal } = useModalContext();
   const handleClick = async () => {
     try {
       await axiosInstance.post(
@@ -22,6 +22,9 @@ const CompletedModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
         {},
       );
       setDeliveryStatus('COMPLETED');
+      openModal(({ onClose }) => (
+        <CompletedOkModal onClose={onClose} deliveryId={deliveryId} />
+      ));
     } catch (error) {
       console.error(error);
     } finally {
@@ -34,8 +37,8 @@ const CompletedModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
       <Container>
         <Img src={questionVector} />
         <Title>거래를 완료하시겠습니까?</Title>
-        <Short>상품이 도착한 후 거래를 완료해주시기 바랍니다.</Short>
-        <Button onClick={handleClick}>거래 완료</Button>
+        <Short>해당 결정은 번복할 수 없습니다.</Short>
+        <Button onClick={handleClick}>거래 완료하기</Button>
       </Container>
     </Modal>
   );

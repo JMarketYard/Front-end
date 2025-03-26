@@ -52,6 +52,26 @@ const WinnerPage: React.FC = () => {
   };
   const { deliveryStatus, setDeliveryStatus } = useDeliveryStore();
 
+  const initialWinnerData: TWinner = {
+    raffleId: 0,
+    winnerId: 0,
+    deliveryStatus: 'SHIPPED', // TDeliveryStatus 중 하나
+    addressDeadline: '2025-03-29T07:07:00',
+    shippingDeadline: '2025-03-29T07:07:00',
+    shippingFee: 4000,
+    invoiceNumber: '125462',
+    address: null, // 또는 초기 address 객체
+    raffleInfo: {
+      raffleName: '다영이의 텀블러',
+      raffleImage: '',
+      drawAt: '2025-03-29T07:07:00',
+      extendableMinutes: 0,
+    },
+    shippingExtended: false,
+  };
+
+  const [winnerData, setWinnerData] = useState<TWinner>(initialWinnerData);
+
   const [address, setAddress] = useState<TAddress>({
     addressId: 0,
     addressName: '장마당',
@@ -60,7 +80,7 @@ const WinnerPage: React.FC = () => {
     phoneNumber: '010-1234-5678',
     isDefault: true,
   });
-  const [winnerData, setWinnerData] = useState<TWinner>();
+
   const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
@@ -195,25 +215,22 @@ const WinnerPage: React.FC = () => {
     if (deliveryStatus === 'WAITING_ADDRESS') {
       return (
         <Wrapper>
-          <BigTitle>
-            당첨자 정보
-            <MoreListBox onClick={() => navigate('/address')}>
-              배송지 목록 조회
-              <img src={moreList} alt="moreList" />
-            </MoreListBox>
-          </BigTitle>
-
-          <AddressLayout>
-            <AddressContainer>
-              <TitleSpan>{address?.addressName ?? '?'}</TitleSpan>
-              <DefaultBox>기본 배송지</DefaultBox>
-              <AddressSpan>
-                {address?.addressDetail ??
-                  '배송지 설정 페이지에서 배송지를 입력하세요'}
-              </AddressSpan>
-            </AddressContainer>
-          </AddressLayout>
-
+          <BigTitle>당첨자 정보</BigTitle>
+          <AdressWrapper>
+            <AddressLayout>
+              <AddressContainer>
+                <TitleSpan>{address?.addressName ?? '?'}</TitleSpan>
+                <DefaultBox>기본 배송지</DefaultBox>
+                <AddressSpan>
+                  {address?.addressDetail ??
+                    '배송지 설정 페이지에서 배송지를 입력하세요'}
+                </AddressSpan>
+              </AddressContainer>
+            </AddressLayout>
+            <OtherAddressBox onClick={() => navigate('/address')}>
+              다른 배송지 선택하기
+            </OtherAddressBox>
+          </AdressWrapper>
           <InfoLayout>
             <InfoContainer>
               <SmallTitleSpan>당첨자 배송비 입력현황</SmallTitleSpan>
@@ -288,13 +305,7 @@ const WinnerPage: React.FC = () => {
       //배송비 결제 이후 상품 운송 기다리는 중
       return (
         <Wrapper>
-          <BigTitle>
-            당첨자 정보
-            <MoreListBox onClick={() => navigate('/address')}>
-              배송지 목록 조회
-              <img src={moreList} alt="moreList" />
-            </MoreListBox>
-          </BigTitle>
+          <BigTitle>당첨자 정보</BigTitle>
 
           <InfoLayout>
             <InfoContainer>
@@ -322,6 +333,7 @@ const WinnerPage: React.FC = () => {
               )}
             </InfoContainer>
             <Hr />
+            <DeliveryStatusBox>배송 현황</DeliveryStatusBox>
             <FeeContainer>
               <FeeTitleBox>배송비</FeeTitleBox>
               <FeeAmountBox>{winnerData?.shippingFee} 원</FeeAmountBox>
@@ -334,15 +346,6 @@ const WinnerPage: React.FC = () => {
                 <PurpleButton onClick={handleCompletedModal}>
                   거래 완료
                 </PurpleButton>
-                <PurpleButton
-                  onClick={() =>
-                    navigate('/review', {
-                      state: { deliveryId: { deliveryId } },
-                    })
-                  }
-                >
-                  후기 작성하기
-                </PurpleButton>
                 <PurpleButton onClick={() => navigate('/')}>
                   홈 화면으로 돌아가기
                 </PurpleButton>
@@ -351,15 +354,6 @@ const WinnerPage: React.FC = () => {
             {deliveryStatus === 'READY' && (
               <>
                 <GrayButton>거래 완료</GrayButton>
-                <GrayButton
-                  onClick={() =>
-                    navigate('/review', {
-                      state: { deliveryId: { deliveryId } },
-                    })
-                  }
-                >
-                  후기 작성하기
-                </GrayButton>
                 <PurpleButton onClick={() => navigate('/')}>
                   홈 화면으로 돌아가기
                 </PurpleButton>
@@ -412,13 +406,17 @@ const MoreListBox = styled.a`
 
   cursor: pointer;
 `;
-
+const AdressWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 118px;
+`;
 const AddressLayout = styled.div`
   display: flex;
   width: 805px;
   align-items: center;
   gap: 40px;
-  margin: 46px 0 172px 0;
+  margin: 46px 0 24px 0;
 `;
 
 const AddressContainer = styled.div`
@@ -460,6 +458,54 @@ const AddressSpan = styled.span`
   ${media.medium`
   width: 229px;
 `}
+`;
+
+const OtherAddressBox = styled.div`
+  display: inline-flex;
+  height: 30px;
+  padding: 0px 14px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+
+  border-radius: 11px;
+  border: 1px solid #8f8e94;
+  cursor: pointer;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: 'Pretendard Variable';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36.832px; /* 245.546% */
+`;
+
+const DeliveryStatusBox = styled.div`
+  display: inline-flex;
+  width: 91px;
+  height: 22px;
+  padding: 0px 14px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-bottom: 50px;
+
+  border-radius: 11px;
+  border: 1px solid #8f8e94;
+  cursor: pointer;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: 'Pretendard Variable';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36.832px; /* 263.085% */
 `;
 
 const DefaultBox = styled.div`
