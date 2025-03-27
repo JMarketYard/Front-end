@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
 import questionVector from '../../../assets/questionVector.png';
-import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
+import useDeliveryStore from '../../../store/deliveryStore';
 
 interface ModalProps {
   onClose: () => void;
@@ -11,17 +11,18 @@ interface ModalProps {
 }
 
 const NewDrawerModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
-  const navigate = useNavigate();
+  const { deliveryId, setDeliveryId } = useDeliveryStore();
+
   const handleClick = async () => {
     try {
       const { data } = await axiosInstance.post(
         `/api/member/raffles/${raffleId}/redraw`,
       );
-      console.log(data);
-      onClose();
-      navigate('');
+      setDeliveryId(data.result.deliveryId);
     } catch (error) {
       console.error('POST 요청 실패', error);
+    } finally {
+      onClose();
     }
   };
   return (

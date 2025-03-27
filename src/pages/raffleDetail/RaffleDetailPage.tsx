@@ -6,7 +6,6 @@ import Probability from './components/Probability';
 import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import { TRaffleDetail, RaffleDetailProps } from '../../types/RaffleDetail';
-import { useWinnerStatusChanged } from '../../store/storeWinnerStatus';
 
 const RaffleDetailPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
@@ -34,11 +33,6 @@ const RaffleDetailPage: React.FC = () => {
     followStatus: false,
     storeImageUrl: '',
   });
-  const [isApplying, setIsApplying] = useState<boolean>(false);
-  const [followingState, setFollowingState] = useState<boolean>(false);
-  const { isWinnerStatusChanged, toggleWinnerStatus } =
-    useWinnerStatusChanged();
-  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const typeNumber = type ? parseInt(type, 10) : undefined;
 
@@ -58,21 +52,13 @@ const RaffleDetailPage: React.FC = () => {
     };
 
     fetchRaffleData();
-  }, [isApplying, followingState, isChecked]);
+  }, []);
 
   return (
     <Wrapper>
-      <Item
-        {...raffleData}
-        setIsApplying={setIsApplying}
-        setIsChecked={setIsChecked}
-      />
+      <Item {...raffleData} />
       <MoreInfoLayout>
-        <Market
-          {...raffleData}
-          type={type}
-          setFollowingState={setFollowingState}
-        />
+        <Market {...raffleData} type={type} />
         <Probability {...raffleData} />
       </MoreInfoLayout>
     </Wrapper>

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import useDeliveryStore from '../store/deliveryStore';
+import useDeliveryStore from '../../../store/deliveryStore';
 
 interface ModalProps {
   onClose: () => void;
@@ -13,15 +13,15 @@ interface ModalProps {
 
 const WaitShippingModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
   const navigate = useNavigate();
-  const { triggerRefetch } = useDeliveryStore();
+  const { setDeliveryStatus } = useDeliveryStore();
 
   const handleClick = async () => {
     try {
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         `/api/member/delivery/${deliveryId}/winner/wait`,
         {},
       );
-      triggerRefetch();
+      setDeliveryStatus('READY');
     } catch (error) {
       console.error(error);
     }
