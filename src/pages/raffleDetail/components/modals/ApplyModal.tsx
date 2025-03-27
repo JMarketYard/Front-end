@@ -38,8 +38,8 @@ const ApplyModal: React.FC<ModalProps> = ({
         {},
       );
       console.log('응모성공');
-
       setIsApplying(!isApplying);
+      //status 반영시키기
       openModal(({ onClose }) => (
         <ApplyOkModal onClose={onClose} resultTime={resultTime} image={image} />
       ));

@@ -34,6 +34,7 @@ const ProductCard: React.FC<RaffleProps> = ({
               <EndBox />
             </>
           )}
+
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
             <TextBox>마감임박</TextBox>
           )}
