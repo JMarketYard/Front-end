@@ -23,6 +23,7 @@ import MyReview from '../pages/mypage/MyReview';
 import Payment from '../pages/mypage/Payment';
 import WinnerPage from '../pages/winner/winnerPage';
 import UserProfilePage from '../pages/mypage/UserProfilePage';
+import PrivateRoute from '../services/PrivateRoute';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,78 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: 'change',
+            element: (
+              <div>
+                <ChargePage />
+                <ModalProvider />
+              </div>
+            ),
+          },
+          {
+            path: 'raffle-upload',
+            element: <RaffleUploadPage />,
+          },
+          {
+            path: 'review',
+            element: <WriteReview />,
+          },
+          {
+            path: 'mypage/address',
+            element: (
+              <>
+                <AddressSetPage />
+                <ModalProvider />
+              </>
+            ),
+          },
+          {
+            path: 'host-result',
+            element: (
+              <div>
+                <ResultPage />
+                <ModalProvider />
+              </div>
+            ),
+          },
+          {
+            path: 'mypage/following-list',
+            element: <FollowingList />,
+          },
+          {
+            path: 'mypage/setting',
+            element: <Setting />,
+          },
+          {
+            path: 'mypage',
+            element: <MyProfilePage />,
+          },
+          {
+            path: 'mypage/public-information-set',
+            element: <SetOpenInfoPage />,
+          },
+          {
+            path: 'mypage/my-review',
+            element: <MyReview />,
+          },
+          {
+            path: 'mypage/payment',
+            element: <Payment />,
+          },
+          {
+            path: 'user/:userId',
+            element: <UserProfilePage />,
+          },
+          {
+            path: 'winner-page',
+            element: <WinnerPage />,
+          },
+        ]
+      },
+      {
         path: '',
         element: (
           <div>
@@ -43,19 +116,6 @@ const router = createBrowserRouter([
             <ModalProvider />
           </div>
         ),
-      },
-      {
-        path: 'change',
-        element: (
-          <div>
-            <ChargePage />
-            <ModalProvider />
-          </div>
-        ),
-      },
-      {
-        path: 'raffle-upload',
-        element: <RaffleUploadPage />,
       },
       {
         path: 'raffles/:type', // 래플 상세보기
@@ -73,32 +133,6 @@ const router = createBrowserRouter([
             <KakaoRedirect />
             <ModalProvider />
           </div>
-        ),
-      },
-      {
-        path: 'review',
-        element: <WriteReview />,
-      },
-      {
-        path: 'address',
-        element: (
-          <>
-            <AddressSetPage />
-            <ModalProvider />
-          </>
-        ),
-      },
-      {
-        path: 'review',
-        element: <WriteReview />,
-      },
-      {
-        path: 'mypage/address',
-        element: (
-          <>
-            <AddressSetPage />
-            <ModalProvider />
-          </>
         ),
       },
       {
@@ -123,49 +157,8 @@ const router = createBrowserRouter([
         element: <CategoryResultPage />,
       },
       {
-        path: 'host-result',
-        element: (
-          <div>
-            <ResultPage />
-            <ModalProvider />
-          </div>
-        ),
-      },
-      {
-        path: 'mypage/following-list',
-        element: <FollowingList />,
-      },
-      {
-        path: 'mypage/setting',
-        element: <Setting />,
-      },
-      {
-        path: 'mypage',
-        element: <MyProfilePage />,
-      },
-      {
-        path: 'mypage/public-information-set',
-        element: <SetOpenInfoPage />,
-      },
-      {
-        path: 'mypage/my-review',
-        element: <MyReview />,
-      },
-      {
-        path: 'mypage/payment',
-        element: <Payment />,
-      },
-      {
-        path: 'user/:userId',
-        element: <UserProfilePage />,
-      },
-      {
         path: 'ask/:type',
         element: <AskPage />,
-      },
-      {
-        path: 'winner-page',
-        element: <WinnerPage />,
       },
     ],
   },
