@@ -127,8 +127,7 @@ const ResultPage: React.FC = () => {
           {raffleStatus === 'ENDED' && (
             <>
               <DeliverStausBox>당첨자 배송비 결제 현황</DeliverStausBox>
-              {(deliveryStatus === 'WAITING_ADDRESS' ||
-                deliveryStatus === 'WAITING_PAYMENT') && (
+              {deliveryStatus === 'WAITING_ADDRESS' && (
                 <>
                   <DeliveryWaitBox>배송지 입력 대기</DeliveryWaitBox>
                 </>
@@ -151,7 +150,6 @@ const ResultPage: React.FC = () => {
         {raffleStatus == 'ENDED' && (
           <>
             {(deliveryStatus === 'WAITING_ADDRESS' ||
-              deliveryStatus === 'WAITING_PAYMENT' ||
               deliveryStatus === 'ADDRESS_EXPIRED') && (
               <GrayAddressBox>
                 <img src={grayDelivery} />
@@ -174,7 +172,6 @@ const ResultPage: React.FC = () => {
         {raffleStatus == 'ENDED' && (
           <>
             {(deliveryStatus === 'WAITING_ADDRESS' ||
-              deliveryStatus === 'WAITING_PAYMENT' ||
               deliveryStatus === 'ADDRESS_EXPIRED') && (
               <>
                 <GrayButtonBox>운송장 입력하기</GrayButtonBox>

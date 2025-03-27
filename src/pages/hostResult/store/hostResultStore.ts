@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { TDeliveryStatus } from '../../../types/deliveryStatus';
 
 interface RaffleData {
   raffleId: number;
@@ -23,7 +24,7 @@ interface DeliveryData {
   minTicket: number;
   applyTicket: number;
   totalAmount: number;
-  deliveryStatus: string;
+  deliveryStatus: TDeliveryStatus;
   shippingDeadline?: string | null;
   address: Address;
 }
@@ -59,7 +60,7 @@ const useHostResultStore = create<HostResultState>((set) => ({
     minTicket: 0,
     applyTicket: 0,
     totalAmount: 0,
-    deliveryStatus: 'N/A',
+    deliveryStatus: 'WAITING_ADDRESS',
     shippingDeadline: null,
     address: defaultAddress,
   },
