@@ -186,6 +186,7 @@ const ToggleContainer = styled.div`
     max-width: 400px;
   }
 
+  
   @media (max-width: 480px) {
     max-width: 300px;
   }

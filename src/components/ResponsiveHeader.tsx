@@ -11,11 +11,11 @@ import icHeart from '../assets/header/icon-heart.svg';
 import icMyPage from '../assets/header/icon-mypage.svg';
 import icUpload from '../assets/header/icon-upload.svg';
 import imgTicket from '../assets/ticket.svg';
-import { useNavigate } from "react-router-dom";
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import CategoryMenu from './CategoryMenu';
 import { useModalContext } from './Modal/context/ModalContext';
-import SplashModal from '../pages/login/components/SplashModal';
+import SplashModal from '../pages/login/components/LogInModal';
 import imgVector from '../assets/Vector.png';
 import { ReactComponent as IcList } from '../assets/icList.svg';
 import icDel from '../assets/icDel.svg';
@@ -55,7 +55,7 @@ const ResponsiveHeader = () => {
   const handleClickLogo = () => {
     navigate('/');
     setSearchText('');
-  }
+  };
   const handleCategoryOut = (e: MouseEvent) => {
     const currentCategoryRef = categoryRef.current;
     if (currentCategoryRef && !currentCategoryRef.contains(e.target as Node)) {
@@ -83,14 +83,14 @@ const ResponsiveHeader = () => {
   const clickSearchIcon = () => {
     navigate(`/search/${searchText}`);
     setIsSearchClicked(false);
-  }
+  };
 
   const handleDelKeyword = (keyword: string) => {
     // delSearch(): 해당 키워드 서버에서 삭제
     delSearch(keyword).then((_) => getSearch());
   };
 
-  const clickKeyword = (v:string) => {
+  const clickKeyword = (v: string) => {
     setSearchText(v);
     // console.log('searchText:', searchText, v);
     navigate(`/search/${v}`);
@@ -202,7 +202,7 @@ const ResponsiveHeader = () => {
                     {recentKeywords.length !== 0 ? (
                       recentKeywords.map((v, _) => (
                         <RecentKeyword key={_}>
-                          <Keyword onClick={()=>clickKeyword(v)}>{v}</Keyword>
+                          <Keyword onClick={() => clickKeyword(v)}>{v}</Keyword>
                           <DelImg
                             src={icDel}
                             width={9.096}
@@ -212,7 +212,9 @@ const ResponsiveHeader = () => {
                         </RecentKeyword>
                       ))
                     ) : (
-                      <NoRecentKeywords>최근 검색 내역이 없습니다.</NoRecentKeywords>
+                      <NoRecentKeywords>
+                        최근 검색 내역이 없습니다.
+                      </NoRecentKeywords>
                     )}
                   </RecentKeywordsBox>
                 </KeywordBox>
@@ -226,8 +228,7 @@ const ResponsiveHeader = () => {
                 </KeywordTitle>
                 <HotKeywordsBox>
                   {hotKeywords.map((v, _) => (
-                    <HotKeyword key={_}
-                    onClick={()=>clickKeyword(v)}>
+                    <HotKeyword key={_} onClick={() => clickKeyword(v)}>
                       <IcList
                         width={9}
                         height={9}
@@ -518,7 +519,7 @@ const Keyword = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-`
+`;
 
 const NoRecentKeywords = styled.span`
   color: #8f8e94;

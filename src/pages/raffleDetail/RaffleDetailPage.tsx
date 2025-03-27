@@ -5,8 +5,7 @@ import Market from './components/Market';
 import Probability from './components/Probability';
 import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
-import RaffleDetailProps from '../../types/RaffleDetailProps';
-import { TRaffleDetail } from '../../types/raffleDetails';
+import { TRaffleDetail, RaffleDetailProps } from '../../types/RaffleDetail';
 import { useWinnerStatusChanged } from '../../store/storeWinnerStatus';
 
 const RaffleDetailPage: React.FC = () => {
@@ -63,7 +62,11 @@ const RaffleDetailPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <Item {...raffleData} setIsApplying={setIsApplying} />
+      <Item
+        {...raffleData}
+        setIsApplying={setIsApplying}
+        setIsChecked={setIsChecked}
+      />
       <MoreInfoLayout>
         <Market
           {...raffleData}

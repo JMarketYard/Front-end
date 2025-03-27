@@ -72,7 +72,7 @@ const TextBox = styled.div`
   font-weight: 600;
 `;
 
-const MoreListBox = styled.a`
+const MoreListBox = styled.div`
   width: 240px;
   height: 34px;
   display: flex;

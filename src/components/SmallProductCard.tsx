@@ -5,8 +5,10 @@ import smallUnlike from '../assets/smallProductCard/smallUnlike.svg';
 import smallLike from '../assets/smallProductCard/smallLike.svg';
 import { Link } from 'react-router-dom';
 import RaffleProps from '../types/RaffleProps';
-import { postLike, deleteLike } from '../services/likeService';
 import { getFormatTime } from '../utils/formateTime';
+import { useAuth } from '../context/AuthContext';
+import useLike from '../hooks/useLike';
+import { OpenLogInModal } from '../utils/OpenLogInModal';
 
 const SmallProductCard: React.FC<RaffleProps> = ({
   raffleId,
@@ -18,23 +20,14 @@ const SmallProductCard: React.FC<RaffleProps> = ({
   participantNum,
   like,
 }) => {
-  const [isLiked, setIsLiked] = useState(like);
-  const toggleLike = async (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation(); //Wrapper로 이벤트 전달 방지
-    event.preventDefault(); // 기본 동작 (Link 이동) 방지
-    if (like) {
-      await deleteLike(raffleId);
-      setIsLiked(false);
-    } else {
-      await postLike(raffleId);
-      setIsLiked(true);
-    }
-  };
+  const { isLiked, toggleLike, isProcessing } = useLike(like, raffleId);
+  const { isAuthenticated, logout } = useAuth();
+  const handleOpenModal = OpenLogInModal();
 
   return (
     <Wrapper>
       <StyledLink to={`/raffles/${raffleId}`}>
-        <ImageContainer imageUrls={imageUrls}>
+        <ImageContainer $backgroundImage={imageUrls[0] || ''}>
           {finish && (
             <>
               <RaffleClosingBox>응모 마감</RaffleClosingBox>
@@ -44,7 +37,17 @@ const SmallProductCard: React.FC<RaffleProps> = ({
           {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
             <TextBox>마감임박</TextBox>
           )}
-          <LikeBox onClick={toggleLike}>
+          <LikeBox
+            onClick={(event) => {
+              event.stopPropagation(); // 이벤트 전파 막기
+              event.preventDefault(); // 기본 동작 막기
+              if (isAuthenticated) {
+                toggleLike(event);
+              } else {
+                handleOpenModal();
+              }
+            }}
+          >
             <img
               src={isLiked ? smallLike : smallUnlike}
               alt={isLiked ? 'Liked' : 'Unliked'}
@@ -78,11 +81,11 @@ const StyledLink = styled(Link)`
   color: inherit; /* 기본 색상 유지 */
 `;
 
-const ImageContainer = styled.div.attrs<Pick<RaffleProps, 'imageUrls'>>(
-  ({ imageUrls }) => ({
-    style: { backgroundImage: `url(${imageUrls[0]})` },
+const ImageContainer = styled.div.attrs<{ $backgroundImage: string }>(
+  ({ $backgroundImage }) => ({
+    style: { backgroundImage: `url(${$backgroundImage})` },
   }),
-)<Pick<RaffleProps, 'imageUrls'>>`
+)`
   width: 192px;
   height: 192px;
   flex-shrink: 0;

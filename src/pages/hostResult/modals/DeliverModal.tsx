@@ -43,7 +43,7 @@ const DeliverModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
           해당 운송장은 당첨자가 이메일과
           <br /> 알림페이지로 확인할 수 있습니다.
         </Short>
-        <Button onClick={handleClick}>홈 화면으로 돌아가기</Button>
+        <Button onClick={handleClick}>운송장 입력하기</Button>
       </Container>
     </Modal>
   );

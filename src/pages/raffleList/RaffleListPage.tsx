@@ -7,75 +7,133 @@ import moreList from '../../assets/homePage/moreList.svg';
 import axiosInstance from '../../apis/axiosInstance';
 import RaffleProps from '../../types/RaffleProps';
 import { useAuth } from '../../context/AuthContext';
+import media from '../../styles/media';
 
 const RaffleListPage: React.FC = () => {
   const navigate = useNavigate();
   const { type } = useParams<{ type?: string }>();
   const [title, setTitle] = useState<string>('래플 리스트');
-  const observerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<HTMLDivElement>(null);
   const [raffles, setRaffles] = useState<RaffleProps[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated, logout } = useAuth();
+  const [allRaffles, setAllRaffles] = useState<RaffleProps[]>([]);
 
-  const fetchMoreProducts = async () => {
-    if (!hasMore || isLoading) return;
+  // const fetchMoreProducts = async () => {
+  //   if (!hasMore || isLoading) return;
 
-    setIsLoading(true);
-    try {
-      const { data } = await axiosInstance.get(
-        isAuthenticated
-          ? `/api/member/home/${type}`
-          : `/api/permit/home/${type}`,
-        {},
-      );
+  //   setIsLoading(true);
+  //   try {
+  //     const { data } = await axiosInstance.get(
+  //       isAuthenticated
+  //         ? `/api/member/home/${type}`
+  //         : `/api/permit/home/${type}`,
+  //       {},
+  //     );
 
-      const startIndex = (page - 1) * 16;
-      const endIndex = startIndex + 16;
-      const newRaffles = data.result.raffles.slice(startIndex, endIndex);
+  //     const startIndex = (page - 1) * 16;
+  //     const endIndex = startIndex + 16;
+  //     const newRaffles = data.result.raffles.slice(startIndex, endIndex);
 
-      console.log('API 응답 자른 데이터 개수:', newRaffles.length);
-      console.log('API 응답 데이터:', newRaffles);
+  //     console.log('API 응답 자른 데이터 개수:', newRaffles.length);
+  //     console.log('API 응답 데이터:', newRaffles);
 
-      if (newRaffles.length < 16) {
-        setRaffles((prev) => [...prev, ...newRaffles]);
-        setHasMore(false);
-      } else {
-        setRaffles((prev) => [...prev, ...newRaffles]);
-      }
-      setPage((prev) => prev + 1);
-    } catch (error) {
-      console.error('데이터 불러오기 실패:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  //     if (newRaffles.length < 16) {
+  //       setRaffles((prev) => [...prev, ...newRaffles]);
+  //       setHasMore(false);
+  //     } else {
+  //       setRaffles((prev) => [...prev, ...newRaffles]);
+  //     }
+  //     setPage((prev) => prev + 1);
+  //   } catch (error) {
+  //     console.error('데이터 불러오기 실패:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && hasMore && !isLoading) {
+  //         setPage((prev) => prev + 1);
+  //       } else {
+  //         console.log('hasmore:', hasMore);
+  //       }
+  //     },
+  //     { threshold: 1.0 },
+  //   );
+
+  //   if (observerRef.current) {
+  //     observer.observe(observerRef.current);
+  //   }
+
+  //   return () => observer.disconnect();
+  // }, [hasMore, isLoading]);
+
+  // // 페이지 변경 시 새로운 데이터 로드
+  // useEffect(() => {
+  //   if (!hasMore) return;
+  //   fetchMoreProducts();
+  // }, [page]);
+
+  console.log('???', hasMore);
+  const fetchProducts = async () => {
+    const apiurl = isAuthenticated
+      ? `/api/member/home/${type}`
+      : `/api/permit/home/${type}`;
+    const { data } = await axiosInstance.get(apiurl);
+    setAllRaffles(data.result.raffles);
+    setIsLoading(false);
+    // setFirstRender(true);
+    // console.log("fetchProducts 결과:", data.result.raffles);
   };
 
+  // console.log("allRaffles:", allRaffles);
+
+  // 화면 최하단 ref에 스크롤이 도달하면 16개씩 데이터를 보여준다
+  const showProducts = () => {
+    if (isLoading) return;
+    console.log('showProducts 실행');
+    // console.log(allRaffles);
+    const newRaffles = allRaffles.slice(page, page + 16);
+    setRaffles((prev) => [...prev, ...newRaffles]);
+    console.log('allRaffles.length?', allRaffles.length);
+    allRaffles.length > page + 16 ? setPage(page + 16) : setHasMore(false);
+  };
   useEffect(() => {
+    console.log('raffles 변경 감지', raffles);
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          setPage((prev) => prev + 1);
-        } else {
-          console.log('hasmore:', hasMore);
-        }
+        if (entries[0].isIntersecting && hasMore) showProducts();
       },
-      { threshold: 1.0 },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0,
+      },
     );
 
     if (observerRef.current) {
       observer.observe(observerRef.current);
     }
 
-    return () => observer.disconnect();
-  }, [hasMore, isLoading]);
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+    };
+  }, [raffles]);
 
-  // 페이지 변경 시 새로운 데이터 로드
   useEffect(() => {
-    if (!hasMore) return;
-    fetchMoreProducts();
-  }, [page]);
+    setRaffles([]);
+    setPage(0);
+    setHasMore(true);
+    fetchProducts();
+  }, []);
+  useEffect(() => {
+    showProducts();
+  }, [allRaffles]);
 
   useEffect(() => {
     // 페이지 제목 설정
@@ -98,8 +156,7 @@ const RaffleListPage: React.FC = () => {
       default:
         setTitle('래플 둘러보기');
     }
-  }, [type]); // `type` 또는 `search`가 변경될 때마다 실행
-
+  }, [type]);
   return (
     <Wrapper>
       <LookAroundContainer>
@@ -120,7 +177,7 @@ const RaffleListPage: React.FC = () => {
         ))}
       </ProductGrid>
 
-      {hasMore && <Observer ref={observerRef} />}
+      <Observer ref={observerRef} />
     </Wrapper>
   );
 };
@@ -128,12 +185,14 @@ const RaffleListPage: React.FC = () => {
 export default RaffleListPage;
 
 const Wrapper = styled.div`
-  width: 1080px;
-  min-height: 1498px;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding-top: 63px;
+  ${media.notLarge`
+    padding:57px 0px 30px 0px;
+    width:100%
+  `}
 `;
 
 const LookAroundContainer = styled.div`
@@ -155,6 +214,7 @@ const LookAroundBox = styled.p`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  min-width: 1080px;
 `;
 
 const MoreListBox = styled.a`
@@ -201,9 +261,18 @@ const ProductGrid = styled.div`
   gap: 44px;
   width: 100%;
   max-width: 1080px;
+  ${media.medium`
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    max-width: 100%;
+  `}
+  ${media.small`
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  `}
 `;
 
 const Observer = styled.div`
   width: 100%;
-  height: 20px;
+  height: 50px;
 `;

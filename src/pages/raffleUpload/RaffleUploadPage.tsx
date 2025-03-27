@@ -237,8 +237,7 @@ const RaffleUploadPage = () => {
                             value={leastTicketNum}
                             onChange={handleLeastTicketNum} />
                             <StyleP>예상 정산 금액:&nbsp;
-                                {(Number(leastTicketNum.replaceAll(',',''))*100
-                                *parseInt(ticketNum))
+                                {(Number(leastTicketNum.replaceAll(',',''))*100)
                                 .toLocaleString()
                                 }원
                             </StyleP>

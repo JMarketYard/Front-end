@@ -6,15 +6,15 @@ import icTicket from '../../../assets/raffleDetail/icon-ticket.svg';
 import icLike from '../../../assets/raffleDetail/icon-like.svg';
 import icUnlike from '../../../assets/raffleDetail/icon-unlike.svg';
 import ImgSlider from './ImgSlider';
-import ApplyModal from './modal/ApplyModal';
-import RaffleDetailProps from '../../../types/RaffleDetailProps';
+import ApplyModal from './modals/ApplyModal';
+import RaffleDetailProps from '../../../types/RaffleDetail';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
-import RandomModal from './modal/RandomModal';
+import RandomModal from './modals/RandomModal';
 import { ApplyType } from './apis/raffleType';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { useAuth } from '../../../context/AuthContext';
-import SplashModal from '../../login/components/SplashModal';
+import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
 
 type ItemProps = RaffleDetailProps & {
@@ -34,10 +34,7 @@ const Item: React.FC<ItemProps> = ({
   const raffleId = type ? parseInt(type, 10) : 0;
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
-
-  const handleOpenModal = () => {
-    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
-  };
+  const handleOpenModal = OpenLogInModal();
 
   useEffect(() => {
     setIsLiked(raffle.likeStatus ?? false);
@@ -244,8 +241,15 @@ const Item: React.FC<ItemProps> = ({
                 )}
               </>
             )}
-
-            <LikeBox onClick={toggleLike}>
+            <LikeBox
+              onClick={() => {
+                if (isAuthenticated) {
+                  toggleLike();
+                } else {
+                  handleOpenModal();
+                }
+              }}
+            >
               <img
                 src={isLiked ? icLike : icUnlike}
                 alt={isLiked ? 'Liked' : 'Unliked'}
@@ -320,11 +324,12 @@ const DetailLayout = styled.div`
 
 const ItemTitleBox = styled.p`
   display: flex;
-  width: 209px;
+  width: 100%;
   height: 29px;
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
+  margin-bottom: 15px;
 
   color: #000;
   font-family: Pretendard;

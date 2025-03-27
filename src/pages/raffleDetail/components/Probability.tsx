@@ -4,7 +4,7 @@ import DonutChart from './DonutChart';
 import NpDonutChart from './NpDonutChart';
 import DonutText from './DonutText';
 import icMark from '../../../assets/raffleDetail/icon-mark.svg';
-import RaffleDetailProps from '../../../types/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetail';
 
 const Probability: React.FC<RaffleDetailProps> = (raffle) => {
   return (

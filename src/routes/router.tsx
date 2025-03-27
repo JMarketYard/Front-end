@@ -11,7 +11,7 @@ import AddressSetPage from '../pages/address/addressSetPage';
 import HomePage from '../pages/homepage/homePage';
 import SetOpenInfoPage from '../pages/mypage/setOpenInfoPage';
 import RaffleListPage from '../pages/raffleList/RaffleListPage';
-import ResultPage from '../pages/hostResult/ResultPage';
+import ResultPage from '../pages/hostResult/HostResultPage';
 import SearchResultPage from '../pages/raffleList/SearchResultPage';
 import CategoryResultPage from '../pages/raffleList/CategoryResultPage';
 import MyProfilePage from '../pages/mypage/mypage';

@@ -3,12 +3,12 @@ import moreList from '../../../assets/homePage/moreList.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
-import RaffleDetailProps from '../../../types/RaffleDetailProps';
+import RaffleDetailProps from '../../../types/RaffleDetail';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
-import SplashModal from '../../login/components/SplashModal';
-import FollowFailModal from './modal/FollowFailModal';
+import { OpenLogInModal } from '../../../utils/OpenLogInModal';
+import FollowFailModal from './modals/FollowFailModal';
 
 interface MarketProps extends RaffleDetailProps {
   type?: string;
@@ -23,10 +23,7 @@ const Market: React.FC<MarketProps> = ({
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
-
-  const handleOpenModal = () => {
-    openModal(({ onClose }) => <SplashModal onClose={onClose} />);
-  };
+  const handleOpenModal = OpenLogInModal();
 
   const handleFollowFail = () => {
     openModal(({ onClose }) => <FollowFailModal onClose={onClose} />);
@@ -59,15 +56,28 @@ const Market: React.FC<MarketProps> = ({
     }
   };
 
+  const ColoredAskButton = styled(AskButton)<{ isActive: boolean }>`
+    background: ${({ isActive }) => (isActive ? '#ffffff' : '#e4e4e4')};
+  `;
+
   return (
     <Wrapper>
       <BigTitleBox>
         <TitleIcon />
         <div>상점 정보</div>
-        <MoreListBox onClick={() => navigate(`/user/${raffle.storeId}`)}>
-          프로필 보기
-          <img src={moreList} alt="moreList" />
-        </MoreListBox>
+        {raffle.userStatus === 'host' && (
+          <MoreListBox onClick={() => navigate(`/mypage`)}>
+            프로필 보기
+            <img src={moreList} alt="moreList" />
+          </MoreListBox>
+        )}
+        {(raffle.userStatus === 'participant' ||
+          raffle.userStatus === 'nonParticipant') && (
+          <MoreListBox onClick={() => navigate(`/user/${raffle.storeId}`)}>
+            프로필 보기
+            <img src={moreList} alt="moreList" />
+          </MoreListBox>
+        )}
       </BigTitleBox>
       <MarketLayout>
         <ImageBox imageUrl={raffle.storeImageUrl} />
@@ -112,11 +122,12 @@ const Market: React.FC<MarketProps> = ({
         )}
         <ReviewButton>상점 후기</ReviewButton>
       </ButtonLayout>
-      <AskButton
+      <ColoredAskButton
+        isActive={raffle.raffleStatus === 'ACTIVE'}
         onClick={() => navigate(`/ask/${type}`, { state: { raffle } })}
       >
         상품 문의
-      </AskButton>
+      </ColoredAskButton>
     </Wrapper>
   );
 };
@@ -347,7 +358,7 @@ const AskButton = styled.button`
   border: 1px solid #8f8e94;
   background: #e4e4e4;
 
-  color: #8f8e94;
+  color: black;
   text-align: center;
   font-family: Pretendard;
   font-size: 15px;

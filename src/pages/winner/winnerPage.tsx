@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BigTitle from '../../components/BigTitle';
-import RaffleDetailProps from '../../types/RaffleDetailProps';
 import axiosInstance from '../../apis/axiosInstance';
 import { useNavigate, useLocation } from 'react-router-dom';
 import moreList from '../../assets/homePage/moreList.svg';
 import media from '../../styles/media';
 import { TAddress } from '../address/addressSetPage';
 import { TDeliveryStatus } from '../../types/deliveryStatus';
-import { ReactComponent as checkbox } from '../../assets/imgCheckbox.svg';
 import icWarning from '../../assets/icWarning.svg';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
 import GiveUpModal from './modals/GiveUpModal';
@@ -19,11 +17,9 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Checkbox from '@mui/material/Checkbox';
 import WaitShippingModal from './modals/WaitShippingModal';
 import useDeliveryStore from './store/deliveryStore';
-import { PostCharge } from './apis/payAPI'; //결제
-import { useMutation } from '@tanstack/react-query'; //결제
-import Cookies from 'js-cookie'; //결제
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import PayOkModal from './modals/PayOkModal';
+import usePay from '../../hooks/usePay';
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -66,11 +62,12 @@ const WinnerPage: React.FC = () => {
   });
   const [winnerData, setWinnerData] = useState<TWinner>();
   const [deliveryStatus, setDeliveryStatus] = useState<TDeliveryStatus>();
-
+  const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
 
   useEffect(() => {
+    //배송비 결제 이후
     if (!approvedAt) return;
     const sendPostRequest = async () => {
       try {
@@ -86,72 +83,19 @@ const WinnerPage: React.FC = () => {
 
         return () => clearTimeout(timer);
       } catch (error) {
-        console.error('결제 완료 POST 실패:', error);
+        console.error(
+          '결제 완료 POST 실패:',
+          'deliveryId는 : ',
+          deliveryId,
+          error,
+        );
       }
     };
 
     sendPostRequest();
   }, [approvedAt]);
 
-  //결제코드 시작
-  const { mutate: postMutation } = useMutation({
-    mutationFn: PostCharge,
-    onSuccess: (data) => {
-      if (!data?.redirectUrl) {
-        console.error('🚨 redirectUrl이 존재하지 않습니다.');
-        return;
-      }
-
-      console.log('🔍 원본 redirectUrl:', data.redirectUrl);
-
-      try {
-        let fullRedirectUrl = data.redirectUrl;
-
-        // 만약 상대경로라면 절대경로로 변환
-        if (!fullRedirectUrl.startsWith('http')) {
-          fullRedirectUrl = `${window.location.origin}${fullRedirectUrl}`;
-        }
-
-        console.log('🌍 변환된 URL:', fullRedirectUrl);
-
-        const urlParams = new URLSearchParams(new URL(fullRedirectUrl).search);
-        const actualUrl = urlParams.get('url');
-
-        let tid = urlParams.get('tid'); // tid 추출
-
-        if (!tid) {
-          console.warn('⚠️ TID가 없어서 "tid"라는 기본 값을 사용합니다.');
-          tid = 'tid'; // tid가 없을 경우 기본값 설정
-        }
-
-        console.log('🔄 now tid:', tid); // tid 로그 출력
-
-        // 쿠키를 '/api/payment/approve' 경로에 설정
-        Cookies.set('tid', tid, {
-          expires: 1,
-          path: '/', // 전체 경로에서 쿠키 유효
-          domain: 'jangmadang.site', // www.jangmadang.site와 api.jangmadang.site에서 쿠키 공유
-          secure: true, // HTTPS에서만 쿠키 유효
-          sameSite: 'Lax', // SameSite 설정 변경 (보안을 위해 Lax로 설정)
-        });
-
-        console.log('쿠키 설정:', document.cookie); // 쿠키가 제대로 설정되었는지 확인
-
-        if (actualUrl && actualUrl.startsWith('https://')) {
-          console.log('🔄 Redirecting to:', actualUrl);
-          window.location.href = actualUrl;
-        } else {
-          console.error('🚨 URL parameter "url" not found or invalid.');
-        }
-      } catch (error) {
-        console.error('🚨 Error processing redirect URL:', error);
-      }
-    },
-    onError: (error) => {
-      console.log('충전 요청 실패 : ', error);
-    },
-  });
-
+  const { postMutation } = usePay();
   const handleNextModal = async () => {
     try {
       const { data } = await axiosInstance.post(
@@ -159,6 +103,14 @@ const WinnerPage: React.FC = () => {
         {},
       );
       console.log('배송지 입력함');
+    } catch (error) {
+      console.error(error);
+    }
+    try {
+      const { data } = await axiosInstance.post(
+        `/api/member/delivery/${deliveryId}/winner/complete`,
+        {},
+      );
     } catch (error) {
       console.error(error);
     }
@@ -182,6 +134,7 @@ const WinnerPage: React.FC = () => {
         setWinnerData(data.result);
         setDeliveryStatus(data.result.deliveryStatus);
         setAddress(data.result.address);
+        setRaffleId(data.result.raffleId);
         console.log(data.result);
         console.log(data.result.address);
       } catch (error) {
@@ -193,7 +146,11 @@ const WinnerPage: React.FC = () => {
 
   const handleGiveUpModal = () => {
     openModal(({ onClose }) => (
-      <GiveUpModal onClose={onClose} deliveryId={deliveryId} />
+      <GiveUpModal
+        onClose={onClose}
+        deliveryId={deliveryId}
+        raffleId={raffleId}
+      />
     ));
   };
 
@@ -211,7 +168,7 @@ const WinnerPage: React.FC = () => {
 
   const formatDate = (isoString: string) => {
     if (!isoString) {
-      return isoString; // ✅ 유효하지 않은 값이면 기본 메시지 반환
+      return isoString; //유효하지 않은 값이면 기본 메시지 반환
     }
 
     return new Date(isoString).toLocaleDateString('ko-KR', {
@@ -260,6 +217,7 @@ const WinnerPage: React.FC = () => {
       </Wrapper>
     );
   } else {
+    //배송지 설정 및 결제 필요
     if (
       deliveryStatus === 'WAITING_ADDRESS' ||
       deliveryStatus === 'WAITING_PAYMENT'
@@ -356,6 +314,7 @@ const WinnerPage: React.FC = () => {
         </Wrapper>
       );
     } else {
+      //배송비 결제 이후 상품 운송 기다리는 중
       return (
         <Wrapper>
           <BigTitle>
@@ -399,21 +358,42 @@ const WinnerPage: React.FC = () => {
           </InfoLayout>
 
           <ButtonLayout>
-            <PurpleButton onClick={handleCompletedModal}>
-              거래 완료
-            </PurpleButton>
-            <PurpleButton
-              onClick={() =>
-                navigate('/review', {
-                  state: { deliveryId: { deliveryId } },
-                })
-              }
-            >
-              후기 작성하기
-            </PurpleButton>
-            <PurpleButton onClick={() => navigate('/')}>
-              홈 화면으로 돌아가기
-            </PurpleButton>
+            {deliveryStatus === 'SHIPPED' && (
+              <>
+                <PurpleButton onClick={handleCompletedModal}>
+                  거래 완료
+                </PurpleButton>
+                <PurpleButton
+                  onClick={() =>
+                    navigate('/review', {
+                      state: { deliveryId: { deliveryId } },
+                    })
+                  }
+                >
+                  후기 작성하기
+                </PurpleButton>
+                <PurpleButton onClick={() => navigate('/')}>
+                  홈 화면으로 돌아가기
+                </PurpleButton>
+              </>
+            )}
+            {deliveryStatus === 'READY' && (
+              <>
+                <GrayButton>거래 완료</GrayButton>
+                <GrayButton
+                  onClick={() =>
+                    navigate('/review', {
+                      state: { deliveryId: { deliveryId } },
+                    })
+                  }
+                >
+                  후기 작성하기
+                </GrayButton>
+                <PurpleButton onClick={() => navigate('/')}>
+                  홈 화면으로 돌아가기
+                </PurpleButton>
+              </>
+            )}
           </ButtonLayout>
         </Wrapper>
       );
@@ -469,19 +449,6 @@ const AddressLayout = styled.div`
   gap: 40px;
   margin: 46px 0 172px 0;
 `;
-
-// const Checkbox = styled(checkbox)`
-//   width: 27.2px;
-//   height: 27.1px;
-//   /* &:hover {
-//     cursor: pointer;
-//   } */
-
-//   ${media.medium`
-//     width: 21px;
-//     height: 21px;
-//   `}
-// `;
 
 const AddressContainer = styled.div`
   display: flex;
@@ -586,16 +553,6 @@ const SmallPurpleSpan = styled.span`
   line-height: 17.308px; /* 115.385% */
 `;
 
-const SmallBlackSpan = styled.span`
-  color: #000;
-  text-align: right;
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 17.308px; /* 115.385% */
-`;
-
 const Hr = styled.div`
   width: 100%;
   height: 1px;
@@ -628,6 +585,27 @@ const PurpleButton = styled.button`
   line-height: normal;
 
   cursor: pointer;
+`;
+
+const GrayButton = styled.div`
+  width: 474px;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+  border: 1px solid #8f8e94;
+  background: #e4e4e4;
+
+  color: #8f8e94;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px; /* 100% */
+  letter-spacing: -0.165px;
 `;
 
 const Box = styled.img`

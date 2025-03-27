@@ -6,86 +6,160 @@ import RaffleProps from '../../types/RaffleProps';
 import axiosInstance from '../../apis/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { useIsSearchCompleted } from '../../store/store';
+import media from '../../styles/media';
 
 const SearchResultPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
-  const observerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<HTMLDivElement>(null);
+  const [allRaffles, setAllRaffles] = useState<RaffleProps[]>([]);
   const [raffles, setRaffles] = useState<RaffleProps[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(0);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
   const isSearchCompleted = useIsSearchCompleted((v) => v.isSearchCompleted);
   const setIsCompleted = useIsSearchCompleted((v) => v.setIsSearchCompleted);
 
-  const fetchMoreProducts = async () => {
-    if (!hasMore || isLoading) return;
+  // const fetchMoreProducts = async () => {
+  //   console.log("fetchMoreProducts", type, hasMore, isLoading);
+  //   if (!hasMore || isLoading) return;
 
-    setIsLoading(true);
-    try {
-      const apirequest = isAuthenticated
-        ? '/api/member/search/raffles'
-        : '/api/permit/search/raffles';
+  //   setIsLoading(true);
+  //   try {
+  //     const apirequest = isAuthenticated
+  //       ? '/api/member/search/raffles'
+  //       : '/api/permit/search/raffles';
 
-      const { data } = await axiosInstance.get(apirequest, {
-        params: { keyword: type },
-      });
-      setIsCompleted(!isSearchCompleted); // Zustand 상태 업데이트
+  //     const { data } = await axiosInstance.get(apirequest, {
+  //       params: { keyword: type },
+  //     });
+  //     setIsCompleted(!isSearchCompleted); // Zustand 상태 업데이트
 
-      const startIndex = (page - 1) * 16;
-      const endIndex = startIndex + 16;
-      const newRaffles = data.result.searchedRaffles.slice(
-        startIndex,
-        endIndex,
-      );
+  //     const startIndex = (page - 1) * 16;
+  //     const endIndex = startIndex + 16;
+  //     const newRaffles = data.result.searchedRaffles.slice(
+  //       startIndex,
+  //       endIndex,
+  //     );
 
-      console.log('검색어:', type);
+  //     console.log('검색어:', type);
 
-      if (newRaffles.length < 16) {
-        setRaffles((prev) => [...prev, ...newRaffles]);
-        setHasMore(false);
-      } else {
-        setRaffles((prev) => [...prev, ...newRaffles]);
-      }
-      setPage((prev) => prev + 1);
-    } catch (error) {
-      console.error('데이터 불러오기 실패:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  //     setRaffles((prev) => [...prev, ...newRaffles]);
+  //     if (newRaffles.length < 16) setHasMore(false);
+
+  //     // if (newRaffles.length < 16) {
+  //     //   setRaffles((prev) => [...prev, ...newRaffles]);
+  //     //   setHasMore(false);
+  //     // } else {
+  //     //   setRaffles((prev) => [...prev, ...newRaffles]);
+  //     // }
+  //     setPage((prev) => prev + 1);
+  //   } catch (error) {
+  //     console.error('데이터 불러오기 실패:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   console.log("1번");
+  //   setRaffles([]);
+  //   setPage(1);
+  //   setHasMore(true);
+  //   fetchMoreProducts();
+  // }, [type]);
+
+  // useEffect(() => {
+  //   console.log("2번");
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && hasMore && !isLoading) {
+  //         setPage((prev) => prev + 1);
+  //         fetchMoreProducts();
+  //       } else {
+  //         console.log('hasmore:', hasMore);
+  //       }
+  //     },
+  //     { threshold: 1.0 },
+  //   );
+
+  //   if (observerRef.current) {
+  //     observer.observe(observerRef.current);
+  //   }
+
+  //   return () => observer.disconnect();
+  // }, [hasMore]);
+
+  // 페이지 변경 시 새로운 데이터 로드
+  // useEffect(() => {
+  //   console.log("3번");
+  //   if (!hasMore) return;
+  //   fetchMoreProducts();
+  // }, [page]);
+
+  // 모든 래플 데이터 받아오는 데이터: GET 호출은 각 검색 당 1번씩만
+  const fetchProducts = async () => {
+    const apiurl = isAuthenticated
+    ? 'api/member/search/raffles'
+    : 'api/permit/search/raffles';
+    const { data } = await axiosInstance.get(apiurl, {
+      params: {keyword: type}
+    });
+    setAllRaffles(data.result.searchedRaffles);
+    setIsCompleted(!isSearchCompleted); // Zustand 상태 업데이트
+    setIsLoading(false);
+    // console.log("fetchProducts 결과:", data.result.searchedRaffles);
   };
 
-  useEffect(() => {
-    setRaffles([]);
-    setPage(1);
-    setHasMore(true);
-    fetchMoreProducts();
-  }, [type]);
+  console.log("allRaffles:", allRaffles);
 
+  // 화면 최하단 ref에 스크롤이 도달하면 16개씩 데이터를 보여준다
+  const showProducts = () => {
+    if (isLoading) return;
+    console.log("showProducts 실행");
+    console.log(allRaffles);
+    const newRaffles = allRaffles.slice(page, page+16);
+    setRaffles(prev => [...prev, ...newRaffles]);
+    allRaffles.length>page+16
+    ? setPage(page+16)
+    : setHasMore(false);
+  };
   useEffect(() => {
+    console.log("raffles 변경 감지", raffles);
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          setPage((prev) => prev + 1);
-        } else {
-          console.log('hasmore:', hasMore);
-        }
+        if (entries[0].isIntersecting && hasMore) showProducts();
       },
-      { threshold: 1.0 },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0,
+      }
     );
 
     if (observerRef.current) {
       observer.observe(observerRef.current);
     }
 
-    return () => observer.disconnect();
-  }, [hasMore, isLoading]);
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+    }
+  }, [raffles, allRaffles]);
 
-  // 페이지 변경 시 새로운 데이터 로드
   useEffect(() => {
-    if (!hasMore) return;
-    fetchMoreProducts();
-  }, [page]);
+    setAllRaffles([]);
+    setRaffles([]);
+    setPage(0);
+    setHasMore(true);
+    fetchProducts();
+  }, [type]);
+  useEffect(() => {
+    showProducts();
+  }, [allRaffles]);
+
+  // useEffect(() => {
+  //   console.log("setAllRaffles 결과: ", allRaffles)
+  // }, [allRaffles]);
 
   return (
     <Wrapper>
@@ -108,13 +182,15 @@ const SearchResultPage: React.FC = () => {
 export default SearchResultPage;
 
 const Wrapper = styled.div`
-  width: 1080px;
-  min-height: 1498px;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
   padding-top: 64px;
   gap: 45px;
+  ${media.notLarge`
+    padding:57px 0px 30px 0px;
+    width:100%
+  `}
 `;
 
 const SearchContainer = styled.div`
@@ -153,10 +229,19 @@ const ProductGrid = styled.div`
   gap: 44px;
   width: 100%;
   max-width: 1080px;
-  /* margin-top: 145px; */
+  ${media.medium`
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    max-width: 100%;
+  `}
+  ${media.small`
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  `}
 `;
 
 const Observer = styled.div`
   width: 100%;
-  height: 20px;
+  height: 50px;
+  // background-color: yellow;
 `;
