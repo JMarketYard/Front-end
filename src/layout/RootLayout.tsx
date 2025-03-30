@@ -1,12 +1,16 @@
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import ResponsiveHeader from '../components/ResponsiveHeader';
+import Footer from '../components/Footer';
 
 const RootLayout = () => {
   return (
     <Wrapper>
       <ResponsiveHeader />
-      <Outlet />
+      <MainContent>
+        <Outlet />
+      </MainContent>
+      <Footer />
     </Wrapper>
   );
 };
@@ -19,4 +23,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: safe center;
   // justify-content: center;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
 `;
