@@ -48,9 +48,6 @@ const RaffleUploadPage = () => {
 
   registerLocale('ko', ko);
 
-  // const handleImg = () => {
-  //     fileRef?.current?.click();
-  // };
   const handleChangeImgInput = (e: React.ChangeEvent) => {
     const targetFiles = (e.target as HTMLInputElement).files as FileList;
     const targetFilesArr = Array.from(targetFiles).slice(0, 10);
@@ -89,7 +86,7 @@ const RaffleUploadPage = () => {
     if (ticketNum === '' || jcare === '' || deliveryFee === '')
       return alert('거래 설정을 모두 입력해주세요');
     if (startDate >= endDate) return alert('개최 기간이 올바르지 않습니다');
-    if (parseInt(deliveryFee) > 10000)
+    if (parseInt(deliveryFee.replace(',', '')) > 10000)
       return alert('배송비는 최대 1만원까지 입력 가능합니다');
 
     const formData = new FormData();
@@ -103,10 +100,18 @@ const RaffleUploadPage = () => {
     formData.append('description', description);
     formData.append('ticketNum', parseInt(ticketNum).toString());
     formData.append('minTicket', leastTicketNum.replace(',', ''));
-    formData.append('startAt', startDate.toISOString().replace('Z', ''));
-    formData.append('endAt', endDate.toISOString().replace('Z', ''));
+    const offset = 1000 * 60 * 60 * 9;
+    formData.append(
+      'startAt',
+      new Date(startDate.getTime() + offset).toISOString().replace('Z', ''),
+    );
+    formData.append(
+      'endAt',
+      new Date(endDate.getTime() + offset).toISOString().replace('Z', ''),
+    );
     formData.append('deliveryFee', deliveryFee.replace(',', ''));
-    console.log('제출버튼클릭');
+    // console.log('제출버튼클릭');
+    // console.log(formData.get('startAt'), formData.get('endAt'));
 
     openModal(({ onClose }) => (
       <UploadModal
