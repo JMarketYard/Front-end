@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import BigTitle from "../../components/BigTitle";
-import SmallTitle from "../../components/SmallTitle";
-import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../apis/axiosInstance";
-import { useAuth } from "../../context/AuthContext";
+import React from 'react';
+import styled from 'styled-components';
+import BigTitle from '../../components/BigTitle';
+import SmallTitle from '../../components/SmallTitle';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../apis/axiosInstance';
+import { useAuth } from '../../context/AuthContext';
 
 const Setting: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Setting: React.FC = () => {
   };
 
   /** ✅ 로그아웃 처리 API */
-  const handleLogout = async () => { 
+  const handleLogout = async () => {
     logout();
     // try {
     //   const response = await axiosInstance.post("/api/permit/logout");
@@ -34,11 +34,11 @@ const Setting: React.FC = () => {
 
   const handleAccountDeletion = () => {
     const confirmDeletion = window.confirm(
-      "정말 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+      '정말 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
     );
     if (confirmDeletion) {
-      alert("계정이 삭제되었습니다.");
-      navigate("/");
+      alert('계정이 삭제되었습니다.');
+      navigate('/');
     }
   };
 
@@ -48,13 +48,15 @@ const Setting: React.FC = () => {
         <BigTitle>설정</BigTitle>
       </BigTitleWrapper>
       <SmallTitleBox>
-        <SmallTitle onClick={() => handleNavigation("/address")}>
+        <SmallTitle onClick={() => handleNavigation('/mypage/address')}>
           배송지 설정
         </SmallTitle>
-        <SmallTitle onClick={() => handleNavigation("/mypage/payment")}>
+        <SmallTitle onClick={() => handleNavigation('/mypage/payment')}>
           결제 정보 설정
         </SmallTitle>
-        <SmallTitle onClick={() => handleNavigation("/mypage/public-information-set")}>
+        <SmallTitle
+          onClick={() => handleNavigation('/mypage/public-information-set')}
+        >
           공개 정보 설정
         </SmallTitle>
         <SmallTitle onClick={handleAccountDeletion}>계정 탈퇴</SmallTitle>
