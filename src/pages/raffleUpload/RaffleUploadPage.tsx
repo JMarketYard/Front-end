@@ -73,6 +73,7 @@ const RaffleUploadPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
+
     const description = (
       document.getElementById('upload-textarea') as HTMLInputElement
     ).value;
