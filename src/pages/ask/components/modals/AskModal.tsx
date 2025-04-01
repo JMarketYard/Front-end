@@ -1,20 +1,62 @@
-import React from 'react';
-import Modal from '../Modal';
+import React, { useState } from 'react';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import questionVector from '../../../assets/questionVector.png';
+import questionVector from '../../../../assets/questionVector.png';
+import axiosInstance from '../../../../apis/axiosInstance';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import AskOkModal from './AskOkModal';
 
 interface ModalProps {
   onClose: () => void;
+  type: string | undefined;
+  title: string;
+  content: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AskModal: React.FC<ModalProps> = ({ onClose }) => {
+const AskModal: React.FC<ModalProps> = ({
+  onClose,
+  type,
+  title,
+  content,
+  setTitle,
+  setContent,
+}) => {
+  const { openModal } = useModalContext();
+  const [clicked, setClicked] = useState<boolean>(false);
+
+  const onAskOk = () => {
+    if (clicked) return;
+    const postAsk = async () => {
+      await axiosInstance
+        .post('/api/member/inquiry', {
+          raffleId: Number(type),
+          title,
+          content,
+        })
+        .then((_) => {
+          setTitle('');
+          setContent('');
+          setClicked(false);
+          console.log('postAsk OK');
+        })
+        .then((_) =>
+          openModal(({ onClose }) => (
+            <AskOkModal onClose={onClose} type={type} />
+          )),
+        );
+    };
+    setClicked(true);
+    postAsk();
+  };
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
         <Title>문의를 작성하시겠습니까?</Title>
         <Short>해당 문의는 삭제할 수 없습니다.</Short>
-        <Button onClick={onClose}>문의하기</Button>
+        <Button onClick={onAskOk}>문의하기</Button>
       </Container>
     </Modal>
   );

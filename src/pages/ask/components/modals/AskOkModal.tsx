@@ -1,19 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
 import Modal from '../../../../components/Modal/Modal';
-import smileVector from '../../../assets/SmileVector.png';
+import smileVector from '../../../../assets/SmileVector.png';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
+  type: string | undefined;
 }
 
-const AskOkModal: React.FC<ModalProps> = ({ onClose }) => {
+const AskOkModal: React.FC<ModalProps> = ({ onClose, type }) => {
+  const navigate = useNavigate();
+  const onClickBtn = () => {
+    onClose();
+    navigate(`/raffles/${type}`);
+  };
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={smileVector} />
         <Title>문의 작성이 완료되었습니다</Title>
-        <Button onClick={onClose}>래플로 돌아가기</Button>
+        <Button onClick={onClickBtn}>래플로 돌아가기</Button>
       </Container>
     </Modal>
   );
