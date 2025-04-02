@@ -104,7 +104,7 @@ const Menu = styled.ul`
 
 const MenuItem = styled.li<{ isLast: boolean }>`
   position: relative;
-  padding: 0 16px 0 ${({ isFirst }) => (isFirst ? '0' : '110px')};
+  margin-left: ${({ isFirst }) => (isFirst ? '0' : '120px')};
   font-weight: 400;
   cursor: pointer;
   color: #8F8E94;
@@ -118,7 +118,7 @@ const MenuItem = styled.li<{ isLast: boolean }>`
   &::after {
     content: ${({ isLast }) => (isLast ? "''" : "'|'")};
     position: absolute;
-    right: -48px;
+    right: -65px;
     color: #8F8E94;
   }
 `;
