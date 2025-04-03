@@ -76,6 +76,16 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
     ));
   };
 
+  const handleDelete = async () => {
+    // openModal(({ onClose }) => (
+    //   <RandomModal
+    //     onClose={onClose}
+    //     image={raffle.imageUrls[0]}
+    //     {...drawData}
+    //   />
+    // ));
+  };
+
   const formatDate = (isoString: string) =>
     new Date(isoString).toLocaleString('ko-KR', {
       year: 'numeric',
@@ -102,7 +112,10 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
           )}
         </ImgSlider>
         <DetailLayout>
-          <ItemTitleBox>{raffle.name}</ItemTitleBox>
+          <ItemTitleBox>
+            {raffle.name}
+            <DeleteBox onClick={handleDelete}>래플 삭제</DeleteBox>
+          </ItemTitleBox>
           <ViewBox>
             조회 {raffle.view} · 찜 {likeCount}
           </ViewBox>
@@ -316,8 +329,8 @@ const ItemTitleBox = styled.p`
   display: flex;
   width: 100%;
   height: 29px;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   flex-shrink: 0;
   margin-bottom: 15px;
 
@@ -328,6 +341,28 @@ const ItemTitleBox = styled.p`
   font-weight: 700;
   line-height: 150%; /* 33px */
 `;
+
+const DeleteBox = styled.div`
+  display: flex;
+  width: 86px;
+  height: 25px;
+  padding: 0px 8px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 31px;
+  border: 1px solid var(--Main-Grey, #8f8e94);
+
+  color: var(--Main-Grey, #8f8e94);
+  text-align: center;
+  font-family: 'Pretendard Variable';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 36.832px; /* 245.546% */
+  cursor: pointer;
+`;
+
 const ViewBox = styled.div`
   display: flex;
   width: 110px;
@@ -370,6 +405,7 @@ const DetailContainer = styled.div`
   gap: 50px;
   padding-bottom: 26px;
 `;
+
 const TitleBox = styled.div`
   display: inline-block;
   min-width: 59px;
