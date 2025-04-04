@@ -163,11 +163,14 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 `;
-
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 const Input = styled.input<{ isError: boolean }>`
   border-radius: 7px;
   border: 1px solid #000;
-  width: 200px;
+  width: 190px;
   height: 39px;
   flex-shrink: 0;
   display: inline-flex;
@@ -210,7 +213,7 @@ const Row = styled.div`
 
 const SelectWrapper = styled.div`
   position: relative;
-  width: 110px;
+  width: 120px;
 `;
 
 const SelectBox = styled.div`
@@ -245,8 +248,7 @@ const Options = styled.ul`
   left: 0;
   width: 100%;
   background-color: white;
-  border: 1px solid #eee;
-  border-radius: 10px;
+  border: 0.5px solid #f5f5f5;
   max-height: 180px;
   overflow-y: auto;
   z-index: 10;
@@ -257,13 +259,11 @@ const Option = styled.li`
   cursor: pointer;
   font-size: 14px;
 
+  border: 0.5px solid #f5f5f5;
   &:hover {
-    background-color: #f7f7f7;
+    border: 0.5px solid #c908ff;
+    background: #fff;
   }
-`;
-const InputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 
 const Error = styled.div`

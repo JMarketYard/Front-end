@@ -23,14 +23,16 @@ const ResultPage: React.FC = () => {
   const navigate = useNavigate();
   const { openModal } = useModalContext();
 
-  const raffleStatus = location.state?.status;
+  const deliveryStatus = 'READY';
+  const raffleStatus = 'ENDED';
+  // const raffleStatus = location.state?.status;
   const raffleId =
     location.state?.raffleId ?? deliveryData?.raffleId ?? raffleData?.raffleId;
   const deliveryId = location.state?.deliveryId ?? deliveryData?.deliveryId;
   const minTicket = deliveryData?.minTicket ?? raffleData?.minTicket ?? 0;
   const applyTicket = deliveryData?.applyTicket ?? raffleData?.applyTicket ?? 0;
   const totalAmount = deliveryData?.totalAmount ?? raffleData?.totalAmount ?? 0;
-  const deliveryStatus = deliveryData?.deliveryStatus;
+  // const deliveryStatus = deliveryData?.deliveryStatus;
   const address = deliveryData?.address;
 
   useEffect(() => {
