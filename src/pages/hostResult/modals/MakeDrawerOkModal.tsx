@@ -4,7 +4,6 @@ import Modal from '../../../components/Modal/Modal';
 import smileVector from '../../../assets/SmileVector.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import { DeliverySuccessResult } from '../types/hostResponseTypes';
 import { useEffect, useState } from 'react';
 
 interface ModalProps {
@@ -21,7 +20,7 @@ const MakeDrawerOkModal: React.FC<ModalProps> = ({
   deliveryId,
 }) => {
   const navigate = useNavigate();
-  const [delivery, setDelivery] = useState<DeliverySuccessResult>({
+  const [delivery, setDelivery] = useState({
     raffleId: 0,
     winnerId: 0,
     deliveryId: 0,

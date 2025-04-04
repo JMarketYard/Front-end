@@ -2,18 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
 import smileVector from '../../../assets/SmileVector.png';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
 }
 
 const DeliverOkModal: React.FC<ModalProps> = ({ onClose }) => {
+  const navigate = useNavigate();
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={smileVector} />
         <Title>운송장 입력이 완료되었습니다</Title>
-        <Button onClick={onClose}>홈 화면으로 돌아가기</Button>
+        <Button onClick={() => navigate('/')}>홈 화면으로 돌아가기</Button>
       </Container>
     </Modal>
   );

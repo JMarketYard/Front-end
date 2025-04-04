@@ -70,16 +70,9 @@ const WinnerPage: React.FC = () => {
     shippingExtended: false,
   };
 
-  const [winnerData, setWinnerData] = useState<TWinner>(initialWinnerData);
+  const [winnerData, setWinnerData] = useState<TWinner>();
 
-  const [address, setAddress] = useState<TAddress>({
-    addressId: 0,
-    addressName: '장마당',
-    recipientName: '장마당',
-    addressDetail: '서울특별시 와우산로 94 홍익대학교 제2기숙사',
-    phoneNumber: '010-1234-5678',
-    isDefault: true,
-  });
+  const [address, setAddress] = useState<TAddress>();
 
   const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
@@ -290,7 +283,10 @@ const WinnerPage: React.FC = () => {
           </InfoLayout>
 
           <ButtonLayout>
-            <KakaoButtons onClick={handleNextModal}>
+            <KakaoButtons
+              onClick={handleNextModal}
+              disabled={!checked || !address}
+            >
               <ResponsiveIcon icon="raphael:bubble" />
               <Kakao>카카오페이로 결제하기</Kakao>
             </KakaoButtons>
@@ -806,6 +802,12 @@ const KakaoButtons = styled.button`
   border: 0;
   background-color: #fbe44e;
   color: black;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #d3d3d3; /* 회색 */
+    color: #888;
+  }
 `;
 
 const Kakao = styled.div`
