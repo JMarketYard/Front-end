@@ -15,11 +15,9 @@ import { useModalContext } from '../../../components/Modal/context/ModalContext'
 import { useAuth } from '../../../context/AuthContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
-import useRaffleStore from '../../../store/raffleStore';
 import DeleteModal from './modals/DeleteModal';
 
 const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
-  const { isApplying, isChecked } = useRaffleStore();
   const [isLiked, setIsLiked] = useState<boolean>(raffle.likeStatus);
   const [likeCount, setLikeCount] = useState<number>(raffle.likeCount);
   const navigate = useNavigate();
@@ -32,7 +30,7 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   useEffect(() => {
     setIsLiked(raffle.likeStatus ?? false);
     setLikeCount(raffle.likeCount ?? 0);
-  }, [raffle.likeStatus, raffle.likeCount, isApplying, isChecked]);
+  }, [raffle.likeStatus, raffle.likeCount]);
 
   const toggleLike = async () => {
     if (raffle.likeStatus === undefined) {

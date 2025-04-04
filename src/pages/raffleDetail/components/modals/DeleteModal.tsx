@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import questionVector from '../../../assets/questionVector.png';
+import questionVector from '../../../../assets/questionVector.png';
 import axiosInstance from '../../../../apis/axiosInstance';
 import useDeliveryStore from '../../../../store/deliveryStore';
 import { useModalContext } from '../../../../components/Modal/context/ModalContext';

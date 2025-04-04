@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Modal from '../../../../components/Modal/Modal';
-import smileVector from '../../../assets/SmileVector.png';
+import smileVector from '../../../../assets/SmileVector.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface ModalProps {
