@@ -7,7 +7,7 @@ import ApplyOkModal from './ApplyOkModal';
 import ApplyFailModal from './ApplyFailModal';
 import axiosInstance from '../../../../apis/axiosInstance';
 import axios from 'axios';
-import { ApplyResponse, ApplyFailResponse } from '../tyoes/applyType';
+import { ApplyResponse, ApplyFailResponse } from '../types/applyType';
 import { useParams } from 'react-router-dom';
 import useRaffleStore from '../../../../store/raffleStore';
 
@@ -38,8 +38,8 @@ const ApplyModal: React.FC<ModalProps> = ({
         {},
       );
       console.log('응모성공');
-
       setIsApplying(!isApplying);
+      //status 반영시키기
       openModal(({ onClose }) => (
         <ApplyOkModal onClose={onClose} resultTime={resultTime} image={image} />
       ));

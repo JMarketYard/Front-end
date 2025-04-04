@@ -9,22 +9,20 @@ import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import FollowFailModal from './modals/FollowFailModal';
-import useRaffleStore from '../../../store/raffleStore';
 
 interface MarketProps extends RaffleDetailProps {
   type?: string;
+  setFollowingState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
-  const { followingState, setFollowingState } = useRaffleStore();
+const Market: React.FC<MarketProps> = ({
+  type,
+  setFollowingState,
+  ...raffle
+}) => {
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
-  const { openModal } = useModalContext();
   const handleOpenModal = OpenLogInModal();
-
-  const handleFollowFail = () => {
-    openModal(({ onClose }) => <FollowFailModal onClose={onClose} />);
-  };
 
   const handleFollow = async () => {
     if (raffle.followStatus) {
@@ -34,7 +32,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
           { params: { storeId: raffle.storeId } },
         );
         console.log('상점 언팔로우 : ', data.message);
-        setFollowingState(!followingState);
+        setFollowingState((prev) => !prev);
       } catch (error) {
         console.error('에러 : 팔로우 상태가 아님', error);
       }
@@ -46,7 +44,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
           { params: { storeId: raffle.storeId } },
         );
         console.log('상점 팔로우 : ', data.message);
-        setFollowingState(!followingState);
+        setFollowingState((prev) => !prev);
       } catch (error) {
         console.error('에러 : 이미 팔로잉 중', error);
       }
@@ -96,13 +94,7 @@ const Market: React.FC<MarketProps> = ({ type, ...raffle }) => {
       </MarketLayout>
       <ButtonLayout>
         {raffle.userStatus === 'host' && (
-          <FollowFailButton
-            onClick={() => {
-              handleFollowFail(); // 내 계정은 팔로우 할 수 없습니다.
-            }}
-          >
-            팔로우하기
-          </FollowFailButton>
+          <FollowFailButton>팔로우하기</FollowFailButton>
         )}
         {raffle.userStatus !== 'host' && (
           <FollowButton

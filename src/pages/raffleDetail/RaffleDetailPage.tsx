@@ -6,6 +6,8 @@ import Probability from './components/Probability';
 import axiosInstance from '../../apis/axiosInstance';
 import { useParams, useLocation } from 'react-router-dom';
 import { TRaffleDetail, RaffleDetailProps } from '../../types/RaffleDetail';
+import useRaffleStore from '../../store/raffleStore';
+import { getClientId } from './utils/clientId';
 
 const RaffleDetailPage: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
@@ -33,15 +35,25 @@ const RaffleDetailPage: React.FC = () => {
     followStatus: false,
     storeImageUrl: '',
   });
-
+  const clientId = getClientId();
   const typeNumber = type ? parseInt(type, 10) : undefined;
-
+  const isApplying = useRaffleStore((s) => {
+    console.log('리렌더링 확인:', s.isApplying);
+    return s.isApplying;
+  });
+  const isChecked = useRaffleStore((s) => s.isChecked);
+  const [followingState, setFollowingState] = useState<boolean>(false);
   useEffect(() => {
     console.log('래플 상세보기 useEffect');
     const fetchRaffleData = async () => {
       try {
         const { data }: { data: TRaffleDetail } = await axiosInstance.get(
           `/api/permit/raffles/${typeNumber}`,
+          // {
+          //   headers: {
+          //     'X-Client-Id': clientId,
+          //   },
+          // },
         );
 
         console.log('API Response:', data.result);
@@ -52,13 +64,17 @@ const RaffleDetailPage: React.FC = () => {
     };
 
     fetchRaffleData();
-  }, []);
+  }, [isApplying, followingState, isChecked]);
 
   return (
     <Wrapper>
       <Item {...raffleData} />
       <MoreInfoLayout>
-        <Market {...raffleData} type={type} />
+        <Market
+          {...raffleData}
+          type={type}
+          setFollowingState={setFollowingState}
+        />
         <Probability {...raffleData} />
       </MoreInfoLayout>
     </Wrapper>

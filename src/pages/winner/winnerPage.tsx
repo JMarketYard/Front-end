@@ -52,35 +52,8 @@ const WinnerPage: React.FC = () => {
   };
   const { deliveryStatus, setDeliveryStatus } = useDeliveryStore();
 
-  const initialWinnerData: TWinner = {
-    raffleId: 0,
-    winnerId: 0,
-    deliveryStatus: 'SHIPPED', // TDeliveryStatus 중 하나
-    addressDeadline: '2025-03-29T07:07:00',
-    shippingDeadline: '2025-03-29T07:07:00',
-    shippingFee: 4000,
-    invoiceNumber: '125462',
-    address: null, // 또는 초기 address 객체
-    raffleInfo: {
-      raffleName: '다영이의 텀블러',
-      raffleImage: '',
-      drawAt: '2025-03-29T07:07:00',
-      extendableMinutes: 0,
-    },
-    shippingExtended: false,
-  };
-
-  const [winnerData, setWinnerData] = useState<TWinner>(initialWinnerData);
-
-  const [address, setAddress] = useState<TAddress>({
-    addressId: 0,
-    addressName: '장마당',
-    recipientName: '장마당',
-    addressDetail: '서울특별시 와우산로 94 홍익대학교 제2기숙사',
-    phoneNumber: '010-1234-5678',
-    isDefault: true,
-  });
-
+  const [winnerData, setWinnerData] = useState<TWinner>();
+  const [address, setAddress] = useState<TAddress>();
   const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
@@ -290,7 +263,10 @@ const WinnerPage: React.FC = () => {
           </InfoLayout>
 
           <ButtonLayout>
-            <KakaoButtons onClick={handleNextModal}>
+            <KakaoButtons
+              onClick={handleNextModal}
+              disabled={!checked || !address}
+            >
               <ResponsiveIcon icon="raphael:bubble" />
               <Kakao>카카오페이로 결제하기</Kakao>
             </KakaoButtons>
@@ -806,6 +782,12 @@ const KakaoButtons = styled.button`
   border: 0;
   background-color: #fbe44e;
   color: black;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #d3d3d3; /* 회색 */
+    color: #888;
+  }
 `;
 
 const Kakao = styled.div`

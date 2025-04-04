@@ -15,10 +15,9 @@ import { useModalContext } from '../../../components/Modal/context/ModalContext'
 import { useAuth } from '../../../context/AuthContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
-import useRaffleStore from '../../../store/raffleStore';
+import DeleteModal from './modals/DeleteModal';
 
 const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
-  const { isApplying, isChecked } = useRaffleStore();
   const [isLiked, setIsLiked] = useState<boolean>(raffle.likeStatus);
   const [likeCount, setLikeCount] = useState<number>(raffle.likeCount);
   const navigate = useNavigate();
@@ -31,7 +30,7 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   useEffect(() => {
     setIsLiked(raffle.likeStatus ?? false);
     setLikeCount(raffle.likeCount ?? 0);
-  }, [raffle.likeStatus, raffle.likeCount, isApplying, isChecked]);
+  }, [raffle.likeStatus, raffle.likeCount]);
 
   const toggleLike = async () => {
     if (raffle.likeStatus === undefined) {
@@ -76,6 +75,12 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
     ));
   };
 
+  const handleDelete = async () => {
+    openModal(({ onClose }) => (
+      <DeleteModal onClose={onClose} raffleId={raffleId} />
+    ));
+  };
+
   const formatDate = (isoString: string) =>
     new Date(isoString).toLocaleString('ko-KR', {
       year: 'numeric',
@@ -96,13 +101,24 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
             raffle.raffleStatus === 'CANCELLED' ||
             raffle.raffleStatus === 'COMPLETED') && (
             <>
-              <RaffleClosingBox>응모 마감</RaffleClosingBox>
               <EndBox />
+              <RaffleClosingBox>응모 마감</RaffleClosingBox>
+            </>
+          )}
+          {raffle.raffleStatus === 'UNOPENED' && (
+            <>
+              <EndBox />
+              <RaffleClosingBox>응모 오픈 전</RaffleClosingBox>
             </>
           )}
         </ImgSlider>
         <DetailLayout>
-          <ItemTitleBox>{raffle.name}</ItemTitleBox>
+          <ItemTitleBox>
+            {raffle.name}
+            {raffle.userStatus === 'host' && (
+              <DeleteBox onClick={handleDelete}>래플 삭제</DeleteBox>
+            )}
+          </ItemTitleBox>
           <ViewBox>
             조회 {raffle.view} · 찜 {likeCount}
           </ViewBox>
@@ -316,8 +332,8 @@ const ItemTitleBox = styled.p`
   display: flex;
   width: 100%;
   height: 29px;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   flex-shrink: 0;
   margin-bottom: 15px;
 
@@ -328,6 +344,28 @@ const ItemTitleBox = styled.p`
   font-weight: 700;
   line-height: 150%; /* 33px */
 `;
+
+const DeleteBox = styled.div`
+  display: flex;
+  width: 86px;
+  height: 25px;
+  padding: 0px 8px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 31px;
+  border: 1px solid var(--Main-Grey, #8f8e94);
+
+  color: var(--Main-Grey, #8f8e94);
+  text-align: center;
+  font-family: 'Pretendard Variable';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 36.832px; /* 245.546% */
+  cursor: pointer;
+`;
+
 const ViewBox = styled.div`
   display: flex;
   width: 110px;
@@ -370,6 +408,7 @@ const DetailContainer = styled.div`
   gap: 50px;
   padding-bottom: 26px;
 `;
+
 const TitleBox = styled.div`
   display: inline-block;
   min-width: 59px;
@@ -583,5 +622,5 @@ const EndBox = styled.div`
 
   border-radius: 5px;
   background: rgba(193, 193, 193, 0.8);
-  z-index: 5;
+  z-index: 9;
 `;

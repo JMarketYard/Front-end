@@ -1,47 +1,42 @@
 import React from 'react';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import Modal from '../../../components/Modal/Modal';
-import questionVector from '../../../assets/questionVector.png';
-import { Navigate, useNavigate } from 'react-router-dom';
-import axiosInstance from '../../../apis/axiosInstance';
-import { useModalContext } from '../../../components/Modal/context/ModalContext';
-import CancelOkModal from './CancelOkModal copy';
+import questionVector from '../../../../assets/questionVector.png';
+import axiosInstance from '../../../../apis/axiosInstance';
+import useDeliveryStore from '../../../../store/deliveryStore';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import DeleteOkModal from './DeleteOkModal';
 
 interface ModalProps {
   onClose: () => void;
   raffleId: number;
 }
 
-const CancleModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
-  const navigate = useNavigate();
+const DeleteModal: React.FC<ModalProps> = ({ onClose, raffleId: raffleId }) => {
+  const { setDeliveryStatus } = useDeliveryStore();
   const { openModal } = useModalContext();
   const handleClick = async () => {
     try {
-      const { data } = await axiosInstance.post(
-        `/api/member/raffles/${raffleId}/cancel`,
-      );
-      openModal(({ onClose }) => (
-        <CancelOkModal onClose={onClose} raffleId={raffleId} />
-      ));
+      await axiosInstance.patch(`/api/member/raffles/${raffleId}`);
+      openModal(({ onClose }) => <DeleteOkModal onClose={onClose} />);
     } catch (error) {
-      console.error('POST 요청 실패', error);
+      console.error(error);
     } finally {
       onClose();
     }
   };
+
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
-        <Title>해당 래플을 강제종료 하겠습니까?</Title>
-        <Short>종료한 래플은 재개할 수 없습니다.</Short>
-        <Button onClick={handleClick}>강제종료하기</Button>
+        <Title>래플을 삭제하시겠습니까?</Title>
+        <Short>해당 결정은 번복할 수 없습니다.</Short>
+        <Button onClick={handleClick}>래플 삭제하기</Button>
       </Container>
     </Modal>
   );
 };
-
-export default CancleModal;
 
 const Short = styled.div`
   margin-bottom: 127px;
@@ -89,3 +84,5 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export default DeleteModal;

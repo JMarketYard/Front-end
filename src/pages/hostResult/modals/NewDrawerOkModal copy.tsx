@@ -11,26 +11,14 @@ interface ModalProps {
   raffleId: number;
 }
 //미추첨 당첨자 뽑기 완료
-const MakeDrawerOkModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
+const NewDrawerOkModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   const navigate = useNavigate();
-  // const [delivery, setDelivery] = useState({
-  //   raffleId: 0,
-  //   winnerId: 0,
-  //   deliveryId: 0,
-  //   minTicket: 0,
-  //   applyTicket: 0,
-  //   finalAmount: 0,
-  //   deliveryStatus: '',
-  //   shippingDeadline: null,
-  //   isExtendShipping: null,
-  //   address: null,
-  // });
 
   return (
     <Modal onClose={() => navigate(`/raffles/${raffleId}`)}>
       <Container>
         <Img src={smileVector} />
-        <Title>당첨자 추첨 완료!</Title>
+        <Title>새로운 당첨자 추첨 완료!</Title>
         <Button onClick={() => navigate(`/raffles/${raffleId}`)}>
           내 래플로 이동하기
         </Button>
@@ -86,4 +74,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default MakeDrawerOkModal;
+export default NewDrawerOkModal;
