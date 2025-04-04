@@ -115,7 +115,9 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
         <DetailLayout>
           <ItemTitleBox>
             {raffle.name}
-            <DeleteBox onClick={handleDelete}>래플 삭제</DeleteBox>
+            {raffle.userStatus === 'host' && (
+              <DeleteBox onClick={handleDelete}>래플 삭제</DeleteBox>
+            )}
           </ItemTitleBox>
           <ViewBox>
             조회 {raffle.view} · 찜 {likeCount}

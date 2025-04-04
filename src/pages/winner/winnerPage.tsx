@@ -51,39 +51,12 @@ const WinnerPage: React.FC = () => {
     setChecked(event.target.checked);
   };
   const { deliveryStatus, setDeliveryStatus } = useDeliveryStore();
-  // const [winnerData, setWinnerData] = useState<TWinner>();
-  // const [address, setAddress] = useState<TAddress>();
+
+  const [winnerData, setWinnerData] = useState<TWinner>();
+  const [address, setAddress] = useState<TAddress>();
   const [raffleId, setRaffleId] = useState<number>(0);
   const queryParams = new URLSearchParams(location.search);
   const approvedAt = queryParams.get('approvedAt');
-  const initialWinnerData: TWinner = {
-    raffleId: 0,
-    winnerId: 0,
-    deliveryStatus: 'SHIPPED', // TDeliveryStatus 중 하나
-    addressDeadline: '2025-03-29T07:07:00',
-    shippingDeadline: '2025-03-29T07:07:00',
-    shippingFee: 4000,
-    invoiceNumber: '125462',
-    address: null, // 또는 초기 address 객체
-    raffleInfo: {
-      raffleName: '다영이의 텀블러',
-      raffleImage: '',
-      drawAt: '2025-03-29T07:07:00',
-      extendableMinutes: 0,
-    },
-    shippingExtended: false,
-  };
-
-  const [winnerData, setWinnerData] = useState<TWinner>(initialWinnerData);
-  setDeliveryStatus('READY');
-  const [address, setAddress] = useState<TAddress>({
-    addressId: 0,
-    addressName: '장마당',
-    recipientName: '장마당',
-    addressDetail: '서울특별시 와우산로 94 홍익대학교 제2기숙사',
-    phoneNumber: '010-1234-5678',
-    isDefault: true,
-  });
 
   useEffect(() => {
     //배송비 결제 이후
@@ -120,22 +93,22 @@ const WinnerPage: React.FC = () => {
   //결제코드 끝
 
   useEffect(() => {
-    // const fetchAddress = async () => {
-    //   try {
-    //     const { data } = await axiosInstance.get(
-    //       `/api/member/delivery/${deliveryId}/winner`,
-    //     );
-    //     setWinnerData(data.result);
-    //     setDeliveryStatus(data.result.deliveryStatus);
-    //     setAddress(data.result.address);
-    //     setRaffleId(data.result.raffleId);
-    //     console.log(data.result);
-    //     console.log(data.result.address);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // };
-    // fetchAddress();
+    const fetchAddress = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/member/delivery/${deliveryId}/winner`,
+        );
+        setWinnerData(data.result);
+        setDeliveryStatus(data.result.deliveryStatus);
+        setAddress(data.result.address);
+        setRaffleId(data.result.raffleId);
+        console.log(data.result);
+        console.log(data.result.address);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAddress();
   }, [deliveryStatus]);
 
   const handleGiveUpModal = () => {
