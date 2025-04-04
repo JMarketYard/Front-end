@@ -101,8 +101,14 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
             raffle.raffleStatus === 'CANCELLED' ||
             raffle.raffleStatus === 'COMPLETED') && (
             <>
-              <RaffleClosingBox>응모 마감</RaffleClosingBox>
               <EndBox />
+              <RaffleClosingBox>응모 마감</RaffleClosingBox>
+            </>
+          )}
+          {raffle.raffleStatus === 'UNOPENED' && (
+            <>
+              <EndBox />
+              <RaffleClosingBox>응모 오픈 전</RaffleClosingBox>
             </>
           )}
         </ImgSlider>
@@ -614,5 +620,5 @@ const EndBox = styled.div`
 
   border-radius: 5px;
   background: rgba(193, 193, 193, 0.8);
-  z-index: 5;
+  z-index: 9;
 `;
