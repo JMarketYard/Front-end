@@ -19,6 +19,7 @@ const ProductCard: React.FC<RaffleProps> = ({
   finish,
   participantNum,
   like,
+  raffleStatus,
 }) => {
   const { isLiked, toggleLike, isProcessing } = useLike(like, raffleId);
   const { isAuthenticated, logout } = useAuth();
@@ -35,9 +36,9 @@ const ProductCard: React.FC<RaffleProps> = ({
             </>
           )}
 
-          {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
-            <TextBox>마감임박</TextBox>
-          )}
+          {raffleStatus != 'UNOPENED' &&
+            timeUntilEnd > 0 &&
+            timeUntilEnd <= 86400 && <TextBox>마감임박</TextBox>}
           <LikeBox
             onClick={(event) => {
               event.stopPropagation(); // 이벤트 전파 막기
@@ -113,6 +114,7 @@ const RaffleClosingBox = styled.div`
   flex-shrink: 0;
   border-radius: 4px;
   border: 2px solid #c908ff;
+  background-color: #d89ee8;
 
   position: absolute;
   top: 50%;

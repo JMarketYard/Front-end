@@ -48,7 +48,7 @@ export default function RandomOkModal({
         );
       };
       postCheck();
-      onClose(); // 모달 닫기
+      setIsChecked(!isChecked);
 
       if (win) {
         navigate(`/winner-page`, {
@@ -56,12 +56,14 @@ export default function RandomOkModal({
         }); //state로 devliery_id 전달
       } else {
         console.log('win? : ', win);
-        setIsChecked(!isChecked);
+
         console.log('래플 결과 확인 완료');
         navigate(`/raffles/${raffleId}`);
       }
     } catch (error) {
       console.log('에러 : ', error);
+    } finally {
+      onClose(); // 모달 닫기
     }
   };
 

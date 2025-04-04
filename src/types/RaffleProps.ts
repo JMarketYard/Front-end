@@ -1,3 +1,5 @@
+import { TRaffleStatus } from './RaffleDetail';
+
 interface RaffleProps {
   raffleId: number;
   imageUrls: string[];
@@ -7,6 +9,7 @@ interface RaffleProps {
   finish: boolean;
   participantNum: number;
   like: boolean;
+  raffleStatus: TRaffleStatus;
   children?: React.ReactNode;
 }
 
