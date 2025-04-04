@@ -7,7 +7,7 @@ import ApplyOkModal from './ApplyOkModal';
 import ApplyFailModal from './ApplyFailModal';
 import axiosInstance from '../../../../apis/axiosInstance';
 import axios from 'axios';
-import { ApplyResponse, ApplyFailResponse } from '../tyoes/applyType';
+import { ApplyResponse, ApplyFailResponse } from '../types/applyType';
 import { useParams } from 'react-router-dom';
 import useRaffleStore from '../../../../store/raffleStore';
 

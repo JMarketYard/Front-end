@@ -16,6 +16,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
 import useRaffleStore from '../../../store/raffleStore';
+import DeleteModal from './modals/DeleteModal';
 
 const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   const { isApplying, isChecked } = useRaffleStore();
@@ -77,13 +78,9 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   };
 
   const handleDelete = async () => {
-    // openModal(({ onClose }) => (
-    //   <RandomModal
-    //     onClose={onClose}
-    //     image={raffle.imageUrls[0]}
-    //     {...drawData}
-    //   />
-    // ));
+    openModal(({ onClose }) => (
+      <DeleteModal onClose={onClose} raffleId={raffleId} />
+    ));
   };
 
   const formatDate = (isoString: string) =>
