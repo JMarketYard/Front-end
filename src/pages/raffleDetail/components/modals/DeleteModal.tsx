@@ -1,41 +1,38 @@
 import React from 'react';
-import Modal from '../../../components/Modal/Modal';
+import Modal from '../../../../components/Modal/Modal';
 import styled from 'styled-components';
-import questionVector from '../../../assets/questionVector.png';
-import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../../../apis/axiosInstance';
-import useDeliveryStore from '../../../store/deliveryStore';
+import questionVector from '../../../../assets/questionVector.png';
+import axiosInstance from '../../../../apis/axiosInstance';
+import useDeliveryStore from '../../../../store/deliveryStore';
+import { useModalContext } from '../../../../components/Modal/context/ModalContext';
+import DeleteOkModal from './DeleteOkModal';
 
 interface ModalProps {
   onClose: () => void;
-  deliveryId: number;
+  raffleId: number;
 }
 
-const WaitShippingModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
-  const navigate = useNavigate();
+const DeleteModal: React.FC<ModalProps> = ({ onClose, raffleId: raffleId }) => {
   const { setDeliveryStatus } = useDeliveryStore();
-
+  const { openModal } = useModalContext();
   const handleClick = async () => {
     try {
-      await axiosInstance.post(
-        `/api/member/delivery/${deliveryId}/winner/wait`,
-        {},
-      );
-      setDeliveryStatus('READY');
+      await axiosInstance.patch(`/api/member/raffles/${raffleId}`);
+      openModal(({ onClose }) => <DeleteOkModal onClose={onClose} />);
     } catch (error) {
       console.error(error);
+    } finally {
+      onClose();
     }
-    onClose();
-    navigate(`/`);
   };
 
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
-        <Title>운송장을 기다리시겠습니까?</Title>
-        <Short>운송장 입력 시간을 최대 24시간 연장합니다.</Short>
-        <Button onClick={handleClick}>기다리기</Button>
+        <Title>래플을 삭제하시겠습니까?</Title>
+        <Short>해당 결정은 번복할 수 없습니다.</Short>
+        <Button onClick={handleClick}>래플 삭제하기</Button>
       </Container>
     </Modal>
   );
@@ -88,4 +85,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default WaitShippingModal;
+export default DeleteModal;

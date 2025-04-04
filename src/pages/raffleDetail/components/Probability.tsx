@@ -1,23 +1,32 @@
 import styled from 'styled-components';
-import React from 'react';
 import DonutChart from './DonutChart';
 import NpDonutChart from './NpDonutChart';
 import DonutText from './DonutText';
-import icMark from '../../../assets/raffleDetail/icon-mark.svg';
-import RaffleDetailProps from '../../../types/RaffleDetail';
+import { RaffleDetailProps } from '../../../types/RaffleDetail';
+import useRaffleStore from '../../../store/raffleStore';
+import React, { useEffect, useState } from 'react';
 
 const Probability: React.FC<RaffleDetailProps> = (raffle) => {
+  const { isApplying, isChecked } = useRaffleStore();
+  useEffect(() => {}, [isApplying, isChecked]);
+
   return (
     <Wrapper>
       {raffle.raffleStatus === 'UNOPENED' && (
-        <SmallContainer>
-          오픈 대기
-          <UnOpenBox>
-            해당 래플은 아직 개최되지
-            <br />
-            않았습니다.
-          </UnOpenBox>
-        </SmallContainer>
+        <>
+          <SmallContainer>
+            오픈 대기
+            <UnOpenBox>
+              해당 래플은 아직 개최되지
+              <br />
+              않았습니다.
+            </UnOpenBox>
+          </SmallContainer>
+          <PinkText>
+            찜하기 버튼을 누르면 래플 개최 시 <br />
+            이메일로 알림을 발송해드립니다.
+          </PinkText>
+        </>
       )}
 
       {raffle.raffleStatus === 'ACTIVE' && (
@@ -186,6 +195,20 @@ const SmallContainer = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 150%; /* 27px */
+`;
+
+const PinkText = styled.p`
+  width: 244px;
+  height: 40px;
+  margin-top: 27px;
+
+  color: #ff008c;
+  text-align: center;
+  font-family: 'Pretendard Variable';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 21px */
 `;
 
 const UnOpenBox = styled.div`

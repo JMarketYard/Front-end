@@ -1,20 +1,20 @@
 import React from 'react';
-import styled from 'styled-components';
 import Modal from '../../../components/Modal/Modal';
-import smileVector from '../../../assets/SmileVector.png';
-import { Navigate, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import sadVector from '../../../../assets/sadVector.png';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
 }
 
-const DeliverOkModal: React.FC<ModalProps> = ({ onClose }) => {
+const GiveUpOkModal: React.FC<ModalProps> = ({ onClose }) => {
   const navigate = useNavigate();
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={smileVector} />
-        <Title>운송장 입력이 완료되었습니다</Title>
+        <Img src={sadVector} />
+        <Title>당첨을 포기했습니다.</Title>
         <Button onClick={() => navigate('/')}>홈 화면으로 돌아가기</Button>
       </Container>
     </Modal>
@@ -58,4 +58,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default DeliverOkModal;
+export default GiveUpOkModal;

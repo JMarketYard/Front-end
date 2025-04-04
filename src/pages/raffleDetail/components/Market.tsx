@@ -3,7 +3,7 @@ import moreList from '../../../assets/homePage/moreList.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import icLevel from '../../../assets/raffleDetail/icon-level.svg';
-import RaffleDetailProps from '../../../types/RaffleDetail';
+import { RaffleDetailProps } from '../../../types/RaffleDetail';
 import axiosInstance from '../../../apis/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
@@ -22,12 +22,7 @@ const Market: React.FC<MarketProps> = ({
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
-  const { openModal } = useModalContext();
   const handleOpenModal = OpenLogInModal();
-
-  const handleFollowFail = () => {
-    openModal(({ onClose }) => <FollowFailModal onClose={onClose} />);
-  };
 
   const handleFollow = async () => {
     if (raffle.followStatus) {
@@ -99,13 +94,7 @@ const Market: React.FC<MarketProps> = ({
       </MarketLayout>
       <ButtonLayout>
         {raffle.userStatus === 'host' && (
-          <FollowFailButton
-            onClick={() => {
-              handleFollowFail(); // 내 계정은 팔로우 할 수 없습니다.
-            }}
-          >
-            팔로우하기
-          </FollowFailButton>
+          <FollowFailButton>팔로우하기</FollowFailButton>
         )}
         {raffle.userStatus !== 'host' && (
           <FollowButton

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import useDeliveryStore from '../store/deliveryStore';
+import useDeliveryStore from '../../../store/deliveryStore';
 
 interface ModalProps {
   onClose: () => void;
@@ -18,18 +18,20 @@ const GiveUpModal: React.FC<ModalProps> = ({
   raffleId,
 }) => {
   const navigate = useNavigate();
-  const { triggerRefetch } = useDeliveryStore();
+  const { setDeliveryStatus } = useDeliveryStore();
 
   const handleClick = async () => {
     try {
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         `/api/member/delivery/${deliveryId}/winner/cancel`,
         {},
       );
-      console.log('당첨포기!!');
+      setDeliveryStatus('CANCELLED');
       navigate(`/raffles/${raffleId}`);
     } catch (error) {
       console.error(error);
+    } finally {
+      onClose();
     }
   };
 
