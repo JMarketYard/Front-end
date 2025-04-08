@@ -2,22 +2,13 @@ import styled from 'styled-components';
 import BigTitle from '../../components/BigTitle';
 import imgUpload from '../../assets/imgUpload.svg';
 import imgArrow from '../../assets/imgSelectArrow.png';
-import React, {
-  FormEvent,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useRef, useState } from 'react';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
 import UploadModal from './modals/UploadModal';
 import TicketModal from './modals/TicketModal';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import media from '../../styles/media';
-import { ko } from 'date-fns/locale/ko';
-import Slider from 'react-slick';
 import ImgSlider from './components/imageSlider';
+import CustomCalendar from './components/CustomCalendar';
 
 const RaffleUploadPage = () => {
   const itemStates = [
@@ -36,8 +27,8 @@ const RaffleUploadPage = () => {
   const [itemState, setItemState] = useState<string>('');
   const [ticketNum, setTicketNum] = useState<string>('1개');
   const [jcare, setJcare] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<null | Date>(null);
+  const [endDate, setEndDate] = useState<null | Date>(null);
   const { openModal } = useModalContext();
   const [leastTicketNum, setLeastTicketNum] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -46,22 +37,16 @@ const RaffleUploadPage = () => {
   const [category, setCategory] = useState<string>('');
   const [deliveryFee, setDeliveryFee] = useState<string>('');
 
-  registerLocale('ko', ko);
+  // 응모 시작 시간 조건
+  const createdAt = new Date();
+  const minDateTime = new Date(createdAt.getTime() + 10 * 60 * 1000);
+  const maxDateTime = new Date(createdAt.getTime() + 7 * 24 * 60 * 60 * 1000);
 
   const handleChangeImgInput = (e: React.ChangeEvent) => {
     const targetFiles = (e.target as HTMLInputElement).files as FileList;
     const targetFilesArr = Array.from(targetFiles).slice(0, 10);
     console.log(targetFilesArr);
     setImages(targetFilesArr);
-  };
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    rows: 1,
-    arrows: true,
   };
 
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -85,6 +70,8 @@ const RaffleUploadPage = () => {
       return alert('상품 정보를 모두 입력해주세요');
     if (ticketNum === '' || jcare === '' || deliveryFee === '')
       return alert('거래 설정을 모두 입력해주세요');
+    if (startDate === null || endDate === null)
+      return alert('개최 기간을 설정해주세요');
     if (startDate >= endDate) return alert('개최 기간이 올바르지 않습니다');
     if (parseInt(deliveryFee.replace(',', '')) > 10000)
       return alert('배송비는 최대 1만원까지 입력 가능합니다');
@@ -299,35 +286,24 @@ const RaffleUploadPage = () => {
           </SetConditionBox>
           <SetConditionBox>
             <TitleSpan2>시작 일시</TitleSpan2>
-            <DatePickerBox>
-              <DatePicker
-                onKeyDown={(e) => {
-                  e.preventDefault();
-                }}
-                dateFormat="yyyy년 MM월 dd일 a hh:mm"
-                locale="ko"
-                dateFormatCalendar="yyyy년 MM월"
-                selected={startDate}
-                showTimeInput
-                onChange={(date) => date && setStartDate(date)}
-              />
-            </DatePickerBox>
+            <CustomCalendar
+              date={startDate}
+              setDate={setStartDate}
+              minDateTime={minDateTime}
+              maxDateTime={maxDateTime}
+            />
           </SetConditionBox>
           <SetConditionBox>
             <TitleSpan2>종료 일시</TitleSpan2>
-            <DatePickerBox>
-              <DatePicker
-                onKeyDown={(e) => {
-                  e.preventDefault();
-                }}
-                dateFormat="yyyy년 MM월 dd일 a hh:mm"
-                locale="ko"
-                dateFormatCalendar="yyyy년 MM월"
-                selected={endDate}
-                showTimeInput
-                onChange={(date) => date && setEndDate(date)}
-              />
-            </DatePickerBox>
+            {/* 최소 응모 기간 임의로 하루 설정 */}
+            <CustomCalendar
+              date={endDate}
+              setDate={setEndDate}
+              minDateTime={new Date(startDate?.getTime() + 24 * 60 * 60 * 1000)}
+              maxDateTime={
+                new Date(startDate?.getTime() + 30 * 24 * 60 * 60 * 1000)
+              }
+            />
           </SetConditionBox>
           <SetConditionBox>
             <TitleSpan2>배송비</TitleSpan2>
@@ -399,13 +375,13 @@ const ImgFileLabel = styled.label`
     cursor: pointer;
   }
 `;
-const SelectedImg = styled.img`
-  display: inline-block;
-  position: relative;
-  width: 261px;
-  height: 261px;
-  border-radius: 5px;
-`;
+// const SelectedImg = styled.img`
+//   display: inline-block;
+//   position: relative;
+//   width: 261px;
+//   height: 261px;
+//   border-radius: 5px;
+// `;
 const InputImgFile = styled.input`
   display: none;
 `;
@@ -586,34 +562,34 @@ const InputBox = styled.input`
   letter-spacing: -0.165px;
 `;
 
-const DatePickerBox = styled.div`
-  .react-datepicker__input-container {
-    width: 636px;
-    height: 45px;
-    border-radius: 7px;
-    border: 1px solid #8f8e94;
-    box-sizing: border-box;
-    padding: 0 10px;
-    display: flex;
+// const DatePickerBox = styled.div`
+//   .react-datepicker__input-container {
+//     width: 636px;
+//     height: 45px;
+//     border-radius: 7px;
+//     border: 1px solid #8f8e94;
+//     box-sizing: border-box;
+//     padding: 0 10px;
+//     display: flex;
 
-    ${media.medium`
-            width: 464px;
-        `}
-  }
+//     ${media.medium`
+//             width: 464px;
+//         `}
+//   }
 
-  input {
-    width: 100%;
-    font-size: 18px;
-    font-family: Pretendard;
-    font-style: normal;
-    line-height: 18px;
-    letter-spacing: -0.165px;
-    border: none;
-    outline: none;
-    readonly: true;
-    caret-color: transparent;
-  }
-`;
+//   input {
+//     width: 100%;
+//     font-size: 18px;
+//     font-family: Pretendard;
+//     font-style: normal;
+//     line-height: 18px;
+//     letter-spacing: -0.165px;
+//     border: none;
+//     outline: none;
+//     readonly: true;
+//     caret-color: transparent;
+//   }
+// `;
 
 const SubmitBtn = styled.input`
   width: 424px;
