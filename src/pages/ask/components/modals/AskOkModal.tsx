@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Modal from '../../../../components/Modal/Modal';
 import smileVector from '../../../../assets/SmileVector.png';
@@ -7,14 +7,18 @@ import { useNavigate } from 'react-router-dom';
 interface ModalProps {
   onClose: () => void;
   type: string | undefined;
+  setIsReload: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AskOkModal: React.FC<ModalProps> = ({ onClose, type }) => {
+const AskOkModal: React.FC<ModalProps> = ({ onClose, type, setIsReload }) => {
   const navigate = useNavigate();
+  // const [isreload, setIsReload] = useState<boolean>(false);
+
   const onClickBtn = () => {
+    setIsReload(true);
     onClose();
-    navigate(`/raffles/${type}`);
   };
+
   return (
     <Modal onClose={onClose}>
       <Container>

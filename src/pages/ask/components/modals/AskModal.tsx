@@ -13,6 +13,7 @@ interface ModalProps {
   content: string;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setContent: React.Dispatch<React.SetStateAction<string>>;
+  setIsReload: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AskModal: React.FC<ModalProps> = ({
@@ -22,12 +23,13 @@ const AskModal: React.FC<ModalProps> = ({
   content,
   setTitle,
   setContent,
+  setIsReload,
 }) => {
   const { openModal } = useModalContext();
   const [clicked, setClicked] = useState<boolean>(false);
 
   const onAskOk = () => {
-    if (clicked) return;
+    if (clicked) return; // 더블클릭 방지
     const postAsk = async () => {
       await axiosInstance
         .post('/api/member/inquiry', {
@@ -41,11 +43,16 @@ const AskModal: React.FC<ModalProps> = ({
           setClicked(false);
           console.log('postAsk OK');
         })
-        .then((_) =>
+        .then((_) => {
           openModal(({ onClose }) => (
-            <AskOkModal onClose={onClose} type={type} />
-          )),
-        );
+            <AskOkModal
+              onClose={onClose}
+              type={type}
+              setIsReload={setIsReload}
+            />
+          ));
+          onClose();
+        });
     };
     setClicked(true);
     postAsk();

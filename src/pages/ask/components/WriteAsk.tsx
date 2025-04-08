@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import axiosInstance from '../../../apis/axiosInstance';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import media from '../../../styles/media';
 import { useNavigate } from 'react-router-dom';
 import { useModalContext } from '../../../components/Modal/context/ModalContext';
@@ -10,6 +10,7 @@ const WriteAsk = ({ type }: { type: string | undefined }) => {
   const { openModal } = useModalContext();
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [isReload, setIsReload] = useState<boolean>(false);
 
   const handleAskModal = () => {
     openModal(({ onClose }) => (
@@ -20,30 +21,38 @@ const WriteAsk = ({ type }: { type: string | undefined }) => {
         content={content}
         setTitle={setTitle}
         setContent={setContent}
+        setIsReload={setIsReload}
       />
     ));
   };
 
   const handleAsk = () => {
-    const postAsk = async () => {
-      await axiosInstance
-        .post('/api/member/inquiry', {
-          raffleId: Number(type),
-          title,
-          content,
-        })
-        .then((_) => {
-          setTitle('');
-          setContent('');
-          console.log('postAsk OK');
-          alert('문의글이 등록되었습니다!');
-        })
-        .then((_) => location.reload());
-    };
+    // const postAsk = async () => {
+    //   await axiosInstance
+    //     .post('/api/member/inquiry', {
+    //       raffleId: Number(type),
+    //       title,
+    //       content,
+    //     })
+    //     .then((_) => {
+    //       setTitle('');
+    //       setContent('');
+    //       console.log('postAsk OK');
+    //       alert('문의글이 등록되었습니다!');
+    //     })
+    //     .then((_) => location.reload());
+    // };
     if (title === '') alert('제목을 입력해주세요');
     else if (content === '') alert('내용을 입력해주세요');
     else handleAskModal();
   };
+
+  useEffect(() => {
+    if (isReload) {
+      setIsReload(false);
+      location.reload();
+    }
+  }, [isReload]);
 
   return (
     <Container>
