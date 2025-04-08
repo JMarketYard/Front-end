@@ -20,7 +20,7 @@ const AskOkModal: React.FC<ModalProps> = ({ onClose, type }) => {
       <Container>
         <Img src={smileVector} />
         <Title>문의 작성이 완료되었습니다</Title>
-        <Button onClick={onClickBtn}>래플로 돌아가기</Button>
+        <Button onClick={onClickBtn}>문의 페이지로 돌아가기</Button>
       </Container>
     </Modal>
   );
