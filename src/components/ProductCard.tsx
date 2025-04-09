@@ -35,7 +35,7 @@ const ProductCard: React.FC<RaffleProps> = ({
               <EndBox />
             </>
           )}
-          {finish && (
+          {raffleStatus == 'UNOPENED' && (
             <>
               <RaffleClosingBox>응모 오픈 전</RaffleClosingBox>
               <EndBox />
@@ -112,14 +112,13 @@ const ImageContainer = styled.div.attrs<{ $backgroundImage: string }>(
 `;
 
 const RaffleClosingBox = styled.div`
-  width: 143.316px;
-  height: 47.272px;
-  transform: rotate(0.421deg);
+  width: 134.961px;
+  height: 47.585px;
 
   flex-shrink: 0;
   border-radius: 4px;
-  border: 2px solid #c908ff;
-  background-color: #d89ee8;
+  border-radius: 34px;
+  border: 2px solid #8f8e94;
 
   position: absolute;
   top: 50%;
@@ -129,13 +128,13 @@ const RaffleClosingBox = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: #c908ff;
+  color: #8f8e94;
   text-align: center;
-  font-family: Pretendard;
-  font-size: 20px;
+  font-family: 'Pretendard Variable';
+  font-size: 18px;
   font-style: normal;
-  font-weight: 600;
-  line-height: 18px;
+  font-weight: 700;
+  line-height: 18px; /* 100% */
 `;
 
 const TextBox = styled.div`
