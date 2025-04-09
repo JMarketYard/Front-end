@@ -85,7 +85,7 @@ const FooterContainer = styled.footer`
 `;
 
 const FooterContent = styled.div`
-  width: 85%;
+  width: 80%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
