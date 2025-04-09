@@ -35,7 +35,12 @@ const ProductCard: React.FC<RaffleProps> = ({
               <EndBox />
             </>
           )}
-
+          {finish && (
+            <>
+              <RaffleClosingBox>응모 오픈 전</RaffleClosingBox>
+              <EndBox />
+            </>
+          )}
           {raffleStatus != 'UNOPENED' &&
             timeUntilEnd > 0 &&
             timeUntilEnd <= 86400 && <TextBox>마감임박</TextBox>}

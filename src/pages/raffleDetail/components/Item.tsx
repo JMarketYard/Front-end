@@ -233,7 +233,13 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
                 {raffle.raffleStatus === 'COMPLETED' && (
                   <>
                     {raffle.isWinner === 'yes' && (
-                      <PurpleButton onClick={() => navigate('/review')}>
+                      <PurpleButton
+                        onClick={() =>
+                          navigate('/review', {
+                            state: { raffleId: raffleId },
+                          })
+                        }
+                      >
                         후기남기기
                       </PurpleButton>
                     )}
