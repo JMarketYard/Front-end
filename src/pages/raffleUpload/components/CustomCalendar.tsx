@@ -19,9 +19,38 @@ const CustomCalendar: React.FC<ICalendar> = ({
   maxDateTime,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [minTime, setMinTime] = useState<Date>();
+  const [maxTime, setMaxTime] = useState<Date>();
 
   registerLocale('ko', ko);
   console.log(minDateTime, maxDateTime);
+
+  const handleDateChange = (date: null | Date) => {
+    setDate(date);
+    if (date == null) return;
+
+    const isSameDay = (a: Date, b: Date) =>
+      a.toDateString() === b.toDateString();
+
+    if (isSameDay(date, minDateTime)) {
+      setMinTime(minDateTime);
+      setMaxTime(
+        new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59),
+      );
+    } else if (isSameDay(date, maxDateTime)) {
+      setMinTime(
+        new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0),
+      );
+      setMaxTime(maxDateTime);
+    } else {
+      setMinTime(
+        new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0),
+      );
+      setMaxTime(
+        new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59),
+      );
+    }
+  };
 
   return (
     <DatePickerBox>
@@ -33,11 +62,9 @@ const CustomCalendar: React.FC<ICalendar> = ({
         locale="ko"
         dateFormatCalendar="yyyy년 MM월"
         selected={date}
-        showTimeInput
-        onChange={(day) => {
-          setDate(day);
-          console.log(day);
-        }}
+        showTimeSelect
+        timeIntervals={30}
+        onChange={handleDateChange}
         shouldCloseOnSelect={false}
         open={isOpen}
         onFocus={() => setIsOpen(true)}
@@ -45,6 +72,8 @@ const CustomCalendar: React.FC<ICalendar> = ({
         minDate={minDateTime}
         maxDate={maxDateTime}
         // minTime, maxTime 조건 추가
+        minTime={minTime}
+        maxTime={maxTime}
       />
     </DatePickerBox>
   );
