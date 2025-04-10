@@ -12,8 +12,7 @@ import ImgSlider from './components/imageSlider';
 const WriteReview = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const { raffleId } = location.state as { raffleId: number }
-  const raffleId = 1;
+  const { raffleId } = location.state as { raffleId: number };
   const { openModal } = useModalContext();
 
   const [score, setScore] = useState<number>(0);
