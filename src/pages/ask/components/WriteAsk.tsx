@@ -1,54 +1,90 @@
-import styled from "styled-components";
-import axiosInstance from "../../../apis/axiosInstance";
-import { useState } from "react";
-import media from "../../../styles/media";
-import { useNavigate } from "react-router-dom";
+import styled from 'styled-components';
+import axiosInstance from '../../../apis/axiosInstance';
+import { useEffect, useState } from 'react';
+import media from '../../../styles/media';
+import { useNavigate } from 'react-router-dom';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import AskModal from './modals/AskModal';
 
-const WriteAsk = ({type}:{type:string|undefined}) => {
+const WriteAsk = ({ type }: { type: string | undefined }) => {
+  const { openModal } = useModalContext();
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [isReload, setIsReload] = useState<boolean>(false);
+
+  const handleAskModal = () => {
+    openModal(({ onClose }) => (
+      <AskModal
+        onClose={onClose}
+        type={type}
+        title={title}
+        content={content}
+        setTitle={setTitle}
+        setContent={setContent}
+        setIsReload={setIsReload}
+      />
+    ));
+  };
 
   const handleAsk = () => {
-    const postAsk = async () => {
-      await axiosInstance.post('/api/member/inquiry', {
-        raffleId: Number(type),
-        title,
-        content
-      }).then(_=>{
-        setTitle('');
-        setContent('');
-        console.log('postAsk OK');
-        alert("문의글이 등록되었습니다!");
-      }).then(_ => location.reload());
-    }
-    if (title==='') alert('제목을 입력해주세요');
-    else if (content==='') alert('내용을 입력해주세요');
-    else postAsk();
+    // const postAsk = async () => {
+    //   await axiosInstance
+    //     .post('/api/member/inquiry', {
+    //       raffleId: Number(type),
+    //       title,
+    //       content,
+    //     })
+    //     .then((_) => {
+    //       setTitle('');
+    //       setContent('');
+    //       console.log('postAsk OK');
+    //       alert('문의글이 등록되었습니다!');
+    //     })
+    //     .then((_) => location.reload());
+    // };
+    if (title === '') alert('제목을 입력해주세요');
+    else if (content === '') alert('내용을 입력해주세요');
+    else handleAskModal();
   };
+
+  useEffect(() => {
+    if (isReload) {
+      setIsReload(false);
+      location.reload();
+    }
+  }, [isReload]);
 
   return (
     <Container>
       <TitleContainer>
         <Text>제목</Text>
         <TitleBox>
-          <Input value={title} maxLength={30}
-          onChange={(e:React.ChangeEvent<HTMLInputElement>)=>
-          setTitle(e.target.value)} />
+          <Input
+            value={title}
+            maxLength={30}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setTitle(e.target.value)
+            }
+          />
         </TitleBox>
       </TitleContainer>
       <ContentsContainer>
         <Text>내용</Text>
         <TextareaBox>
-          <Textarea value={content}
-          onChange={(e:React.ChangeEvent<HTMLTextAreaElement>)=>
-            setContent(e.target.value)} maxLength={1000} />
+          <Textarea
+            value={content}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setContent(e.target.value)
+            }
+            maxLength={1000}
+          />
           <WordCountDiv>{content.length}/1000자</WordCountDiv>
         </TextareaBox>
       </ContentsContainer>
       <Button onClick={handleAsk}>문의하기</Button>
     </Container>
-  )
-}
+  );
+};
 
 export default WriteAsk;
 
@@ -68,7 +104,7 @@ const Text = styled.div`
   display: inline-block;
   width: 35px;
   margin-right: 76px;
-  
+
   color: #000;
   font-family: Pretendard;
   font-size: 20px;
@@ -84,14 +120,14 @@ const Text = styled.div`
 const TextareaBox = styled.div`
   // display: flex;
   // flex-direction: column;
-`
+`;
 
 const TitleBox = styled.div`
   width: 747px;
   height: 45px;
   border-radius: 7px;
-  border: 1px solid #8F8E94;
-  background: #F5F5F5;
+  border: 1px solid #8f8e94;
+  background: #f5f5f5;
   padding: 0 8px;
   box-sizing: border-box;
 
@@ -123,8 +159,8 @@ const Textarea = styled.textarea`
   width: 747px;
   height: 328px;
   border-radius: 7px;
-  border: 1px solid #8F8E94;
-  background: #F5F5F5;
+  border: 1px solid #8f8e94;
+  background: #f5f5f5;
   resize: none;
   padding: 0 8px;
   box-sizing: border-box;
@@ -148,23 +184,23 @@ const WordCountDiv = styled.div`
   padding-right: 2px;
   box-sizing: border-box;
 
-  color:rgb(101, 101, 101);
+  color: rgb(101, 101, 101);
   font-family: Pretendard;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: 184.159%
-`
+  line-height: 184.159%;
+`;
 
 const Button = styled.button`
   width: 424px;
   height: 57px;
   border-radius: 7px;
-  background: #C908FF;
+  background: #c908ff;
   border: none;
   margin: 60px 0 50px;
 
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-family: Pretendard;
   font-size: 22px;
@@ -175,5 +211,5 @@ const Button = styled.button`
 
   &:hover {
     cursor: pointer;
-  };
+  }
 `;

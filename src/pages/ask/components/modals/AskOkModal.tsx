@@ -1,34 +1,34 @@
-import React from 'react';
-import Modal from '../Modal';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import questionVector from '../../../assets/questionVector.png';
+import Modal from '../../../../components/Modal/Modal';
+import smileVector from '../../../../assets/SmileVector.png';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
+  type: string | undefined;
+  setIsReload: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AskModal: React.FC<ModalProps> = ({ onClose }) => {
+const AskOkModal: React.FC<ModalProps> = ({ onClose, type, setIsReload }) => {
+  const navigate = useNavigate();
+  // const [isreload, setIsReload] = useState<boolean>(false);
+
+  const onClickBtn = () => {
+    setIsReload(true);
+    onClose();
+  };
+
   return (
     <Modal onClose={onClose}>
       <Container>
-        <Img src={questionVector} />
-        <Title>문의를 작성하시겠습니까?</Title>
-        <Short>해당 문의는 삭제할 수 없습니다.</Short>
-        <Button onClick={onClose}>문의하기</Button>
+        <Img src={smileVector} />
+        <Title>문의 작성이 완료되었습니다</Title>
+        <Button onClick={onClickBtn}>문의 페이지로 돌아가기</Button>
       </Container>
     </Modal>
   );
 };
-
-const Short = styled.div`
-  margin-bottom: 127px;
-  color: #c908ff;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-`;
 
 const Button = styled.button`
   width: 302px;
@@ -50,7 +50,7 @@ const Title = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 158px;
 `;
 
 const Img = styled.img`
@@ -67,4 +67,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default AskModal;
+export default AskOkModal;
