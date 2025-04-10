@@ -154,13 +154,13 @@ const TextBox = styled.div`
 `;
 
 const LikeBox = styled.div`
-  width: 21px;
-  height: 21px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
 
   position: absolute;
   top: 163px;
-  right: 9px;
+  right: 0px;
 
   cursor: pointer;
 `;
