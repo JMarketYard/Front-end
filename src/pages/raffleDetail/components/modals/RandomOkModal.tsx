@@ -56,7 +56,7 @@ export default function RandomOkModal({
         }); //state로 devliery_id 전달
       } else {
         console.log('win? : ', win);
-
+     
         console.log('래플 결과 확인 완료');
         navigate(`/raffles/${raffleId}`);
       }

@@ -253,6 +253,7 @@ const ChangeButton = styled.button`
   font-weight: 500;
   display: flex;
   height: 26px;
+  width: 100px;
   justify-content: center;
   align-items: center;
   gap: 10px;
