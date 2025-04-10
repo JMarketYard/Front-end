@@ -19,6 +19,7 @@ const ProductCard: React.FC<RaffleProps> = ({
   finish,
   participantNum,
   like,
+  raffleStatus,
 }) => {
   const { isLiked, toggleLike, isProcessing } = useLike(like, raffleId);
   const { isAuthenticated, logout } = useAuth();
@@ -35,9 +36,16 @@ const ProductCard: React.FC<RaffleProps> = ({
             </>
           )}
 
-          {timeUntilEnd > 0 && timeUntilEnd <= 86400 && (
-            <TextBox>마감임박</TextBox>
+          {raffleStatus == 'UNOPENED' && (
+            <>
+              <RaffleClosingBox>응모 오픈 전</RaffleClosingBox>
+              <EndBox />
+            </>
+            
           )}
+          {raffleStatus != 'UNOPENED' &&
+            timeUntilEnd > 0 &&
+            timeUntilEnd <= 86400 && <TextBox>마감임박</TextBox>}
           <LikeBox
             onClick={(event) => {
               event.stopPropagation(); // 이벤트 전파 막기
@@ -106,13 +114,13 @@ const ImageContainer = styled.div.attrs<{ $backgroundImage: string }>(
 `;
 
 const RaffleClosingBox = styled.div`
-  width: 143.316px;
-  height: 47.272px;
-  transform: rotate(0.421deg);
+  width: 134.961px;
+  height: 47.585px;
 
   flex-shrink: 0;
   border-radius: 4px;
-  border: 2px solid #c908ff;
+  border-radius: 34px;
+  border: 2px solid #8f8e94;
 
   position: absolute;
   top: 50%;
@@ -122,13 +130,13 @@ const RaffleClosingBox = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: #c908ff;
+  color: #8f8e94;
   text-align: center;
-  font-family: Pretendard;
-  font-size: 20px;
+  font-family: 'Pretendard Variable';
+  font-size: 18px;
   font-style: normal;
-  font-weight: 600;
-  line-height: 18px;
+  font-weight: 700;
+  line-height: 18px; /* 100% */
 `;
 
 const TextBox = styled.div`
@@ -155,13 +163,13 @@ const TextBox = styled.div`
 `;
 
 const LikeBox = styled.div`
-  width: 26px;
-  height: 26px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
 
   position: absolute;
   top: 188px;
-  right: 16px;
+  right: 0px;
   cursor: pointer;
 `;
 

@@ -93,7 +93,12 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
 
   return (
     <Wrapper>
-      <BigTitle>{raffle.name}</BigTitle>
+      <BigTitle>
+        {raffle.name}
+        {raffle.userStatus === 'host' && (
+          <DeleteBox onClick={handleDelete}>래플 삭제</DeleteBox>
+        )}
+      </BigTitle>
       <TopLayout>
         <ImgSlider images={raffle.imageUrls} name={raffle.name}>
           {(raffle.raffleStatus === 'UNFULFILLED' ||
@@ -113,12 +118,7 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
           )}
         </ImgSlider>
         <DetailLayout>
-          <ItemTitleBox>
-            {raffle.name}
-            {raffle.userStatus === 'host' && (
-              <DeleteBox onClick={handleDelete}>래플 삭제</DeleteBox>
-            )}
-          </ItemTitleBox>
+          <ItemTitleBox>{raffle.name}</ItemTitleBox>
           <ViewBox>
             조회 {raffle.view} · 찜 {likeCount}
           </ViewBox>
@@ -233,7 +233,13 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
                 {raffle.raffleStatus === 'COMPLETED' && (
                   <>
                     {raffle.isWinner === 'yes' && (
-                      <PurpleButton onClick={() => navigate('/review')}>
+                      <PurpleButton
+                        onClick={() =>
+                          navigate('/review', {
+                            state: { raffleId: raffleId },
+                          })
+                        }
+                      >
                         후기남기기
                       </PurpleButton>
                     )}
@@ -296,13 +302,12 @@ const TopLayout = styled.div`
 `;
 
 const RaffleClosingBox = styled.div`
-  width: 143.316px;
-  height: 47.272px;
+  width: 134.961px;
+  height: 47.585px;
   transform: rotate(0.421deg);
 
-  flex-shrink: 0;
-  border-radius: 4px;
-  border: 2px solid #c908ff;
+  border-radius: 34px;
+  border: 2px solid #8f8e94;
 
   position: absolute;
   z-index: 10;
@@ -313,13 +318,13 @@ const RaffleClosingBox = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: #c908ff;
+  color: #8f8e94;
   text-align: center;
-  font-family: Pretendard;
-  font-size: 20px;
+  font-family: 'Pretendard Variable';
+  font-size: 18px;
   font-style: normal;
-  font-weight: 600;
-  line-height: 18px;
+  font-weight: 700;
+  line-height: 18px; /* 100% */
 `;
 
 const DetailLayout = styled.div`
@@ -347,23 +352,25 @@ const ItemTitleBox = styled.p`
 
 const DeleteBox = styled.div`
   display: flex;
-  width: 86px;
-  height: 25px;
-  padding: 0px 8px;
+  height: 26px;
+  padding: 0px 14px;
   justify-content: center;
   align-items: center;
+  gap: 10px;
+  position: absolute;
+  right: 0;
+
   flex-shrink: 0;
-  border-radius: 31px;
-  border: 1px solid var(--Main-Grey, #8f8e94);
+  border-radius: 11px;
+  border: 1px solid #8f8e94;
 
   color: var(--Main-Grey, #8f8e94);
   text-align: center;
   font-family: 'Pretendard Variable';
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
-  font-weight: 500;
-  line-height: 36.832px; /* 245.546% */
-  cursor: pointer;
+  font-weight: 400;
+  line-height: 36.832px; /* 230.199% */
 `;
 
 const ViewBox = styled.div`
