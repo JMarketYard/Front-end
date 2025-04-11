@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
 
   return (
     <FooterContainer>
-      <FooterContent>
+      <FooterContent withTopBorder>
       <Menu>
         {menuItems.map((item, index) => (
           <MenuItem
@@ -79,8 +79,7 @@ const FooterContainer = styled.footer`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-top: 1px solid #eee;
-  margin: 0 auto;
+  margin: 202px auto 0;
   position: relative;
 `;
 
@@ -93,12 +92,18 @@ const FooterContent = styled.div`
   color: #8F8E94;
   font-size: 13px;
   box-sizing: border-box;
+  ${({ withTopBorder }) =>
+    withTopBorder &&
+    `
+    border-top: 1px solid #eee;
+  `}
 `;
 
 const Menu = styled.ul`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-top: -16px;
   margin-bottom: 32px;
 `;
 
@@ -181,7 +186,7 @@ const DividerLine = styled.div`
   position: absolute;
   bottom: 130px;
   left: 0;
-  width: 100%;
+  width: 100vw;
   height: 1px;
   background-color: #ddd;
   margin-top: 40px;
