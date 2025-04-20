@@ -12,6 +12,7 @@ const Footer: React.FC = () => {
 
   return (
     <FooterContainer>
+      <DividerLine />
       <FooterContent>
         <Menu>
           {menuItems.map((item, index) => (
@@ -44,8 +45,6 @@ const Footer: React.FC = () => {
           </CustomerCenter>
         </InfoSection>
       </FooterContent>
-
-      <DividerLine />
 
       <FooterContent>
         <FooterBottom>
@@ -83,13 +82,12 @@ const FooterContainer = styled.footer`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-top: 1px solid #eee;
-  margin: 0 auto;
+  margin: 202px auto 0;
   position: relative;
 `;
 
 const FooterContent = styled.div`
-  width: 85%;
+  width: 80%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -97,6 +95,18 @@ const FooterContent = styled.div`
   color: #8f8e94;
   font-size: 13px;
   box-sizing: border-box;
+`;
+
+const DividerLine = styled.div`
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 100vw;
+  margin: 0 auto 16px auto;
+  transform: translateX(-50%); //화면 넓이에 맞춰서 선이 이어지도록
+  height: 1px;
+  background-color: #ddd;
+  margin-bottom: 16px;
 `;
 
 const Menu = styled.ul`
@@ -179,17 +189,6 @@ const Spacer = styled.div`
 const Line = styled.div`
   font-size: 13px;
   line-height: 27px;
-`;
-
-const DividerLine = styled.div`
-  position: absolute;
-  bottom: 130px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: #ddd;
-  margin-top: 40px;
-  margin-bottom: 40px;
 `;
 
 const FooterBottom = styled.div`
