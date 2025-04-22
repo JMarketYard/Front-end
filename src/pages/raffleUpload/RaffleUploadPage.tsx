@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import BigTitle from '../../components/BigTitle';
 import imgUpload from '../../assets/imgUpload.svg';
 import imgArrow from '../../assets/imgSelectArrow.png';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useModalContext } from '../../components/Modal/context/ModalContext';
 import UploadModal from './modals/UploadModal';
 import TicketModal from './modals/TicketModal';
@@ -27,6 +27,8 @@ const RaffleUploadPage = () => {
   const [itemState, setItemState] = useState<string>('');
   const [ticketNum, setTicketNum] = useState<string>('1개');
   const [jcare, setJcare] = useState<string>('');
+  // 시작 날짜 최소: 래플 업로드 눌렀을 때 현재 시각 + 10분 후부터 가능
+  // 종료 날짜 최소:
   const [startDate, setStartDate] = useState<null | Date>(null);
   const [endDate, setEndDate] = useState<null | Date>(null);
   const { openModal } = useModalContext();
@@ -73,6 +75,8 @@ const RaffleUploadPage = () => {
     if (startDate === null || endDate === null)
       return alert('개최 기간을 설정해주세요');
     if (startDate >= endDate) return alert('개최 기간이 올바르지 않습니다');
+    if (endDate.getTime() - startDate.getTime() > 30 * 24 * 60 * 60 * 1000)
+      return alert('응모 진행 기간은 최대 30일입니다');
     if (parseInt(deliveryFee.replace(',', '')) > 10000)
       return alert('배송비는 최대 1만원까지 입력 가능합니다');
 

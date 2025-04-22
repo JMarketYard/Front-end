@@ -19,11 +19,12 @@ const CustomCalendar: React.FC<ICalendar> = ({
   maxDateTime,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [minTime, setMinTime] = useState<Date>();
-  const [maxTime, setMaxTime] = useState<Date>();
+  const [minTime, setMinTime] = useState<Date>(minDateTime);
+  const [maxTime, setMaxTime] = useState<Date>(maxDateTime);
 
   registerLocale('ko', ko);
-  console.log(minDateTime, maxDateTime);
+  // console.log('DateTime', minDateTime, maxDateTime);
+  // console.log('Time', minTime, maxTime);
 
   const handleDateChange = (date: null | Date) => {
     setDate(date);
