@@ -4,60 +4,36 @@ import Modal from '../../../components/Modal/Modal';
 import smileVector from '../../../assets/SmileVector.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import { DeliverySuccessResult } from '../types/deliveryResponseTypes';
 import { useEffect, useState } from 'react';
 
 interface ModalProps {
   onClose: () => void;
   raffleId: number;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  deliveryId: number;
 }
 //미추첨 당첨자 뽑기 완료
-const MakeDrawerOkModal: React.FC<ModalProps> = ({
-  onClose,
-  raffleId,
-  setIsChecked,
-  deliveryId,
-}) => {
+const MakeDrawerOkModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   const navigate = useNavigate();
-  const [delivery, setDelivery] = useState<DeliverySuccessResult>({
-    raffleId: 0,
-    winnerId: 0,
-    deliveryId: 0,
-    minTicket: 0,
-    applyTicket: 0,
-    finalAmount: 0,
-    deliveryStatus: '',
-    shippingDeadline: null,
-    isExtendShipping: null,
-    address: null,
-  });
-  const handleClick = async () => {
-    try {
-      const { data } = await axiosInstance.post(
-        `/api/member/raffles/${raffleId}/draw`,
-      );
-      setDelivery(data.result);
-      console.log('수동 추첨함 : ', data.result);
-    } catch (error) {
-      error;
-    }
-    onClose();
-    setIsChecked((prev: boolean) => !prev);
-    navigate(`/host-result`, {
-      state: {
-        deliveryId: delivery.deliveryId,
-      },
-    });
-  };
+  // const [delivery, setDelivery] = useState({
+  //   raffleId: 0,
+  //   winnerId: 0,
+  //   deliveryId: 0,
+  //   minTicket: 0,
+  //   applyTicket: 0,
+  //   finalAmount: 0,
+  //   deliveryStatus: '',
+  //   shippingDeadline: null,
+  //   isExtendShipping: null,
+  //   address: null,
+  // });
+
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={() => navigate(`/raffles/${raffleId}`)}>
       <Container>
         <Img src={smileVector} />
-        <Title>당첨자를 뽑으시겠습니까?</Title>
-        <Short>해당 결정은 번복할 수 없습니다. </Short>
-        <Button onClick={handleClick}>닫기</Button>
+        <Title>당첨자 추첨 완료!</Title>
+        <Button onClick={() => navigate(`/raffles/${raffleId}`)}>
+          내 래플로 이동하기
+        </Button>
       </Container>
     </Modal>
   );

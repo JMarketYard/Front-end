@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import { ReactNode } from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import icRight from '../../../assets/raffleDetail/icon-right.svg';
 import icLeft from '../../../assets/raffleDetail/icon-left.svg';
-import media from '../../../styles/media';
 
 interface ItemProps {
   images: string[];
-  name: string;
   children?: ReactNode;
 }
 
-function ImgSlider({ images, name, children }: ItemProps) {
+function ImgSlider({ images, children }: ItemProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = (images ?? []).length;
   const lastSlide = totalSlides - 1;
@@ -22,9 +21,9 @@ function ImgSlider({ images, name, children }: ItemProps) {
   const lastDotIndex = totalDots - 1;
 
   const getActiveDot = () => {
-    if (currentSlide === 0) return 0;
-    if (currentSlide === lastSlide) return lastDotIndex;
-    return totalDots === 2 ? 1 : 1;
+    if (currentSlide === 0) return 0; // 첫 번째 dot 선택
+    if (currentSlide === lastSlide) return lastDotIndex; // 마지막 dot 선택
+    return 1; // 중간 dot 선택
   };
 
   const settings = {
@@ -55,19 +54,19 @@ function ImgSlider({ images, name, children }: ItemProps) {
   };
 
   const GlobalStyle = createGlobalStyle`
-    .slick-prev, .slick-next {
-      display: none !important;
-    }
-  `;
+  .slick-prev, .slick-next {
+    display: none !important;  // 기본 화살표 숨기기
+  }
+`;
 
   return (
     <Wrapper>
       <GlobalStyle />
+      <ChildrenWrapper>{children}</ChildrenWrapper>
       <Slider {...settings}>
         {(images ?? []).map((image, index) => (
           <ImgContainer key={index}>
             <Img src={image} alt={`${name} - 이미지 ${index + 1}`} />
-            <Overlay>{children}</Overlay> {/* ✅ 이미지 위에 덮임 */}
           </ImgContainer>
         ))}
       </Slider>
@@ -77,7 +76,6 @@ function ImgSlider({ images, name, children }: ItemProps) {
 
 export default ImgSlider;
 
-// 👇 custom arrows 그대로 유지
 const CustomNextArrow = (props: any) => {
   const { onClick } = props;
   return (
@@ -97,49 +95,12 @@ const CustomPrevArrow = (props: any) => {
 };
 
 const Wrapper = styled.div`
-  width: 390.582px;
+  width: 261px;
   position: relative;
-  ${media.medium`
-    width: 307px;
-  `};
-`;
-
-const ImgContainer = styled.div`
-  position: relative; /* ✅ 기준 부모 설정 */
-  width: 390.582px;
-  height: 390.582px;
-  display: flex;
-
-  ${media.medium`
-    width: 307px;
-    height: 307px;
-  `}
-`;
-
-const Overlay = styled.div`
-  position: absolute; /* ✅ 이미지 위 덮기 */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  pointer-events: none; // 클릭 막고 싶으면 유지
-`;
-
-const Img = styled.img`
-  width: 390.582px;
-  height: 390.582px;
-  border-radius: 5px;
-  background: #f7f7f7;
-  object-fit: contain;
-  ${media.medium`
-    width: 307px;
-    height: 307px;
-  `}
 `;
 
 const CustomDots = styled.ul`
-  bottom: -34.43px;
+  bottom: -21px;
   display: flex;
   justify-content: center;
 
@@ -157,11 +118,31 @@ const CustomDots = styled.ul`
   }
 `;
 
+const ImgContainer = styled.div`
+  width: 261px;
+  height: 261px;
+  display: flex;
+`;
+
+const ChildrenWrapper = styled.div`
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  z-index: 8;
+  opacity: 0;
+`;
+
+const Img = styled.img`
+  width: 261px;
+  height: 261px;
+  border-radius: 5px;
+`;
+
 const ArrowRight = styled.button`
   position: absolute;
-  top: 185px;
-  right: 14px;
-  z-index: 99;
+  top: 50%;
+  right: -25px;
+  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
@@ -169,9 +150,9 @@ const ArrowRight = styled.button`
 
 const ArrowLeft = styled.button`
   position: absolute;
-  top: 185px;
-  left: 14px;
-  z-index: 99;
+  top: 50%;
+  left: -25px;
+  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;

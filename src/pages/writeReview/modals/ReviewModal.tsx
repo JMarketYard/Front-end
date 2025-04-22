@@ -2,34 +2,45 @@ import React from 'react';
 import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import questionVector from '../../../assets/questionVector.png';
-import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import useDeliveryStore from '../../../store/deliveryStore';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import ReviewOkModal from './ReviewOkModal';
+import ReviewFailModal from './ReviewFailModal';
 
 interface ModalProps {
   onClose: () => void;
-  deliveryId: number;
   raffleId: number;
+  score: number;
+  text: string;
+  images: File[];
 }
 
-const GiveUpModal: React.FC<ModalProps> = ({
+const ReviewModal: React.FC<ModalProps> = ({
   onClose,
-  deliveryId,
   raffleId,
+  score,
+  text,
+  images,
 }) => {
-  const navigate = useNavigate();
-  const { setDeliveryStatus } = useDeliveryStore();
-
+  const { openModal } = useModalContext();
   const handleClick = async () => {
+    const formData = new FormData();
+    formData.append('raffleId', raffleId.toString());
+    formData.append('score', score.toString());
+    formData.append('text', text);
+    images.forEach((image) => {
+      formData.append('image', image);
+    });
+
     try {
-      await axiosInstance.post(
-        `/api/member/delivery/${deliveryId}/winner/cancel`,
-        {},
-      );
-      setDeliveryStatus('CANCELLED');
-      navigate(`/raffles/${raffleId}`);
+      await axiosInstance.post('/api/member/review', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      openModal(({ onClose }) => <ReviewOkModal onClose={onClose} />);
     } catch (error) {
-      console.error(error);
+      openModal(({ onClose }) => <ReviewFailModal onClose={onClose} />);
     } finally {
       onClose();
     }
@@ -39,23 +50,12 @@ const GiveUpModal: React.FC<ModalProps> = ({
     <Modal onClose={onClose}>
       <Container>
         <Img src={questionVector} />
-        <Title>당첨을 포기하시겠습니까?</Title>
-        <Short>해당 결정은 번복할 수 없습니다.</Short>
-        <Button onClick={handleClick}>포기하기</Button>
+        <Title>후기를 작성하시겠습니까?</Title>
+        <Button onClick={handleClick}>후기 남기기</Button>
       </Container>
     </Modal>
   );
 };
-
-const Short = styled.div`
-  margin-bottom: 127px;
-  color: #c908ff;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-`;
 
 const Button = styled.button`
   width: 302px;
@@ -77,7 +77,7 @@ const Title = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 103px;
 `;
 
 const Img = styled.img`
@@ -94,4 +94,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default GiveUpModal;
+export default ReviewModal;

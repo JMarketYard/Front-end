@@ -188,10 +188,11 @@ const ProductGrid = styled.div`
   grid-gap: 24px; 
   padding: 20px;
   place-items: center; 
+
   grid-template-columns: repeat(4, minmax(250px, 1fr));
 
   ${media.medium`
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);D
     gap: 9px;
     max-width: 100%;
     padding-left:0px
@@ -200,6 +201,7 @@ const ProductGrid = styled.div`
     grid-template-columns: repeat(1, 1fr);
     gap: 9px;
   `}
+
 `;
 
 

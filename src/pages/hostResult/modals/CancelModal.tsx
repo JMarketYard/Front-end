@@ -4,6 +4,8 @@ import Modal from '../../../components/Modal/Modal';
 import questionVector from '../../../assets/questionVector.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
+import { useModalContext } from '../../../components/Modal/context/ModalContext';
+import CancelOkModal from './CancelOkModal copy';
 
 interface ModalProps {
   onClose: () => void;
@@ -12,17 +14,19 @@ interface ModalProps {
 
 const CancleModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   const navigate = useNavigate();
+  const { openModal } = useModalContext();
   const handleClick = async () => {
-    console.log('래플 아이디:', raffleId);
     try {
       const { data } = await axiosInstance.post(
         `/api/member/raffles/${raffleId}/cancel`,
       );
-      console.log('강제종료함:', data);
-      onClose();
-      navigate(`/raffles/${raffleId}`);
+      openModal(({ onClose }) => (
+        <CancelOkModal onClose={onClose} raffleId={raffleId} />
+      ));
     } catch (error) {
       console.error('POST 요청 실패', error);
+    } finally {
+      onClose();
     }
   };
   return (

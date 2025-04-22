@@ -1,23 +1,43 @@
 import React from 'react';
 import styled from 'styled-components';
-import Modal from '../Modal';
+import Modal from '../../../components/Modal/Modal';
 import smileVector from '../../../assets/SmileVector.png';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
+  deliveryId: number;
 }
 
-const AskOkModal: React.FC<ModalProps> = ({ onClose }) => {
+const CompletedOkModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
+  const navigate = useNavigate();
   return (
     <Modal onClose={onClose}>
       <Container>
         <Img src={smileVector} />
-        <Title>문의 작성이 완료되었습니다</Title>
-        <Button onClick={onClose}>래플로 돌아가기</Button>
+        <Title>거래가 완료되었습니다.</Title>
+        <ButtonLayout>
+          <Button
+            onClick={() =>
+              navigate('/review', {
+                state: { deliveryId: { deliveryId } },
+              })
+            }
+          >
+            후기 작성하기
+          </Button>
+          <Button onClick={() => navigate('/')}>홈화면으로 돌아가기</Button>
+        </ButtonLayout>
       </Container>
     </Modal>
   );
 };
+
+const ButtonLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
 
 const Button = styled.button`
   width: 302px;
@@ -39,7 +59,7 @@ const Title = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  margin-bottom: 158px;
+  margin-bottom: 103px;
 `;
 
 const Img = styled.img`
@@ -56,4 +76,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default AskOkModal;
+export default CompletedOkModal;

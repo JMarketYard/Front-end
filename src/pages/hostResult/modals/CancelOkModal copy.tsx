@@ -1,41 +1,25 @@
 import React from 'react';
-import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
-import questionVector from '../../../assets/questionVector.png';
-import { useNavigate } from 'react-router-dom';
+import Modal from '../../../components/Modal/Modal';
+import smileVector from '../../../assets/SmileVector.png';
+import { Navigate, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import useDeliveryStore from '../../../store/deliveryStore';
+import { useEffect, useState } from 'react';
 
 interface ModalProps {
   onClose: () => void;
-  deliveryId: number;
+  raffleId: number;
 }
 
-const WaitShippingModal: React.FC<ModalProps> = ({ onClose, deliveryId }) => {
+const CancelOkModal: React.FC<ModalProps> = ({ onClose, raffleId }) => {
   const navigate = useNavigate();
-  const { setDeliveryStatus } = useDeliveryStore();
-
-  const handleClick = async () => {
-    try {
-      await axiosInstance.post(
-        `/api/member/delivery/${deliveryId}/winner/wait`,
-        {},
-      );
-      setDeliveryStatus('READY');
-    } catch (error) {
-      console.error(error);
-    }
-    onClose();
-    navigate(`/`);
-  };
 
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={() => navigate(`/mypage`)}>
       <Container>
-        <Img src={questionVector} />
-        <Title>운송장을 기다리시겠습니까?</Title>
-        <Short>운송장 입력 시간을 최대 24시간 연장합니다.</Short>
-        <Button onClick={handleClick}>기다리기</Button>
+        <Img src={smileVector} />
+        <Title>해당 래플은 강제종료 되었습니다.</Title>
+        <Button onClick={() => navigate(`mypage`)}>프로필로 이동하기</Button>
       </Container>
     </Modal>
   );
@@ -88,4 +72,4 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default WaitShippingModal;
+export default CancelOkModal;

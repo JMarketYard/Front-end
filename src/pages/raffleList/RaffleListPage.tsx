@@ -21,64 +21,6 @@ const RaffleListPage: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
   const [allRaffles, setAllRaffles] = useState<RaffleProps[]>([]);
 
-  // const fetchMoreProducts = async () => {
-  //   if (!hasMore || isLoading) return;
-
-  //   setIsLoading(true);
-  //   try {
-  //     const { data } = await axiosInstance.get(
-  //       isAuthenticated
-  //         ? `/api/member/home/${type}`
-  //         : `/api/permit/home/${type}`,
-  //       {},
-  //     );
-
-  //     const startIndex = (page - 1) * 16;
-  //     const endIndex = startIndex + 16;
-  //     const newRaffles = data.result.raffles.slice(startIndex, endIndex);
-
-  //     console.log('API 응답 자른 데이터 개수:', newRaffles.length);
-  //     console.log('API 응답 데이터:', newRaffles);
-
-  //     if (newRaffles.length < 16) {
-  //       setRaffles((prev) => [...prev, ...newRaffles]);
-  //       setHasMore(false);
-  //     } else {
-  //       setRaffles((prev) => [...prev, ...newRaffles]);
-  //     }
-  //     setPage((prev) => prev + 1);
-  //   } catch (error) {
-  //     console.error('데이터 불러오기 실패:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       if (entries[0].isIntersecting && hasMore && !isLoading) {
-  //         setPage((prev) => prev + 1);
-  //       } else {
-  //         console.log('hasmore:', hasMore);
-  //       }
-  //     },
-  //     { threshold: 1.0 },
-  //   );
-
-  //   if (observerRef.current) {
-  //     observer.observe(observerRef.current);
-  //   }
-
-  //   return () => observer.disconnect();
-  // }, [hasMore, isLoading]);
-
-  // // 페이지 변경 시 새로운 데이터 로드
-  // useEffect(() => {
-  //   if (!hasMore) return;
-  //   fetchMoreProducts();
-  // }, [page]);
-
   console.log('???', hasMore);
   const fetchProducts = async () => {
     const apiurl = isAuthenticated
@@ -201,6 +143,7 @@ const LookAroundContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  min-width: 1080px;
 `;
 
 const LookAroundBox = styled.p`
