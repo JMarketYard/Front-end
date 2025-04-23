@@ -103,7 +103,6 @@ const WinnerPage: React.FC = () => {
         setAddress(data.result.address);
         setRaffleId(data.result.raffleId);
         console.log(data.result);
-        console.log(data.result.address);
       } catch (error) {
         console.error(error);
       }
