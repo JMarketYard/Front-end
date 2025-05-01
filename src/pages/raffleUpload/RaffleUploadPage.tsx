@@ -28,7 +28,6 @@ const RaffleUploadPage = () => {
   const [ticketNum, setTicketNum] = useState<string>('1개');
   const [jcare, setJcare] = useState<string>('');
   // 시작 날짜 최소: 래플 업로드 눌렀을 때 현재 시각 + 10분 후부터 가능
-  // 종료 날짜 최소:
   const [startDate, setStartDate] = useState<null | Date>(null);
   const [endDate, setEndDate] = useState<null | Date>(null);
   const { openModal } = useModalContext();
@@ -74,7 +73,8 @@ const RaffleUploadPage = () => {
       return alert('거래 설정을 모두 입력해주세요');
     if (startDate === null || endDate === null)
       return alert('개최 기간을 설정해주세요');
-    if (startDate >= endDate) return alert('개최 기간이 올바르지 않습니다');
+    if (createdAt >= startDate || startDate >= endDate)
+      return alert('개최 기간이 올바르지 않습니다');
     if (endDate.getTime() - startDate.getTime() > 30 * 24 * 60 * 60 * 1000)
       return alert('응모 진행 기간은 최대 30일입니다');
     if (parseInt(deliveryFee.replace(',', '')) > 10000)
@@ -101,8 +101,6 @@ const RaffleUploadPage = () => {
       new Date(endDate.getTime() + offset).toISOString().replace('Z', ''),
     );
     formData.append('deliveryFee', deliveryFee.replace(',', ''));
-    // console.log('제출버튼클릭');
-    // console.log(formData.get('startAt'), formData.get('endAt'));
 
     openModal(({ onClose }) => (
       <UploadModal
@@ -305,13 +303,13 @@ const RaffleUploadPage = () => {
               setDate={setEndDate}
               minDateTime={
                 startDate === null
-                  ? new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+                  ? new Date(createdAt.getTime() + 24 * 60 * 60 * 1000)
                   : new Date(startDate.getTime() + 24 * 60 * 60 * 1000)
               }
               maxDateTime={
                 new Date(
                   startDate === null
-                    ? new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
+                    ? new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000)
                     : startDate?.getTime() + 30 * 24 * 60 * 60 * 1000,
                 )
               }

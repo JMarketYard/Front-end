@@ -27,23 +27,24 @@ const CustomCalendar: React.FC<ICalendar> = ({
   // console.log('Time', minTime, maxTime);
 
   const handleDateChange = (date: null | Date) => {
-    setDate(date);
     if (date == null) return;
-
+    setDate(date);
     const isSameDay = (a: Date, b: Date) =>
       a.toDateString() === b.toDateString();
 
     if (isSameDay(date, minDateTime)) {
+      setDate(minDateTime);
       setMinTime(minDateTime);
       setMaxTime(
         new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59),
       );
-    } else if (isSameDay(date, maxDateTime)) {
-      setMinTime(
-        new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0),
-      );
-      setMaxTime(maxDateTime);
+      // } else if (isSameDay(date, maxDateTime)) {
+      //   setMinTime(
+      //     new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0),
+      //   );
+      //   setMaxTime(maxDateTime);
     } else {
+      setDate(date);
       setMinTime(
         new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0),
       );
