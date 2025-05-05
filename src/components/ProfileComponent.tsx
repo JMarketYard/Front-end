@@ -248,8 +248,7 @@ const ProfileContent = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 20px; /* ✅ 버튼 간격 항상 20px 유지 */
+  gap: 20px;
   width: 100%;
   max-width: 300px; /* ✅ 최대 너비 설정 */
   flex-wrap: nowrap; /* ✅ 버튼이 줄 바뀌지 않도록 설정 */
@@ -381,7 +380,7 @@ const FollowButton = styled.button<{ isFollowing: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: max-content; /* ✅ 버튼 너비가 텍스트 크기에 맞춰 자동 조정 */
+  min-width: 138px; /* ✅ 버튼 너비가 텍스트 크기에 맞춰 자동 조정 */
   height: 39px;
   font-size: 16px;
   border-radius: 9px;
@@ -501,6 +500,7 @@ const Divider = styled.div`
   width: 1px;
   height: 43px;
   background-color: #000;
+  font-weight: normal;
 
   @media (max-width: 390px) {
     height: 43px; /* ✅ 크기 유지 */
