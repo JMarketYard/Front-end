@@ -14,7 +14,9 @@ const MyReview: React.FC = () => {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const { data } = await axiosInstance.get("/api/reviews/myStore");
+      const { data } = await axiosInstance.get("/api/reviews/review");
+
+      console.log("받아온 데이터:", data);
       if (data.isSuccess) {
         setAverageScore(data.result.averageScore || 0);
         setReviewCount(data.result.reviewCount || 0);
