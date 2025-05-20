@@ -30,6 +30,8 @@ const RaffleUploadPage = () => {
   // 시작 날짜 최소: 래플 업로드 눌렀을 때 현재 시각 + 10분 후부터 가능
   const [startDate, setStartDate] = useState<null | Date>(null);
   const [endDate, setEndDate] = useState<null | Date>(null);
+  const [startTime, setStartTime] = useState<null | Date>(null);
+  const [endTime, setEndTime] = useState<null | Date>(null);
   const { openModal } = useModalContext();
   const [leastTicketNum, setLeastTicketNum] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -293,6 +295,8 @@ const RaffleUploadPage = () => {
               setDate={setStartDate}
               minDateTime={minDateTime}
               maxDateTime={maxDateTime}
+              time={startTime}
+              setTime={setStartTime}
             />
           </SetConditionBox>
           <SetConditionBox>
@@ -313,6 +317,8 @@ const RaffleUploadPage = () => {
                     : startDate?.getTime() + 30 * 24 * 60 * 60 * 1000,
                 )
               }
+              time={endTime}
+              setTime={setEndTime}
             />
           </SetConditionBox>
           <SetConditionBox>

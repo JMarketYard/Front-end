@@ -10,6 +10,8 @@ interface ICalendar {
   setDate: React.Dispatch<React.SetStateAction<null | Date>>;
   minDateTime: Date;
   maxDateTime: Date;
+  time: null | Date;
+  setTime: React.Dispatch<React.SetStateAction<null | Date>>;
 }
 
 const CustomCalendar: React.FC<ICalendar> = ({
@@ -17,18 +19,18 @@ const CustomCalendar: React.FC<ICalendar> = ({
   setDate,
   minDateTime,
   maxDateTime,
+  time,
+  setTime,
 }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [minTime, setMinTime] = useState<Date>(minDateTime);
   const [maxTime, setMaxTime] = useState<Date>(maxDateTime);
 
   registerLocale('ko', ko);
-  // console.log('DateTime', minDateTime, maxDateTime);
-  // console.log('Time', minTime, maxTime);
 
   const handleDateChange = (date: null | Date) => {
     if (date == null) return;
     setDate(date);
+    setTime(null);
     const isSameDay = (a: Date, b: Date) =>
       a.toDateString() === b.toDateString();
 
@@ -38,11 +40,6 @@ const CustomCalendar: React.FC<ICalendar> = ({
       setMaxTime(
         new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59),
       );
-      // } else if (isSameDay(date, maxDateTime)) {
-      //   setMinTime(
-      //     new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0),
-      //   );
-      //   setMaxTime(maxDateTime);
     } else {
       setDate(date);
       setMinTime(
@@ -55,29 +52,37 @@ const CustomCalendar: React.FC<ICalendar> = ({
   };
 
   return (
-    <DatePickerBox>
-      <DatePicker
-        onKeyDown={(e) => {
-          e.preventDefault();
-        }}
-        dateFormat="yyyy년 MM월 dd일 a hh:mm"
-        locale="ko"
-        dateFormatCalendar="yyyy년 MM월"
-        selected={date}
-        showTimeSelect
-        timeIntervals={30}
-        onChange={handleDateChange}
-        shouldCloseOnSelect={false}
-        open={isOpen}
-        onFocus={() => setIsOpen(true)}
-        onClickOutside={() => setIsOpen(false)}
-        minDate={minDateTime}
-        maxDate={maxDateTime}
-        // minTime, maxTime 조건 추가
-        minTime={minTime}
-        maxTime={maxTime}
-      />
-    </DatePickerBox>
+    <>
+      <DatePickerBox>
+        <DatePicker
+          className="datepicker--date"
+          onKeyDown={(e) => {
+            e.preventDefault();
+          }}
+          dateFormat="yyyy년 MM월 dd일"
+          locale="ko"
+          dateFormatCalendar="yyyy년 MM월"
+          selected={date}
+          onChange={handleDateChange}
+          minDate={minDateTime}
+          maxDate={maxDateTime}
+        />
+      </DatePickerBox>
+      <DatePickerBox>
+        <DatePicker
+          onKeyDown={(e) => e.preventDefault()}
+          dateFormat="a hh:mm"
+          locale="ko"
+          selected={time}
+          onChange={(t) => setTime(t)}
+          showTimeSelect
+          showTimeSelectOnly
+          timeIntervals={10}
+          minTime={minTime}
+          maxTime={maxTime}
+        />
+      </DatePickerBox>
+    </>
   );
 };
 
@@ -85,7 +90,8 @@ export default CustomCalendar;
 
 const DatePickerBox = styled.div`
   .react-datepicker__input-container {
-    width: 636px;
+    // width: 636px;
+    width: 313px;
     height: 45px;
     border-radius: 7px;
     border: 1px solid #8f8e94;
@@ -93,8 +99,13 @@ const DatePickerBox = styled.div`
     padding: 0 10px;
     display: flex;
 
+    &:first-child {
+      margin-right: 10px;
+    }
+
     ${media.medium`
-            width: 464px;
+            // width: 464px;
+            width: 227px;
         `}
   }
 
