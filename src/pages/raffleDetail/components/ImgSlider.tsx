@@ -117,10 +117,6 @@ const Wrapper = styled.div<{ $isModal?: boolean }>`
   width: ${({ $isModal }) => ($isModal ? '800px' : '390.582px')};
   max-width: 100%;
   position: relative;
-
-  ${media.medium`
-    width: 307px;
-  `};
 `;
 
 const ImgContainer = styled.div<{ $isModal?: boolean }>`
@@ -130,8 +126,8 @@ const ImgContainer = styled.div<{ $isModal?: boolean }>`
   display: flex;
 
   ${media.medium`
-    width: ${({ $isModal }) => ($isModal ? '90vw' : '307px')};
-    height: ${({ $isModal }) => ($isModal ? '90vw' : '307px')};
+    width: ${({ $isModal }) => ($isModal ? '90vw' : '390.582px')};
+    height: ${({ $isModal }) => ($isModal ? '90vw' : '390.582px')};
   `}
 `;
 
@@ -151,10 +147,6 @@ const Img = styled.img<{ $isModal?: boolean }>`
   border-radius: 5px;
   background: #f7f7f7;
   object-fit: contain;
-  ${media.medium`
-    width: 307px;
-    height: 307px;
-  `}
 `;
 
 const CustomDots = styled.ul`

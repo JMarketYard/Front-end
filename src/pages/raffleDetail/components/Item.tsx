@@ -16,6 +16,8 @@ import { useAuth } from '../../../context/AuthContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
 import DeleteModal from './modals/DeleteModal';
+import media from '../../../styles/media';
+import useScreenSize from '../../../styles/useScreenSize';
 
 const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   const [isLiked, setIsLiked] = useState<boolean>(raffle.likeStatus);
@@ -28,6 +30,7 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   const handleOpenModal = OpenLogInModal();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageIndex, setModalImageIndex] = useState(0);
+  const { isSmallScreen, isMediumScreen, isLargeScreen } = useScreenSize();
 
   useEffect(() => {
     setIsLiked(raffle.likeStatus ?? false);
@@ -98,6 +101,133 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
       hour12: false,
     });
 
+  const ActionArea = (
+    <>
+      <ButtonContainer>
+        {/*래플 오픈 전*/}
+        {raffle.raffleStatus === 'UNOPENED' && (
+          <GrayButton>응모 오픈 전</GrayButton>
+        )}
+
+        {/*래플 응모 중*/}
+        {raffle.raffleStatus === 'ACTIVE' && (
+          <>
+            {raffle.userStatus === 'host' && <GrayButton>래플 결과</GrayButton>}
+            {raffle.userStatus === 'nonParticipant' && (
+              <PurpleButton
+                onClick={() => {
+                  if (isAuthenticated) {
+                    handleApply();
+                  } else {
+                    handleOpenModal();
+                  }
+                }}
+              >
+                응모하기
+              </PurpleButton>
+            )}
+            {raffle.userStatus === 'participant' && (
+              <LightPurpleButton>응모 완료</LightPurpleButton>
+            )}
+          </>
+        )}
+
+        {/*래플 응모 마감-개최자*/}
+        {raffle.userStatus === 'host' && (
+          <>
+            {(raffle.raffleStatus === 'UNFULFILLED' ||
+              raffle.raffleStatus === 'ENDED') && (
+              <PinkButton
+                onClick={() =>
+                  navigate('/host-result', {
+                    state: {
+                      deliveryId: raffle.deliveryId,
+                      status: raffle.raffleStatus,
+                      raffleId: raffleId,
+                    },
+                  })
+                }
+              >
+                래플 결과
+              </PinkButton>
+            )}
+            {(raffle.raffleStatus === 'COMPLETED' ||
+              raffle.raffleStatus === 'CANCELLED') && (
+              <GrayButton>래플 종료</GrayButton>
+            )}
+          </>
+        )}
+        {/*래플 응모 마감-미참가자*/}
+        {raffle.userStatus === 'nonParticipant' &&
+          (raffle.raffleStatus === 'UNFULFILLED' ||
+            raffle.raffleStatus === 'ENDED' ||
+            raffle.raffleStatus === 'CANCELLED' ||
+            raffle.raffleStatus === 'COMPLETED') && (
+            <GrayButton>래플 종료</GrayButton>
+          )}
+
+        {/*래플 응모 마감-참가자*/}
+        {raffle.userStatus === 'participant' && (
+          <>
+            {raffle.raffleStatus === 'ENDED' && (
+              <>
+                {raffle.isWinner === 'yes' && (
+                  <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
+                )}
+                {raffle.isWinner === 'no' && <GrayButton>래플 종료</GrayButton>}
+                {raffle.isWinner === 'hope' && (
+                  <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
+                )}
+              </>
+            )}
+            {(raffle.raffleStatus === 'UNFULFILLED' ||
+              raffle.raffleStatus === 'CANCELLED') && (
+              <GrayButton>래플 종료</GrayButton>
+            )}
+            {raffle.raffleStatus === 'COMPLETED' && (
+              <>
+                {raffle.isWinner === 'yes' && (
+                  <PurpleButton
+                    onClick={() =>
+                      navigate('/review', {
+                        state: { raffleId: raffleId },
+                      })
+                    }
+                  >
+                    후기남기기
+                  </PurpleButton>
+                )}
+                {raffle.isWinner === 'no' && <GrayButton>래플 종료</GrayButton>}
+                {raffle.isWinner === 'hope' && (
+                  <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
+                )}
+              </>
+            )}
+          </>
+        )}
+        <LikeBox
+          onClick={() => {
+            if (isAuthenticated) {
+              toggleLike();
+            } else {
+              handleOpenModal();
+            }
+          }}
+        >
+          <img
+            src={isLiked ? icLike : icUnlike}
+            alt={isLiked ? 'Liked' : 'Unliked'}
+          />
+          찜하기
+        </LikeBox>
+      </ButtonContainer>
+      <WarningBox>
+        판매자 희망 최소 참여자 이상 모이지 않으면 당첨자 없이 취소될 수
+        있습니다. 취소된 래플에 대한 티켓은 다시 적립됩니다.
+      </WarningBox>
+    </>
+  );
+
   return (
     <Wrapper>
       <BigTitle>
@@ -128,6 +258,7 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
             </>
           )}
         </ImgSlider>
+        {isMediumScreen && ActionArea}
         <DetailLayout>
           <ItemTitleBox>{raffle.name}</ItemTitleBox>
           <ViewBox>
@@ -155,135 +286,7 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
               <TextBox>응모마감</TextBox>
             )}
           </DetailContainer>
-
-          <ButtonContainer>
-            {/*래플 오픈 전*/}
-            {raffle.raffleStatus === 'UNOPENED' && (
-              <GrayButton>응모 오픈 전</GrayButton>
-            )}
-
-            {/*래플 응모 중*/}
-            {raffle.raffleStatus === 'ACTIVE' && (
-              <>
-                {raffle.userStatus === 'host' && (
-                  <GrayButton>래플 결과</GrayButton>
-                )}
-                {raffle.userStatus === 'nonParticipant' && (
-                  <PurpleButton
-                    onClick={() => {
-                      if (isAuthenticated) {
-                        handleApply();
-                      } else {
-                        handleOpenModal();
-                      }
-                    }}
-                  >
-                    응모하기
-                  </PurpleButton>
-                )}
-                {raffle.userStatus === 'participant' && (
-                  <LightPurpleButton>응모 완료</LightPurpleButton>
-                )}
-              </>
-            )}
-
-            {/*래플 응모 마감-개최자*/}
-            {raffle.userStatus === 'host' && (
-              <>
-                {(raffle.raffleStatus === 'UNFULFILLED' ||
-                  raffle.raffleStatus === 'ENDED') && (
-                  <PinkButton
-                    onClick={() =>
-                      navigate('/host-result', {
-                        state: {
-                          deliveryId: raffle.deliveryId,
-                          status: raffle.raffleStatus,
-                          raffleId: raffleId,
-                        },
-                      })
-                    }
-                  >
-                    래플 결과
-                  </PinkButton>
-                )}
-                {(raffle.raffleStatus === 'COMPLETED' ||
-                  raffle.raffleStatus === 'CANCELLED') && (
-                  <GrayButton>래플 종료</GrayButton>
-                )}
-              </>
-            )}
-            {/*래플 응모 마감-미참가자*/}
-            {raffle.userStatus === 'nonParticipant' &&
-              (raffle.raffleStatus === 'UNFULFILLED' ||
-                raffle.raffleStatus === 'ENDED' ||
-                raffle.raffleStatus === 'CANCELLED' ||
-                raffle.raffleStatus === 'COMPLETED') && (
-                <GrayButton>래플 종료</GrayButton>
-              )}
-
-            {/*래플 응모 마감-참가자*/}
-            {raffle.userStatus === 'participant' && (
-              <>
-                {raffle.raffleStatus === 'ENDED' && (
-                  <>
-                    {raffle.isWinner === 'yes' && (
-                      <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
-                    )}
-                    {raffle.isWinner === 'no' && (
-                      <GrayButton>래플 종료</GrayButton>
-                    )}
-                    {raffle.isWinner === 'hope' && (
-                      <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
-                    )}
-                  </>
-                )}
-                {(raffle.raffleStatus === 'UNFULFILLED' ||
-                  raffle.raffleStatus === 'CANCELLED') && (
-                  <GrayButton>래플 종료</GrayButton>
-                )}
-                {raffle.raffleStatus === 'COMPLETED' && (
-                  <>
-                    {raffle.isWinner === 'yes' && (
-                      <PurpleButton
-                        onClick={() =>
-                          navigate('/review', {
-                            state: { raffleId: raffleId },
-                          })
-                        }
-                      >
-                        후기남기기
-                      </PurpleButton>
-                    )}
-                    {raffle.isWinner === 'no' && (
-                      <GrayButton>래플 종료</GrayButton>
-                    )}
-                    {raffle.isWinner === 'hope' && (
-                      <PurpleButton onClick={handleWinner}>DRAW</PurpleButton>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-            <LikeBox
-              onClick={() => {
-                if (isAuthenticated) {
-                  toggleLike();
-                } else {
-                  handleOpenModal();
-                }
-              }}
-            >
-              <img
-                src={isLiked ? icLike : icUnlike}
-                alt={isLiked ? 'Liked' : 'Unliked'}
-              />
-              찜하기
-            </LikeBox>
-          </ButtonContainer>
-          <WarningBox>
-            판매자 희망 최소 참여자 이상 모이지 않으면 당첨자 없이 취소될 수
-            있습니다. 취소된 래플에 대한 티켓은 다시 적립됩니다.
-          </WarningBox>
+          {isLargeScreen && ActionArea}
         </DetailLayout>
       </TopLayout>
       <BottomLayout>
@@ -333,6 +336,15 @@ const TopLayout = styled.div`
   padding: 50px 109px 51px 67px;
   box-sizing: border-box;
   gap: 99.42px;
+
+  ${media.medium`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+          padding-bottom : 30px;
+  gap : 0px;
+      `}
 `;
 
 const RaffleClosingBox = styled.div`
@@ -365,6 +377,9 @@ const DetailLayout = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  ${media.medium`
+          margin-top : 57px;
+      `}
 `;
 
 const ItemTitleBox = styled.p`
@@ -504,6 +519,12 @@ const ButtonContainer = styled.div`
   flex-direction: row;
   gap: 35px;
   padding-bottom: 19px;
+
+  ${media.medium`
+          margin-top : 66px;
+          gap: 35px;
+  padding-bottom: 0px;
+      `}
 `;
 
 const PurpleButton = styled.button`
@@ -619,6 +640,10 @@ const WarningBox = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 150%; /* 18px */
+
+  ${media.medium`
+        height: 36px;
+      `}
 `;
 
 const BottomLayout = styled.div`
@@ -629,6 +654,11 @@ const BottomLayout = styled.div`
   padding: 0 109px 30px 67px;
   box-sizing: border-box;
   gap: 45px;
+
+  ${media.medium`
+          padding-bottom : 0px;
+           gap: 15px;
+      `}
 `;
 
 const TitleBox2 = styled.div`
