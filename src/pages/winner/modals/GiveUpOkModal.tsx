@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
-import sadVector from '../../../../assets/sadVector.png';
+import sadVector from '../../../assets/sadVector.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface ModalProps {

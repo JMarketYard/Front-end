@@ -26,6 +26,8 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   const { isAuthenticated, logout } = useAuth();
   const { openModal } = useModalContext();
   const handleOpenModal = OpenLogInModal();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState(0);
 
   useEffect(() => {
     setIsLiked(raffle.likeStatus ?? false);
@@ -46,6 +48,11 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
       setIsLiked(true);
       setLikeCount((prev) => prev + 1);
     }
+  };
+
+  const handleImageClick = (index: number) => {
+    setModalImageIndex(index);
+    setIsModalOpen(true);
   };
 
   const handleApply = async () => {
@@ -100,7 +107,11 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
         )}
       </BigTitle>
       <TopLayout>
-        <ImgSlider images={raffle.imageUrls} name={raffle.name}>
+        <ImgSlider
+          images={raffle.imageUrls}
+          name={raffle.name}
+          onImageClick={handleImageClick}
+        >
           {(raffle.raffleStatus === 'UNFULFILLED' ||
             raffle.raffleStatus === 'ENDED' ||
             raffle.raffleStatus === 'CANCELLED' ||
@@ -279,6 +290,29 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
         <TitleBox2>상품 설명</TitleBox2>
         <DescriptionBox2>{raffle.description}</DescriptionBox2>
       </BottomLayout>
+      {isModalOpen && (
+        <div
+          onClick={() => setIsModalOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            zIndex: 9999,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <ImgSlider
+              images={raffle.imageUrls}
+              name={raffle.name}
+              initialIndex={modalImageIndex}
+              isModal
+            />
+          </div>
+        </div>
+      )}
     </Wrapper>
   );
 };
