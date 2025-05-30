@@ -96,12 +96,14 @@ const RaffleDetailPage: React.FC = () => {
 export default RaffleDetailPage;
 
 const Wrapper = styled.div`
-  max-width: 1080px;
+  max-width: 1440px;
   padding-bottom: 200px;
   display: flex;
   align-items: safe center;
   flex-direction: column;
   padding-top: 63px;
+  ${media.medium`padding-bottom: 63px;
+      `}
 `;
 
 const MoreInfoLayout = styled.div`

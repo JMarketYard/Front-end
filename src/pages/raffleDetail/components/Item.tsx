@@ -229,7 +229,7 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   );
 
   return (
-    <Wrapper>
+    <Container>
       <BigTitle>
         {raffle.name}
         {raffle.userStatus === 'host' && (
@@ -237,28 +237,30 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
         )}
       </BigTitle>
       <TopLayout>
-        <ImgSlider
-          images={raffle.imageUrls}
-          name={raffle.name}
-          onImageClick={handleImageClick}
-        >
-          {(raffle.raffleStatus === 'UNFULFILLED' ||
-            raffle.raffleStatus === 'ENDED' ||
-            raffle.raffleStatus === 'CANCELLED' ||
-            raffle.raffleStatus === 'COMPLETED') && (
-            <>
-              <EndBox />
-              <RaffleClosingBox>응모 마감</RaffleClosingBox>
-            </>
-          )}
-          {raffle.raffleStatus === 'UNOPENED' && (
-            <>
-              <EndBox />
-              <RaffleClosingBox>응모 오픈 전</RaffleClosingBox>
-            </>
-          )}
-        </ImgSlider>
-        {isMediumScreen && ActionArea}
+        <ImageLayout>
+          <ImgSlider
+            images={raffle.imageUrls}
+            name={raffle.name}
+            onImageClick={handleImageClick}
+          >
+            {(raffle.raffleStatus === 'UNFULFILLED' ||
+              raffle.raffleStatus === 'ENDED' ||
+              raffle.raffleStatus === 'CANCELLED' ||
+              raffle.raffleStatus === 'COMPLETED') && (
+              <>
+                <EndBox />
+                <RaffleClosingBox>응모 마감</RaffleClosingBox>
+              </>
+            )}
+            {raffle.raffleStatus === 'UNOPENED' && (
+              <>
+                <EndBox />
+                <RaffleClosingBox>응모 오픈 전</RaffleClosingBox>
+              </>
+            )}
+          </ImgSlider>
+          {isMediumScreen && ActionArea}
+        </ImageLayout>
         <DetailLayout>
           <ItemTitleBox>{raffle.name}</ItemTitleBox>
           <ViewBox>
@@ -316,20 +318,15 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
           </div>
         </div>
       )}
-    </Wrapper>
+    </Container>
   );
 };
 
 export default Item;
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
+const Container = styled.div``;
 
 const TopLayout = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -340,7 +337,8 @@ const TopLayout = styled.div`
   ${media.medium`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
+  padding-left:80px;
   box-sizing: border-box;
           padding-bottom : 30px;
   gap : 0px;
@@ -371,6 +369,10 @@ const RaffleClosingBox = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: 18px; /* 100% */
+`;
+
+const ImageLayout = styled.div`
+  margin: 0 auto;
 `;
 
 const DetailLayout = styled.div`
@@ -443,6 +445,7 @@ const ViewBox = styled.div`
   text-underline-offset: auto;
   text-underline-position: from-font;
 `;
+
 const TicketBox = styled.div`
   display: flex;
   gap: 8.31px;
@@ -647,7 +650,6 @@ const WarningBox = styled.div`
 `;
 
 const BottomLayout = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -656,7 +658,7 @@ const BottomLayout = styled.div`
   gap: 45px;
 
   ${media.medium`
-          padding-bottom : 0px;
+  padding: 0 0 10px 80px;
            gap: 15px;
       `}
 `;
@@ -675,6 +677,10 @@ const TitleBox2 = styled.div`
 const DescriptionBox2 = styled.div`
   width: 749px;
   height: 132px;
+
+  ${media.medium`
+    width: 485px;
+    height: 132px;`}
 
   color: #000;
   font-family: Pretendard;
