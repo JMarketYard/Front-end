@@ -62,6 +62,7 @@ const RaffleUploadPage = () => {
     const description = (
       document.getElementById('upload-textarea') as HTMLInputElement
     ).value;
+
     // 모두 입력했는지 확인
     if (images.length === 0) return alert('상품 이미지를 추가해주세요');
     if (
@@ -73,11 +74,38 @@ const RaffleUploadPage = () => {
       return alert('상품 정보를 모두 입력해주세요');
     if (ticketNum === '' || jcare === '' || deliveryFee === '')
       return alert('거래 설정을 모두 입력해주세요');
-    if (startDate === null || endDate === null)
+    if (
+      startDate === null ||
+      startTime === null ||
+      endDate === null ||
+      endTime === null
+    )
       return alert('개최 기간을 설정해주세요');
-    if (createdAt >= startDate || startDate >= endDate)
+    const startAt = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate(),
+      startTime.getHours(),
+      startTime.getMinutes(),
+    );
+
+    const endAt = new Date(
+      endDate.getFullYear(),
+      endDate.getMonth(),
+      endDate.getDate(),
+      endTime.getHours(),
+      endTime.getMinutes(),
+    );
+    console.log(createdAt);
+    console.log(startAt);
+    console.log(endAt);
+    if (
+      createdAt >= startAt ||
+      endAt.getTime() - startAt.getTime() < 24 * 60 * 60 * 1000 ||
+      startAt >= endAt
+    )
       return alert('개최 기간이 올바르지 않습니다');
-    if (endDate.getTime() - startDate.getTime() > 30 * 24 * 60 * 60 * 1000)
+    if (endAt.getTime() - startAt.getTime() > 30 * 24 * 60 * 60 * 1000)
       return alert('응모 진행 기간은 최대 30일입니다');
     if (parseInt(deliveryFee.replace(',', '')) > 10000)
       return alert('배송비는 최대 1만원까지 입력 가능합니다');
@@ -94,13 +122,16 @@ const RaffleUploadPage = () => {
     formData.append('ticketNum', parseInt(ticketNum).toString());
     formData.append('minTicket', leastTicketNum.replace(',', ''));
     const offset = 1000 * 60 * 60 * 9;
+    console.log(
+      new Date(startAt.getTime() + offset).toISOString().slice(0, 19),
+    );
     formData.append(
       'startAt',
-      new Date(startDate.getTime() + offset).toISOString().replace('Z', ''),
+      new Date(startAt.getTime() + offset).toISOString().slice(0, 19),
     );
     formData.append(
       'endAt',
-      new Date(endDate.getTime() + offset).toISOString().replace('Z', ''),
+      new Date(endAt.getTime() + offset).toISOString().slice(0, 19),
     );
     formData.append('deliveryFee', deliveryFee.replace(',', ''));
 
