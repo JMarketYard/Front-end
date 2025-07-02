@@ -53,11 +53,7 @@ const Address = ({
         <Title>{address.addressName}</Title>
         <AddressText>{address.addressDetail}</AddressText>
         <SetBtn $default={address.isDefault} onClick={defaultAddress}>
-          {address.isDefault
-            ? '기본 배송지로 설정됨'
-            : media.small
-              ? '기본 배송지로 설정'
-              : '기본 배송지로 설정하기'}
+          {address.isDefault ? '기본 배송지로 설정됨' : '기본 배송지로 설정'}
         </SetBtn>
       </List>
     </>
