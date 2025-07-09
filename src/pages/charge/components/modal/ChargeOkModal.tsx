@@ -7,6 +7,7 @@ import { useModalContext } from '../../../../components/Modal/context/ModalConte
 import { useQuery } from '@tanstack/react-query';
 import { GetChargeHistory } from '../../apis/chargeAPI';
 import { THistory } from '../../apis/chargeType';
+import dayjs from 'dayjs';
 
 interface ModalProps {
   onClose: () => void;
@@ -37,7 +38,6 @@ const ChargeOkModal: React.FC<ModalProps> = ({ onClose }) => {
     purchaseDate: '',
   };
 
-
   return (
     <Modal onClose={onClose}>
       <Container>
@@ -49,11 +49,7 @@ const ChargeOkModal: React.FC<ModalProps> = ({ onClose }) => {
         </TicketBox>
         <Option>
           <Name>거래 날짜</Name>
-          <Name>
-            {new Date(chargeData?.purchaseDate)
-              .toLocaleDateString('ko-KR')
-              .replace(/-/g, '.')}
-          </Name>
+          <Name>{dayjs(chargeData?.purchaseDate).format('YYYY.MM.DD')}</Name>
         </Option>
         <Line />
         <Option>

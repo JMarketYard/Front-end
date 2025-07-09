@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import BigTitle from '../../components/BigTitle';
 import axiosInstance from '../../apis/axiosInstance';
 import { useNavigate, useLocation } from 'react-router-dom';
-import moreList from '../../assets/homePage/moreList.svg';
 import media from '../../styles/media';
 import { TAddress } from '../address/addressSetPage';
 import { TDeliveryStatus } from '../../types/deliveryStatus';
@@ -20,6 +19,7 @@ import useDeliveryStore from '../../store/deliveryStore';
 import { formatMinutesToHoursAndMinutes } from '../../utils/FormatMinuitesToHourAndMinutes';
 import PayOkModal from './modals/PayOkModal';
 import usePay from '../../hooks/usePay';
+import dayjs from 'dayjs';
 
 export type TRaffleInfo = {
   raffleName: string;
@@ -138,11 +138,7 @@ const WinnerPage: React.FC = () => {
       return isoString; //유효하지 않은 값이면 기본 메시지 반환
     }
 
-    return new Date(isoString).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    return dayjs(isoString).format('YYYY년 M월 D일');
   };
 
   if (deliveryStatus === 'SHIPPING_EXPIRED') {

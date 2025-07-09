@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { GetExchangeHistory } from '../../apis/chargeAPI';
 import { THistory } from '../../apis/chargeType';
 import ticket from '../../../../assets/ticket.svg';
+import dayjs from 'dayjs';
 
 interface ModalProps {
   onClose: () => void;
@@ -45,11 +46,7 @@ const ChangeOkModal: React.FC<ModalProps> = ({ onClose }) => {
         </TicketBox>
         <Option>
           <Name>거래 날짜</Name>
-          <Name>
-            {new Date(chargeData?.purchaseDate)
-              .toLocaleDateString('ko-KR')
-              .replace(/-/g, '.')}
-          </Name>
+          <Name>{dayjs(chargeData?.purchaseDate).format('YYYY.MM.DD')}</Name>
         </Option>
         <Line />
         <Option>

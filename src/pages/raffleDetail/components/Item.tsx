@@ -16,6 +16,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { OpenLogInModal } from '../../../utils/OpenLogInModal';
 import { postLike, deleteLike } from '../../../services/likeService';
 import DeleteModal from './modals/DeleteModal';
+import dayjs from 'dayjs';
 
 const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
   const [isLiked, setIsLiked] = useState<boolean>(raffle.likeStatus);
@@ -81,15 +82,9 @@ const Item: React.FC<RaffleDetailProps> = ({ ...raffle }) => {
     ));
   };
 
-  const formatDate = (isoString: string) =>
-    new Date(isoString).toLocaleString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
+  const formatDate = (isoString: string): string => {
+    return dayjs(isoString).format('YYYY년 M월 D일 HH:mm');
+  };
 
   return (
     <Wrapper>

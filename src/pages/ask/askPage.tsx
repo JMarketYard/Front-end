@@ -9,6 +9,7 @@ import Answered from './components/Answered';
 import WriteAsk from './components/WriteAsk';
 import media from '../../styles/media';
 import axiosInstance from '../../apis/axiosInstance';
+import dayjs from 'dayjs';
 
 interface IReplay {
   timestamp: string;
@@ -38,15 +39,9 @@ const AskPage = () => {
   const { type } = useParams();
   const sRaffle = state.raffle;
   console.log(sRaffle);
-  const formatDate = (isoString: string) =>
-    new Date(isoString).toLocaleString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
+
+  const formatDate = (isString: string) =>
+    dayjs(isString).format('YYYY년 MM월 DD일 HH:mm');
 
   const GetInquiry = async () => {
     try {

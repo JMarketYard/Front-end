@@ -1,8 +1,8 @@
+import dayjs from 'dayjs';
+
 export const formatDate = (isoString: string | null | undefined): string => {
   if (!isoString) return '';
-  const date = new Date(isoString);
-  const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
-  const day = date.getDate();
+  const date = dayjs(isoString);
 
-  return `${month}/${day}`;
+  return `${date.month() + 1}/${date.date()}`;
 };

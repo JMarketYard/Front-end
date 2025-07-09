@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ticket from '../../../../assets/ticket.svg';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 interface ModalProps {
   onClose: () => void;
@@ -12,12 +13,7 @@ interface ModalProps {
 }
 
 const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1 필요
-  const day = date.getDate();
-  const hours = date.getHours(); // 24시간 형식 그대로 사용
-
-  return `${month}월 ${day}일 ${hours}시`;
+  return dayjs(dateString).format('M월 D일 H시');
 };
 
 const ApplyOkModal: React.FC<ModalProps> = ({ onClose, resultTime, image }) => {
