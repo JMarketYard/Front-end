@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '../../../components/Modal/Modal';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -15,29 +15,38 @@ const UploadModal: React.FC<ModalProps> = ({
   onClose,
   images,
   name,
-  formData
- }) => {
+  formData,
+}) => {
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleUpload = () => {
+    if (isSubmit) return;
+    setIsSubmit(true);
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
-    };
+    }
     const postRaffle = async () => {
-      await axiosInstance.post('/api/member/raffles', 
-        formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-      }).then(_=>console.log('업로드 완료'))
-      .then(_=>navigate('/'))
-      .catch((error) => console.error('Error:', error));
+      await axiosInstance
+        .post('/api/member/raffles', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((_) => console.log('업로드 완료'))
+        .then((_) => navigate('/'))
+        .catch((error) => console.error('Error:', error));
     };
     postRaffle();
   };
-  
+
+  const onCloseModal = () => {
+    setIsSubmit(false);
+    onClose();
+  };
+
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={onCloseModal}>
       <Container>
         <Img src={URL.createObjectURL(images[0])} />
         <Title>{name}</Title>
@@ -84,7 +93,7 @@ const Img = styled.img`
   flex-shrink: 0;
   margin-top: 20px;
   margin-bottom: 20px;
-`
+`;
 
 const Container = styled.div`
   display: flex;
