@@ -37,55 +37,81 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: 'change',
-        element: (
-          <div>
-            <ChargePage />
-            <ModalProvider />
-          </div>
-        ),
-      },
-      {
-        path: 'raffle-upload',
-        element: <RaffleUploadPage />,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: 'change',
+            element: (
+              <div>
+                <ChargePage />
+                <ModalProvider />
+              </div>
+            ),
+          },
+          {
+            path: 'raffle-upload',
+            element: <RaffleUploadPage />,
+          },
+          // {
+          //   path: 'review',
+          //   element: <WriteReview />,
+          // },
+          {
+            path: 'mypage/address',
+            element: (
+              <>
+                <AddressSetPage />
+                <ModalProvider />
+              </>
+            ),
+          },
+          {
+            path: 'host-result',
+            element: (
+              <div>
+                <ResultPage />
+                <ModalProvider />
+              </div>
+            ),
+          },
+          {
+            path: 'mypage/following-list',
+            element: <FollowingList />,
+          },
+          {
+            path: 'mypage/setting',
+            element: <Setting />,
+          },
+          {
+            path: 'mypage',
+            element: <MyProfilePage />,
+          },
+          {
+            path: 'mypage/public-information-set',
+            element: <SetOpenInfoPage />,
+          },
+          {
+            path: 'mypage/my-review',
+            element: <MyReview />,
+          },
+          {
+            path: 'mypage/payment',
+            element: <Payment />,
+          },
+          {
+            path: 'user/:userId',
+            element: <UserProfilePage />,
+          },
+          {
+            path: 'winner-page',
+            element: <WinnerPage />,
+          },
+        ],
       },
       {
         path: 'review',
         element: <WriteReview />,
-      },
-      {
-        path: 'mypage/address',
-        element: (
-          <>
-            <AddressSetPage />
-            <ModalProvider />
-          </>
-        ),
-      },
-      {
-        path: 'host-result',
-        element: (
-          <div>
-            <ResultPage />
-            <ModalProvider />
-          </div>
-        ),
-      },
-      {
-        path: 'mypage/following-list',
-        element: <FollowingList />,
-      },
-      {
-        path: 'mypage/setting',
-        element: <Setting />,
-      },
-      {
-        path: 'mypage',
-        element: <MyProfilePage />,
-      },
-      {
-        path: 'mypage/public-information-set',
-        element: <SetOpenInfoPage />,
+
       },
       {
         path: 'mypage/my-review',
